@@ -28,5 +28,6 @@ public:
     void setMovements(vector<string>);
     bool getConnectionStatus();
     void closeConnection();
+    int closeTransmission();
 };
 #endif

@@ -6,11 +6,9 @@
 Vision::Vision(){
     colorsHSV.resize(6);
     blobSize.resize(6);
-    robotTeam.resize(3);
-    lastTeam.resize(3);
-    robotOpponent.resize(3);
-    numberOfRobots = 3;
-
+    robotTeam.resize(number_robots);
+    robotOpponent.resize(number_robots);
+    
     camera = getCameraNumber();
 }
 
@@ -83,14 +81,14 @@ void Vision::colorPositionPlayer(cv::Mat image, BlobsContours teamContours){
 
     // can be less than 3 robots
     robotTeam.clear();
-    robotTeam.resize(3);
+    robotTeam.resize(number_robots);
 
     // cropped image around the color team
     for (int i = 0; i < teamContours.center.size(); i++){
         cv::Mat cutImage = image( cv::Rect(teamContours.cutPoint1[i], teamContours.cutPoint2[i]) );
 
         // search player's color on a cropped image
-        for (int j = 0; j < numberOfRobots; j++){
+        for (int j = 0; j < number_robots; j++){
             BlobsContours contours = blobContour( opencvBinary(colorsHSV[j], cutImage), blobSize[j]);
 
             // check if finds the specified color in image
@@ -108,7 +106,7 @@ void Vision::colorPositionPlayer(cv::Mat image, BlobsContours teamContours){
 void Vision::colorPositionOpponent(BlobsContours opponentContours){
 
     robotOpponent.clear();
-    robotOpponent.resize(3);
+    robotOpponent.resize(number_robots);
 
     for (int i = 0; i < opponentContours.center.size(); i++){
         robotOpponent[i].x = opponentContours.center[i].x;
@@ -179,37 +177,20 @@ void Vision::setCameraRelease(){
     cam.release();
 }
 
-void Vision::setRotateField(bool rotate){
-    rotateField = int(rotate) * 180;
-}
-
 /*
  * Getters
  */
-vector<Object> Vision::getRobotTeam(){
-
-    for(int i=0 ; i<robotTeam.size() ; i++){
-        if(robotTeam[i].isNull()){
-            robotTeam[i] = lastTeam[i];
-        } else {
-            lastTeam[i] = robotTeam[i];
-        }
-    }
-
-    return robotTeam;
-}
-
-vector<Object> Vision::getOpponent(){
-    return robotOpponent;
-}
-
-Object Vision::getBall(){
-
-    if(objectBall.isNull()){
-        objectBall = lastBall;
-    } else {
-        lastBall = objectBall;
-    }
+vector<Object> Vision::getPositions(){
     
-    return objectBall;
+    vector<Object> objects;
+
+    for(int i = 0 ; i < robotTeam.size() ; i++)
+        objects.push_back(robotTeam[i]);
+    
+    for(int i = 0 ; i < robotOpponent.size() ; i++)
+        objects.push_back(robotOpponent[i]);
+    
+    objects.push_back(objectBall);
+
+    return objects;
 }

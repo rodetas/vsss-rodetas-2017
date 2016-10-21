@@ -4,7 +4,6 @@
 #include "Header.h"
 #include "Vision.h"
 #include "GUI/Graphic.h"
-#include "GUI/Menu.h"
 #include "Calibration.h"
 #include "Transmission.h"
 #include "Strategy.h"
@@ -17,7 +16,6 @@
 class Control{
 
 private:
-	Menu menu;
 	Calibration calibration;
 	Manipulation manipulation;
 	Transmission transmission;
@@ -34,9 +32,10 @@ private:
 	vector<Object> objects;
 	vector<string> movements;
 	
-	bool program_run;	
 	int  program_state;
+	bool program_run;
 
+	int menuGUI();
 	void onButtonPlay();
 	void onButtonCalibration();
 	void onButtonSimulator();
@@ -45,9 +44,8 @@ private:
 
 public:
 	Control();
-	void setInformations();
-	void handle();
-	void menuGUI();
+	void setInformations();	
+	void handle();	
 };
 
 #endif

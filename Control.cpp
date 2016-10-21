@@ -6,7 +6,6 @@ Control::Control(){
 	objects.resize(7);
 	movements.resize(3);
 	manipulation.loadCalibration();
-	program_run = true;
 	program_state = MENU;
 }
 
@@ -14,10 +13,12 @@ void Control::handle(){
 
 	calibration.setGUICalibration(&calibration);
 
-	std::thread control_thread(&Control::menuGUI, this);
+	std::thread control_thread([&] {program_state = menuGUI();} );
 
-	while(program_run){
-		cout << "MENU" << endl;
+	while(program_state != EXIT){
+		
+		cout << "MENU" << endl; // se tirar o cout trava pq?
+
 		switch(program_state){
 			case GAME:
 				// initialize classes
@@ -54,53 +55,48 @@ void Control::handle(){
 					} else if(graphic.getClose()){
 						vision.setCameraRelease();
 						game = false;
-						program_run = false;
+						program_state = EXIT;
 					}
 				}
 				program_state = MENU; // retornar estado do programa atraves do game
 				break;
-			
-			case CALIBRATION:	
-				program_state = calibration.calibrate();
-				break;
-			
-			case ARDUINO:			
-				program_state = arduino.loop();
-				break;
 
-			case TEST:
-				program_state = test.loop();
-				break;
-
-			case SIMULATOR:					
+			case SIMULATOR:
 				simulator.openWindow();
 				while(!simulator.getEndSimulator()){
 					simulator.simulate();
 					strategy.setObjects(simulator.getPositions());
 					strategy.handleStrategies();
 					simulator.setTargets(strategy.getTargets());
-					//simulator.setInformation(strategy.getInformation());
 				}
 				simulator.setEndSimulator(false);
 				program_state = MENU; // retornar estado do programa atraves do simulator
 				break;
 			
+			case CALIBRATION:
+				program_state = calibration.calibrate();
+				break;
+			
+			case ARDUINO:
+				program_state = arduino.loop();
+				break;
+
+			case TEST:
+				program_state = test.loop();
+				break;
+			
 			case EXIT:
-				for(int i=0 ; i<3 ; i++) { transmission.sendMovement(i, STOPPED_MOVE,0); }
-				transmission.closeConnection();
-				program_run = false;
+				program_state = transmission.closeTransmission();
 				break;
 		}
 	}
+
+	control_thread.detach();
 }
 
 void Control::setInformations(){
 
-	for (int i = 0; i < 3; i++){
-		objects[i] = vision.getRobotTeam()[i];
-		objects[i+3] = vision.getOpponent()[i];
-	}
-    objects[graphicBall] = vision.getBall();
+	objects = vision.getPositions();
 
 	strategy.setObjects(objects);
 	strategy.setPowerCurve(graphic.getPowerCurve());
@@ -111,11 +107,9 @@ void Control::setInformations(){
 	graphic.setFps(fps.framesPerSecond());
 	graphic.setConnectionStatus(transmission.getConnectionStatus());
 	graphic.setInformation(strategy.getInformation());
-
-	vision.setRotateField(graphic.getRotateField());
 }
 
-void Control::menuGUI(){
+int Control::menuGUI(){
 
 	auto app = Gtk::Application::create();
 
@@ -127,7 +121,7 @@ void Control::menuGUI(){
 	Gtk::Button button_arduino;
 	Gtk::Button button_exit;
 
-	//window.set_default_size(200, 200);
+	window.set_default_size(400, 400);
 
 	button_play.add_label("Play");
 	button_calibration.add_label("Calibration");
@@ -135,11 +129,13 @@ void Control::menuGUI(){
 	button_arduino.add_label("Arduino");
 	button_exit.add_label("Exit");
 
-	main_grid.attach(button_play,0,0,1,1);
-	main_grid.attach(button_calibration,0,1,1,1);
-	main_grid.attach(button_simulator,0,2,1,1);
-	main_grid.attach(button_arduino,0,3,1,1);
-	main_grid.attach(button_exit,0,4,1,1);
+	Gtk::VBox mainLayout;
+
+	mainLayout.pack_start(button_play, Gtk::PACK_EXPAND_WIDGET);
+	mainLayout.pack_start(button_calibration, Gtk::PACK_EXPAND_WIDGET);
+	mainLayout.pack_start(button_simulator, Gtk::PACK_EXPAND_WIDGET);
+	mainLayout.pack_start(button_arduino, Gtk::PACK_EXPAND_WIDGET);
+	mainLayout.pack_start(button_exit, Gtk::PACK_EXPAND_WIDGET);
 
 	button_play.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonPlay) );
 	button_calibration.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonCalibration) );
@@ -147,13 +143,15 @@ void Control::menuGUI(){
 	button_arduino.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonArduino) );
 	button_exit.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonExit) );
 
-	main_grid.show_all();
-	window.add(main_grid);
+	mainLayout.show_all();
+	window.add(mainLayout);
 
   	app->run(window);
+
+	return EXIT;
 }
 
-void Control::onButtonPlay(){ program_state = GAME; }
+void Control::onButtonPlay(){ program_state = GAME;}
 void Control::onButtonCalibration(){ program_state = CALIBRATION; }
 void Control::onButtonSimulator(){ program_state = SIMULATOR; }
 void Control::onButtonArduino(){ program_state = ARDUINO; }

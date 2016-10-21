@@ -16,9 +16,15 @@ Transmission::Transmission() {
 
 }    
 
+int Transmission::closeTransmission(){
+    for(int i=0 ; i<3 ; i++) { 
+        sendMovement(i, STOPPED_MOVE,0); 
+    }
+    return EXIT;
+}   
 
 void Transmission::closeConnection(){
-    close(usb);
+    close(usb);   
 }
 
 void Transmission::openConection(){   

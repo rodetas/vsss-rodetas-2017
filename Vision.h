@@ -13,16 +13,16 @@ private:
 	bool cameraOn;
 	bool begin;
 
+	const int number_robots = 3;
+
 	int camera;
 	int angleImageRotation;
-	int numberOfRobots;
 	int rotateField;
 
 	vector<Object> lastTeam;
 	vector<Object> robotTeam;
 	vector<Object> robotOpponent;
 	Object objectBall;
-	Object lastBall;
 
 	Point pointCutField1;
 	Point pointCutField2;
@@ -50,11 +50,7 @@ public:
 
 	void initializeWebcam();
 	void imageWebCam();
-	void setRotateField(bool);
 
-	Object getBall();
-	vector<Object> getRobotTeam();
-	vector<Object> getOpponent();
-
+	vector<Object> getPositions();
 };
 #endif
