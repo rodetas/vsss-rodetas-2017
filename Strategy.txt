@@ -1,0 +1,374 @@
+#include "Strategy.h" 
+
+#define PI 3.14159265
+
+template <typename T>
+string NumberToString ( T Number )
+{
+	ostringstream ss;
+	ss << Number;
+	return ss.str();
+}
+
+Strategy::Strategy(){  
+	trocaJogador = 1;
+	imagemX = 640;
+	imagemY = 480;
+} 
+
+void Strategy::definePosicoes(Robo jogador2, Robo jogador3, Cor bola, float curva, float potencia){
+
+	fatorMultiplicaPotenciaDefault = potencia;
+	fatorMultiplicaCurvaDefault = curva;  
+    
+    if (trocaJogador > 60){
+		distanciaEntreJogador2EBola = sqrt((jogador2.x - bola.x)*(jogador2.x - bola.x) + (jogador2.y - bola.y)*(jogador2.y - bola.y));
+		distanciaEntreJogador3EBola = sqrt((jogador3.x - bola.x)*(jogador3.x - bola.x) + (jogador3.y - bola.y)*(jogador3.y - bola.y));
+
+	    if (distanciaEntreJogador2EBola<distanciaEntreJogador3EBola ) {
+	    	posicaoRobo2Atacante=true;
+	    	posicaoRobo3Atacante=false;
+	    } else {
+	    	posicaoRobo2Atacante=false;
+	    	posicaoRobo3Atacante=true; 
+	    }
+
+	} else {
+		trocaJogador++;
+	}
+} 
+
+
+
+String Strategy::aplicaStrategyDefensor(Robo robo, Cor bola){
+
+	fatorMultiplicaPotencia = fatorMultiplicaPotenciaDefault;
+	fatorMultiplicaCurva = fatorMultiplicaCurvaDefault;
+
+	if (robo.x < bola.x+10  && (robo.y>(imagemY*0.06) && robo.y<(imagemY*0.94) && robo.x>(imagemX*0.1) &&  robo.x<(imagemX*0.9))) {
+		destinoXDefensor = bola.x-25; 
+		destinoYDefensor = bola.y;
+	} else {
+			destinoXDefensor = bola.x-20;
+		if (robo.y>bola.y) {
+			destinoYDefensor = bola.y+50;
+		} else {
+			destinoYDefensor = bola.y-50;
+		}
+	}
+
+	angle = atan2(destinoYDefensor - robo.y, destinoXDefensor - robo.x)*(180/PI);
+    senoAngulo = sin((angle-robo.angulo-45)/(180/PI));
+    cossenoAngulo = cos((angle-robo.angulo-45)/(180/PI));
+    distanciaEntreRoboEDestino = sqrt((robo.x - destinoXDefensor)*(robo.x - destinoXDefensor) + (robo.y - destinoYDefensor)*(robo.y - destinoYDefensor));
+ 
+	if (distanciaEntreRoboEDestino<30) {
+		destinoXDefensor=bola.x;
+		destinoYDefensor=bola.y;
+
+		angle = atan2(destinoYDefensor - robo.y, destinoXDefensor - robo.x)*(180/PI);
+	    senoAngulo = sin((angle-robo.angulo-45)/(180/PI));
+	    cossenoAngulo = cos((angle-robo.angulo-45)/(180/PI));
+	    distanciaEntreRoboEDestino = sqrt((robo.x - destinoXDefensor)*(robo.x - destinoXDefensor) + (robo.y - destinoYDefensor*(robo.y - destinoYDefensor)));
+
+		fatorMultiplicaCurva=fatorMultiplicaCurva*1.8;
+	}
+	
+	if (robo.y>(imagemY*0.9) && (robo.x<(imagemX*0.1) || robo.x>(imagemX*0.9)) && distanciaEntreRoboEDestino<100){
+		destinoXDefensor=bola.x;
+		destinoYDefensor=bola.y;
+		angle = atan2(destinoYDefensor - robo.y, destinoXDefensor - robo.x)*(180/PI);
+	    senoAngulo = sin((angle-robo.angulo-45)/(180/PI));
+	    float cossenoAnguloRobo = cossenoAngulo;
+	    cossenoAngulo = cos((angle-robo.angulo-45)/(180/PI));
+	}
+
+	if (destinoYDefensor>(imagemY*0.2) && destinoYDefensor<(imagemY*0.8) && destinoXDefensor<(imagemX*0.20)) {//x->0.25
+		if (robo.y<(destinoYDefensor/2)) {
+			destinoYDefensor = (imagemY*0.2);
+		} else {
+			destinoYDefensor = (imagemY*0.8);
+		}
+	}
+	if (robo.y>(imagemY*0.2) && robo.y<(imagemY*0.8) && robo.x<(imagemX*0.20)) {//x->0.20
+		destinoXDefensor = imagemX*0.20;//0.20
+	}
+
+	if (destinoYDefensor<0 || destinoYDefensor>imagemY) {
+		destinoYDefensor=bola.y;
+	}
+
+	if (destinoXDefensor>imagemX*0.38) {
+		destinoXDefensor=imagemX*0.38;
+		destinoYDefensor=bola.y;
+	}
+	if (destinoXDefensor>imagemX*0.38 && destinoXDefensor<imagemX*0.55) {
+		destinoXDefensor=bola.x;
+		destinoYDefensor=bola.y;
+	}
+
+	angle = atan2(destinoYDefensor - robo.y, destinoXDefensor - robo.x)*(180/PI);
+    senoAngulo = sin((angle-robo.angulo-45)/(180/PI));
+    cossenoAngulo = cos((angle-robo.angulo-45)/(180/PI));
+
+	if (robo.y>(imagemY*0.9) || robo.y<(imagemY*0.1) || robo.x>(imagemX*0.85) || robo.x<(imagemX*0.12)) {
+
+		int distanciaEntreRoboEBola = sqrt((robo.x - bola.x)*(robo.x - bola.x) + (robo.y - bola.y)*(robo.y - bola.y));
+
+		if (distanciaEntreRoboEBola<23) {
+			if (robo.y>(imagemY/2)) {
+
+				cout << "Strategy DEFENSOR CANTO 4 " << endl;
+				return "E6060";		    	
+		    } else {
+		    	cout << "Strategy DEFENSOR CANTO 5 " << endl;
+		    	return "D6060";	
+			}
+		}
+
+		if (cossenoAngulo < -0.62) {
+
+		 	cout << "Strategy DEFENSOR CANTO 1 " << endl;
+
+			base = 50*fatorMultiplicaPotencia;
+			correcao = 25*senoAngulo*fatorMultiplicaCurva;
+
+			int somaM1 = base+correcao;
+			int somaM2 = base-correcao;
+
+			if (somaM1>99) 
+				somaM1 = 99;
+
+			if (somaM2>99) 
+				somaM2 = 99;
+
+			string configuraMovimento;
+
+			if (cossenoAngulo < -0.65 && sqrt((robo.x - destinoXDefensor)*(robo.x - destinoXDefensor) + (robo.y - destinoYDefensor)*(robo.y - destinoYDefensor))<40) {
+				configuraMovimento = movimentoChutar+NumberToString((somaM1))+NumberToString((somaM2));
+			} else {
+				configuraMovimento = movimentoAvancar+NumberToString((somaM1))+NumberToString((somaM2));
+			}
+					
+			return configuraMovimento;
+		
+		} else {
+			if (senoAngulo>0) {
+				cout << "Strategy DEFENSOR CANTO 2 " << endl;
+				return "E6060";		    	
+		    } else {
+		    	cout << "Strategy DEFENSOR CANTO 3 " << endl;
+		    	return "D6060";	
+		    }
+		}
+	}
+
+
+	if (cossenoAngulo < -0.3) {
+
+	 	cout << "Strategy ATACANTE 3 " << endl;
+
+		base = 50*fatorMultiplicaPotencia;
+		correcao = 25*senoAngulo*fatorMultiplicaCurva;
+
+		int somaM1 = base+correcao;
+		int somaM2 = base-correcao;
+
+		if (somaM1>99) 
+			somaM1 = 99;
+
+		if (somaM2>99) 
+			somaM2 = 99;
+
+		string configuraMovimento;
+
+		if (cossenoAngulo < -0.65 && sqrt((robo.x - destinoXDefensor)*(robo.x - destinoXDefensor) + (robo.y - destinoYDefensor)*(robo.y - destinoYDefensor))<40) {
+			configuraMovimento = movimentoAvancar+NumberToString((somaM1))+NumberToString((somaM2));
+		} else {
+			configuraMovimento = movimentoAvancar+NumberToString((somaM1))+NumberToString((somaM2));
+		}
+				
+		return configuraMovimento;
+	
+	} else {
+		if (senoAngulo>0) {
+			cout << "Strategy ATACANTE 4 " << endl;
+			return "E4040";		    	
+	    } else {
+	    	cout << "Strategy ATACANTE 5 " << endl;
+	    	return "D4040";	
+	    }
+	}
+
+
+}
+
+
+String Strategy::aplicaStrategyGoleiro(Robo robo, Cor bola){
+
+	ultimasPosicoesGoleiroX[2]=ultimasPosicoesGoleiroX[1];
+	ultimasPosicoesGoleiroX[1]=ultimasPosicoesGoleiroX[0];
+	ultimasPosicoesGoleiroX[0]=bola.x;
+	ultimasPosicoesGoleiroY[2]=ultimasPosicoesGoleiroY[1];
+	ultimasPosicoesGoleiroY[1]=ultimasPosicoesGoleiroY[0];
+	ultimasPosicoesGoleiroY[0]=bola.y;
+
+	int toleranciaDaPosicaoDoGoleiro = 10;
+	int toleranciaDaPosicaoDoGoleiroABola = 10;
+	int posGoleiroTol = 4;
+	float fatorGoleiro = 0.8;
+
+	if (bola.x < (imagemX*0.20) && bola.y > (imagemY*0.2) && bola.y < imagemY*0.8) {
+		destinoXGoleiro = bola.x;
+		destinoYGoleiro = bola.y;
+	} else {
+		destinoXGoleiro = (imagemX*0.07);
+		if (ultimasPosicoesGoleiroX[0]>ultimasPosicoesGoleiroX[2] || (ultimasPosicoesGoleiroX[0]-ultimasPosicoesGoleiroX[2]) < toleranciaDaPosicaoDoGoleiro) {
+			destinoYGoleiro = (imagemY*0.5) +((bola.y-(imagemY*0.5))/2);
+		} else {
+			destinoYGoleiro = ultimasPosicoesGoleiroY[2]+((ultimasPosicoesGoleiroX[2]-destinoXGoleiro)*(ultimasPosicoesGoleiroY[0]-ultimasPosicoesGoleiroY[2]))/(ultimasPosicoesGoleiroX[2]-ultimasPosicoesGoleiroX[0]);
+		}
+	}
+
+	float goleiroRoboX = robo.x;
+	float goleiroRoboY = robo.y;
+	float goleiroRoboAngulo = robo.angulo;
+
+	bool invertido=false;
+	int inverte_valor=1;
+	
+	float seno = cos((goleiroRoboAngulo-45)/(180/PI));
+
+	if ((robo.y>destinoYGoleiro && seno<0) || (robo.y<destinoYGoleiro && seno>0)) {
+		
+		invertido = true;
+		inverte_valor=-1;
+
+		goleiroRoboAngulo = robo.angulo+180;
+	} 
+
+	seno = sin((goleiroRoboAngulo-45)/(180/PI));
+	float cosseno = cos((goleiroRoboAngulo-45)/(180/PI));	
+
+	int velGira = 55*seno*fatorGoleiro;
+	string configuraMovimento;
+
+	if(robo.x<(destinoXGoleiro+toleranciaDaPosicaoDoGoleiro) && robo.x>(destinoXGoleiro-toleranciaDaPosicaoDoGoleiro)
+			&& robo.y<(destinoYGoleiro+toleranciaDaPosicaoDoGoleiroABola) && robo.y>(destinoYGoleiro-toleranciaDaPosicaoDoGoleiroABola)) {
+		if (cosseno<0.95) {
+			if (seno>0) {
+				if (invertido) {
+					if (velGira<10) {
+						configuraMovimento = "E0"+NumberToString((velGira))+"0"+NumberToString((velGira));
+					} else {
+						configuraMovimento = "E"+NumberToString((velGira))+NumberToString((velGira));
+					}
+				} else {
+					if (velGira<10) {
+						configuraMovimento = "D0"+NumberToString((velGira))+"0"+NumberToString((velGira));
+					} else {
+						configuraMovimento = "D"+NumberToString((velGira))+NumberToString((velGira));
+					}
+				}
+				
+				cout << "Strategy GOLEIRO 1 " << endl;
+				return configuraMovimento;
+
+			} else {
+				if (invertido) {
+					if (velGira<10) {
+						configuraMovimento = "D0"+NumberToString((velGira))+"0"+NumberToString((velGira));
+					} else {
+						configuraMovimento = "D"+NumberToString((velGira))+NumberToString((velGira));
+					}
+				} else {
+					if (velGira<10) {
+						configuraMovimento = "E0"+NumberToString((velGira))+"0"+NumberToString((velGira));
+					} else {
+						configuraMovimento = "E"+NumberToString((velGira))+NumberToString((velGira));
+					}
+				}
+				
+				cout << "Strategy GOLEIRO 2" << endl;
+				return configuraMovimento;
+			}
+		} else {
+			
+			posGoleiroArmazena=0;
+			cout << "Strategy GOLEIRO 3 " << endl;
+			return "D0000";
+		}
+	} else {
+
+		float gol_angle = atan2(destinoYGoleiro - robo.y, destinoXGoleiro - robo.x)*(180/PI);
+	    float gol_senoAngulo = sin((gol_angle-goleiroRoboAngulo-45)/(180/PI));
+	    float gol_cossenoAngulo = cos((gol_angle-goleiroRoboAngulo-45)/(180/PI));
+
+		//inicio segue bola
+		int ang_goleiro_destino = atan2((robo.y - destinoYGoleiro),(robo.x - destinoXGoleiro))*(180/PI);	
+		int corrigeAngulo = goleiroRoboAngulo-ang_goleiro_destino;
+		
+		float senoTemp = sin((corrigeAngulo)/(180/PI)); // /2
+		float cossenoTemp = cos((corrigeAngulo)/(180/PI));
+		int tPotGolFT=80*fatorGoleiro;//40//65
+
+		
+		if ((robo.y+15)>destinoYGoleiro && (robo.y-15)<destinoYGoleiro) {
+			tPotGolFT=30*fatorGoleiro;//20//60
+		}
+
+		if (gol_cossenoAngulo < 0) {
+			cout << "Strategy GOLEIRO 4 " << endl;
+
+			int gol_base = 80*fatorGoleiro;
+			int gol_correcao = 20*gol_senoAngulo*fatorGoleiro*inverte_valor;
+			if (invertido) {
+				configuraMovimento = "V"+NumberToString((gol_base+gol_correcao))+NumberToString((gol_base-gol_correcao));
+			} else {
+				configuraMovimento = movimentoAvancar+NumberToString((gol_base+gol_correcao))+NumberToString((gol_base-gol_correcao));
+			}
+			
+			cout << "Strategy GOLEIRO 4 " << endl;
+			return configuraMovimento;
+		
+		} else {
+			if (gol_senoAngulo>0) {
+				cout << "Strategy GOLEIRO 5 " << endl;
+				if (invertido) {
+					return "D4040";
+				} else {
+					return "E4040";
+				}
+		    	
+		    } else {
+
+		    	cout << "Strategy GOLEIRO 6 " << endl;
+		    	if (invertido) {
+		    		return "E4040";
+				} else {
+					return "D4040";
+				}		    	
+		    }
+		}			
+	}
+	return "D0000";
+}
+
+int Strategy::getDestinoXAtacante(){
+	return destinoXAtacante;
+}
+int Strategy::getDestinoYAtacante(){
+	return destinoYAtacante;
+}
+int Strategy::getDestinoXDefensor(){
+	return destinoXDefensor;
+}
+int Strategy::getDestinoYDefensor(){
+	return destinoYDefensor;
+}
+int Strategy::getDestinoXGoleiro(){
+	return destinoXGoleiro;
+}
+int Strategy::getDestinoYGoleiro(){
+	return destinoYGoleiro;
+}

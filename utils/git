@@ -1,0 +1,256 @@
+#!/bin/bash
+
+clear
+
+WHITE=$(tput setaf 15)
+RED=$(tput setaf 9)
+YELLOW=$(tput setaf 11)
+GREEN=$(tput setaf 2)
+PURPLE=$(tput setaf 5)
+BLUE=$(tput setaf 12)
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+
+DO_PULL () {
+	echo "${GREEN}PULLING... ${WHITE}";
+	if git pull; then
+		echo "${GREEN}PULL OK...";
+	else
+		echo "${RED}ERROR";
+		exit 1;
+	fi
+}
+
+DO_COMMIT () {
+	#if there is no argument
+	if [ $# -eq 0 ]; then
+		echo "${GREEN}Type your commit message:"
+		echo "${WHITE}"
+		read comment;
+		make clean
+		echo "${GREEN}COMMITING... ${WHITE}${NORMAL}";
+		if git commit -a -m "$comment"; then
+			echo -e "${GREEN}${BOLD} COMMIT OK... ${NORMAL}";
+		else
+			echo "${RED}ERROR";
+			exit 1;
+		fi
+	else
+		git add $1;
+		DO_COMMIT;
+	fi
+}
+
+DO_PUSH () {
+	if git push; then
+		echo "${GREEN}PUSH OK";
+	else
+		echo "${RED}ERROR";
+		exit 1;
+	fi
+}
+
+DO_CHECKOUT () {
+	if git checkout HEAD $1; then
+		echo "${GREEN}DONE";
+	else
+		echo "${RED}ERROR";
+	fi
+}
+
+DO_RESET () {
+	if git reset $1; then
+		echo "${GREEN}DONE";
+	else
+		echo "${RED}ERROR";
+	fi
+}
+
+DO_RESET_ALL () {
+	if git reset --hard $1; then
+		if git push origin HEAD --force; then
+			echo "${GREEN}DONE";
+		else
+			echo "${RED}ERROR PUSHING";
+		fi
+	else
+		echo "${RED}ERROR RESETING";
+	fi
+}
+
+DO_NEW_BRANCH () {
+	if git checkout -b $1; then
+		echo "${GREEN}DONE";
+	else
+		echo "${RED}ERROR";
+	fi
+}
+
+CHANGE_BRANCH () {
+	if git checkout $1; then
+		echo "${GREEN}DONE";
+	else
+		echo "${RED}ERROR";
+	fi
+}
+
+FORCE_BRANCH_DELETE () {
+	if git branch -D $1; then
+		echo "${GREEN}DONE";
+	else
+		echo "${RED}ERROR";
+	fi
+}
+
+RENAME_BRANCH () {
+	git branch -m $1
+}
+
+SHOW_CONFIG () {
+	git config --list;
+}
+
+SHOW_LOG () {
+	git log;
+}
+
+SHOW_DIFF () {
+	git diff $1;
+}
+
+SHOW_BRANCH () {
+	git branch;
+}
+
+MENU () {
+
+	echo "${PURPLE}${BOLD}---------------------------------------"
+	echo "       Comandos Basicos GIT"
+	echo "---------------------------------------"
+	echo "${BLUE}"
+	echo "1 - Push code to remote server";
+	echo "2 - Push changes with new files";
+	echo "3 - Update local server";
+	echo "4 - Show local configurations";
+	echo "5 - Show commits log";
+	echo "6 - Show difference between local file and remote file";
+	echo "7 - Recover file";
+	echo "8 - Update repository to and old version";
+	echo "9 - Delete commit";
+	echo "";
+	echo "10 - Create branch";
+	echo "11 - Visualize atual branch";
+	echo "12 - Change branch";
+	echo "13 - Force branch delete(require backup)";
+	echo "14 - Rename atual brach";
+    echo "15 - Force Pull";
+	echo "${WHITE}";
+
+	read escolha;
+
+	CHOOSE ${escolha};
+
+}
+
+CHOOSE () {
+	
+	# simple push
+	if [ $1 == "1" ]; then
+
+		if git pull; then
+			DO_PULL;
+			DO_COMMIT;
+			DO_PUSH;
+		else
+			echo "${RED}ERROR";
+		fi
+
+	# push with new files
+	elif [ $1 == "2" ]; then
+		echo "${BLUE}TYPE THE NEW FILES NAMES: ${WHITE}"
+		read -e path;
+		DO_COMMIT ${path};
+		DO_PUSH;
+
+	# pull
+	elif [ $1 == "3" ]; then
+		DO_PULL;
+
+	# show configurations
+	elif [ $1 == "4" ]; then
+		SHOW_CONFIG;
+
+	# show commits log
+	elif [ $1 == "5" ]; then
+		SHOW_LOG;
+
+	# show difference between local file and pushed file
+	elif [ $1 == "6" ]; then
+		echo "${BLUE}TYPE THE FILE NAME: ${WHITE}"
+		read -e arquivo;
+		SHOW_DIFF ${arquivo};
+
+	# recover file to a old version
+	elif [ $1 == "7" ]; then
+		echo "${BLUE}TYPE THE FILE NAME: ${WHITE}"
+		read -e arquivo;
+		DO_CHECKOUT ${arquivo};
+
+	# set repository to an old version
+	elif [ $1 == "8" ]; then
+		SHOW_LOG;
+		echo "${BLUE}TYPE THE 7 FIRST NUMBERS OF THE SHA CODE ${WHITE}";
+		read sha;
+		DO_RESET ${sha};
+
+	# set repository to a old version
+	elif [ $1 == "9" ]; then
+		SHOW_LOG;
+		echo "${RED}DO A BACKUP!!!!";
+		echo "${BLUE}TYPE THE SHA CODE";
+		read sha;
+		DO_RESET_ALL ${sha};
+
+	# create 'new branch
+	elif [ $1 == "10" ]; then
+		echo "${BLUE}TYPE THE BRANCH NAME: ${WHITE}";
+		read branch;
+		DO_NEW_BRANCH ${branch};
+
+	# show atual branch
+	elif [ $1 == "11" ]; then
+		SHOW_BRANCH;
+
+	# change to another branch
+	elif [ $1 == "12" ]; then
+		echo "${BLUE}TYPE THE BRANCH NAME: ${WHITE}";
+		read branch;
+		CHANGE_BRANCH ${branch};
+
+	# force branch delete
+	elif [ $1 == "13" ]; then
+		echo "${BLUE}TYPE THE BRANCH NAME: ${WHITE}";
+	    read branch;
+		FORCE_BRANCH_DELETE ${branch};
+
+	# rename branch
+	elif [ $1 == "14" ]; then
+		echo "${BLUE}NEW NAME: ${WHITE}";
+		read nome;
+		RENAME_BRANCH ${nome};
+
+    elif [ $1 == "15" ]; then
+        git fetch --all
+        git reset --hard origin/master 
+
+	fi
+
+	echo "";
+	echo "";
+	echo "${PURPLE}${BOLD}[PRESS ENTER.......] ${WHITE}";
+	read waiting;
+
+	MENU;
+}
+
+MENU;
