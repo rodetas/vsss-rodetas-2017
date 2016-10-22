@@ -1,6 +1,4 @@
 #include "Control.h"
-#include <thread>
-#include <gtkmm.h>
 
 Control::Control(){	
 	objects.resize(7);
@@ -11,10 +9,14 @@ Control::Control(){
 
 void Control::handle(){
 
-	calibration.setGUICalibration(&calibration);
+	//calibration.setGUICalibration(&calibration);
 
-	std::thread control_thread([&] {program_state = menuGUI();} );
+	//std::thread menu_thread([&] {program_state = menu.GUI();} );
 
+	program_state = menu.GUI();
+
+	cout << "PASSA" << endl;
+/*
 	while(program_state != EXIT){
 		
 		cout << "MENU" << endl; // se tirar o cout trava pq?
@@ -84,14 +86,18 @@ void Control::handle(){
 			case TEST:
 				program_state = test.loop();
 				break;
+
+			case MENU:
+				
+				break;
 			
 			case EXIT:
 				program_state = transmission.closeTransmission();
 				break;
 		}
-	}
+	}*/
 
-	control_thread.detach();
+	//menu_thread.detach();
 }
 
 void Control::setInformations(){
@@ -108,51 +114,3 @@ void Control::setInformations(){
 	graphic.setConnectionStatus(transmission.getConnectionStatus());
 	graphic.setInformation(strategy.getInformation());
 }
-
-int Control::menuGUI(){
-
-	auto app = Gtk::Application::create();
-
-	Gtk::Window window;
-	Gtk::Grid main_grid;
-	Gtk::Button button_play;
-	Gtk::Button button_calibration;
-	Gtk::Button button_simulator;
-	Gtk::Button button_arduino;
-	Gtk::Button button_exit;
-
-	window.set_default_size(400, 400);
-
-	button_play.add_label("Play");
-	button_calibration.add_label("Calibration");
-	button_simulator.add_label("Simulator");
-	button_arduino.add_label("Arduino");
-	button_exit.add_label("Exit");
-
-	Gtk::VBox mainLayout;
-
-	mainLayout.pack_start(button_play, Gtk::PACK_EXPAND_WIDGET);
-	mainLayout.pack_start(button_calibration, Gtk::PACK_EXPAND_WIDGET);
-	mainLayout.pack_start(button_simulator, Gtk::PACK_EXPAND_WIDGET);
-	mainLayout.pack_start(button_arduino, Gtk::PACK_EXPAND_WIDGET);
-	mainLayout.pack_start(button_exit, Gtk::PACK_EXPAND_WIDGET);
-
-	button_play.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonPlay) );
-	button_calibration.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonCalibration) );
-	button_simulator.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonSimulator) );
-	button_arduino.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonArduino) );
-	button_exit.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonExit) );
-
-	mainLayout.show_all();
-	window.add(mainLayout);
-
-  	app->run(window);
-
-	return EXIT;
-}
-
-void Control::onButtonPlay(){ program_state = GAME;}
-void Control::onButtonCalibration(){ program_state = CALIBRATION; }
-void Control::onButtonSimulator(){ program_state = SIMULATOR; }
-void Control::onButtonArduino(){ program_state = ARDUINO; }
-void Control::onButtonExit(){ program_state = EXIT; }

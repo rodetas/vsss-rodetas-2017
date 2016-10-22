@@ -14,7 +14,7 @@
 
 #define SAVE_COORD
 #define CAMERACONFIG
-//#define FPS 30
+#define FPS 30
 //#define camera 0
 
 #define robot1InitialCharacter '('

@@ -3,19 +3,23 @@
 
 #include "Header.h"
 #include "Vision.h"
-#include "GUI/Graphic.h"
 #include "Calibration.h"
 #include "Transmission.h"
 #include "Strategy.h"
-#include "utils/Fps.h"
 #include "GUI/Simulator.h"
 #include "GUI/Arduino.h"
+#include "GUI/Menu.h"
+#include "GUI/Graphic.h"
 #include "utils/Test.h"
+#include "utils/Fps.h"
 #include "CRUD/Manipulation.h"
+#include <thread>
+
 
 class Control{
 
 private:
+	Menu menu;
 	Calibration calibration;
 	Manipulation manipulation;
 	Transmission transmission;
