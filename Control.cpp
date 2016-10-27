@@ -9,18 +9,12 @@ Control::Control(){
 
 void Control::handle(){
 
-	//calibration.setGUICalibration(&calibration);
+	calibration.setGUICalibration(&calibration);
 
 	//std::thread menu_thread([&] {program_state = menu.GUI();} );
 
-	program_state = menu.GUI();
-
-	cout << "PASSA" << endl;
-/*
 	while(program_state != EXIT){
 		
-		cout << "MENU" << endl; // se tirar o cout trava pq?
-
 		switch(program_state){
 			case GAME:
 				// initialize classes
@@ -88,14 +82,14 @@ void Control::handle(){
 				break;
 
 			case MENU:
-				
+				program_state = menu.GUI();
 				break;
 			
 			case EXIT:
 				program_state = transmission.closeTransmission();
 				break;
 		}
-	}*/
+	}
 
 	//menu_thread.detach();
 }
