@@ -9,6 +9,8 @@ Control::Control(){
 
 void Control::handle(){
 
+	GUIInformation();
+
 	calibration.setGUICalibration(&calibration);
 
 	//std::thread menu_thread([&] {program_state = menu.GUI();} );
@@ -107,4 +109,23 @@ void Control::setInformations(){
 	graphic.setFps(fps.framesPerSecond());
 	graphic.setConnectionStatus(transmission.getConnectionStatus());
 	graphic.setInformation(strategy.getInformation());
+}
+
+
+int Control::GUIInformation() {
+			
+	app = Gtk::Application::create();
+
+	Gtk::Window window;	
+		window.maximize();
+		window.set_title("Rodetas");
+		
+	Cairo_Robot draw_robot;
+
+	window.add(draw_robot);
+	window.show_all ();
+
+  	app->run(window);
+	
+	return program_state;
 }

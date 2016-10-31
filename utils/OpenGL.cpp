@@ -42,7 +42,7 @@ Point2f OpenGL::openGLCoordinates(Point2f openCVCoordinates){
                     (openCVCoordinates.y * 100)   / (view.y/2) + 100);
 }
 
-void OpenGL::drawRobotOpenGL(RobotOpenGL robot){
+void OpenGL::drawRobotOpenGL(Robot_Draw robot){
 
     Point2f pointOpenGL = openGLCoordinates(Point2f(robot.x, robot.y));
 
@@ -57,14 +57,14 @@ void OpenGL::drawRobotOpenGL(RobotOpenGL robot){
 
     // Face frontal
     glBegin(GL_QUADS);
-        glColor3ub(robot.colorTeam.r, robot.colorTeam.g, robot.colorTeam.b);
+        glColor3ub(robot.color_team.r, robot.color_team.g, robot.color_team.b);
         glNormal3f(0.0, 0.0, 1.0);
         glVertex3f( sizeCube,  sizeCube, sizeCube);
         glVertex3f(-sizeCube,  sizeCube, sizeCube);
         glVertex3f(-sizeCube, -sizeCube, sizeCube);
         glVertex3f( sizeCube, -sizeCube, sizeCube);
     
-        glColor3ub(robot.colorPlayer.r, robot.colorPlayer.g, robot.colorPlayer.b);
+        glColor3ub(robot.color_player.r, robot.color_player.g, robot.color_player.b);
         glVertex3f(sizeCube - sizeColor,  sizeCube,  sizeCube);
         glVertex3f(sizeCube - sizeColor,  sizeCube - sizeColor, sizeCube);
         glVertex3f(sizeCube, sizeCube - sizeColor,  sizeCube);

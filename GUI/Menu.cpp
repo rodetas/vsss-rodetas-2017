@@ -4,6 +4,8 @@ Menu::Menu(){
 }
 	
 int Menu::GUI(){
+
+	program_state = EXIT;
 			
 	app = Gtk::Application::create();
 
@@ -20,8 +22,7 @@ int Menu::GUI(){
 		button_arduino.add_label("Arduino");
 		button_exit.add_label("Exit");
 
-		//button_play.set_size_request(200, 20);				
-
+		//button_play.set_size_request(200, 20);
 		button_play.signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonPlay) );
 		button_calibration.signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonCalibration) );
 		button_simulator.signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonSimulator) );
@@ -39,6 +40,8 @@ int Menu::GUI(){
 		button_box.show_all();
 
 	window.add(button_box);
+
+	cout<< "Test: " << window.get_realized() << endl;
 
   	app->run(window);
 	

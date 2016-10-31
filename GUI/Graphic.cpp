@@ -348,14 +348,14 @@ void Graphic::interfaceCreateSFML(){
 
     // create team drawings
     for (int i = 0; i < 3; i++){
-        robot[i].colorTeam = colorsRGB[team];
-        robot[i].colorPlayer = colorsRGB[i];
+        robot[i].color_team = colorsRGB[team];
+        robot[i].color_player = colorsRGB[i];
     }
 
     // create opponent drawings
     for (int i = 3; i < robot.size(); i++){
-        robot[i].colorTeam = colorsRGB[opponent];
-        robot[i].colorPlayer = colorsRGB[opponent];
+        robot[i].color_team = colorsRGB[opponent];
+        robot[i].color_player = colorsRGB[opponent];
     }
 
     for(int i=0 ; i<3 ; i++){
@@ -487,7 +487,7 @@ void Graphic::updateLogConsole(){
             windowLogConsole.popGLStates();
         }
 
-        RobotOpenGL r = robot[i];
+        Robot_Draw r = robot[i];
         r.x = (windowSizeLogConsole.x * 0.18);
         r.y = (windowSizeLogConsole.y * 0.20) + (windowSizeLogConsole.y * 0.3) * i;
 

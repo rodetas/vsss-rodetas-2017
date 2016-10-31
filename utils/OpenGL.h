@@ -17,7 +17,7 @@ public:
 	OpenGL();
 	void initializeOpenGL(Point2f, Point2f, float);
 	Point2f openGLCoordinates(Point2f);
-	void drawRobotOpenGL(RobotOpenGL);
+	void drawRobotOpenGL(Robot_Draw);
 	void drawArrowOpenGL(Point2f, Point2f);
 };
 #endif

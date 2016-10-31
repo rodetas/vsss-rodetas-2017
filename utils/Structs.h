@@ -85,7 +85,7 @@ struct Rgb{
 	int b;
 
 	void print(){
-		cout << "B: " << b;
+		cout << " B: " << b;
 		cout << " G: " << g;
 		cout << " R: " << r << endl;
 	};
@@ -131,14 +131,14 @@ struct BlobsContours {
 	};
 };
 
-struct RobotOpenGL{
+struct Robot_Draw{
 	float x;
 	float y;
 	float angle;
-	Rgb colorTeam;
-	Rgb colorPlayer;
+	Rgb color_team;
+	Rgb color_player;
 
-	RobotOpenGL(){
+	Robot_Draw(){
 		x = y = angle = 0;
 	};
 };

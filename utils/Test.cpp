@@ -17,7 +17,7 @@ int Test::loop(){
     Point2f screenSize = Point2f(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     Point2f viewSize = screenSize;
     Point2f imageSizeZoom = Point2f(600,400);
-    RobotOpenGL robot;
+    Robot_Draw robot;
 
     opengl.initializeOpenGL(screenSize, viewSize, imageSizeZoom.y*0.01);
 
@@ -48,18 +48,18 @@ int Test::loop(){
                 y++;
         }
 
-    Rgb colorTeam;
-        colorTeam.r = 0;
-        colorTeam.g = 0;
-        colorTeam.b = 255;
+    Rgb color_team;
+        color_team.r = 0;
+        color_team.g = 0;
+        color_team.b = 255;
 
-    Rgb colorPlayer;
-        colorPlayer.r = 0;
-        colorPlayer.g = 255;
-        colorPlayer.b = 0;
+    Rgb color_player;
+        color_player.r = 0;
+        color_player.g = 255;
+        color_player.b = 0;
 
-        robot.colorTeam = (colorTeam);
-        robot.colorPlayer = (colorPlayer);
+        robot.color_team = (color_team);
+        robot.color_player = (color_player);
         robot.angle = angle;
         robot.x =  sf::Mouse::getPosition(window).x;
         robot.y =  sf::Mouse::getPosition(window).y;

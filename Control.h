@@ -10,13 +10,14 @@
 #include "GUI/Arduino.h"
 #include "GUI/Menu.h"
 #include "GUI/Graphic.h"
+#include "GUI/Cairo_Robot.h"
 #include "utils/Test.h"
 #include "utils/Fps.h"
 #include "CRUD/Manipulation.h"
 #include <thread>
+#include <gtkmm.h>
 
-
-class Control{
+class Control {
 
 private:
 	Menu menu;
@@ -33,23 +34,20 @@ private:
 
 	bool game;
 
-	vector<Object> objects;
+	vector<rod::Object> objects;
 	vector<string> movements;
 	
 	int  program_state;
 	bool program_run;
 
-	int menuGUI();
-	void onButtonPlay();
-	void onButtonCalibration();
-	void onButtonSimulator();
-	void onButtonArduino();
-	void onButtonExit();
-
+	Glib::RefPtr<Gtk::Application> app;
+	
+	int GUIInformation();
+ 
 public:
 	Control();
 	void setInformations();	
-	void handle();	
+	void handle();
 };
 
 #endif

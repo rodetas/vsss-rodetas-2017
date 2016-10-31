@@ -27,7 +27,7 @@ private:
     vector<sf::Text> textScreen;
     vector<sf::CircleShape> targets;
 
-    vector<RobotOpenGL> robot;
+    vector<Robot_Draw> robot;
     vector<Information> information;
 
     OpenGL openGLWindowLogConsole;
