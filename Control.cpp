@@ -9,16 +9,17 @@ Control::Control(){
 
 void Control::handle(){
 
-	GUIInformation();
+	
 
 	calibration.setGUICalibration(&calibration);
-
-	//std::thread menu_thread([&] {program_state = menu.GUI();} );
 
 	while(program_state != EXIT){
 		
 		switch(program_state){
-			case GAME:
+			case GAME:{
+				
+				std::thread menu_thread([&] { program_state = GUIInformation();} );
+				
 				// initialize classes
 				vision.initialize();
 				graphic.initialize();
@@ -56,10 +57,11 @@ void Control::handle(){
 						program_state = EXIT;
 					}
 				}
+				menu_thread.detach();
 				program_state = MENU; // retornar estado do programa atraves do game
-				break;
+			} break;
 
-			case SIMULATOR:
+			case SIMULATOR:{
 				simulator.openWindow();
 				while(!simulator.getEndSimulator()){
 					simulator.simulate();
@@ -69,31 +71,29 @@ void Control::handle(){
 				}
 				simulator.setEndSimulator(false);
 				program_state = MENU; // retornar estado do programa atraves do simulator
-				break;
+			} break;
 			
-			case CALIBRATION:
+			case CALIBRATION:{
 				program_state = calibration.calibrate();
-				break;
+			} break;
 			
-			case ARDUINO:
+			case ARDUINO:{
 				program_state = arduino.loop();
-				break;
+			} break;
 
-			case TEST:
+			case TEST:{
 				program_state = test.loop();
-				break;
+			} break;
 
-			case MENU:
+			case MENU:{
 				program_state = menu.GUI();
-				break;
+			} break;
 			
-			case EXIT:
+			case EXIT:{
 				program_state = transmission.closeTransmission();
-				break;
+			} break;
 		}
 	}
-
-	//menu_thread.detach();
 }
 
 void Control::setInformations(){
