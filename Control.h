@@ -41,6 +41,7 @@ private:
 	bool program_run;
 
 	Glib::RefPtr<Gtk::Application> app;
+	Cairo_Robot* draw_robot2;
 	
 	int GUIInformation();
  

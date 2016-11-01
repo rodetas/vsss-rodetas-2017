@@ -19,8 +19,10 @@ void Control::handle(){
 			case GAME:{
 				
 				std::thread menu_thread([&] { program_state = GUIInformation();} );
-				
-				// initialize classes
+
+				draw_robot2->setNaoSei(2);
+
+			// initialize classes
 				vision.initialize();
 				graphic.initialize();
 				strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
@@ -116,14 +118,16 @@ int Control::GUIInformation() {
 			
 	app = Gtk::Application::create();
 
+	Cairo_Robot draw_robot;
+
+	
+
 	Gtk::Window window;	
 		window.maximize();
 		window.set_title("Rodetas");
-		
-	Cairo_Robot draw_robot;
 
 	window.add(draw_robot);
-	window.show_all ();
+	window.show_all();
 
   	app->run(window);
 	

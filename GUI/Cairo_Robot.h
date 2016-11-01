@@ -12,11 +12,11 @@ private:
     Robot_Draw r;
 
 protected:
-    virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c){
-        r.x = 200;
-        r.y = 200;
-        r.angle = 50;
 
+    sigc::connection m_connection_timeout;
+
+    virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c){
+      
         double color_team_size = 50;
         double color_player_size = 20;
 
@@ -30,7 +30,7 @@ protected:
             c->rectangle(0, 0, color_team_size, color_team_size);
             c->set_source_rgb(r.color_team.r, r.color_team.g, r.color_team.b);
             c->fill_preserve();
-        c->restore();    
+        c->restore();
         c->stroke ();
         
         // player colors rectangle            
@@ -45,8 +45,29 @@ protected:
     }
 
 public:
-	Cairo_Robot(){
+
+     bool on_timeout(){
+
+        //r.angle += 2;
+        queue_draw();
+
+        return true;
     }
+
+	Cairo_Robot(){
+        r.x = 200;
+        r.y = 200;
+        r.angle = 50;
+
+        m_connection_timeout = Glib::signal_timeout().connect(sigc::mem_fun(*this, &Cairo_Robot::on_timeout), 50 );
+        //m_connection_timeout = signal_on_show().connect( sigc::mem_fun(this, &Cairo_Robot::on_timeout));
+
+    }
+
+    void setNaoSei(int i){
+        r.angle += i;
+    }
+
 };
 
 #endif
