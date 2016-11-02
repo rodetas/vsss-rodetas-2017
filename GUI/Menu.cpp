@@ -41,8 +41,6 @@ int Menu::GUI(){
 
 	window.add(button_box);
 
-	cout<< "Test: " << window.get_realized() << endl;
-
   	app->run(window);
 	
 	return program_state;

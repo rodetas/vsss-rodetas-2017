@@ -9,18 +9,14 @@ Control::Control(){
 
 void Control::handle(){
 
-	
-
 	calibration.setGUICalibration(&calibration);
 
 	while(program_state != EXIT){
 		
 		switch(program_state){
 			case GAME:{
-				
-				std::thread menu_thread([&] { program_state = GUIInformation();} );
 
-				draw_robot2->setNaoSei(2);
+				std::thread menu_thread(bind(&Control::GUIInformation, this));
 
 			// initialize classes
 				vision.initialize();
@@ -115,21 +111,22 @@ void Control::setInformations(){
 
 
 int Control::GUIInformation() {
-			
+
 	app = Gtk::Application::create();
-
-	Cairo_Robot draw_robot;
-
-	
 
 	Gtk::Window window;	
 		window.maximize();
 		window.set_title("Rodetas");
 
+	Cairo_Robot draw_robot;
+		Glib::signal_timeout().connect(sigc::bind<rod::Object>(sigc::mem_fun(draw_robot, &Cairo_Robot::setRobot), objects[0]), 50 );
+				// Descobrir qual evento (signal_??) atualizaria o desenho, o método no Cairo_Robot é do tipo que o signal necessita
+				// draw_robot.signal_draw().connect( sigc::mem_fun(draw_robot, &Cairo_Robot::setRobot) ); 
+
 	window.add(draw_robot);
 	window.show_all();
 
   	app->run(window);
-	
+
 	return program_state;
 }

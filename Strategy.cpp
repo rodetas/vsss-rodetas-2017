@@ -408,7 +408,7 @@ vector<string> Strategy::getMovements(){
 
 vector<Point> Strategy::getTargets(){
 	for(int i=0 ; i<targets.size() ; i++){
-		cout << targets[i] << endl;
+		//cout << targets[i] << endl;
 	}
 	return targets;
 }
