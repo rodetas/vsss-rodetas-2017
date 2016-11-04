@@ -9,13 +9,13 @@ using namespace rod;
 class Movimentation{
 
 private:
-	vector<Object> objects;
-	Object robot;
+	vector<rod::Object> objects;
+	rod::Object robot;
 
 	vector<float> maxPwm;
-	vector<Object> velocityPast1;
-    vector<Object> velocityPast2;
-    vector<Object> velocityPast3;
+	vector<rod::Object> velocityPast1;
+    vector<rod::Object> velocityPast2;
+    vector<rod::Object> velocityPast3;
     vector<int> velocity;
 
     vector<Command> movements;
@@ -47,7 +47,7 @@ public:
 
 	float calculateSpeed();
 
-	void updateCalculus(Object, Point);
+	void updateCalculus(rod::Object, Point);
 
 	void turnLeft(int, int);
 	void turnRight(int, int);
@@ -56,8 +56,8 @@ public:
 	void setPower(float);
 	void setPowerCurve(float);
 	void setPwm(Point, string);
-	void setRobot(Object);
-	void setObjects(vector<Object>);
+	void setRobot(rod::Object);
+	void setObjects(vector<rod::Object>);
 	void setImage(Point);
 	void setCurveStrategy(int);
 	void setNumbers(int, int, int);

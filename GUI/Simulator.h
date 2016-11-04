@@ -34,7 +34,7 @@ private:
 	vector<sf::Text> textScreen;
 	vector<sf::RectangleShape> field;
 	vector<sf::RectangleShape> robots;
-	vector<Object> objects;
+	vector<rod::Object> objects;
     vector<string> information;
 
 	float rateZoom;
@@ -66,6 +66,6 @@ public:
     void setInformation(string*);
     void setTargets(vector<Point>);
 	bool getEndSimulator();
-	vector<Object> getPositions();
+	vector<rod::Object> getPositions();
 };
 #endif

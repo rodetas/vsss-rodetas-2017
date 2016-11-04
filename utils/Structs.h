@@ -92,14 +92,21 @@ struct Rgb{
 };
 
 struct Object{
-	float x;
-	float y;
-	float angle;
+	
+	int id;	
+	int x;
+	int y;
+	int angle;
+	Rgb color_team;
+	Rgb color_player;
 
-	int id;
+	Object(){
+		x = y = angle = 0;
+		id = -1;
+	};
 
 	void print(){
-		cout << "X: " << x;
+		cout << " X: " << x;
 		cout << " Y: " << y;
 		cout << " ANGLE: " << angle << endl;
 	};
@@ -110,11 +117,6 @@ struct Object{
 
 	bool isNull(){
 		return (x == 0 && y == 0);
-	}
-
-	Object(){
-		x = y = angle = 0;
-		id = -1;
 	};
 };
 
@@ -128,18 +130,6 @@ struct BlobsContours {
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
 		cout << "RADIUS   [" << i << "]: " << radius[i] << endl;
 		cout << "CUTPOINT [" << i << "]: " << cutPoint1[i] << cutPoint2[i] << endl << endl;
-	};
-};
-
-struct Robot_Draw{
-	float x;
-	float y;
-	float angle;
-	Rgb color_team;
-	Rgb color_player;
-
-	Robot_Draw(){
-		x = y = angle = 0;
 	};
 };
 

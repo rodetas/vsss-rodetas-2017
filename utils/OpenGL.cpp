@@ -42,7 +42,7 @@ Point2f OpenGL::openGLCoordinates(Point2f openCVCoordinates){
                     (openCVCoordinates.y * 100)   / (view.y/2) + 100);
 }
 
-void OpenGL::drawRobotOpenGL(Robot_Draw robot){
+void OpenGL::drawRobotOpenGL(rod::Object robot){
 
     Point2f pointOpenGL = openGLCoordinates(Point2f(robot.x, robot.y));
 

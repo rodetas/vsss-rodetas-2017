@@ -29,7 +29,7 @@ private:
 public:
 	Manipulation();
 	void saveCalibration(vector<Hsv>&, vector<Rgb>&, vector<float>&, Point, Point, Point, int, bool);
-	void saveCoordinates(vector<Object>&);
+	void saveCoordinates(vector<rod::Object>&);
 	pair<vector<Hsv>, vector<Rgb>> loadCalibration();
 
 	void showCalibration();

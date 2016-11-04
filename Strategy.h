@@ -14,17 +14,17 @@ private:
 
     Movimentation movimentation;
 
-    vector<Object> objects;
+    vector<rod::Object> objects;
     vector<Information> information;
     vector<Point> targets;
-    vector<Object> lastBallPositions;
+    vector<rod::Object> lastBallPositions;
     vector<Command> movements;
     
-    Object robot;
-    Object ball;
+    rod::Object robot;
+    rod::Object ball;
 
-    Object ballProjection;
-    Object lastBallProjection;
+    rod::Object ballProjection;
+    rod::Object lastBallProjection;
 
     float distance_robot_ball;
     float distance_robot_destination;
@@ -63,23 +63,23 @@ public:
     void defineFunctions();
 
     void calcBallProjection();
-    void updateCalculus(Object, Point);    
+    void updateCalculus(rod::Object, Point);    
     void changeCoordinates();
 
     void applyAttackStrategy();
     void applyDefenseStrategy();
     void applyGoalStrategy();
 
-    bool isBoard(Object);
+    bool isBoard(rod::Object);
     void cornerStrategy(string);
     
-    Point applyPotencialField(Point, Object, Object);
+    Point applyPotencialField(Point, rod::Object, rod::Object);
 
     Point setAttackTarget();
     Point setDefenseTarget();
     Point setGoalTarget();
 
-    void setObjects(vector<Object> o);
+    void setObjects(vector<rod::Object> o);
     void setPower(float a);
     void setPowerCurve(float a);
     void setVecTarget(int, Point);

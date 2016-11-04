@@ -17,7 +17,7 @@ int Test::loop(){
     Point2f screenSize = Point2f(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     Point2f viewSize = screenSize;
     Point2f imageSizeZoom = Point2f(600,400);
-    Robot_Draw robot;
+    rod::Object robot;
 
     opengl.initializeOpenGL(screenSize, viewSize, imageSizeZoom.y*0.01);
 

@@ -160,7 +160,7 @@ float Movimentation::calculateSpeed(){
 	return velocity[robot.id];
 }
 
-void Movimentation::updateCalculus(Object robot, Point destination){
+void Movimentation::updateCalculus(rod::Object robot, Point destination){
 
 	distance_robot_destination = distance(robot, destination);
     distance_ball_destination = distance(objects[graphicBall], destination);
@@ -171,11 +171,11 @@ void Movimentation::updateCalculus(Object robot, Point destination){
     cosAngle_robot_destination = calcCos(destination, robot);
 }
 
-void Movimentation::setObjects(vector<Object> vec){
+void Movimentation::setObjects(vector<rod::Object> vec){
 	this->objects = vec;
 }
 
-void Movimentation::setRobot(Object r){
+void Movimentation::setRobot(rod::Object r){
 	this->robot = r;
 }
 

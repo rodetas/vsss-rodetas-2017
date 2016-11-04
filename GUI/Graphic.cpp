@@ -487,7 +487,7 @@ void Graphic::updateLogConsole(){
             windowLogConsole.popGLStates();
         }
 
-        Robot_Draw r = robot[i];
+        rod::Object r = robot[i];
         r.x = (windowSizeLogConsole.x * 0.18);
         r.y = (windowSizeLogConsole.y * 0.20) + (windowSizeLogConsole.y * 0.3) * i;
 
@@ -518,7 +518,7 @@ typePoint Graphic::changeCoordinate(typePoint point){
 /*
  * Setters
  */
-void Graphic::setObjects(vector<Object> vec_objects){
+void Graphic::setObjects(vector<rod::Object> vec_objects){
 	for (int i = 0; i < vec_objects.size(); i++){
 	 	objects[i] = changeCoordinate(vec_objects[i]);
 	}

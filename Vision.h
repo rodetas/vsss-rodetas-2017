@@ -19,10 +19,10 @@ private:
 	int angleImageRotation;
 	int rotateField;
 
-	vector<Object> lastTeam;
-	vector<Object> robotTeam;
-	vector<Object> robotOpponent;
-	Object objectBall;
+	vector<rod::Object> lastTeam;
+	vector<rod::Object> robotTeam;
+	vector<rod::Object> robotOpponent;
+	rod::Object objectBall;
 
 	Point pointCutField1;
 	Point pointCutField2;
@@ -40,7 +40,7 @@ public:
 	void setCameraRelease();
 	
 	void makeVision();
-	Object makeRobot(BlobsContours, BlobsContours, int);
+	rod::Object makeRobot(BlobsContours, BlobsContours, int);
 
 	void colorPositionBall(BlobsContours);
 	void colorPositionOpponent(BlobsContours);
@@ -51,6 +51,6 @@ public:
 	void initializeWebcam();
 	void imageWebCam();
 
-	vector<Object> getPositions();
+	vector<rod::Object> getPositions();
 };
 #endif

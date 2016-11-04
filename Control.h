@@ -38,14 +38,13 @@ private:
 	vector<string> movements;
 	
 	int  program_state;
-
-	Glib::RefPtr<Gtk::Application> app;
 	
 	int GUIInformation();
  
 public:
 	Control();
-	void setInformations();	
+	void setInformations();
+	bool setRobot(Cairo_Robot*);
 	void handle();
 };
 

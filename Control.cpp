@@ -111,22 +111,25 @@ void Control::setInformations(){
 
 
 int Control::GUIInformation() {
-
-	app = Gtk::Application::create();
+	Glib::RefPtr<Gtk::Application> app;
+		app = Gtk::Application::create();
 
 	Gtk::Window window;	
 		window.maximize();
 		window.set_title("Rodetas");
-
-	Cairo_Robot draw_robot;
-		Glib::signal_timeout().connect(sigc::bind<rod::Object>(sigc::mem_fun(draw_robot, &Cairo_Robot::setRobot), objects[0]), 50 );
-				// Descobrir qual evento (signal_??) atualizaria o desenho, o método no Cairo_Robot é do tipo que o signal necessita
-				// draw_robot.signal_draw().connect( sigc::mem_fun(draw_robot, &Cairo_Robot::setRobot) ); 
-
+	
+	Cairo_Robot draw_robot;	
+		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< Cairo_Robot* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
+					
 	window.add(draw_robot);
 	window.show_all();
 
   	app->run(window);
 
-	return program_state;
+	robot_draw_connection.disconnect();
+} 
+
+bool Control::setRobot(Cairo_Robot *c){
+	c->setPosition(objects);
+	return true;
 }

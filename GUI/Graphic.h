@@ -27,7 +27,7 @@ private:
     vector<sf::Text> textScreen;
     vector<sf::CircleShape> targets;
 
-    vector<Robot_Draw> robot;
+    vector<rod::Object> robot;
     vector<Information> information;
 
     OpenGL openGLWindowLogConsole;
@@ -71,8 +71,8 @@ private:
 
     vector<Hsv> colorsHSV;
     vector<Rgb> colorsRGB;
-    vector<Object> objects;
-    vector<Object> lastObjects;
+    vector<rod::Object> objects;
+    vector<rod::Object> lastObjects;
     
     tgui::Gui gui;
 
@@ -117,7 +117,7 @@ public:
 
     void saveCoordinates();
     void setMenu(bool);
-    void setObjects(vector<Object>);
+    void setObjects(vector<rod::Object>);
     void setFps(int);
     void setTargets(vector<Point>);
     void setInformation(vector<Information>);

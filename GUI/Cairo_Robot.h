@@ -9,53 +9,60 @@
 class Cairo_Robot : public Gtk::DrawingArea {
 
 private:
-    Robot_Draw r;
+    vector<rod::Object> robot;
+    const int number_robot = 6;
 
 protected:
 
     virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c){
       
-        double color_team_size = 50;
-        double color_player_size = 20;
+        double color_team_size = 40;
+        double color_player_size = 15;
 
-        // defines the position and angle on the field
-        c->translate(r.x, r.y);
-        c->rotate_degrees(r.angle);
-        c->translate(-color_team_size/2 , -color_team_size/2 );
+        for (int i = 0; i < robot.size(); i++) {
+            
+            // defines the position and angle on the field
+            //c->translate(r[i].x, r[i].y);
+            //c->rotate_degrees(r[i].angle);
+            //c->translate(-color_team_size/2 , -color_team_size/2 );
 
-        // team colors rectangle        
-        c->save();
-            c->rectangle(0, 0, color_team_size, color_team_size);
-            c->set_source_rgb(r.color_team.r, r.color_team.g, r.color_team.b);
-            c->fill_preserve();
-        c->restore();
-        c->stroke ();
-        
-        // player colors rectangle            
-        c->save();
-            c->rectangle(0, 0, color_player_size, color_player_size);    
-            c->set_source_rgb(r.color_player.r, r.color_player.g, r.color_player.b);
-            c->fill_preserve();
-        c->restore();
-        c->stroke ();
+            // team colors rectangle        
+            c->save();
+                c->rectangle(robot[i].x, robot[i].y, color_team_size, color_team_size);
+                c->set_source_rgb(robot[i].color_team.r, robot[i].color_team.g, robot[i].color_team.b);
+                c->fill_preserve();
+            c->restore();
+            c->stroke ();
+            
+            // player colors rectangle            
+            c->save();
+                c->rectangle(robot[i].x, robot[i].y, color_player_size, color_player_size);    
+                c->set_source_rgb(robot[i].color_player.r, robot[i].color_player.g, robot[i].color_player.b);
+                c->fill_preserve();
+            c->restore();
+            c->stroke ();
+        }
 
         return true;
     }
 
 public:
-	//Cairo_Robot(Robot_Draw r_calibrated){
+
+	//Cairo_Robot(rod::Object o_calibrated){
 	Cairo_Robot(){
+        robot.resize(number_robot);
         //r = r_calibrated;
     }
 
-    bool setRobot(rod::Object o){
-        cout << o.x << "\t" << o.y << "\t" << o.angle << endl;
-        r.x = o.x;
-        r.y = o.y;
-        r.angle = o.angle;
+    void setPosition(vector<rod::Object> o){
+        
+        for (int i = 0; i < robot.size(); i++){
+            robot[i].x = o[i].x;
+            robot[i].y = o[i].y;
+            //r[i].angle = o[i].angle;
+        }
 
         queue_draw();
-        return true;
     }
 };
 
