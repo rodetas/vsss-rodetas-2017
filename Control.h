@@ -32,19 +32,17 @@ private:
 	Arduino arduino;
 	Test test;
 
-	bool game;
-
 	vector<rod::Object> objects;
 	vector<string> movements;
 	
 	int  program_state;
 	
 	int GUIInformation();
- 
+	bool setRobot(Cairo_Robot*);
+	
 public:
 	Control();
 	void setInformations();
-	bool setRobot(Cairo_Robot*);
 	void handle();
 };
 

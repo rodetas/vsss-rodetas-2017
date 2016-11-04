@@ -24,7 +24,7 @@ void Control::handle(){
 				strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 
 				// game loop
-				game = true;
+				bool game = true;
 				while(game){
 
 				// recognize robot's points
@@ -120,8 +120,35 @@ int Control::GUIInformation() {
 	
 	Cairo_Robot draw_robot;	
 		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< Cairo_Robot* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
-					
-	window.add(draw_robot);
+
+	Gtk::Button button_play, button_pause, button_side, button_penalty;
+		button_play.add_label("Play");
+		button_pause.add_label("Pause");
+		button_side.add_label("Side");
+		button_penalty.add_label("Penalty");
+
+	Gtk::ButtonBox box_left(Gtk::ORIENTATION_VERTICAL);
+		box_left.set_layout(Gtk::BUTTONBOX_CENTER );
+		box_left.set_spacing(20);		
+		box_left.pack_start(button_play);
+		box_left.pack_start(button_pause);		
+
+	Gtk::ButtonBox box_right(Gtk::ORIENTATION_VERTICAL);
+		box_right.set_layout(Gtk::BUTTONBOX_CENTER );
+		box_right.set_spacing(20);
+		box_right.pack_start(button_penalty);
+		box_right.pack_start(button_side);
+	
+	Gtk::Box box_center(Gtk::ORIENTATION_VERTICAL);
+		box_center.set_border_width(20);
+		box_center.pack_start(draw_robot);
+
+	Gtk::Box box(Gtk::ORIENTATION_HORIZONTAL);
+		box.pack_start(box_left, false, false, 20);
+		box.pack_start(box_center);
+		box.pack_start(box_right, false, false, 20);
+		
+	window.add(box);	
 	window.show_all();
 
   	app->run(window);
