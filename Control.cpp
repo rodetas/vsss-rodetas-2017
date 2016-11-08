@@ -126,7 +126,7 @@ int Control::GUIInformation() {
 		button_pause.add_label("Pause");
 		button_side.add_label("Side");
 		button_penalty.add_label("Penalty");
-
+		
 	Gtk::ButtonBox box_left(Gtk::ORIENTATION_VERTICAL);
 		box_left.set_layout(Gtk::BUTTONBOX_CENTER );
 		box_left.set_spacing(20);		 
@@ -138,7 +138,7 @@ int Control::GUIInformation() {
 		box_right.set_spacing(20);
 		box_right.pack_start(button_penalty);
 		box_right.pack_start(button_side);
-	
+   
 	Gtk::Box box_center(Gtk::ORIENTATION_VERTICAL);
 		box_center.set_border_width(20);
 		box_center.pack_start(draw_robot);
@@ -159,4 +159,4 @@ int Control::GUIInformation() {
 bool Control::setRobot(Cairo_Robot *c){
 	c->setPosition(objects);
 	return true;
-}
+} 
