@@ -16,7 +16,7 @@ private:
     vector<rod::Object> robot;
     Point field_size;
     Point image_size = {640,480};
-    Point goal_size  = {50,100};
+    Point goal_size  = {50,200};
     
     template <typename typePoint>
     typePoint changeCoordinate(typePoint point){
@@ -37,6 +37,45 @@ protected:
         color_team_size = field_size.x * 0.05;
         color_player_size = field_size.x * 0.02;
 
+
+    // draw field
+        int line_width = 6;
+        c->set_source_rgb(0.05, 0.05, 0.05);
+        c->set_line_width(line_width);
+
+        c->move_to(line_width, field_size.y/2);
+        c->line_to(line_width,  field_size.y/2 - goal_size.y/2);
+        c->line_to(goal_size.x, field_size.y/2 - goal_size.y/2);
+        c->line_to(goal_size.x, line_width);
+        c->line_to(field_size.x - goal_size.x, line_width);
+        c->line_to(field_size.x - goal_size.x, field_size.y/2 - goal_size.y/2);
+        c->line_to(field_size.x - line_width, field_size.y/2 - goal_size.y/2);
+        c->line_to(field_size.x - line_width, field_size.y/2 + goal_size.y/2);
+        c->line_to(field_size.x - goal_size.x, field_size.y/2 + goal_size.y/2);
+        c->line_to(field_size.x - goal_size.x, field_size.y - line_width);
+        c->line_to(goal_size.x, field_size.y - line_width);
+        c->line_to(goal_size.x, field_size.y/2 + goal_size.y/2);
+        c->line_to(line_width, field_size.y/2 + goal_size.y/2);
+        c->line_to(line_width, field_size.y/2);
+
+        c->move_to(field_size.x/2, 0);
+        c->line_to(field_size.x/2,  field_size.y);
+
+        c->move_to(goal_size.x,  field_size.y/2 - (goal_size.y/2)*1.4);
+        c->line_to((goal_size.x)*2,  field_size.y/2 - (goal_size.y/2)*1.4);
+        
+        c->move_to(goal_size.x,  field_size.y/2 + (goal_size.y/2)*1.4);
+        c->line_to((goal_size.x)*2,  field_size.y/2 + (goal_size.y/2)*1.4);
+
+        c->move_to((goal_size.x)*2,  field_size.y/2 - (goal_size.y/2)*1.4);
+        c->line_to((goal_size.x)*2,  field_size.y/2 + (goal_size.y/2)*1.4);
+        
+        c->fill_preserve();                        
+        c->set_source_rgb(1, 1, 1);
+        c->stroke ();
+
+    // draw robots
+        c->set_line_width(2);        
         for (int i = 0; i < robot.size(); i++) {
 
             Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };
@@ -57,25 +96,7 @@ protected:
             c->restore();
             c->stroke ();
         }
-        
-        // draw field
-        c->save();
-            c->set_source_rgb(0, 0.0, 1.0);
-            c->set_line_width(15.0);
-        
-            c->move_to(0, field_size.y/2);
-            c->line_to(0,  goal_size.y/2);
-            c->line_to(goal_size.x, goal_size.y/2);
-            c->line_to(goal_size.x, 0);
-            c->line_to(field_size.x - goal_size.x, 0);
-            c->line_to(field_size.x - goal_size.x, field_size.y - goal_size.y/2);
-            c->line_to(field_size.x, field_size.y - goal_size.y/2);
-            c->line_to(field_size.x, goal_size.y/2);
-            //c->line_to(0, 0);
-
-        c->restore();
-        c->stroke ();
-
+    
         return true;
     }
 

@@ -17,7 +17,7 @@ void Control::handle(){
 			case GAME:{
 
 				std::thread menu_thread(bind(&Control::GUIInformation, this));
-
+  
 			// initialize classes
 				vision.initialize();
 				graphic.initialize();
@@ -129,7 +129,7 @@ int Control::GUIInformation() {
 
 	Gtk::ButtonBox box_left(Gtk::ORIENTATION_VERTICAL);
 		box_left.set_layout(Gtk::BUTTONBOX_CENTER );
-		box_left.set_spacing(20);		
+		box_left.set_spacing(20);		 
 		box_left.pack_start(button_play);
 		box_left.pack_start(button_pause);		
 
@@ -142,15 +142,15 @@ int Control::GUIInformation() {
 	Gtk::Box box_center(Gtk::ORIENTATION_VERTICAL);
 		box_center.set_border_width(20);
 		box_center.pack_start(draw_robot);
-
+		
 	Gtk::Box box(Gtk::ORIENTATION_HORIZONTAL);
 		box.pack_start(box_left, false, false, 20);
 		box.pack_start(box_center);
 		box.pack_start(box_right, false, false, 20);
 		
-	window.add(box);	
+	window.add(box);
 	window.show_all();
-
+	
   	app->run(window);
 
 	robot_draw_connection.disconnect();
