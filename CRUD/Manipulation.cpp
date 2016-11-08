@@ -139,6 +139,17 @@ vector<Rgb> Manipulation::getColorsRgb(){
 	return colorsRGB;
 }
 
+vector<Rgb> Manipulation::getColorsRgbCairo(){
+
+    for(int i=0 ; i<colorsRGB.size() ; i++){
+        colorsRGB[i].r /= 255;
+        colorsRGB[i].g /= 255;
+        colorsRGB[i].b /= 255;
+    }
+
+    return colorsRGB;
+}
+
 vector<float> Manipulation::getBlobSize(){
 	return blobSize;
 }

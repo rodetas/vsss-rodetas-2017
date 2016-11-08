@@ -20,43 +20,21 @@ void Control::handle(){
   
 			// initialize classes
 				vision.initialize();
-				graphic.initialize();
 				strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 
 				// game loop
 				bool game = true;
-				while(game){
+				while(program_state == GAME){
 
 				// recognize robot's points
 					vision.makeVision(); 
 				// set informations to other classes
 					setInformations(); 
-				// show information on screen
-					graphic.gameInformation();
 				// apply strategies
 					strategy.handleStrategies(); 
 
-					if(!graphic.isPause()){
-						movements = strategy.getMovements();
-						transmission.setMovements(movements);
-					} else {
-						for(int i=0 ; i<3 ; i++){
-							transmission.sendMovement(i, graphic.getTestMovement(), 100100);
-						}
-					}
-
-					if(graphic.getMenu()){
-						vision.setCameraRelease();		
-						graphic.setMenu(false);
-						game = false;
-					} else if(graphic.getClose()){
-						vision.setCameraRelease();
-						game = false;
-						program_state = EXIT;
-					}
 				}
 				menu_thread.detach();
-				program_state = MENU; // retornar estado do programa atraves do game
 			} break;
 
 			case SIMULATOR:{
@@ -79,10 +57,6 @@ void Control::handle(){
 				program_state = arduino.loop();
 			} break;
 
-			case TEST:{
-				program_state = test.loop();
-			} break;
-
 			case MENU:{
 				program_state = menu.GUI();
 			} break;
@@ -98,18 +72,14 @@ void Control::setInformations(){
 
 	objects = vision.getPositions();
 
+/*
 	strategy.setObjects(objects);
 	strategy.setPowerCurve(graphic.getPowerCurve());
 	strategy.setPower(graphic.getPower());
-	
-	graphic.setObjects(objects);
-	graphic.setTargets(strategy.getTargets());
-	graphic.setFps(fps.framesPerSecond());
-	graphic.setConnectionStatus(transmission.getConnectionStatus());
-	graphic.setInformation(strategy.getInformation());
+*/
 }
 
-int Control::GUIInformation() {
+void Control::GUIInformation() {
 	Glib::RefPtr<Gtk::Application> app;
 		app = Gtk::Application::create();
 
@@ -117,8 +87,8 @@ int Control::GUIInformation() {
 		window.maximize();
 		window.set_title("Rodetas");
 	
-	Cairo_Draw draw_robot;	
-		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< Cairo_Draw* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
+	CairoDraw draw_robot;	
+		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoDraw* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
 
 	Gtk::Button button_play, button_pause, button_side, button_penalty;
 		button_play.add_label("Play");
@@ -153,9 +123,11 @@ int Control::GUIInformation() {
   	app->run(window);
 
 	robot_draw_connection.disconnect();
+
+	program_state = MENU;
 } 
 
-bool Control::setRobot(Cairo_Draw *c){
+bool Control::setRobot(CairoDraw *c){
 	c->setPosition(objects);
 	return true;
 } 

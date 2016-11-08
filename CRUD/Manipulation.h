@@ -36,6 +36,7 @@ public:
 
 	vector<Hsv> getColorsHsv();
 	vector<Rgb> getColorsRgb();
+	vector<Rgb> getColorsRgbCairo();
 	vector<float> getBlobSize();
 	Point getPointField1();
 	Point getPointField2();

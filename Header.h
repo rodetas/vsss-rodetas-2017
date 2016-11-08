@@ -9,8 +9,7 @@
 #define CALIBRATION 2
 #define SIMULATOR 3
 #define ARDUINO 4
-#define TEST 5
-#define EXIT 6
+#define EXIT 5
 
 #define SAVE_COORD
 #define CAMERACONFIG

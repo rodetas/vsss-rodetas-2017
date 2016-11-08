@@ -4,9 +4,10 @@
 #include "../Header.h"
 #include "../utils/Structs.h"
 #include "../utils/Fps.h"
-#include "../utils/OpenGL.h"
 
 #include <SFML/Graphics.hpp>
+
+using namespace rod;
 
 class Simulator{
 	

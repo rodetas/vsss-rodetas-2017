@@ -80,9 +80,9 @@ struct Hsv{
 };
 
 struct Rgb{
-	int r;
-	int g;
-	int b;
+	float r;
+	float g;
+	float b;
 
 	void print(){
 		cout << " B: " << b;
@@ -97,8 +97,6 @@ struct Object{
 	int x;
 	int y;
 	int angle;
-	Rgb color_team;
-	Rgb color_player;
 
 	Object(){
 		x = y = angle = 0;

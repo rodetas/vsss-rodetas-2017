@@ -1,34 +1,24 @@
-#ifndef CAIRO_DRAW_H_
-#define CAIRO_DRAW_H_
+#include "CairoDraw.h"
 
-#include "../Header.h"
-#include "../utils/Structs.h"
+CairoDraw::CairoDraw(){
+    robot.resize(number_robot);
+    colors_rgb.resize(6);
 
-#include <gtkmm.h>
+    colors_rgb = manipulation.getColorsRgbCairo();
+}
 
-class Cairo_Draw : public Gtk::DrawingArea {
-
-private:
-    const int number_robot = 6;
-    int color_team_size;
-    int color_player_size;
-
-    vector<rod::Object> robot;
-    Point field_size;
-    Point image_size = {640,480};
-    Point goal_size  = {50,200};
+void CairoDraw::setPosition(vector<rod::Object> o){
     
-    template <typename typePoint>
-    typePoint changeCoordinate(typePoint point){
-        point.x = float(point.x) * float(field_size.x) / float(image_size.x);
-        point.y = float(point.y) * float(field_size.y) / float(image_size.y);
-
-        return point;
+    for (int i = 0; i < robot.size(); i++){
+        robot[i].x = o[i].x;
+        robot[i].y = o[i].y;
+        //r[i].angle = o[i].angle;
     }
 
-protected:
+    queue_draw();
+}
 
-    virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c){
+bool CairoDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
       
         Gtk::Allocation allocation = get_allocation();
             field_size.x = allocation.get_width();
@@ -120,14 +110,14 @@ protected:
 
     //draw robots
         c->set_line_width(2);        
-        for (int i = 0; i < robot.size(); i++) {
+        for (int i = 0; i < 3; i++) {
 
             Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };
             
             // team colors rectangle        
             c->save();
                 c->rectangle(r.x, r.y, color_team_size, color_team_size);
-                c->set_source_rgb(robot[i].color_team.r, robot[i].color_team.g, robot[i].color_team.b);
+                c->set_source_rgb(colors_rgb[3].r, colors_rgb[3].g, colors_rgb[3].b);
                 c->fill_preserve();
             c->restore();
             c->stroke ();
@@ -135,34 +125,26 @@ protected:
             // player colors rectangle            
             c->save();
                 c->rectangle(r.x, r.y, color_player_size, color_player_size);    
-                c->set_source_rgb(robot[i].color_player.r, robot[i].color_player.g, robot[i].color_player.b);
+                c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
                 c->fill_preserve();
             c->restore();
             c->stroke ();
         }
+
+         for (int i = 3; i < 6; i++) {
+
+            Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };
+            
+            // team colors rectangle        
+            c->save();
+                c->rectangle(r.x, r.y, color_team_size, color_team_size);
+                c->set_source_rgb(colors_rgb[4].r, colors_rgb[4].g, colors_rgb[4].b);
+                c->fill_preserve();
+            c->restore();
+            c->stroke ();
+        }
+
+
     
         return true;
     }
-
-public:
-
-	//Cairo_Draw(rod::Object o_calibrated){
-	Cairo_Draw(){
-        robot.resize(number_robot);
-        //r = r_calibrated;
-        //field_size
-    }
-
-    void setPosition(vector<rod::Object> o){
-        
-        for (int i = 0; i < robot.size(); i++){
-            robot[i].x = o[i].x;
-            robot[i].y = o[i].y;
-            //r[i].angle = o[i].angle;
-        }
-
-        queue_draw();
-    }
-};
-
-#endif

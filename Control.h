@@ -9,9 +9,7 @@
 #include "GUI/Simulator.h"
 #include "GUI/Arduino.h"
 #include "GUI/Menu.h"
-#include "GUI/Graphic.h"
-#include "GUI/Cairo_Draw.h"
-#include "utils/Test.h"
+#include "GUI/CairoDraw.h"
 #include "utils/Fps.h"
 #include "CRUD/Manipulation.h"
 #include <thread>
@@ -29,15 +27,14 @@ private:
 	Fps fps;
 	Simulator simulator;
 	Arduino arduino;
-	Test test;
 
 	vector<rod::Object> objects;
 	vector<string> movements;
 	
 	int  program_state;
 	
-	int GUIInformation();
-	bool setRobot(Cairo_Draw*);
+	void GUIInformation();
+	bool setRobot(CairoDraw*);
 	
 public:
 	Control();
