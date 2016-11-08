@@ -10,7 +10,7 @@
 #include "GUI/Arduino.h"
 #include "GUI/Menu.h"
 #include "GUI/Graphic.h"
-#include "GUI/Cairo_Robot.h"
+#include "GUI/Cairo_Draw.h"
 #include "utils/Test.h"
 #include "utils/Fps.h"
 #include "CRUD/Manipulation.h"
@@ -26,7 +26,6 @@ private:
 	Transmission transmission;
 	Strategy strategy;
 	Vision vision;
-	Graphic graphic;
 	Fps fps;
 	Simulator simulator;
 	Arduino arduino;
@@ -38,7 +37,7 @@ private:
 	int  program_state;
 	
 	int GUIInformation();
-	bool setRobot(Cairo_Robot*);
+	bool setRobot(Cairo_Draw*);
 	
 public:
 	Control();

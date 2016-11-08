@@ -109,7 +109,6 @@ void Control::setInformations(){
 	graphic.setInformation(strategy.getInformation());
 }
 
-
 int Control::GUIInformation() {
 	Glib::RefPtr<Gtk::Application> app;
 		app = Gtk::Application::create();
@@ -118,8 +117,8 @@ int Control::GUIInformation() {
 		window.maximize();
 		window.set_title("Rodetas");
 	
-	Cairo_Robot draw_robot;	
-		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< Cairo_Robot* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
+	Cairo_Draw draw_robot;	
+		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< Cairo_Draw* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
 
 	Gtk::Button button_play, button_pause, button_side, button_penalty;
 		button_play.add_label("Play");
@@ -156,7 +155,7 @@ int Control::GUIInformation() {
 	robot_draw_connection.disconnect();
 } 
 
-bool Control::setRobot(Cairo_Robot *c){
+bool Control::setRobot(Cairo_Draw *c){
 	c->setPosition(objects);
 	return true;
 } 
