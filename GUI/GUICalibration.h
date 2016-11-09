@@ -8,7 +8,7 @@
 #include <TGUI/TGUI.hpp>
 #include <SFML/Graphics.hpp>
 
-using namespace rod;
+using namespace rodetas;
 
 class Calibration;
 

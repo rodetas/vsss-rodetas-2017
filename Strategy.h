@@ -5,7 +5,7 @@
 #include "utils/Structs.h"
 #include "Movimentation.h"
 
-using namespace rod;
+using namespace rodetas;
 
 enum {PARADO, DEFESA, ATAQUE};
 
@@ -14,17 +14,17 @@ private:
 
     Movimentation movimentation;
 
-    vector<rod::Object> objects;
+    vector<rodetas::Object> objects;
     vector<Information> information;
     vector<Point> targets;
-    vector<rod::Object> lastBallPositions;
+    vector<rodetas::Object> lastBallPositions;
     vector<Command> movements;
     
-    rod::Object robot;
-    rod::Object ball;
+    rodetas::Object robot;
+    rodetas::Object ball;
 
-    rod::Object ballProjection;
-    rod::Object lastBallProjection;
+    rodetas::Object ballProjection;
+    rodetas::Object lastBallProjection;
 
     float distance_robot_ball;
     float distance_robot_destination;
@@ -63,23 +63,23 @@ public:
     void defineFunctions();
 
     void calcBallProjection();
-    void updateCalculus(rod::Object, Point);    
+    void updateCalculus(rodetas::Object, Point);    
     void changeCoordinates();
 
     void applyAttackStrategy();
     void applyDefenseStrategy();
     void applyGoalStrategy();
 
-    bool isBoard(rod::Object);
+    bool isBoard(rodetas::Object);
     void cornerStrategy(string);
     
-    Point applyPotencialField(Point, rod::Object, rod::Object);
+    Point applyPotencialField(Point, rodetas::Object, rodetas::Object);
 
     Point setAttackTarget();
     Point setDefenseTarget();
     Point setGoalTarget();
 
-    void setObjects(vector<rod::Object> o);
+    void setObjects(vector<rodetas::Object> o);
     void setPower(float a);
     void setPowerCurve(float a);
     void setVecTarget(int, Point);

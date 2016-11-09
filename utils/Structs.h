@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <SFML/Graphics.hpp>
 
-namespace rod{
+namespace rodetas{
 
 typedef cv::Point Point;
 typedef cv::Point2f Point2f;

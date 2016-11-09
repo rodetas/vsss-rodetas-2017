@@ -7,7 +7,7 @@ CairoDraw::CairoDraw(){
     colors_rgb = manipulation.getColorsRgbCairo();
 }
 
-void CairoDraw::setPosition(vector<rod::Object> o){
+void CairoDraw::setPosition(vector<rodetas::Object> o){
     
     for (int i = 0; i < robot.size(); i++){
         robot[i].x = o[i].x;

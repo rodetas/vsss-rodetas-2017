@@ -12,7 +12,6 @@ void Control::handle(){
 	calibration.setGUICalibration(&calibration);
 
 	while(program_state != EXIT){
-		
 		switch(program_state){
 			case GAME:{
 
@@ -34,6 +33,7 @@ void Control::handle(){
 					strategy.handleStrategies(); 
 
 				}
+
 				menu_thread.detach();
 			} break;
 
@@ -54,7 +54,8 @@ void Control::handle(){
 			} break;
 			
 			case ARDUINO:{
-				program_state = arduino.loop();
+				Arduino arduino;
+				program_state = arduino.GUI();
 			} break;
 
 			case MENU:{

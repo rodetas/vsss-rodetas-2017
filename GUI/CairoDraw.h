@@ -16,8 +16,8 @@ private:
 
     Manipulation manipulation;
 
-    vector<rod::Object> robot;
-    vector<rod::Rgb> colors_rgb;
+    vector<rodetas::Object> robot;
+    vector<rodetas::Rgb> colors_rgb;
 
     Point field_size;
     Point image_size = {640,480};
@@ -38,7 +38,7 @@ protected:
 public:
 
 	CairoDraw();
-    void setPosition(vector<rod::Object> o);
+    void setPosition(vector<rodetas::Object> o);
 };
 
 #endif

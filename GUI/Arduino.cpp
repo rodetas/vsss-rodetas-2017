@@ -1,113 +1,101 @@
 #include "Arduino.h"
 
 Arduino::Arduino(){
-	font.loadFromFile("files/fonts/fontText.ttf");
 	loadInformations();
-	draw();
+	setCombos();
 }
 
-int Arduino::loop(){
+int Arduino::GUI(){
 
-	sf::RenderWindow window(sf::VideoMode(400, 200), "Arduino Interface");
-	gui.setWindow(window);
+	auto app = Gtk::Application::create();
 
-	while(window.isOpen()){
+	draw();
 
-		window.clear(sf::Color(4,185,4));
+	show_all_children();
+	app->run(*this);
 
-		window.draw(textFile);
-		window.draw(textPort);
-		window.draw(textBaudRate);
-		window.draw(btn_submit);
-		window.draw(btn_monitor);
-		window.draw(btn_update);
-
-		sf::Event event;
-	    while (window.pollEvent(event)){
-
-	    	if (btn_submit.buttonEvent(event)){
-	    		string cmd = "cd files/arduino/" + file_names[comboFile->getSelectedItemIndex()];
-	    		cmd += " && sed -i 's;/dev/ttyUSB.*;" + port_names[comboPort->getSelectedItemIndex()] + ";' Makefile";
-	    		cmd += " && sed -i 's;MONITOR_BAUDRATE.*;MONITOR_BAUDRATE = " + baudrate_names[comboBaudRate->getSelectedItemIndex()] + ";' Makefile";
-	    		cmd += " && make upload";
-	    		system(cmd.c_str());
-	    		deleteCompiled();
-
-	    	} else if(btn_monitor.buttonEvent(event)){
-	    		string cmd = "cd files/arduino/" + file_names[comboFile->getSelectedItemIndex()];
-	    		cmd += " && sed -i 's;/dev/ttyUSB.*;" + port_names[comboPort->getSelectedItemIndex()] + ";' Makefile";
-	    		cmd += " && sed -i 's;MONITOR_BAUDRATE.*;MONITOR_BAUDRATE = " + baudrate_names[comboBaudRate->getSelectedItemIndex()] + ";' Makefile";
-				cmd += " && make monitor";
-	    		system(cmd.c_str());
-	    		cout << cmd << endl;
-
-	    	} else if(btn_update.buttonEvent(event)){
-	    		loadInformations();
-	    		setCombos();
-
-	    	} else if(event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape){
-	        	window.close();
-	        } 
-
-	    	gui.handleEvent(event);
-	    }
-
-        gui.draw();
-        window.display();
-
-    }
 	return MENU;
 }
 
+void Arduino::onButtonUpload(){
+	string cmd = "cd files/arduino/" + file_names[comboFile.get_active_row_number()];
+		cmd += " && sed -i 's;/dev/ttyUSB.*;" + port_names[comboPort.get_active_row_number()] + ";' Makefile";
+		cmd += " && sed -i 's;MONITOR_BAUDRATE.*;MONITOR_BAUDRATE = " + baudrate_names[comboBaudRate.get_active_row_number()] + ";' Makefile";
+		cmd += " && make upload";
+
+	system(cmd.c_str());
+	deleteCompiled();	
+}
+
+void Arduino::onButtonMonitor(){
+	string cmd = "cd files/arduino/" + file_names[comboFile.get_active_row_number()];
+		cmd += " && sed -i 's;/dev/ttyUSB.*;" + port_names[comboPort.get_active_row_number()] + ";' Makefile";
+		cmd += " && sed -i 's;MONITOR_BAUDRATE.*;MONITOR_BAUDRATE = " + baudrate_names[comboBaudRate.get_active_row_number()] + ";' Makefile";
+		cmd += " && make monitor";
+
+	system(cmd.c_str());
+}
+
+void Arduino::onButtonUpdate(){
+	loadInformations();
+	setCombos();
+}
+
 void Arduino::draw(){
-	theme = std::make_shared<tgui::Theme>(tguiThemePath);
+	set_default_size(400, 250);
+	set_position(Gtk::WIN_POS_CENTER_ALWAYS);
+	set_title("Arduino Interface");
 
-	comboFile = theme->load("ComboBox");
-	comboFile->setSize(250, 21); 
+	comboFile.set_size_request(200,-1);
 
-	comboPort = theme->load("ComboBox");
-	comboPort->setSize(250, 21);
+	textFile.set_size_request(80, -1);
+	textPort.set_size_request(80, -1);
+	textBaudRate.set_size_request(80, -1);
 
-    comboBaudRate = theme->load("ComboBox");
-    comboBaudRate->setSize(250, 21);
+	textFile.set_alignment(Gtk::ALIGN_START);
+	textPort.set_alignment(Gtk::ALIGN_START);
+	textBaudRate.set_alignment(Gtk::ALIGN_START);
 
-    setCombos();
+	textFile.set_text("Sketch:");
+	textPort.set_text("Port:");
+	textBaudRate.set_text("Baud Rate:");
 
-    btn_submit.setPosition(95, 150);
-    btn_monitor.setPosition(205, 150);
-    btn_update.setPosition(315, 150);
+	btnUpload.signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpload) );
+	btnMonitor.signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonMonitor) );
+	btnUpdate.signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpdate) );
 
-    btn_submit.rectangleSize(80, 40);
-    btn_monitor.rectangleSize(80, 40);
-    btn_update.rectangleSize(80,40);
+	btnUpload.add_label("Upload");
+	btnMonitor.add_label("Monitor");
+	btnUpdate.add_label("Refresh");
 
-    btn_submit.textButton("Upload", 15);
-    btn_monitor.textButton("Monitor", 15);
-    btn_update.textButton("Refresh", 15);
+	buttonBox.set_layout(Gtk::BUTTONBOX_CENTER);
+	buttonBox.set_spacing(20);
+	buttonBox.pack_start(btnUpload);
+	buttonBox.pack_start(btnMonitor);
+	buttonBox.pack_start(btnUpdate);
 
-    textFile.setFont(font);
-    textPort.setFont(font);
-    textBaudRate.setFont(font);
+	grid.set_row_spacing(15);
 
-    textFile.setString("Sketch:");
-    textPort.setString("Port:");
-    textBaudRate.setString("Baud Rate:");
+	grid.attach(textFile,0,0,1,1);
+	grid.attach(textPort,0,1,1,1);
+	grid.attach(textBaudRate,0,2,1,1);
 
-    textFile.setCharacterSize(15);
-    textPort.setCharacterSize(15);
-    textBaudRate.setCharacterSize(15);
+	grid.attach(comboFile,1,0,1,1);
+	grid.attach(comboPort,1,1,1,1);
+	grid.attach(comboBaudRate,1,2,1,1);
 
-    textFile.setPosition(7, 10);
-    textPort.setPosition(7, 50);
-    textBaudRate.setPosition(7,90);
+	grid.attach(buttonBox,0,3,3,1);
 
-    comboFile->setPosition(90, 10);
-    comboPort->setPosition(90, 50);
-    comboBaudRate->setPosition(90, 90);
+	grid.set_valign(Gtk::ALIGN_CENTER);
+	grid.set_halign(Gtk::ALIGN_CENTER);
 
-    gui.add(comboFile, "comboFile");
-    gui.add(comboPort, "comboPort");
-    gui.add(comboBaudRate, "comboBaudRate");
+	add(grid);
+}
+
+void Arduino::loadInformations(){
+	getFiles();
+	getPorts();
+	getBaudRates();
 }
 
 void Arduino::getFiles(){
@@ -115,7 +103,7 @@ void Arduino::getFiles(){
     file_names.clear();
 
     string cmd = "cd files/arduino && ls";
-    string output = executeCommand(cmd);
+    string output = rodetas::executeCommand(cmd);
 
     if(output.size() == 0){
     	file_names.push_back("NOT FOUND");
@@ -139,7 +127,7 @@ void Arduino::getPorts(){
 	port_names.clear();
 
 	string cmd = "find /dev/ -maxdepth 1 -name ttyUSB*";
-	string output = executeCommand(cmd);
+	string output = rodetas::executeCommand(cmd);
 
 	if(output.size() == 0){
 		port_names.push_back("NOT FOUND");
@@ -165,34 +153,30 @@ void Arduino::getBaudRates(){
 	baudrate_names.push_back("38400");
 }
 
-void Arduino::loadInformations(){
-	getFiles();
-	getPorts();
-	getBaudRates();
-}
 
 void Arduino::deleteCompiled(){
 	string cmd = "find files/arduino/ -type d -name \"build-*\" -exec rm -r \"{}\" \\; ";
 	system(cmd.c_str());
 }
 
+
 void Arduino::setCombos(){
 
-	comboFile->removeAllItems();
+	comboFile.remove_all();
 	for(int i=0 ; i<file_names.size() ; i++){
-	    comboFile->addItem(file_names[i]);
+	    comboFile.append(file_names[i]);
     }
-    comboFile->setSelectedItem(file_names[0]);
+    comboFile.set_active_text(file_names[0]);
 
-    comboPort->removeAllItems();
+    comboPort.remove_all();
     for(int i=0 ; i<port_names.size() ; i++){
-	    comboPort->addItem(port_names[i]);
+	    comboPort.append(port_names[i]);
     }
-    comboPort->setSelectedItem(port_names[0]);
+    comboPort.set_active_text(port_names[0]);
 
-    comboBaudRate->removeAllItems();
+    comboBaudRate.remove_all();
     for(int i=0 ; i<baudrate_names.size() ; i++){
-	    comboBaudRate->addItem(baudrate_names[i]);
+	    comboBaudRate.append(baudrate_names[i]);
     }
-    comboBaudRate->setSelectedItem(baudrate_names[1]);
+    comboBaudRate.set_active_text(baudrate_names[1]);
 }

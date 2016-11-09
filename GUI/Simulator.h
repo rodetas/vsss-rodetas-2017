@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
-using namespace rod;
+using namespace rodetas;
 
 class Simulator{
 	
@@ -35,7 +35,7 @@ private:
 	vector<sf::Text> textScreen;
 	vector<sf::RectangleShape> field;
 	vector<sf::RectangleShape> robots;
-	vector<rod::Object> objects;
+	vector<rodetas::Object> objects;
     vector<string> information;
 
 	float rateZoom;
@@ -67,6 +67,6 @@ public:
     void setInformation(string*);
     void setTargets(vector<Point>);
 	bool getEndSimulator();
-	vector<rod::Object> getPositions();
+	vector<rodetas::Object> getPositions();
 };
 #endif

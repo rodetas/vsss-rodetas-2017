@@ -26,9 +26,9 @@ private:
 	Vision vision;
 	Fps fps;
 	Simulator simulator;
-	Arduino arduino;
+	//Arduino arduino;
 
-	vector<rod::Object> objects;
+	vector<rodetas::Object> objects;
 	vector<string> movements;
 	
 	int  program_state;

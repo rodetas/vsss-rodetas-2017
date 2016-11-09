@@ -46,8 +46,18 @@ int Menu::GUI(){
 	return program_state;
 } 
 
-void Menu::onButtonPlay(){ program_state = GAME; app->quit(); }
-void Menu::onButtonCalibration(){ program_state = CALIBRATION; app->quit(); }
-void Menu::onButtonSimulator(){ program_state = SIMULATOR; app->quit(); }
-void Menu::onButtonArduino(){ program_state = ARDUINO; app->quit(); }
-void Menu::onButtonExit(){ program_state = EXIT; app->quit(); }
+void Menu::onButtonPlay(){ 
+	program_state = GAME; app->quit(); 
+}
+void Menu::onButtonCalibration(){ 
+	program_state = CALIBRATION; app->quit(); 
+}
+void Menu::onButtonSimulator(){ 
+	program_state = SIMULATOR; app->quit(); 
+}
+void Menu::onButtonArduino(){ 
+	program_state = ARDUINO; app->quit(); 
+}
+void Menu::onButtonExit(){
+	program_state = EXIT; app->quit();
+}

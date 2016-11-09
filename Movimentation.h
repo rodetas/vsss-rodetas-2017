@@ -4,18 +4,18 @@
 #include "Header.h"
 #include "utils/Structs.h"
 
-using namespace rod;
+using namespace rodetas;
 
 class Movimentation{
 
 private:
-	vector<rod::Object> objects;
-	rod::Object robot;
+	vector<rodetas::Object> objects;
+	rodetas::Object robot;
 
 	vector<float> maxPwm;
-	vector<rod::Object> velocityPast1;
-    vector<rod::Object> velocityPast2;
-    vector<rod::Object> velocityPast3;
+	vector<rodetas::Object> velocityPast1;
+    vector<rodetas::Object> velocityPast2;
+    vector<rodetas::Object> velocityPast3;
     vector<int> velocity;
 
     vector<Command> movements;
@@ -47,7 +47,7 @@ public:
 
 	float calculateSpeed();
 
-	void updateCalculus(rod::Object, Point);
+	void updateCalculus(rodetas::Object, Point);
 
 	void turnLeft(int, int);
 	void turnRight(int, int);
@@ -56,8 +56,8 @@ public:
 	void setPower(float);
 	void setPowerCurve(float);
 	void setPwm(Point, string);
-	void setRobot(rod::Object);
-	void setObjects(vector<rod::Object>);
+	void setRobot(rodetas::Object);
+	void setObjects(vector<rodetas::Object>);
 	void setImage(Point);
 	void setCurveStrategy(int);
 	void setNumbers(int, int, int);

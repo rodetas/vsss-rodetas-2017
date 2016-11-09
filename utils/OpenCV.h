@@ -4,7 +4,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "Structs.h"
 
-using namespace rod;
+using namespace rodetas;
 
 class OpenCV {
 

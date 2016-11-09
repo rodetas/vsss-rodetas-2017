@@ -9,7 +9,7 @@
 
 #include <fstream>
 
-using namespace rod;
+using namespace rodetas;
 
 class Calibration : public OpenCV {
 

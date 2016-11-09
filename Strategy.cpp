@@ -136,7 +136,7 @@ Point Strategy::setAttackTarget(){
 
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO
 
-Point Strategy::applyPotencialField(Point target, rod::Object toRepulsion, rod::Object toDestination){
+Point Strategy::applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination){
 
 	Point2f repulsion;
 	Point2f factorRepulsion = {5000, 20000};
@@ -309,7 +309,7 @@ Point Strategy::setGoalTarget(){
 	return goalTarget;
 }
 
-bool Strategy::isBoard(rod::Object object){
+bool Strategy::isBoard(rodetas::Object object){
 	int halfGoal1 = imageSize.y/2 + (goalSize.y/2)*1.2;
 	int halfGoal2 = imageSize.y/2 - (goalSize.y/2)*1.2;
 	return (object.y > (imageSize.y*0.93) || object.y < (imageSize.y*0.07) || ((object.x > (imageSize.x*0.87) || object.x < (imageSize.x*0.13)) && (object.y > halfGoal1 || object.y < halfGoal2)));
@@ -337,7 +337,7 @@ void Strategy::cornerStrategy(string type){
 /*
  * Updates the calculus about robot position
  */
-void Strategy::updateCalculus(rod::Object robot, Point destination){
+void Strategy::updateCalculus(rodetas::Object robot, Point destination){
 
 	distance_robot_destination = distance(robot, destination);
     distance_ball_destination = distance(ball, destination);
@@ -370,7 +370,7 @@ void Strategy::calcBallProjection(){
 	}
 }
 
-void Strategy::setObjects(vector<rod::Object> o){
+void Strategy::setObjects(vector<rodetas::Object> o){
 	this->objects = o;
 }
 

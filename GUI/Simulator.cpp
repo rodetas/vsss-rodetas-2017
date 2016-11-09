@@ -288,7 +288,7 @@ bool Simulator::getEndSimulator(){
     return this->endSimulator;
 }
 
-vector<rod::Object> Simulator::getPositions(){
+vector<rodetas::Object> Simulator::getPositions(){
     for (int i = 0; i < robots.size(); i++){
         objects[i].x = robots[i].getPosition().x - origin.x;
         objects[i].y = robots[i].getPosition().y - origin.y;

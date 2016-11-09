@@ -53,15 +53,15 @@ void Vision::makeVision(){
 /*
  * method to join team color with the player to create a robot
  */
-rod::Object Vision::makeRobot(BlobsContours playerContours, BlobsContours teamContours, int numberTeam){
+rodetas::Object Vision::makeRobot(BlobsContours playerContours, BlobsContours teamContours, int numberTeam){
 
-    rod::Object robot;
+    rodetas::Object robot;
 
     for (int i = 0; i < playerContours.center.size(); i++){
         playerContours.center[i].x += teamContours.cutPoint1[numberTeam].x;
         playerContours.center[i].y += teamContours.cutPoint1[numberTeam].y;
 
-        float distance = rod::distance(playerContours.center[i], teamContours.center[numberTeam]);
+        float distance = rodetas::distance(playerContours.center[i], teamContours.center[numberTeam]);
 
         if (distance <= teamContours.radius[numberTeam] && distance >= teamContours.radius[numberTeam]/6){
             robot.x = teamContours.center[numberTeam].x;
@@ -180,9 +180,9 @@ void Vision::setCameraRelease(){
 /*
  * Getters
  */
-vector<rod::Object> Vision::getPositions(){
+vector<rodetas::Object> Vision::getPositions(){
     
-    vector<rod::Object> objects;
+    vector<rodetas::Object> objects;
 
     for(int i = 0 ; i < robotTeam.size() ; i++)
         objects.push_back(robotTeam[i]);

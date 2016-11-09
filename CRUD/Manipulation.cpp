@@ -44,7 +44,7 @@ void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRG
     output.close();
 }
 
-void Manipulation::saveCoordinates(vector<rod::Object>& positions){
+void Manipulation::saveCoordinates(vector<rodetas::Object>& positions){
 
     ofstream arquivo(filename, std::ofstream::app);
 

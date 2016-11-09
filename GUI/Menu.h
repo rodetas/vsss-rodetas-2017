@@ -4,7 +4,7 @@
 #include "../Header.h"
 #include <gtkmm.h>
 
-class Menu  {
+class Menu {
 
 private:
 	Glib::RefPtr<Gtk::Application> app;

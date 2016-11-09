@@ -1,6 +1,6 @@
 #include "Structs.h"
 
-namespace rod{
+namespace rodetas{
 
 int getCameraNumber(){
     int cameraNumber = system("utils/./cameraConfig.sh get_camera");

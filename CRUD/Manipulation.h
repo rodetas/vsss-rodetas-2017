@@ -7,7 +7,7 @@
 #include <ctime>
 #include <iomanip>
 
-using namespace rod;
+using namespace rodetas;
 
 class Manipulation{
 
@@ -29,7 +29,7 @@ private:
 public:
 	Manipulation();
 	void saveCalibration(vector<Hsv>&, vector<Rgb>&, vector<float>&, Point, Point, Point, int, bool);
-	void saveCoordinates(vector<rod::Object>&);
+	void saveCoordinates(vector<rodetas::Object>&);
 	pair<vector<Hsv>, vector<Rgb>> loadCalibration();
 
 	void showCalibration();
