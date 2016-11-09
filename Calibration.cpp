@@ -16,6 +16,8 @@ Calibration::Calibration(){
 
     getCalibration();
     camera = getCameraNumber();
+
+    program_state = MENU;
 }
 
 /*
@@ -43,15 +45,13 @@ int Calibration::calibrate(){
         
     }
 
-
-
     endCalibration = false;
     manipulation.saveCalibration(colorsHSV, colorsRGB, blobSize, pointCutField1, pointCutField2, goal, angleImageRotation, cameraOn);
     cam.release();
     gui.closeWindow();
 
     calibration_thread.detach();
-    return MENU;
+    return program_state;
 }
 
 /*
@@ -280,83 +280,159 @@ int Calibration::GUI(){
 			
 	app = Gtk::Application::create();
 
-	Gtk::Window window;	
-		window.maximize();
-		window.set_title("Calibration");
+	set_title("Calibration");
+    maximize();
+
+    //Gtk::AccelMap accel_map;
+    //accel_map.add_entry("<Rodetas>/Navegation/Start", "Naosei");
+
+    //add_accel_group(accel_map);
+
+    Gtk::MenuBar menu_bar;
+
+//////////////////////// NAVEGATION MENU /////////////////////////
+
+    Gtk::MenuItem menu_navegation;
+    menu_navegation.set_label("Navegation");
+
+    Gtk::Menu subMenuNavigation;
+    menu_navegation.set_submenu(subMenuNavigation);
+
+    Gtk::ImageMenuItem menu_play(Gtk::Stock::GO_FORWARD);
+    menu_play.set_label("Start Game");
+    menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
+    subMenuNavigation.append(menu_play);
+
+    Gtk::ImageMenuItem menu_calibration(Gtk::Stock::GO_FORWARD);
+    menu_calibration.set_label("Calibrate");
+    menu_calibration.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuCalibration));
+    subMenuNavigation.append(menu_calibration);
+
+    Gtk::ImageMenuItem menu_simulator(Gtk::Stock::GO_FORWARD);
+    menu_simulator.set_label("Simulate");
+    menu_simulator.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuSimulator));
+    subMenuNavigation.append(menu_simulator);
+
+    Gtk::ImageMenuItem menu_arduino(Gtk::Stock::GO_FORWARD);
+    menu_arduino.set_label("Upload Arduino");
+    menu_arduino.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuArduino));
+    subMenuNavigation.append(menu_arduino);
+
+    Gtk::SeparatorMenuItem separator;
+    subMenuNavigation.append(separator);
+
+    Gtk::ImageMenuItem menu_quit(Gtk::Stock::QUIT);
+    menu_quit.set_label("Quit");
+    menu_quit.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
+    subMenuNavigation.append(menu_quit);
+
+/////////////////// FILE MENU //////////////////////////
+
+    Gtk::MenuItem menu_file;
+    menu_file.set_label("Calibration");
+
+    Gtk::Menu subMenuFile;
+    menu_file.set_submenu(subMenuFile);
+
+    Gtk::ImageMenuItem menu_save(Gtk::Stock::FLOPPY);
+    menu_save.set_label("Save Calibration");
+    subMenuFile.append(menu_save);
+
+    Gtk::ImageMenuItem menu_cut(Gtk::Stock::CUT);
+    menu_cut.set_label("Cut Image");
+    subMenuFile.append(menu_cut);
+
+    Gtk::ImageMenuItem menu_reset(Gtk::Stock::CLEAR);
+    menu_reset.set_label("Reset Values");
+    subMenuFile.append(menu_reset);
+
+    Gtk::ImageMenuItem menu_refresh(Gtk::Stock::REFRESH);
+    menu_refresh.set_label("Refresh Devices");
+    subMenuFile.append(menu_refresh);
+
+    menu_bar.append(menu_navegation);
+    menu_bar.append(menu_file);
+
+    Gtk::Button btn_hsv;
+        btn_hsv.add_label("MENU"); 
+    
+    vector<Gtk::Label> text_HSV(6);
+        for (int i = 0; i < text_HSV.size(); i++){
+            text_HSV[i].set_alignment(Gtk::ALIGN_START);
+        }
+        text_HSV[0].set_label("H max:");
+        text_HSV[1].set_label("H min:");
+        text_HSV[2].set_label("S max:");
+        text_HSV[3].set_label("S min:");
+        text_HSV[4].set_label("V max:");
+        text_HSV[5].set_label("V min:");
+
+    vector<Gtk::Scale> scale_HSV(6);
+        for (int i = 0; i < scale_HSV.size(); i++){
+            scale_HSV[i].set_size_request(150,20);
+            scale_HSV[i].set_draw_value(false);
+            scale_HSV[i].set_range(0,100);
+            scale_HSV[i].set_value(50);
+        }
+
+    Gtk::Grid grid_pop_over;
+        for (int i = 0; i < scale_HSV.size(); i++){
+            grid_pop_over.attach(text_HSV[i], 0, i, 1, 1);
+            grid_pop_over.attach(scale_HSV[i], 1, i, 2, 1);
+        }
+    
+    Gtk::Box box_pop_over;
+        box_pop_over.set_border_width(20);
+        box_pop_over.pack_start(grid_pop_over);
+
+    Gtk::Popover pop_menu;
+        pop_menu.set_relative_to(btn_hsv);
+        pop_menu.add(box_pop_over);
 
     CairoCalibration draw_image;	
 		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
-    
-    Gtk::Label 
-        text_rotate("Rotation"), 
-        text_H_max("H max: "), 
-        text_H_min("H min: "),
-        text_S_max("S max: "), 
-        text_S_min("S min: "),
-        text_V_max("V max: "), 
-        text_V_min("V min: "),
-        text_player0,
-        text_player1,
-        text_player2,
-        text_team,
-        text_opponent,
-        text_ball;
-
-
-    Gtk::Scale scale_rotate, scale_H_max, scale_S_max, scale_V_max;
-        scale_rotate.set_range(0,360);
-        scale_rotate.set_value(180);
-        scale_H_max.set_range(0,50);
-        scale_H_max.set_value(25);
-        scale_S_max.set_range(0,50);
-        scale_S_max.set_value(25);
-        scale_V_max.set_range(0,50);
-        scale_V_max.set_value(25);
-
-    Gtk::Stack stack;
-        stack.add(text_player0, "player_0", "Player 0");
-        stack.add(text_player1, "player_1", "Player 1");
-        stack.add(text_player2, "player_2", "Player 2");
-        stack.add(text_team, "team", "Team");
-        stack.add(text_opponent, "opponent", "Opponent");
-        stack.add(text_ball, "ball", "Ball");
-    
-    Gtk::StackSwitcher stack_switcher;
-        stack_switcher.set_stack(stack);
 
     Gtk::Grid grid;
         grid.set_valign(Gtk::ALIGN_CENTER);
         grid.set_halign(Gtk::ALIGN_CENTER);
 
-        grid.attach(text_rotate,1,0,1,1);
-        grid.attach(scale_rotate,2,0,3,1);
-
-        grid.attach(text_H_max,0,1,1,1);
-        grid.attach(scale_H_max,1,1,1,1);
-
-        grid.attach(text_S_max,2,1,1,1);
-        grid.attach(scale_S_max,3,1,1,1);
-
-        grid.attach(text_V_max,4,1,1,1);
-        grid.attach(scale_V_max,5,1,1,1);
-
-        grid.attach(stack_switcher,0,2,6,1);
-        grid.attach(stack,0,3,6,1);
+        grid.attach(btn_hsv,0,0,1,1);
 
     Gtk::Box box(Gtk::ORIENTATION_VERTICAL);
-		box.set_border_width(20);
+		box.set_border_width(0);
+        box.pack_start(menu_bar, Gtk::PACK_SHRINK);
 		box.pack_start(grid, false, false, 20);        
 		box.pack_start(draw_image);
 
-    window.add(box);
-    window.show_all();
+    add(box);
+    show_all();
 
-  	app->run(window);
+  	app->run(*this);
 	
-	return MENU;
+	return program_state;
 }
 
 bool Calibration::setImage(CairoCalibration *c){
 	c->setImage(opencvImageCairo);
 	return true;
-} 
+}
+
+void Calibration::onMenuGame(){
+    program_state = GAME; app->quit();
+}
+
+void Calibration::onMenuCalibration(){
+    program_state = CALIBRATION; app->quit();
+}
+
+void Calibration::onMenuSimulator(){
+    program_state = SIMULATOR; app->quit();
+}
+
+void Calibration::onMenuArduino(){
+    program_state = ARDUINO; app->quit();
+}
+
+void Calibration::onMenuQuit(){
+    program_state = EXIT; app->quit();
+}

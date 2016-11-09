@@ -19,14 +19,13 @@ class Control {
 
 private:
 	Menu menu;
-	Calibration calibration;
+	//Calibration calibration;
 	Manipulation manipulation;
 	Transmission transmission;
 	Strategy strategy;
 	Vision vision;
 	Fps fps;
 	Simulator simulator;
-	//Arduino arduino;
 
 	vector<rodetas::Object> objects;
 	vector<string> movements;

@@ -14,7 +14,7 @@
 
 using namespace rodetas;
 
-class Calibration : public OpenCV {
+class Calibration : public Gtk::Window, public OpenCV {
 
 private:
 
@@ -40,10 +40,17 @@ private:
     bool calibrationWasOpen;
 
     int camera;
-	
+	int program_state;
+
 	Glib::RefPtr<Gtk::Application> app;
 
 	bool setImage(CairoCalibration*);
+
+	void onMenuGame();
+	void onMenuCalibration();
+	void onMenuSimulator();
+	void onMenuArduino();
+	void onMenuQuit();
 
 public:
 

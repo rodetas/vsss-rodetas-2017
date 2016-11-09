@@ -9,10 +9,9 @@ Control::Control(){
 
 void Control::handle(){
 
-	calibration.setGUICalibration(&calibration);
-
 	while(program_state != EXIT){
 		switch(program_state){
+
 			case GAME:{
 
 				std::thread menu_thread(bind(&Control::GUIInformation, this));
@@ -50,6 +49,8 @@ void Control::handle(){
 			} break;
 			
 			case CALIBRATION:{
+				Calibration calibration;
+				calibration.setGUICalibration(&calibration);
 				program_state = calibration.calibrate();
 			} break;
 			
