@@ -25,6 +25,8 @@ int Calibration::calibrate(){
 
     openWindow();
 
+    std::thread calibration_thread(bind(&Calibration::GUI, this));
+
     while(!endCalibration){
 
         imageWebCam();
@@ -32,6 +34,8 @@ int Calibration::calibrate(){
         opencvImageBGRCuted = opencvTransformation(opencvImageBGR, angleImageRotation, pointCutField1, pointCutField2, imageSizeZoom);
         opencvImageHSV      = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2HSV_FULL);
         opencvImageBinary   = opencvBinary(colorsHSV[selectedTab], opencvImageHSV);
+        
+        opencvImageCairo    = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2RGB);
         opencvBGRtoRGB      = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2RGBA);
 
         gui.imageOpencvToSfml(opencvBGRtoRGB , opencvImageBinary);
@@ -39,12 +43,14 @@ int Calibration::calibrate(){
         
     }
 
+
+
     endCalibration = false;
     manipulation.saveCalibration(colorsHSV, colorsRGB, blobSize, pointCutField1, pointCutField2, goal, angleImageRotation, cameraOn);
     cam.release();
     gui.closeWindow();
 
-    //  manipulation.showCalibration();
+    calibration_thread.detach();
     return MENU;
 }
 
@@ -269,3 +275,88 @@ void Calibration::getCalibration(){
   //  manipulation.showCalibration();
 
 }
+
+int Calibration::GUI(){
+			
+	app = Gtk::Application::create();
+
+	Gtk::Window window;	
+		window.maximize();
+		window.set_title("Calibration");
+
+    CairoCalibration draw_image;	
+		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
+    
+    Gtk::Label 
+        text_rotate("Rotation"), 
+        text_H_max("H max: "), 
+        text_H_min("H min: "),
+        text_S_max("S max: "), 
+        text_S_min("S min: "),
+        text_V_max("V max: "), 
+        text_V_min("V min: "),
+        text_player0,
+        text_player1,
+        text_player2,
+        text_team,
+        text_opponent,
+        text_ball;
+
+
+    Gtk::Scale scale_rotate, scale_H_max, scale_S_max, scale_V_max;
+        scale_rotate.set_range(0,360);
+        scale_rotate.set_value(180);
+        scale_H_max.set_range(0,50);
+        scale_H_max.set_value(25);
+        scale_S_max.set_range(0,50);
+        scale_S_max.set_value(25);
+        scale_V_max.set_range(0,50);
+        scale_V_max.set_value(25);
+
+    Gtk::Stack stack;
+        stack.add(text_player0, "player_0", "Player 0");
+        stack.add(text_player1, "player_1", "Player 1");
+        stack.add(text_player2, "player_2", "Player 2");
+        stack.add(text_team, "team", "Team");
+        stack.add(text_opponent, "opponent", "Opponent");
+        stack.add(text_ball, "ball", "Ball");
+    
+    Gtk::StackSwitcher stack_switcher;
+        stack_switcher.set_stack(stack);
+
+    Gtk::Grid grid;
+        grid.set_valign(Gtk::ALIGN_CENTER);
+        grid.set_halign(Gtk::ALIGN_CENTER);
+
+        grid.attach(text_rotate,1,0,1,1);
+        grid.attach(scale_rotate,2,0,3,1);
+
+        grid.attach(text_H_max,0,1,1,1);
+        grid.attach(scale_H_max,1,1,1,1);
+
+        grid.attach(text_S_max,2,1,1,1);
+        grid.attach(scale_S_max,3,1,1,1);
+
+        grid.attach(text_V_max,4,1,1,1);
+        grid.attach(scale_V_max,5,1,1,1);
+
+        grid.attach(stack_switcher,0,2,6,1);
+        grid.attach(stack,0,3,6,1);
+
+    Gtk::Box box(Gtk::ORIENTATION_VERTICAL);
+		box.set_border_width(20);
+		box.pack_start(grid, false, false, 20);        
+		box.pack_start(draw_image);
+
+    window.add(box);
+    window.show_all();
+
+  	app->run(window);
+	
+	return MENU;
+}
+
+bool Calibration::setImage(CairoCalibration *c){
+	c->setImage(opencvImageCairo);
+	return true;
+} 

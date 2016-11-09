@@ -6,7 +6,10 @@
 #include "utils/OpenCV.h"
 #include "GUI/GUICalibration.h"
 #include "CRUD/Manipulation.h"
+#include "GUI/CairoCalibration.h"
 
+#include <gtkmm.h>
+#include <thread>
 #include <fstream>
 
 using namespace rodetas;
@@ -24,6 +27,7 @@ private:
 	cv::Mat opencvImageBGRCuted;
 	cv::Mat opencvImageBinary;
 	cv::Mat opencvBGRtoRGB;
+	cv::Mat opencvImageCairo;
 
 	cv::Vec3b hsvPoint;
 	cv::Vec3b rgbPoint;
@@ -36,8 +40,14 @@ private:
     bool calibrationWasOpen;
 
     int camera;
+	
+	Glib::RefPtr<Gtk::Application> app;
+
+	bool setImage(CairoCalibration*);
 
 public:
+
+	int GUI();
 
 	Point imageSize;
 	Point pointCutField1;
