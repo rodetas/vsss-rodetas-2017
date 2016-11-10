@@ -352,9 +352,6 @@ int Calibration::GUI(){
 
     menu_bar.append(menu_navegation);
     menu_bar.append(menu_file);
-
-    Gtk::Button btn_hsv;
-        btn_hsv.add_label("MENU"); 
     
     vector<Gtk::Label> text_HSV(6);
         for (int i = 0; i < text_HSV.size(); i++){
@@ -385,9 +382,13 @@ int Calibration::GUI(){
         box_pop_over.set_border_width(20);
         box_pop_over.pack_start(grid_pop_over);
 
-    Gtk::Popover pop_menu;
-        pop_menu.set_relative_to(btn_hsv);
-        pop_menu.add(box_pop_over);
+////////////// declared in .h ////////////// 
+    pop_menu.set_relative_to(btn_hsv);
+    pop_menu.add(box_pop_over);
+
+    btn_hsv.add_label("MENU");
+    btn_hsv.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
+///////////////////////////////////////////
 
     CairoCalibration draw_image;	
 		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
@@ -401,7 +402,7 @@ int Calibration::GUI(){
     Gtk::Box box(Gtk::ORIENTATION_VERTICAL);
 		box.set_border_width(0);
         box.pack_start(menu_bar, Gtk::PACK_SHRINK);
-		box.pack_start(grid, false, false, 20);        
+		box.pack_start(grid, false, false, 20);
 		box.pack_start(draw_image);
 
     add(box);
@@ -435,4 +436,10 @@ void Calibration::onMenuArduino(){
 
 void Calibration::onMenuQuit(){
     program_state = EXIT; app->quit();
+}
+
+void Calibration::onButtonHSV() {
+    bool active = btn_hsv.get_focus_on_click();
+    pop_menu.show_all();
+    pop_menu.set_visible(active);
 }
