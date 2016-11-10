@@ -281,7 +281,7 @@ int Calibration::GUI(){
 	app = Gtk::Application::create();
 
     set_title("Calibration");
-    set_icon_from_file("gtk.png");
+    //set_icon_from_file("gtk.png");
     maximize();
 
     Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
@@ -366,42 +366,88 @@ int Calibration::GUI(){
     menu_bar.append(menu_navegation);
     menu_bar.append(menu_file);
     
-    vector<Gtk::Label> text_HSV(6);
-        for (int i = 0; i < text_HSV.size(); i++){
-            text_HSV[i].set_alignment(Gtk::ALIGN_START);
-        }
-        text_HSV[0].set_label("H max:");
-        text_HSV[1].set_label("H min:");
-        text_HSV[2].set_label("S max:");
-        text_HSV[3].set_label("S min:");
-        text_HSV[4].set_label("V max:");
-        text_HSV[5].set_label("V min:");
+/////////////////// HSV POPOVER //////////////////////////
 
-    vector<Gtk::Scale> scale_HSV(6);
-        for (int i = 0; i < scale_HSV.size(); i++){
-            scale_HSV[i].set_size_request(150,20);
-            scale_HSV[i].set_draw_value(false);
-            scale_HSV[i].set_range(0,100);
-            scale_HSV[i].set_value(50);
+    vector<Gtk::Label> text_HSV_popover(6);
+        for (int i = 0; i < text_HSV_popover.size(); i++){
+            text_HSV_popover[i].set_alignment(Gtk::ALIGN_START);
+        }
+        text_HSV_popover[0].set_label("H max:");
+        text_HSV_popover[1].set_label("H min:");
+        text_HSV_popover[2].set_label("S max:");
+        text_HSV_popover[3].set_label("S min:");
+        text_HSV_popover[4].set_label("V max:");
+        text_HSV_popover[5].set_label("V min:");
+
+    vector<Gtk::Scale> scale_HSV_popover(6);
+        for (int i = 0; i < scale_HSV_popover.size(); i++){
+            scale_HSV_popover[i].set_size_request(150,20);
+            scale_HSV_popover[i].set_draw_value(false);
+            scale_HSV_popover[i].set_range(0,100);
+            scale_HSV_popover[i].set_value(50);
         }
 
-    Gtk::Grid grid_pop_over;
-        for (int i = 0; i < scale_HSV.size(); i++){
-            grid_pop_over.attach(text_HSV[i], 0, i, 1, 1);
-            grid_pop_over.attach(scale_HSV[i], 1, i, 2, 1);
+    Gtk::Grid grid_HSV_popover;
+        for (int i = 0; i < scale_HSV_popover.size(); i++){
+            grid_HSV_popover.attach(text_HSV_popover[i], 0, i, 1, 1);
+            grid_HSV_popover.attach(scale_HSV_popover[i], 1, i, 2, 1);
         }
     
-    Gtk::Box box_pop_over;
-        box_pop_over.set_border_width(20);
-        box_pop_over.pack_start(grid_pop_over);
+    Gtk::Box box_HSV_popover;
+        box_HSV_popover.set_border_width(20);
+        box_HSV_popover.pack_start(grid_HSV_popover);
 
-////////////// declared in .h ////////////// 
-    pop_menu.set_relative_to(btn_hsv);
-    pop_menu.add(box_pop_over);
+/////// declared in .h /////// 
 
-    btn_hsv.add_label("HSV Control");
-    btn_hsv.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
-///////////////////////////////////////////
+    HSV_popover.set_relative_to(button_HSV_popover);
+    HSV_popover.add(box_HSV_popover);
+
+    button_HSV_popover.add_label("HSV Controls");
+    button_HSV_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
+
+//////////////////////////////
+
+/////////////////// CAM POPOVER //////////////////////////
+
+    vector<Gtk::Label> text_CAM_popover(6);
+        for (int i = 0; i < text_CAM_popover.size(); i++){
+            text_CAM_popover[i].set_alignment(Gtk::ALIGN_START);
+        }
+        text_CAM_popover[0].set_label("Brightness:");
+        text_CAM_popover[1].set_label("Contrast:");
+        text_CAM_popover[2].set_label("Saturation:");
+        text_CAM_popover[3].set_label("Gain:");
+        text_CAM_popover[4].set_label("Sharpness:");
+        text_CAM_popover[5].set_label("Exposure:");   
+
+    vector<Gtk::Scale> scale_CAM_popover(6);
+        for (int i = 0; i < scale_CAM_popover.size(); i++){
+            scale_CAM_popover[i].set_size_request(150,20);
+            scale_CAM_popover[i].set_draw_value(false);
+            scale_CAM_popover[i].set_range(0,100);
+            scale_CAM_popover[i].set_value(50);
+        }
+
+    Gtk::Grid grid_CAM_popover;
+        for (int i = 0; i < scale_CAM_popover.size(); i++){
+            grid_CAM_popover.attach(text_CAM_popover[i], 0, i, 1, 1);
+            grid_CAM_popover.attach(scale_CAM_popover[i], 1, i, 2, 1);
+        }
+    
+    Gtk::Box box_CAM_popover;
+        box_CAM_popover.set_border_width(20);
+        box_CAM_popover.pack_start(grid_CAM_popover);
+
+/////// declared in .h /////// 
+
+    CAM_popover.set_relative_to(button_CAM_popover);
+    CAM_popover.add(box_CAM_popover);
+
+    button_CAM_popover.add_label("CAM Controls");
+    button_CAM_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonCAM) );
+
+//////////////////////////////
+
 
     CairoCalibration draw_image;	
 		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
@@ -409,52 +455,63 @@ int Calibration::GUI(){
     Gtk::RadioButton
         radio_button_image("Image"),
         radio_button_camera("Camera");
-
     Gtk::RadioButton::Group group = 
         radio_button_image.get_group();
         radio_button_camera.set_group(group);
+    Gtk::Grid grid_radio_button;
+        grid_radio_button.set_column_homogeneous(true);
+        grid_radio_button.attach(radio_button_image, 0, 0, 1, 1);
+        grid_radio_button.attach(radio_button_camera, 1, 0, 1, 1);
 
-    Gtk::ComboBoxText combo;
-        combo.set_size_request(200, -1);
+    Gtk::ComboBoxText combo_calibrate_select;
+        combo_calibrate_select.set_size_request(200, -1);
+        combo_calibrate_select.append("Player 0");
+        combo_calibrate_select.append("Player 1");
+        combo_calibrate_select.append("Player 2");
+        combo_calibrate_select.append("Team");
+        combo_calibrate_select.append("Opponent");
+        combo_calibrate_select.append("Ball");
+        combo_calibrate_select.set_active_text("Player 0");
 
+    Gtk::Label text_rotate("Rotate");
     Gtk::Scale scale_rotate;
         scale_rotate.set_size_request(150,20);
         scale_rotate.set_draw_value(false);
         scale_rotate.set_range(0,360);
         scale_rotate.set_value(180);
+    Gtk::Grid grid_rotate;
+        grid_rotate.attach(text_rotate, 0, 0, 1, 1);
+        grid_rotate.attach(scale_rotate, 1, 0, 1, 1);
 
-    Gtk::Label text_rotate("Rotate");
+    Gtk::HSeparator seperator1, seperator2, seperator3, seperator4;
 
-    Gtk::Separator separator1, separator2, separator3;
+    Gtk::Box right_box(Gtk::ORIENTATION_VERTICAL);
+		right_box.set_spacing(30);
+		right_box.set_border_width(20);
+		right_box.pack_start(grid_radio_button, Gtk::PACK_SHRINK);
+        right_box.pack_start(seperator1, Gtk::PACK_SHRINK);
+		right_box.pack_start(combo_calibrate_select, Gtk::PACK_SHRINK);
+        right_box.pack_start(seperator2, Gtk::PACK_SHRINK);
+		right_box.pack_start(button_HSV_popover, Gtk::PACK_SHRINK);
+        right_box.pack_start(seperator3, Gtk::PACK_SHRINK);
+        right_box.pack_start(button_CAM_popover, Gtk::PACK_SHRINK);
+        right_box.pack_start(seperator4, Gtk::PACK_SHRINK);      
+		right_box.pack_start(grid_rotate, Gtk::PACK_SHRINK);
 
-    Gtk::Grid grid;
-        grid.set_row_spacing(40);
-        grid.set_border_width(20);
-
-        grid.attach(radio_button_image, 0, 0, 1, 1);
-        grid.attach(radio_button_camera, 1, 0, 1, 1);
-        grid.attach(separator1, 0, 1, 2, 1);
-        grid.attach(combo, 0, 2, 2, 1);
-        grid.attach(separator2, 0, 3, 2, 1);      
-        grid.attach(btn_hsv, 0, 4, 2, 1);
-        grid.attach(separator3, 0, 5, 2, 1);
-        grid.attach(text_rotate, 0, 6, 1, 1);
-        grid.attach(scale_rotate, 1, 6, 1, 1);
-        
-    Gtk::Box box_draw;
-        box_draw.set_border_width(20);
-        box_draw.pack_start(draw_image);  
+    Gtk::Box draw_box;
+        draw_box.set_border_width(20);
+        draw_box.pack_start(draw_image);  
     
-    Gtk::Box box_under_menu(Gtk::ORIENTATION_HORIZONTAL);
-		box_under_menu.pack_start(box_draw);    
-        box_under_menu.pack_start(grid, false, false, 20);
+    Gtk::Box under_menu_box(Gtk::ORIENTATION_HORIZONTAL);
+		under_menu_box.pack_start(draw_box);    
+        under_menu_box.pack_start(right_box, false, false, 20);
 
-    Gtk::Box box(Gtk::ORIENTATION_VERTICAL);
-		box.set_border_width(0);
-        box.pack_start(menu_bar, Gtk::PACK_SHRINK);
-        box.pack_start(box_under_menu);
+    Gtk::Box global_box(Gtk::ORIENTATION_VERTICAL);
+		global_box.set_border_width(0);
+        global_box.pack_start(menu_bar, Gtk::PACK_SHRINK);
+        global_box.pack_start(under_menu_box);
 		
-    add(box);
+    add(global_box);
     show_all();
 
   	app->run(*this);
@@ -488,7 +545,11 @@ void Calibration::onMenuQuit(){
 }
 
 void Calibration::onButtonHSV() {
-    bool active = btn_hsv.get_focus_on_click();
-    pop_menu.show_all();
-    pop_menu.set_visible(active);
+    HSV_popover.show_all();
+    HSV_popover.set_visible(button_HSV_popover.get_focus_on_click());
+}
+
+void Calibration::onButtonCAM() {
+    CAM_popover.show_all();
+    CAM_popover.set_visible(button_CAM_popover.get_focus_on_click());
 }

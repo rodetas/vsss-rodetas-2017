@@ -43,8 +43,11 @@ private:
 	int program_state;
 
 	Glib::RefPtr<Gtk::Application> app;
-	Gtk::Button btn_hsv;
-	Gtk::Popover pop_menu;
+
+	Gtk::Button button_HSV_popover;
+	Gtk::Button button_CAM_popover;
+	Gtk::Popover HSV_popover;
+	Gtk::Popover CAM_popover;
 
 	bool setImage(CairoCalibration*);
 
@@ -53,8 +56,9 @@ private:
 	void onMenuSimulator();
 	void onMenuArduino();
 	void onMenuQuit();
+	
 	void onButtonHSV();
-
+	void onButtonCAM();
 
 public:
 
