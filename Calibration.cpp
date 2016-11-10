@@ -280,13 +280,12 @@ int Calibration::GUI(){
 			
 	app = Gtk::Application::create();
 
-	set_title("Calibration");
+    set_title("Calibration");
+    set_icon_from_file("gtk.png");
     maximize();
 
-    //Gtk::AccelMap accel_map;
-    //accel_map.add_entry("<Rodetas>/Navegation/Start", "Naosei");
-
-    //add_accel_group(accel_map);
+    Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
+    add_accel_group(accel_map);
 
     Gtk::MenuBar menu_bar;
 
@@ -298,31 +297,44 @@ int Calibration::GUI(){
     Gtk::Menu subMenuNavigation;
     menu_navegation.set_submenu(subMenuNavigation);
 
-    Gtk::ImageMenuItem menu_play(Gtk::Stock::GO_FORWARD);
-    menu_play.set_label("Start Game");
+    Gtk::MenuItem menu_play;
+    menu_play.set_label("_Start Game");
+    menu_play.set_use_underline(true);
+    menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    menu_play.render_icon_pixbuf(Gtk::Stock::GO_FORWARD,Gtk::ICON_SIZE_LARGE_TOOLBAR);
+    menu_play.show();
+
     menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
     subMenuNavigation.append(menu_play);
 
-    Gtk::ImageMenuItem menu_calibration(Gtk::Stock::GO_FORWARD);
-    menu_calibration.set_label("Calibrate");
+    Gtk::MenuItem menu_calibration;
+    menu_calibration.set_label("_Calibrate");
+    menu_calibration.set_use_underline(true);
+    menu_calibration.add_accelerator("activate", accel_map, GDK_KEY_c, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
     menu_calibration.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuCalibration));
     subMenuNavigation.append(menu_calibration);
 
-    Gtk::ImageMenuItem menu_simulator(Gtk::Stock::GO_FORWARD);
-    menu_simulator.set_label("Simulate");
+    Gtk::MenuItem menu_simulator;
+    menu_simulator.set_label("S_imulate");
+    menu_simulator.set_use_underline(true);
+    menu_simulator.add_accelerator("activate", accel_map, GDK_KEY_s, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
     menu_simulator.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuSimulator));
     subMenuNavigation.append(menu_simulator);
 
-    Gtk::ImageMenuItem menu_arduino(Gtk::Stock::GO_FORWARD);
-    menu_arduino.set_label("Upload Arduino");
+    Gtk::MenuItem menu_arduino;
+    menu_arduino.set_label("_Upload Arduino");
+    menu_arduino.set_use_underline(true);
+    menu_arduino.add_accelerator("activate", accel_map, GDK_KEY_u, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
     menu_arduino.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuArduino));
     subMenuNavigation.append(menu_arduino);
 
     Gtk::SeparatorMenuItem separator;
     subMenuNavigation.append(separator);
 
-    Gtk::ImageMenuItem menu_quit(Gtk::Stock::QUIT);
-    menu_quit.set_label("Quit");
+    Gtk::MenuItem menu_quit;
+    menu_quit.set_label("_Quit");
+    menu_quit.set_use_underline(true);
+    menu_quit.add_accelerator("activate", accel_map, GDK_KEY_q, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
     menu_quit.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
     subMenuNavigation.append(menu_quit);
 
@@ -334,11 +346,12 @@ int Calibration::GUI(){
     Gtk::Menu subMenuFile;
     menu_file.set_submenu(subMenuFile);
 
-    Gtk::ImageMenuItem menu_save(Gtk::Stock::FLOPPY);
+    Gtk::ImageMenuItem menu_save(Gtk::Stock::SAVE);
     menu_save.set_label("Save Calibration");
     subMenuFile.append(menu_save);
 
     Gtk::ImageMenuItem menu_cut(Gtk::Stock::CUT);
+    menu_cut.set_opacity(0.5);
     menu_cut.set_label("Cut Image");
     subMenuFile.append(menu_cut);
 
@@ -471,7 +484,7 @@ void Calibration::onMenuArduino(){
 }
 
 void Calibration::onMenuQuit(){
-    program_state = EXIT; app->quit();
+    program_state = MENU; app->quit();
 }
 
 void Calibration::onButtonHSV() {
