@@ -352,13 +352,19 @@ int Calibration::GUI(){
         text_HSV_popover[4].set_label("V max:");
         text_HSV_popover[5].set_label("V min:");
 
-    vector<Gtk::Scale> scale_HSV_popover(6);
+    scale_HSV_popover.resize(6);
         for (int i = 0; i < scale_HSV_popover.size(); i++){
             scale_HSV_popover[i].set_size_request(150,20);
             scale_HSV_popover[i].set_draw_value(false);
             scale_HSV_popover[i].set_range(0,100);
             scale_HSV_popover[i].set_value(50);
         }
+        scale_HSV_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleHMax) );        
+        scale_HSV_popover[1].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleHMin) );        
+        scale_HSV_popover[2].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleSMax) );        
+        scale_HSV_popover[3].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleSMin) );        
+        scale_HSV_popover[4].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleVMax) );        
+        scale_HSV_popover[5].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleVMin) );         
 
     Gtk::Grid grid_HSV_popover;
         for (int i = 0; i < scale_HSV_popover.size(); i++){
@@ -370,15 +376,11 @@ int Calibration::GUI(){
         box_HSV_popover.set_border_width(20);
         box_HSV_popover.pack_start(grid_HSV_popover);
 
-/////// declared in .h /////// 
-
     HSV_popover.set_relative_to(button_HSV_popover);
     HSV_popover.add(box_HSV_popover);
 
     button_HSV_popover.add_label("HSV Controls");
     button_HSV_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
-
-//////////////////////////////
 
 /////////////////// CAM POPOVER //////////////////////////
 
@@ -417,16 +419,13 @@ int Calibration::GUI(){
         box_CAM_popover.set_border_width(20);
         box_CAM_popover.pack_start(grid_CAM_popover);
 
-/////// declared in .h /////// 
-
     CAM_popover.set_relative_to(button_CAM_popover);
     CAM_popover.add(box_CAM_popover);
 
     button_CAM_popover.add_label("CAM Controls");
     button_CAM_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonCAM) );
 
-//////////////////////////////
-
+/////////////////// DRAW //////////////////////////
 
     CairoCalibration draw_image;	
 		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
@@ -455,11 +454,12 @@ int Calibration::GUI(){
         combo_calibrate_select.add_accelerator("on_changed", accel_map, GDK_KEY_Up, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
 
     Gtk::Label text_rotate("Rotate");
-    Gtk::Scale scale_rotate;
         scale_rotate.set_size_request(150,20);
         scale_rotate.set_draw_value(false);
         scale_rotate.set_range(0,360);
         scale_rotate.set_value(180);
+        scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );        
+        
     Gtk::Grid grid_rotate;
         grid_rotate.attach(text_rotate, 0, 0, 1, 1);
         grid_rotate.attach(scale_rotate, 1, 0, 1, 1);
@@ -541,7 +541,6 @@ void Calibration::onCalibrateAccel(){
     cout << "teste" << endl;
 }
 
-
 void Calibration::onScaleCAMBrightness(){
     cout << scale_CAM_popover[0].get_value() << endl;
 }
@@ -564,4 +563,32 @@ void Calibration::onScaleCAMSharpness(){
 
 void Calibration::onScaleCAMExposure(){
     cout << scale_CAM_popover[5].get_value() << endl;
+}
+
+void Calibration::onScaleHMax(){
+    cout << scale_HSV_popover[0].get_value() << endl;
+}
+
+void Calibration::onScaleHMin(){
+    cout << scale_HSV_popover[1].get_value() << endl;
+}
+
+void Calibration::onScaleSMax(){
+    cout << scale_HSV_popover[2].get_value() << endl;
+}
+
+void Calibration::onScaleSMin(){
+    cout << scale_HSV_popover[3].get_value() << endl;
+}
+
+void Calibration::onScaleVMax(){
+    cout << scale_HSV_popover[4].get_value() << endl;
+}
+
+void Calibration::onScaleVMin(){
+    cout << scale_HSV_popover[5].get_value() << endl;
+}
+
+void Calibration::onScaleRotate(){
+    cout << scale_rotate.get_value() << endl;
 }
