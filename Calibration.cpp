@@ -451,12 +451,10 @@ void Calibration::GUI(){
     Gtk::Label text_rotate("Rotate");
         scale_rotate.set_adjustment(Gtk::Adjustment::create(1.0, 0.0, 360.0, 0.5, 1.0, 2.0));
         scale_rotate.set_size_request(150,20);
-        scale_rotate.set_draw_value(false);
-        scale_rotate.set_range(0,360);
         scale_rotate.set_value(180);
         scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );  
-        scale_rotate.set_draw_value(true);    
-        scale_rotate.set_digits(1);  
+        scale_rotate.set_draw_value(true);
+        scale_rotate.set_digits(1);
         
     Gtk::Grid grid_rotate;
         grid_rotate.attach(text_rotate, 0, 0, 1, 1);
