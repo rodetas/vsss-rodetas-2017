@@ -6,7 +6,6 @@
 #include "Calibration.h"
 #include "Transmission.h"
 #include "Strategy.h"
-#include "GUI/Simulator.h"
 #include "GUI/Arduino.h"
 #include "GUI/Menu.h"
 #include "GUI/CairoDraw.h"
@@ -25,7 +24,6 @@ private:
 	Strategy strategy;
 	Vision vision;
 	Fps fps;
-	Simulator simulator;
 
 	vector<rodetas::Object> objects;
 	vector<string> movements;

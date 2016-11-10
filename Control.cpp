@@ -37,15 +37,7 @@ void Control::handle(){
 			} break;
 
 			case SIMULATOR:{
-				simulator.openWindow();
-				while(!simulator.getEndSimulator()){
-					simulator.simulate();
-					strategy.setObjects(simulator.getPositions());
-					strategy.handleStrategies();
-					simulator.setTargets(strategy.getTargets());
-				}
-				simulator.setEndSimulator(false);
-				program_state = MENU; // retornar estado do programa atraves do simulator
+				
 			} break;
 			
 			case CALIBRATION:{

@@ -33,10 +33,11 @@ private:
 	vector<Rgb> colorsRGB;
 	vector<float> blobSize;
 
-	Point resolutionCamera;
-
     int camera;
 	int program_state;
+	int selected_player;
+
+	Point resolutionCamera;
 
     double angle_image;
 
@@ -44,10 +45,17 @@ private:
 
 	Glib::RefPtr<Gtk::Application> app;
 
+	Gtk::ComboBoxText combo_choose_player;
+
+	Gtk::RadioButton radio_button_image;
+    Gtk::RadioButton radio_button_camera;
+
 	Gtk::Button button_HSV_popover;
 	Gtk::Button button_CAM_popover;
+
 	Gtk::Popover HSV_popover;
 	Gtk::Popover CAM_popover;
+
     Gtk::Scale scale_rotate;
     vector<Gtk::Scale> scale_CAM_popover;
     vector<Gtk::Scale> scale_HSV_popover;
@@ -78,7 +86,9 @@ private:
 	void onScaleCAMSharpness();
 	void onScaleCAMExposure();
     
-	void onCalibrateAccel();
+	void onChoosePlayer();
+	void onRadioButtonImage();
+	void onRadioButtonCamera();
 
 public:
 

@@ -17,6 +17,7 @@ Calibration::Calibration(){
     getCalibration();
     camera = getCameraNumber();
 
+    selected_player = 0;
     program_state = MENU;
 }
 
@@ -314,26 +315,60 @@ void Calibration::GUI(){
     menu_file.set_submenu(subMenuFile);
 
     Gtk::ImageMenuItem menu_save(Gtk::Stock::SAVE);
+    menu_save.set_state(Gtk::StateType::STATE_INSENSITIVE);
     menu_save.set_label("Save Calibration");
     subMenuFile.append(menu_save);
 
     Gtk::ImageMenuItem menu_cut(Gtk::Stock::CUT);
-    menu_cut.set_opacity(0.5);
+    menu_cut.set_state(Gtk::StateType::STATE_INSENSITIVE);
     menu_cut.set_label("Cut Image");
     subMenuFile.append(menu_cut);
 
     Gtk::ImageMenuItem menu_reset(Gtk::Stock::CLEAR);
+    menu_reset.set_state(Gtk::StateType::STATE_INSENSITIVE);
     menu_reset.set_label("Reset Values");
     subMenuFile.append(menu_reset);
 
     Gtk::ImageMenuItem menu_refresh(Gtk::Stock::REFRESH);
-    menu_refresh.set_label("Refresh Devices");
+    menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
     subMenuFile.append(menu_refresh);
 
     menu_bar.append(menu_navegation);
     menu_bar.append(menu_file);
-    
-/////////////////// HSV POPOVER //////////////////////////
+
+/////////////////// RADIO BUTTON - SET DEVICE ///////////////////////
+
+    radio_button_image.set_label("Image");
+    radio_button_camera.set_label("Camera");
+
+    Gtk::RadioButton::Group group;
+        radio_button_image.signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonImage));
+        radio_button_camera.signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonCamera));
+
+        radio_button_image.set_group(group);
+        radio_button_camera.set_group(group);
+
+    Gtk::Grid grid_radio_button;
+        grid_radio_button.set_column_homogeneous(true);
+        grid_radio_button.attach(radio_button_image, 0, 0, 1, 1);
+        grid_radio_button.attach(radio_button_camera, 1, 0, 1, 1);
+
+/////////////////// COMBO BOX - SELECT Player /////////////////////////
+
+        combo_choose_player.set_size_request(200, -1);
+        combo_choose_player.append("Player 0");
+        combo_choose_player.append("Player 1");
+        combo_choose_player.append("Player 2");
+        combo_choose_player.append("Team");
+        combo_choose_player.append("Opponent");
+        combo_choose_player.append("Ball");
+        combo_choose_player.set_active_text("Player 0");
+        combo_choose_player.signal_changed().connect(sigc::mem_fun(this, &Calibration::onChoosePlayer));
+        combo_choose_player.add_accelerator(
+                "popup", accel_map, 32, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); // 32 -> Space bar
+
+
+/////////////////// BOX - SELECT HSV //////////////////////////
 
     vector<Gtk::Label> text_HSV_popover(6);
         for (int i = 0; i < text_HSV_popover.size(); i++){
@@ -370,13 +405,14 @@ void Calibration::GUI(){
         box_HSV_popover.set_border_width(20);
         box_HSV_popover.pack_start(grid_HSV_popover);
 
+    HSV_popover.set_position(Gtk::PositionType::POS_BOTTOM);
     HSV_popover.set_relative_to(button_HSV_popover);
     HSV_popover.add(box_HSV_popover);
 
     button_HSV_popover.add_label("HSV Controls");
     button_HSV_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
 
-/////////////////// CAM POPOVER //////////////////////////
+/////////////////// BOX - CONFIG CAMERA //////////////////////////
 
     vector<Gtk::Label> text_CAM_popover(6);
         for (int i = 0; i < text_CAM_popover.size(); i++){
@@ -419,46 +455,30 @@ void Calibration::GUI(){
     button_CAM_popover.add_label("CAM Controls");
     button_CAM_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonCAM) );
 
-/////////////////// DRAW //////////////////////////
+    if(radio_button_image.get_active()){
+        button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
+    }
 
-    CairoCalibration draw_image;	
-		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
-
-    Gtk::RadioButton
-        radio_button_image("Image"),
-        radio_button_camera("Camera");
-    Gtk::RadioButton::Group group = 
-        radio_button_image.get_group();
-        radio_button_camera.set_group(group);
-    Gtk::Grid grid_radio_button;
-        grid_radio_button.set_column_homogeneous(true);
-        grid_radio_button.attach(radio_button_image, 0, 0, 1, 1);
-        grid_radio_button.attach(radio_button_camera, 1, 0, 1, 1);
-
-    Gtk::ComboBoxText combo_calibrate_select;
-        combo_calibrate_select.set_size_request(200, -1);
-        combo_calibrate_select.append("Player 0");
-        combo_calibrate_select.append("Player 1");
-        combo_calibrate_select.append("Player 2");
-        combo_calibrate_select.append("Team");
-        combo_calibrate_select.append("Opponent");
-        combo_calibrate_select.append("Ball");
-        combo_calibrate_select.set_active_text("Player 0");
-        combo_calibrate_select.signal_changed().connect(sigc::mem_fun(this, &Calibration::onCalibrateAccel));
-        combo_calibrate_select.add_accelerator(
-                "popup", accel_map, 32, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); // 32 -> Space bar
+//////////////////////// SCALE ROTATE IMAGE ///////////////////////
 
     Gtk::Label text_rotate("Rotate");
         scale_rotate.set_adjustment(Gtk::Adjustment::create(1.0, 0.0, 360.0, 0.5, 1.0, 2.0));
         scale_rotate.set_size_request(150,20);
         scale_rotate.set_value(180);
-        scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );  
+        scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );
         scale_rotate.set_draw_value(true);
         scale_rotate.set_digits(1);
         
     Gtk::Grid grid_rotate;
         grid_rotate.attach(text_rotate, 0, 0, 1, 1);
         grid_rotate.attach(scale_rotate, 1, 0, 1, 1);
+
+/////////////////// DRAW IMAGE //////////////////////////
+
+    CairoCalibration draw_image;	
+		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
+
+///////////////////////// CONTAINERS /////////////////////////////
 
     Gtk::HSeparator seperator1, seperator2, seperator3, seperator4;
 
@@ -467,7 +487,7 @@ void Calibration::GUI(){
 		right_box.set_border_width(20);
 		right_box.pack_start(grid_radio_button, Gtk::PACK_SHRINK);
         right_box.pack_start(seperator1, Gtk::PACK_SHRINK);
-		right_box.pack_start(combo_calibrate_select, Gtk::PACK_SHRINK);
+		right_box.pack_start(combo_choose_player, Gtk::PACK_SHRINK);
         right_box.pack_start(seperator2, Gtk::PACK_SHRINK);
 		right_box.pack_start(button_HSV_popover, Gtk::PACK_SHRINK);
         right_box.pack_start(seperator3, Gtk::PACK_SHRINK);
@@ -531,8 +551,10 @@ void Calibration::onButtonCAM() {
     CAM_popover.set_visible(button_CAM_popover.get_focus_on_click());
 }
 
-void Calibration::onCalibrateAccel(){
-    cout << "teste" << endl;
+void Calibration::onChoosePlayer(){
+    selected_player = combo_choose_player.get_active_row_number();
+    cout << selected_player << endl;
+    HSV_popover.show_all();
 }
 
 void Calibration::onScaleCAMBrightness(){
@@ -585,4 +607,12 @@ void Calibration::onScaleVMin(){
 
 void Calibration::onScaleRotate(){
     angle_image = scale_rotate.get_value();
+}
+
+void Calibration::onRadioButtonImage(){
+    button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
+}
+
+void Calibration::onRadioButtonCamera(){
+    button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
 }
