@@ -46,6 +46,8 @@ private:
 	Gtk::Button button_CAM_popover;
 	Gtk::Popover HSV_popover;
 	Gtk::Popover CAM_popover;
+    vector<Gtk::Scale> scale_CAM_popover;
+	
 
 	bool setImage(CairoCalibration*);
 
@@ -57,6 +59,13 @@ private:
 	
 	void onButtonHSV();
 	void onButtonCAM();
+
+    void onScaleCAMBrightness();
+	void onScaleCAMContrast();
+	void onScaleCAMSaturation();
+	void onScaleCAMGain();
+	void onScaleCAMSharpness();
+	void onScaleCAMExposure();
 
 	void onCalibrateAccel();
 

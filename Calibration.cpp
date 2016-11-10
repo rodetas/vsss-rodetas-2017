@@ -393,14 +393,19 @@ int Calibration::GUI(){
         text_CAM_popover[4].set_label("Sharpness:");
         text_CAM_popover[5].set_label("Exposure:");   
  
-    vector<Gtk::Scale> scale_CAM_popover(6);
+    scale_CAM_popover.resize(6);
         for (int i = 0; i < scale_CAM_popover.size(); i++){
             scale_CAM_popover[i].set_size_request(150,20);
             scale_CAM_popover[i].set_draw_value(false);
             scale_CAM_popover[i].set_range(0,100);
             scale_CAM_popover[i].set_value(50);
         }
-        //scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAM) );        
+        scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMBrightness) );        
+        scale_CAM_popover[1].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMContrast) );        
+        scale_CAM_popover[2].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSaturation) );        
+        scale_CAM_popover[3].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMGain) );        
+        scale_CAM_popover[4].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSharpness) );        
+        scale_CAM_popover[5].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMExposure) );         
 
     Gtk::Grid grid_CAM_popover;
         for (int i = 0; i < scale_CAM_popover.size(); i++){
@@ -534,4 +539,29 @@ void Calibration::onButtonCAM() {
 
 void Calibration::onCalibrateAccel(){
     cout << "teste" << endl;
+}
+
+
+void Calibration::onScaleCAMBrightness(){
+    cout << scale_CAM_popover[0].get_value() << endl;
+}
+
+void Calibration::onScaleCAMContrast(){
+    cout << scale_CAM_popover[1].get_value() << endl;
+}
+
+void Calibration::onScaleCAMSaturation(){
+    cout << scale_CAM_popover[2].get_value() << endl;
+}
+
+void Calibration::onScaleCAMGain(){
+    cout << scale_CAM_popover[3].get_value() << endl;
+}
+
+void Calibration::onScaleCAMSharpness(){
+    cout << scale_CAM_popover[4].get_value() << endl;
+}
+
+void Calibration::onScaleCAMExposure(){
+    cout << scale_CAM_popover[5].get_value() << endl;
 }
