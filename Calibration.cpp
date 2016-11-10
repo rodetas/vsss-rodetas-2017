@@ -307,7 +307,7 @@ int Calibration::GUI(){
     Gtk::MenuItem menu_quit;
     menu_quit.set_label("_Quit");
     menu_quit.set_use_underline(true);
-    menu_quit.add_accelerator("activate", accel_map, GDK_KEY_q, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    menu_quit.add_accelerator("activate", accel_map, GDK_KEY_Escape, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
     menu_quit.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
     subMenuNavigation.append(menu_quit);
 
@@ -446,8 +446,8 @@ int Calibration::GUI(){
         combo_calibrate_select.append("Opponent");
         combo_calibrate_select.append("Ball");
         combo_calibrate_select.set_active_text("Player 0");
-        combo_calibrate_select.signal_show().connect(sigc::mem_fun(this, &Calibration::onCalibrateAccel));
-        combo_calibrate_select.add_accelerator("", accel_map, GDK_KEY_Up, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+        combo_calibrate_select.signal_changed().connect(sigc::mem_fun(this, &Calibration::onCalibrateAccel));
+        combo_calibrate_select.add_accelerator("on_changed", accel_map, GDK_KEY_Up, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
 
     Gtk::Label text_rotate("Rotate");
     Gtk::Scale scale_rotate;
