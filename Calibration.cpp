@@ -4,8 +4,8 @@
  * class constructor
  */
 Calibration::Calibration(){
-    calibrationWasOpen = false;
-    endCalibration = true;
+    end_calibration = false;
+    
     selectedTab = 0;
     resolutionCamera = {1920,1080};
     colorsHSV.resize(6);
@@ -29,20 +29,16 @@ int Calibration::calibrate(){
 
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
-    while(endCalibration){
-
+    while(!end_calibration){
         imageWebCam();
         
-        opencvImageBGRCuted = opencvTransformation(opencvImageBGR, angleImageRotation, pointCutField1, pointCutField2, imageSizeZoom);
-        opencvImageHSV      = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2HSV_FULL);
-        opencvImageBinary   = opencvBinary(colorsHSV[selectedTab], opencvImageHSV);
-        
-        opencvImageCairo    = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2RGB);
-        opencvBGRtoRGB      = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2RGBA);
-        
+        opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2, imageSizeZoom);
+        opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
+        opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
+        opencv_image_binary     = opencvBinary(colorsHSV[selectedTab], opencv_image_HSV);
     }
 
-    manipulation.saveCalibration(colorsHSV, colorsRGB, blobSize, pointCutField1, pointCutField2, goal, angleImageRotation, cameraOn);
+    manipulation.saveCalibration(colorsHSV, colorsRGB, blobSize, pointCutField1, pointCutField2, goal, angle_image, cameraOn);
     cam.release();
 
     calibration_thread.detach();
@@ -64,7 +60,7 @@ void Calibration::updateHSV(){
     colorsHSV[selectedTab].setS(hsvPoint[1]);
     colorsHSV[selectedTab].setV(hsvPoint[2]);
 
-    blobSize[selectedTab] = blobRadius( opencvBinary(colorsHSV[selectedTab], opencvImageHSV) );
+    blobSize[selectedTab] = blobRadius( opencvBinary(colorsHSV[selectedTab], opencv_image_HSV) );
     
     changedColor = false;
 }
@@ -95,8 +91,8 @@ void Calibration::updateSlider(){
  */
 void Calibration::updateColorPixel(Point pixelPoint){
 
-    hsvPoint = opencvImageHSV.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
-    rgbPoint = opencvImageBGRCuted.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
+    hsvPoint = opencv_image_HSV.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
+    rgbPoint = opencv_image_BGR_cuted.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
 
     if(changedColor) 
         updateHSV();
@@ -162,9 +158,9 @@ void Calibration::imageInitialize(){
     if(!cameraOn){
         if(cam.isOpened()) { cam.release(); }
         
-        opencvImageBGR = cv::imread(imagePath);
+        opencv_image_BGR = cv::imread(imagePath);
 
-        if(opencvImageBGR.empty()){
+        if(opencv_image_BGR.empty()){
             emptyImage();
         }
 
@@ -175,9 +171,9 @@ void Calibration::imageInitialize(){
         if(cam.isOpened()){
             cam.set(CV_CAP_PROP_FRAME_WIDTH, resolutionCamera.x);
             cam.set(CV_CAP_PROP_FRAME_HEIGHT, resolutionCamera.y);
-            cam >> opencvImageBGR;
+            cam >> opencv_image_BGR;
             
-            if(!opencvImageBGR.empty()){
+            if(!opencv_image_BGR.empty()){
                 #ifdef CAMERACONFIG
                     configureCamera();
                 #endif
@@ -186,7 +182,7 @@ void Calibration::imageInitialize(){
         } else { closeConectionCamera(); }
     }
 
-    imageSize = opencvImageBGR.size();
+    imageSize = opencv_image_BGR.size();
 }
 
 /*
@@ -195,8 +191,8 @@ void Calibration::imageInitialize(){
 void Calibration::imageWebCam(){
 
     if(cameraOn){
-        cam >> opencvImageBGR; 
-        if (opencvImageBGR.empty()){
+        cam >> opencv_image_BGR; 
+        if (opencv_image_BGR.empty()){
             cout << "CRIAR TRATAMENTO DE ERRO PARA IMAGEM VAZIA" << endl;
         }
     }
@@ -204,8 +200,8 @@ void Calibration::imageWebCam(){
 
 void Calibration::imageCanCut(){
 
-    if( pointCutField1.x > opencvImageBGR.cols || pointCutField1.y > opencvImageBGR.rows ||
-        pointCutField2.x > opencvImageBGR.cols || pointCutField2.y > opencvImageBGR.rows ){
+    if( pointCutField1.x > opencv_image_BGR.cols || pointCutField1.y > opencv_image_BGR.rows ||
+        pointCutField2.x > opencv_image_BGR.cols || pointCutField2.y > opencv_image_BGR.rows ){
         pointCutFieldDefault();
     }
 
@@ -215,12 +211,10 @@ void Calibration::imageCanCut(){
 }
 
 void Calibration::emptyImage(){
-    endCalibration = true;
     cout << "Empty image from camera" << endl;
 }
 
 void Calibration::closeConectionCamera(){
-    endCalibration = true;
     cout << "Conection with camera failed" << endl;
 }
 
@@ -237,7 +231,7 @@ void Calibration::getCalibration(){
     pointCutField1 = manipulation.getPointField1();
     pointCutField2 = manipulation.getPointField2();
     goal = manipulation.getGoal();
-    angleImageRotation = manipulation.getAngleImage();
+    angle_image = manipulation.getAngleImage();
     cameraOn = manipulation.getCameraOn();
     blobSize = manipulation.getBlobSize();
 
@@ -249,7 +243,7 @@ void Calibration::getCalibration(){
 
 }
 
-int Calibration::GUI(){
+void Calibration::GUI(){
 			
 	app = Gtk::Application::create();
 
@@ -461,7 +455,7 @@ int Calibration::GUI(){
         scale_rotate.set_value(180);
         scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );  
         scale_rotate.set_draw_value(true);    
-        scale_rotate.set_digits(0);  
+        scale_rotate.set_digits(1);  
         
     Gtk::Grid grid_rotate;
         grid_rotate.attach(text_rotate, 0, 0, 1, 1);
@@ -499,14 +493,12 @@ int Calibration::GUI(){
     show_all();
 
   	app->run(*this);
-	
-    endCalibration = false;
-
-	return program_state;
+    
+    end_calibration = true;
 }
 
 bool Calibration::setImage(CairoCalibration *c){
-	c->setImage(opencvImageCairo);
+	c->setImage(opencv_image_cairo);
 	return true;
 }
 
@@ -593,6 +585,5 @@ void Calibration::onScaleVMin(){
 }
 
 void Calibration::onScaleRotate(){
-    cout << scale_rotate.get_value() << endl;
-    angleImageRotation = scale_rotate.get_value();
+    angle_image = scale_rotate.get_value();
 }

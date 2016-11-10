@@ -20,12 +20,11 @@ private:
 	Manipulation manipulation;
 	
 	cv::VideoCapture cam;
-	cv::Mat opencvImageBGR;
-	cv::Mat opencvImageHSV;
-	cv::Mat opencvImageBGRCuted;
-	cv::Mat opencvImageBinary;
-	cv::Mat opencvBGRtoRGB;
-	cv::Mat opencvImageCairo;
+    cv::Mat opencv_image_BGR_cuted;
+    cv::Mat opencv_image_BGR;
+    cv::Mat opencv_image_HSV;
+    cv::Mat opencv_image_cairo;
+    cv::Mat opencv_image_binary;
 
 	cv::Vec3b hsvPoint;
 	cv::Vec3b rgbPoint;
@@ -35,10 +34,13 @@ private:
 	vector<float> blobSize;
 
 	Point resolutionCamera;
-    bool calibrationWasOpen;
 
     int camera;
 	int program_state;
+
+    double angle_image;
+
+    bool end_calibration;
 
 	Glib::RefPtr<Gtk::Application> app;
 
@@ -80,16 +82,14 @@ private:
 
 public:
 
-	int GUI();
+	void GUI();
 
 	Point imageSize;
 	Point pointCutField1;
 	Point pointCutField2;
-	bool endCalibration;
 	bool cameraOn;
 	bool changedColor;
     int selectedTab;
-	int angleImageRotation;
     vector<int> range;
     Point imageSizeZoom;
     Point goal;
