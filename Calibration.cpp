@@ -386,25 +386,61 @@ int Calibration::GUI(){
     pop_menu.set_relative_to(btn_hsv);
     pop_menu.add(box_pop_over);
 
-    btn_hsv.add_label("MENU");
+    btn_hsv.add_label("HSV Control");
     btn_hsv.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
 ///////////////////////////////////////////
 
     CairoCalibration draw_image;	
 		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
 
-    Gtk::Grid grid;
-        grid.set_valign(Gtk::ALIGN_CENTER);
-        grid.set_halign(Gtk::ALIGN_CENTER);
+    Gtk::RadioButton
+        radio_button_image("Image"),
+        radio_button_camera("Camera");
 
-        grid.attach(btn_hsv,0,0,1,1);
+    Gtk::RadioButton::Group group = 
+        radio_button_image.get_group();
+        radio_button_camera.set_group(group);
+
+    Gtk::ComboBoxText combo;
+        combo.set_size_request(200, -1);
+
+    Gtk::Scale scale_rotate;
+        scale_rotate.set_size_request(150,20);
+        scale_rotate.set_draw_value(false);
+        scale_rotate.set_range(0,360);
+        scale_rotate.set_value(180);
+
+    Gtk::Label text_rotate("Rotate");
+
+    Gtk::Separator separator1, separator2, separator3;
+
+    Gtk::Grid grid;
+        grid.set_row_spacing(40);
+        grid.set_border_width(20);
+
+        grid.attach(radio_button_image, 0, 0, 1, 1);
+        grid.attach(radio_button_camera, 1, 0, 1, 1);
+        grid.attach(separator1, 0, 1, 2, 1);
+        grid.attach(combo, 0, 2, 2, 1);
+        grid.attach(separator2, 0, 3, 2, 1);      
+        grid.attach(btn_hsv, 0, 4, 2, 1);
+        grid.attach(separator3, 0, 5, 2, 1);
+        grid.attach(text_rotate, 0, 6, 1, 1);
+        grid.attach(scale_rotate, 1, 6, 1, 1);
+        
+    Gtk::Box box_draw;
+        box_draw.set_border_width(20);
+        box_draw.pack_start(draw_image);  
+    
+    Gtk::Box box_under_menu(Gtk::ORIENTATION_HORIZONTAL);
+		box_under_menu.pack_start(box_draw);    
+        box_under_menu.pack_start(grid, false, false, 20);
 
     Gtk::Box box(Gtk::ORIENTATION_VERTICAL);
 		box.set_border_width(0);
         box.pack_start(menu_bar, Gtk::PACK_SHRINK);
-		box.pack_start(grid, false, false, 20);
-		box.pack_start(draw_image);
-
+        box.pack_start(box_under_menu);
+		
     add(box);
     show_all();
 
