@@ -4,7 +4,6 @@
 #include "Header.h"
 #include "utils/Structs.h"
 #include "utils/OpenCV.h"
-#include "GUI/GUICalibration.h"
 #include "CRUD/Manipulation.h"
 #include "GUI/CairoCalibration.h"
 
@@ -18,7 +17,6 @@ class Calibration : public Gtk::Window, public OpenCV {
 
 private:
 
-	GUICalibration gui;
 	Manipulation manipulation;
 	
 	cv::VideoCapture cam;
@@ -96,7 +94,6 @@ public:
 	void pointCutFieldDefault();
 
 	void getCalibration();
-	void setGUICalibration(Calibration*);
 
 };
 #endif

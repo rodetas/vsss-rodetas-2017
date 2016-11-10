@@ -229,10 +229,6 @@ void Calibration::pointCutFieldDefault(){
     pointCutField2 = imageSize;
 }
 
-void Calibration::setGUICalibration(Calibration *c){
-    gui.setGUI(c);
-}
-
 void Calibration::getCalibration(){
     manipulation.loadCalibration();
     colorsHSV = manipulation.getColorsHsv();

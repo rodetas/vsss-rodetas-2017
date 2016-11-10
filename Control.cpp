@@ -50,7 +50,6 @@ void Control::handle(){
 			
 			case CALIBRATION:{
 				Calibration calibration;
-				calibration.setGUICalibration(&calibration);
 				program_state = calibration.calibrate();
 			} break;
 			
