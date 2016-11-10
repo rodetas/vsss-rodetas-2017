@@ -79,7 +79,6 @@ public:
 
 	Calibration();
 	int calibrate();
-	void openWindow();
 
 	void updateRGB();
 	void updateHSV();

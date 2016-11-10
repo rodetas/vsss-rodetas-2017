@@ -5,7 +5,7 @@
  */
 Calibration::Calibration(){
     calibrationWasOpen = false;
-    endCalibration = false;
+    endCalibration = true;
     selectedTab = 0;
     resolutionCamera = {1920,1080};
     colorsHSV.resize(6);
@@ -25,11 +25,11 @@ Calibration::Calibration(){
  */ 
 int Calibration::calibrate(){
 
-    openWindow();
+    imageInitialize();
 
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
-    while(!endCalibration){
+    while(endCalibration){
 
         imageWebCam();
         
@@ -39,37 +39,14 @@ int Calibration::calibrate(){
         
         opencvImageCairo    = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2RGB);
         opencvBGRtoRGB      = opencvColorSpace(opencvImageBGRCuted, cv::COLOR_BGR2RGBA);
-
-        gui.imageOpencvToSfml(opencvBGRtoRGB , opencvImageBinary);
-        gui.GUI();
         
     }
 
-    endCalibration = false;
     manipulation.saveCalibration(colorsHSV, colorsRGB, blobSize, pointCutField1, pointCutField2, goal, angleImageRotation, cameraOn);
     cam.release();
-    gui.closeWindow();
 
     calibration_thread.detach();
     return program_state;
-}
-
-/*
- * verify if calibration window has already openned
- */
-void Calibration::openWindow(){
-
-    imageInitialize();
-
-    if (!calibrationWasOpen){
-        gui.createWindow();
-        calibrationWasOpen = true;
-
-    } else {
-        gui.reopenWindow();
-    }
-
-    imageCanCut();
 }
 
 void Calibration::updateRGB(){
@@ -419,7 +396,7 @@ int Calibration::GUI(){
         text_CAM_popover[3].set_label("Gain:");
         text_CAM_popover[4].set_label("Sharpness:");
         text_CAM_popover[5].set_label("Exposure:");   
-
+ 
     vector<Gtk::Scale> scale_CAM_popover(6);
         for (int i = 0; i < scale_CAM_popover.size(); i++){
             scale_CAM_popover[i].set_size_request(150,20);
@@ -427,6 +404,7 @@ int Calibration::GUI(){
             scale_CAM_popover[i].set_range(0,100);
             scale_CAM_popover[i].set_value(50);
         }
+        //scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAM) );        
 
     Gtk::Grid grid_CAM_popover;
         for (int i = 0; i < scale_CAM_popover.size(); i++){
@@ -516,6 +494,8 @@ int Calibration::GUI(){
 
   	app->run(*this);
 	
+    endCalibration = false;
+
 	return program_state;
 }
 
