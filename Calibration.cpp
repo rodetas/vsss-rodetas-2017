@@ -254,7 +254,7 @@ int Calibration::GUI(){
 	app = Gtk::Application::create();
 
     set_title("Calibration");
-    //set_icon_from_file("gtk.png");
+    set_icon_from_file("gtk.png");
     maximize();
 
     Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
@@ -451,7 +451,8 @@ int Calibration::GUI(){
         combo_calibrate_select.append("Ball");
         combo_calibrate_select.set_active_text("Player 0");
         combo_calibrate_select.signal_changed().connect(sigc::mem_fun(this, &Calibration::onCalibrateAccel));
-        combo_calibrate_select.add_accelerator("on_changed", accel_map, GDK_KEY_Up, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+        combo_calibrate_select.add_accelerator(
+                "popup", accel_map, 32, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); // 32 -> Space bar
 
     Gtk::Label text_rotate("Rotate");
         scale_rotate.set_size_request(150,20);
