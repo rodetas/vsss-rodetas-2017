@@ -449,6 +449,7 @@ void Calibration::GUI(){
                 "popup", accel_map, 32, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); // 32 -> Space bar
 
     Gtk::Label text_rotate("Rotate");
+        scale_rotate.set_adjustment(Gtk::Adjustment::create(1.0, 0.0, 360.0, 0.5, 1.0, 2.0));
         scale_rotate.set_size_request(150,20);
         scale_rotate.set_draw_value(false);
         scale_rotate.set_range(0,360);
