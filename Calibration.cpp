@@ -459,7 +459,9 @@ int Calibration::GUI(){
         scale_rotate.set_draw_value(false);
         scale_rotate.set_range(0,360);
         scale_rotate.set_value(180);
-        scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );        
+        scale_rotate.signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );  
+        scale_rotate.set_draw_value(true);    
+        scale_rotate.set_digits(0);  
         
     Gtk::Grid grid_rotate;
         grid_rotate.attach(text_rotate, 0, 0, 1, 1);
@@ -592,4 +594,5 @@ void Calibration::onScaleVMin(){
 
 void Calibration::onScaleRotate(){
     cout << scale_rotate.get_value() << endl;
+    angleImageRotation = scale_rotate.get_value();
 }
