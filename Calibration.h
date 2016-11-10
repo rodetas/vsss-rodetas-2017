@@ -58,6 +58,8 @@ private:
 	void onButtonHSV();
 	void onButtonCAM();
 
+	void onCalibrateAccel();
+
 public:
 
 	int GUI();

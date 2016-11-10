@@ -273,7 +273,7 @@ int Calibration::GUI(){
     Gtk::MenuItem menu_play;
     menu_play.set_label("_Start Game");
     menu_play.set_use_underline(true);
-    menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
     menu_play.render_icon_pixbuf(Gtk::Stock::GO_FORWARD,Gtk::ICON_SIZE_LARGE_TOOLBAR);
     menu_play.show();
 
@@ -446,6 +446,8 @@ int Calibration::GUI(){
         combo_calibrate_select.append("Opponent");
         combo_calibrate_select.append("Ball");
         combo_calibrate_select.set_active_text("Player 0");
+        combo_calibrate_select.signal_show().connect(sigc::mem_fun(this, &Calibration::onCalibrateAccel));
+        combo_calibrate_select.add_accelerator("", accel_map, GDK_KEY_Up, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
 
     Gtk::Label text_rotate("Rotate");
     Gtk::Scale scale_rotate;
@@ -528,4 +530,8 @@ void Calibration::onButtonHSV() {
 void Calibration::onButtonCAM() {
     CAM_popover.show_all();
     CAM_popover.set_visible(button_CAM_popover.get_focus_on_click());
+}
+
+void Calibration::onCalibrateAccel(){
+    cout << "teste" << endl;
 }
