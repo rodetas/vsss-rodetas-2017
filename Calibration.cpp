@@ -249,7 +249,7 @@ void Calibration::GUI(){
 	app = Gtk::Application::create();
 
     set_title("Calibration");
-    set_icon_from_file("gtk.png");
+    set_icon_from_file("files/images/logo-rodetas.png");
     maximize();
 
     Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
