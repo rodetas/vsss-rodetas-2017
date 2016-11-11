@@ -329,8 +329,18 @@ void Calibration::GUI(){
     menu_reset.set_label("Reset Values");
     subMenuFile.append(menu_reset);
 
-    Gtk::ImageMenuItem menu_refresh(Gtk::Stock::REFRESH);
+    Gtk::SeparatorMenuItem separator2;
+    subMenuFile.append(separator2);
+
+    Gtk::ImageMenuItem menu_load_camera_config(Gtk::Stock::OPEN);
+    menu_load_camera_config.set_label("Load Camera Configuration");
+    menu_load_camera_config.set_state(Gtk::StateType::STATE_INSENSITIVE);
+    subMenuFile.append(menu_load_camera_config);
+
+    Gtk::MenuItem menu_refresh;
+    menu_refresh.set_label("Refresh Device");
     menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
+    menu_refresh.add_accelerator("activate", accel_map, GDK_KEY_F5, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); //116 -> f5
     subMenuFile.append(menu_refresh);
 
     menu_bar.append(menu_navegation);
