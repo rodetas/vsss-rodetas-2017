@@ -158,6 +158,20 @@ struct Information{
 
 };
 
+struct CameraConfiguration {
+	int brightness;
+	int contrast;
+	int saturation;
+	int gain;
+	int sharpness;
+	int exposure;
+
+	CameraConfiguration(){
+		brightness = contrast = saturation = -1;
+		gain = sharpness = exposure = -1;
+	}
+};
+
 template <typename T>
 string toString(const T value, const int n){
     std::ostringstream out;

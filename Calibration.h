@@ -10,6 +10,7 @@
 #include <gtkmm.h>
 #include <thread>
 #include <fstream>
+#include <string>
 
 using namespace rodetas;
 
@@ -37,6 +38,8 @@ private:
 	int program_state;
 	int selected_player;
 
+	CameraConfiguration camera_config;
+
 	Point resolutionCamera;
 
     double angle_image;
@@ -59,6 +62,8 @@ private:
     Gtk::Scale scale_rotate;
     vector<Gtk::Scale> scale_CAM_popover;
     vector<Gtk::Scale> scale_HSV_popover;
+
+    vector<Gtk::ImageMenuItem> vec_devices;
 	
 
 	bool setImage(CairoCalibration*);
@@ -107,6 +112,9 @@ public:
 
 	Calibration();
 	int calibrate();
+
+	void initCameraConfig();
+	void updateDevices();
 
 	void updateRGB();
 	void updateHSV();

@@ -12,6 +12,8 @@ Calibration::Calibration(){
     colorsRGB.resize(6);
     blobSize.resize(6);
     range.resize(6);   
+    //vec_devices.resize(1);
+
     changedColor = false;
 
     getCalibration();
@@ -19,6 +21,8 @@ Calibration::Calibration(){
 
     selected_player = 0;
     program_state = MENU;
+
+    initCameraConfig();
 }
 
 /*
@@ -306,6 +310,8 @@ void Calibration::GUI(){
     menu_quit.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
     subMenuNavigation.append(menu_quit);
 
+    menu_bar.append(menu_navegation);
+
 /////////////////// FILE MENU //////////////////////////
 
     Gtk::MenuItem menu_file;
@@ -329,22 +335,34 @@ void Calibration::GUI(){
     menu_reset.set_label("Reset Values");
     subMenuFile.append(menu_reset);
 
-    Gtk::SeparatorMenuItem separator2;
-    subMenuFile.append(separator2);
+    menu_bar.append(menu_file);
+
+///////////////////// CAMERA MENU ////////////////////////////////////
+
+    Gtk::MenuItem menu_camera;
+    menu_camera.set_label("Camera");
+
+    Gtk::Menu subMenuCamera;
+    menu_camera.set_submenu(subMenuCamera);
+
+    for(int i=0 ; i<vec_devices.size() ; i++){
+        subMenuCamera.append(vec_devices[i]);
+    }
 
     Gtk::ImageMenuItem menu_load_camera_config(Gtk::Stock::OPEN);
     menu_load_camera_config.set_label("Load Camera Configuration");
     menu_load_camera_config.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    subMenuFile.append(menu_load_camera_config);
+    subMenuCamera.append(menu_load_camera_config);
 
     Gtk::MenuItem menu_refresh;
     menu_refresh.set_label("Refresh Device");
     menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
     menu_refresh.add_accelerator("activate", accel_map, GDK_KEY_F5, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); //116 -> f5
-    subMenuFile.append(menu_refresh);
+    subMenuCamera.append(menu_refresh);
 
-    menu_bar.append(menu_navegation);
-    menu_bar.append(menu_file);
+    menu_bar.append(menu_camera);
+
+    updateDevices();
 
 /////////////////// RADIO BUTTON - SET DEVICE ///////////////////////
 
@@ -440,8 +458,17 @@ void Calibration::GUI(){
             scale_CAM_popover[i].set_size_request(150,20);
             scale_CAM_popover[i].set_draw_value(false);
             scale_CAM_popover[i].set_range(0,100);
-            scale_CAM_popover[i].set_value(50);
         }
+
+        scale_CAM_popover[0].set_value(camera_config.brightness);
+        scale_CAM_popover[0].set_range(-64,64);
+        scale_CAM_popover[1].set_value(camera_config.contrast);
+        scale_CAM_popover[2].set_value(camera_config.saturation);
+        scale_CAM_popover[3].set_value(camera_config.gain);
+        scale_CAM_popover[4].set_value(camera_config.sharpness);
+        scale_CAM_popover[5].set_value(camera_config.exposure);
+        scale_CAM_popover[5].set_range(50,10000);
+
         scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMBrightness) );        
         scale_CAM_popover[1].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMContrast) );        
         scale_CAM_popover[2].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSaturation) );        
@@ -524,6 +551,41 @@ void Calibration::GUI(){
   	app->run(*this);
     
     end_calibration = true;
+}
+
+void Calibration::initCameraConfig(){
+    string value;
+    value = executeCommand("uvcdynctrl -g brightness");
+    camera_config.brightness = stoi(value);
+    value = executeCommand("uvcdynctrl -g contrast");
+    camera_config.contrast = stoi(value);
+    value = executeCommand("uvcdynctrl -g saturation");
+    camera_config.saturation = stoi(value);
+
+    value = executeCommand("uvcdynctrl -g gain");
+    if(value.compare("ERROR: Unknown control specified.\n") != 0){
+        camera_config.gain = stoi(value);
+    }
+
+    value = executeCommand("uvcdynctrl -g sharpness");
+    camera_config.sharpness = stoi(value);
+    value = executeCommand("uvcdynctrl -g 'exposure (absolute)'");
+    camera_config.exposure = stoi(value);
+}
+
+void Calibration::updateDevices(){
+    string device;
+    string name_device;
+
+    for(int i=0 ; i<2 ; i++){
+
+        device = executeCommand("uvcdynctrl -l | grep video" + toString(i,1));
+        name_device = device.substr(device.find("video")+9);
+        //Gtk::ImageMenuItem menu_aux(name_device);
+        //vec_devices.push_back(menu_aux);
+    }
+
+    
 }
 
 bool Calibration::setImage(CairoCalibration *c){
