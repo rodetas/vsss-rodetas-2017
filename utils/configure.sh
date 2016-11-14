@@ -39,7 +39,7 @@ SUDO_UPDATE () {
 
 CLONE_PROJECT () {
 	echo "${GREEN}${BOLD}CLONING RODETAS SOURCE CODE${NORMAL}";
-	git clone https://manoeel@bitbucket.org/manoeel/rodetas.git;
+	git clone https://github.com/rodetas/rodetas.git;
 }
 
 INSTALL_GUV () {
@@ -95,7 +95,7 @@ INSTALL_OPENCV () {
 
 	ok=1;
 
-	if [ ${ASK_INSTALL} ]; then
+	if [ ${ASK_INSTALL} -eq 1 ]; then
 		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL OPENCV ? (Y\n) ${NORMAL}";
 		read answer;
 		if [ "${answer}" == "n" ]; then
@@ -116,7 +116,7 @@ INSTALL_OPENCV () {
 
 		cd opencv-3.0.0/;
 		mkdir build && cd build;
-		cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON DBUILD_EXAMPLES=ON -D WITH_IPP=OFF ..;
+		cmake -DENABLE_PRECOMPILED_HEADERS=OFF -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON DBUILD_EXAMPLES=ON -D WITH_IPP=OFF ..;
 		make -j4;
 		sudo make install;
 		sudo ldconfig;
@@ -181,12 +181,11 @@ INSTALL_SFML () {
 	fi
 }
 
-INSTALL_TGUI () {
-
+INSTALL_GTKMM () {
 	ok=1;
 
 	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL TGUI ? (Y\n) ${NORMAL}";
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL GTKMM ? (Y\n) ${NORMAL}";
 		read answer;
 		if [ "${answer}" == "n" ]; then
 			ok=0;
@@ -195,26 +194,19 @@ INSTALL_TGUI () {
 
 	if [ ${ok} -eq 1 ]; then
 
-		if [[ "${DISTRO}" == "Ubuntu" || "$DISTRO" == "neon" ]]; then
-			echo "${GREEN}${BOLD}INSTALLING TGUI FOR UBUNTU${NORMAL}";
-			sudo add-apt-repository -y ppa:texus/tgui
-			SUDO_UPDATE
-			INSTALL TGUI libtgui-dev
-		elif [ "${DISTRO}" == "Debian" ]; then
-			echo "${GREEN}${BOLD}INSTALLING TGUI FOR DEBIAN${NORMAL}";
-			EXIST=`find -maxdepth 1 -name 'TGUI-0.7.1'`
+		if [[ ${DISTRO} == "Ubuntu" || ${DISTRO} == "neon" ]]; then
+			echo "${GREEN}${BOLD}INSTALLING GTKMM FOR UBUNTU...${NORMAL}"
+			INSTALL gtkmm libgtkmm-3.0-dev;
+			INSTALL gtkmm libgstreamermm-1.0-dev;
+			INSTALL gtkmm libgtkmm-3.0-doc;
+			INSTALL gtkmm libgstreamermm-1.0-doc;
+			INSTALL gtkmm devhelp;
 
-			if [ -z "${EXIST}" ]; then
-				echo "${GREEN}${BOLD}DOWNLOADING TGUI${NORMAL}";
-				wget https://codeload.github.com/texus/TGUI/zip/0.7.1 -O tgui;
-				unzip tgui;
-			fi
-
-			cd TGUI-0.7.1/;
-			cmake .;
-			sudo make install;
-			sudo ldconfig;
+		else
+			echo "${ERROR}NAO EXISTE SUPORTE PARA SUA DISTRO${NORMAL}"
+			ERROR_OCURRED=1;
 		fi
+
 	fi
 }
 
@@ -312,14 +304,15 @@ GET_INFORMATION;
 INSTALL_COMMONS_DEPEND;
 INSTALL_GUV;
 INSTALL_OPENCV;
+INSTALL_GTKMM;
 INSTALL_SFML;
-INSTALL_TGUI;
-
-cd ..
-sudo rm -rf installation
-
-#CLONE_PROJECT;
 
 if [ $ERROR_OCURRED -eq 1 ]; then
 	echo "${RED}${BOLD}SOME ERRORS OCURRED${NORMAL}";
+
+else
+	cd ..
+	sudo rm -rf installation
 fi
+
+#CLONE_PROJECT;
