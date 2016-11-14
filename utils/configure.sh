@@ -12,6 +12,7 @@ NORMAL=$(tput sgr0)
 
 DISTRO=`lsb_release -si`
 VERSION=`lsb_release -sr`
+CORES=`nproc`
 ARCH=`uname -m`
 
 SUDO_UPDATE="sudo apt-get update"
@@ -21,6 +22,57 @@ ERROR_OCURRED=0
 
 ASK_INSTALL=1
 INSTALL_ESPECIFIC=0
+
+SUDO_UPDATE () {
+	sudo apt-get update;
+}
+
+INSTALL () {
+
+	# get number of parameters
+	if [ "$#" -eq 2 ]; then
+		echo "${BOLD}${BLUE}Installing $1... ${NORMAL}";
+		CMD="sudo apt-get -y install $2";
+
+		if ${CMD}; then
+			echo "${BOLD}${GREEN}[OK...]${NORMAL}";
+		else
+			echo "${ERROR}[ERROR...]${WHITE}";
+			ERROR_OCURRED=1;
+		fi
+	else
+		echo "${ERROR}INCORRECT NUMBER OF PARAMETERS ${NORMAL}";
+		ERROR_OCURRED=1;
+	fi
+
+}
+
+CREATE_WORKSPACE () {
+	mkdir installation;
+	cd installation;
+}
+
+if [ "$EUID" -ne 0 ]; then 
+		echo "Please run as root"
+		exit
+fi
+
+while getopts :y OPCAO; do
+	case "${OPCAO}" in
+    	y)	
+	    ASK_INSTALL=0 
+	;;
+		
+	\?)
+	    echo "INVALID PARAMETER";
+	    exit
+	;;
+
+     	e) 
+	    INSTALL_ESPECIFIC="${TARGET}" 
+	;;
+ 	esac
+done
 
 GET_INFORMATION () {
 	echo "${BOLD}${BLUE}Checking system information...";
@@ -33,13 +85,48 @@ GET_INFORMATION () {
 	sleep 1;
 }
 
-SUDO_UPDATE () {
-	sudo apt-get update;
-}
-
 CLONE_PROJECT () {
 	echo "${GREEN}${BOLD}CLONING RODETAS SOURCE CODE${NORMAL}";
 	git clone https://github.com/rodetas/rodetas.git;
+}
+
+INSTALL_COMMONS_DEPEND () {
+
+	ok=1;
+
+	if [ ${ASK_INSTALL}  -eq 1 ]; then
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL DEPENDENCIES ? (Y\n) ${NORMAL}";
+		read answer;
+		if [ "${answer}" == "n" ]; then
+			ok=0;
+		fi
+	fi
+
+	if [ ${ok} -eq 1 ]; then
+
+		INSTALL Git git;
+		INSTALL g++ g++;
+		INSTALL webcam-control uvcdynctrl;
+		INSTALL cmake cmake;
+		INSTALL qt5 qt5-default;
+		INSTALL libxvidcore libxvidcore-dev;
+		INSTALL libv4l libv4l-dev;
+		INSTALL libxine2 libxine2-dev;
+		INSTALL arduino arduino-mk;
+		INSTALL arduino arduino;
+		INSTALL glut freeglut3-dev;
+		INSTALL zip zip;
+
+		if [ ${ERROR_OCURRED} -eq "1" ]; then
+			echo "${ERROR}SOME ERROR OCURRED. FIX THEM AND EXECUTE AGAIN! ${WHITE}";
+			exit 1;
+		else
+			echo "${BOLD}${GREEN}COMMONS DEPENDENCIES INSTALLED ${WHITE}";
+		fi
+
+		sleep 3;
+
+	fi
 }
 
 INSTALL_GUV () {
@@ -117,7 +204,7 @@ INSTALL_OPENCV () {
 		cd opencv-3.0.0/;
 		mkdir build && cd build;
 		cmake -DENABLE_PRECOMPILED_HEADERS=OFF -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON DBUILD_EXAMPLES=ON -D WITH_IPP=OFF ..;
-		make -j4;
+		make -j${CORES};
 		sudo make install;
 		sudo ldconfig;
 		cd ../../;
@@ -172,7 +259,7 @@ INSTALL_SFML () {
 			sudo ldconfig;
 			cd SFML-2.4.0;
 			cmake .;
-			make -j4;
+			make -j${CORES};
 			sudo make install;
 			sudo ldconfig;
 			cd ..
@@ -210,32 +297,11 @@ INSTALL_GTKMM () {
 	fi
 }
 
-INSTALL () {
-
-	# get number of parameters
-	if [ "$#" -eq 2 ]; then
-		echo "${BOLD}${BLUE}Installing $1... ${NORMAL}";
-		CMD="sudo apt-get -y install $2";
-
-		if ${CMD}; then
-			echo "${BOLD}${GREEN}[OK...]${NORMAL}";
-		else
-			echo "${ERROR}[ERROR...]${WHITE}";
-			ERROR_OCURRED=1;
-		fi
-	else
-		echo "${ERROR}INCORRECT NUMBER OF PARAMETERS ${NORMAL}";
-		ERROR_OCURRED=1;
-	fi
-
-}
-
-INSTALL_COMMONS_DEPEND () {
-
+INSTALL_XCTU () {
 	ok=1;
 
-	if [ ${ASK_INSTALL}  -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL DEPENDENCIES ? (Y\n) ${NORMAL}";
+	if [ ${ASK_INSTALL} -eq 1 ]; then
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL XCTU ? (Y\n) ${NORMAL}";
 		read answer;
 		if [ "${answer}" == "n" ]; then
 			ok=0;
@@ -243,58 +309,14 @@ INSTALL_COMMONS_DEPEND () {
 	fi
 
 	if [ ${ok} -eq 1 ]; then
-
-		INSTALL Git git;
-		INSTALL g++ g++;
-		INSTALL webcam-control uvcdynctrl;
-		INSTALL cmake cmake;
-		INSTALL qt5 qt5-default;
-		INSTALL libxvidcore libxvidcore-dev;
-		INSTALL libv4l libv4l-dev;
-		INSTALL libxine2 libxine2-dev;
-		INSTALL arduino arduino-mk;
-		INSTALL arduino arduino;
-		INSTALL glut freeglut3-dev;
-		INSTALL zip zip;
-
-		if [ ${ERROR_OCURRED} -eq "1" ]; then
-			echo "${ERROR}SOME ERROR OCURRED. FIX THEM AND EXECUTE AGAIN! ${WHITE}";
-			exit 1;
-		else
-			echo "${BOLD}${GREEN}COMMONS DEPENDENCIES INSTALLED ${WHITE}";
-		fi
-
-		sleep 3;
+		wget http://ftp1.digi.com/support/utilities/40002881_D.run -O xctu
+		chmod +x xctu
+		./xctu
+		echo "sudo /opt/Digi/XCTU-NG/app" >> /usr/bin/xctu
+		chmod +x /usr/bin/xctu
 
 	fi
 }
-
-CREATE_WORKSPACE () {
-	mkdir installation;
-	cd installation;
-}
-
-if [ "$EUID" -ne 0 ]; then 
-		echo "Please run as root"
-		exit
-fi
-
-while getopts :y OPCAO; do
-	case "${OPCAO}" in
-    	y)	
-	    ASK_INSTALL=0 
-	;;
-		
-	\?)
-	    echo "INVALID PARAMETER";
-	    exit
-	;;
-
-     	e) 
-	    INSTALL_ESPECIFIC="${TARGET}" 
-	;;
- 	esac
-done
 
 CREATE_WORKSPACE;
 SUDO_UPDATE;
@@ -304,8 +326,9 @@ GET_INFORMATION;
 INSTALL_COMMONS_DEPEND;
 INSTALL_GUV;
 INSTALL_OPENCV;
-INSTALL_GTKMM;
 INSTALL_SFML;
+INSTALL_GTKMM;
+INSTALL_XCTU;
 
 if [ $ERROR_OCURRED -eq 1 ]; then
 	echo "${RED}${BOLD}SOME ERRORS OCURRED${NORMAL}";
