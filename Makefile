@@ -1,4 +1,4 @@
-COMPILER = g++ -std=c++11 -Wall -g -Ofast
+COMPILER = g++ -std=c++11 -Wall -g
 EXEC_PROG = Rodetas
 BINARIES = $(EXEC_PROG)
 

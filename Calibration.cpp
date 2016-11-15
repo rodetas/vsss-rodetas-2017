@@ -12,7 +12,6 @@ Calibration::Calibration(){
     colorsRGB.resize(6);
     blobSize.resize(6);
     range.resize(6);   
-    //vec_devices.resize(1);
 
     changedColor = false;
 
@@ -259,6 +258,18 @@ void Calibration::GUI(){
     Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
     add_accel_group(accel_map);
 
+    vector<Glib::ustring> path;
+    path.push_back("/usr/share/ubuntu/icons");
+
+    Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
+    theme->set_search_path(path);
+
+    std::vector< Glib::ustring > vec = theme->list_icons();
+
+    for(int i=0 ; i<vec.size() ; i++){
+       // cout << vec[i] << endl;
+    }
+
     Gtk::MenuBar menu_bar;
 
 //////////////////////// NAVEGATION MENU /////////////////////////
@@ -270,10 +281,11 @@ void Calibration::GUI(){
     menu_navegation.set_submenu(subMenuNavigation);
 
     Gtk::MenuItem menu_play;
+
     menu_play.set_label("_Start Game");
     menu_play.set_use_underline(true);
+    menu_play.drag_source_set_icon(theme->load_icon("gtk-apply", 10));
     menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
-    menu_play.render_icon_pixbuf(Gtk::Stock::GO_FORWARD,Gtk::ICON_SIZE_LARGE_TOOLBAR);
     menu_play.show();
 
     menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
@@ -345,9 +357,11 @@ void Calibration::GUI(){
     Gtk::Menu subMenuCamera;
     menu_camera.set_submenu(subMenuCamera);
 
-    for(int i=0 ; i<vec_devices.size() ; i++){
-        subMenuCamera.append(vec_devices[i]);
-    }
+    updateDevices();
+
+    //menu_device0.drag_source_set_icon("edit-delete");
+    subMenuCamera.append(menu_device0);
+    subMenuCamera.append(menu_device1);
 
     Gtk::ImageMenuItem menu_load_camera_config(Gtk::Stock::OPEN);
     menu_load_camera_config.set_label("Load Camera Configuration");
@@ -361,8 +375,6 @@ void Calibration::GUI(){
     subMenuCamera.append(menu_refresh);
 
     menu_bar.append(menu_camera);
-
-    updateDevices();
 
 /////////////////// RADIO BUTTON - SET DEVICE ///////////////////////
 
@@ -577,15 +589,21 @@ void Calibration::updateDevices(){
     string device;
     string name_device;
 
-    for(int i=0 ; i<2 ; i++){
-
-        device = executeCommand("uvcdynctrl -l | grep video" + toString(i,1));
+    device = executeCommand("uvcdynctrl -l | grep video0");
+    if(device.size() != 0){
         name_device = device.substr(device.find("video")+9);
-        //Gtk::ImageMenuItem menu_aux(name_device);
+        menu_device0.set_label(name_device);
+        menu_device0.set_use_stock(true);
         //vec_devices.push_back(menu_aux);
     }
 
-    
+    device = executeCommand("uvcdynctrl -l | grep video1");
+    if(device.size() != 0){
+        name_device = device.substr(device.find("video")+9);
+        menu_device1.set_label(name_device);
+        //vec_devices.push_back(menu_aux2);
+    }
+  
 }
 
 bool Calibration::setImage(CairoCalibration *c){

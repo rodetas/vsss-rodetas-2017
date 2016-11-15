@@ -64,6 +64,8 @@ private:
     vector<Gtk::Scale> scale_HSV_popover;
 
     vector<Gtk::ImageMenuItem> vec_devices;
+    Gtk::ImageMenuItem menu_device0;
+    Gtk::ImageMenuItem menu_device1;
 	
 
 	bool setImage(CairoCalibration*);
