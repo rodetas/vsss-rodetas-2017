@@ -18,7 +18,7 @@ Calibration::Calibration(){
 int Calibration::calibrate(){
 
     imageInitialize();
-    
+
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
     while(!end_calibration){
@@ -52,6 +52,7 @@ void Calibration::imageInitialize(){
 
     if(camera_on){
         cam = cv::VideoCapture(camera);
+        usleep(10000); //time to camera answer
         if(cam.isOpened()){
             cam >> opencv_image_BGR;
         } else {
@@ -70,7 +71,7 @@ void Calibration::imageInitialize(){
 }
 
 void Calibration::imageWebCam(){
-    if(camera_on){
+    if(camera_on && cam.isOpened()){
         cam >> opencv_image_BGR;
     }
 }
@@ -558,6 +559,7 @@ void Calibration::onScaleRotate(){
 void Calibration::onRadioButtonImage(){
     button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
     camera_on = false;
+    imageInitialize();    
 }
 
 void Calibration::onRadioButtonCamera(){
