@@ -5,14 +5,13 @@ Calibration::Calibration(){
     colorsRGB.resize(6);
 
     selected_player = 0;
-    program_state = MENU;
     end_calibration = false;
+    program_state = MENU;    
 
-    getCalibration();
     camera = getCameraNumber();
-    camera_on = false;
 
-    //initCameraConfig();
+    getCalibration();    
+    initCameraConfig();
 }
 
 int Calibration::calibrate(){
@@ -47,6 +46,22 @@ void Calibration::updateColorPixel(Point pixelPoint){
     colorsRGB[selected_player].g = rgbPoint[1];
     colorsRGB[selected_player].b = rgbPoint[0];
 }
+
+
+vector<Point> Calibration::drawCalibratedColor(cv::Mat image){
+    
+    vector<Point> point;
+    for (int y = 0; y < image.rows ; y++){
+        for (int x = 0; x < image.cols ; x++){
+            int point_openCV = (int)image.at<uchar>(y, x);
+            if (point_openCV != 0){
+                point.push_back({x,y});
+            }
+        }
+    }
+    return point;
+}
+
 
 void Calibration::imageInitialize(){
 
@@ -99,20 +114,20 @@ void Calibration::GUI(){
 			
 	app = Gtk::Application::create();
 
-    set_title("Calibration");
-    set_icon_from_file("files/images/logo-rodetas.png");
-    maximize();
-
     Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
-    add_accel_group(accel_map);
+
+    Gtk::Window window;	
+        window.set_title("Calibration");
+        window.set_icon_from_file("files/images/logo-rodetas.png");
+        window.maximize();
+        window.add_accel_group(accel_map);
 
     vector<Glib::ustring> path;
-    path.push_back("/usr/share/ubuntu/icons");
+        //path.push_back("/usr/share/ubuntu/icons");
+        path.push_back("/usr/share/icons");
 
     Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
-    theme->set_search_path(path);
-
-    std::vector< Glib::ustring > vec = theme->list_icons();
+        theme->set_search_path(path);
 
 
 ///////////////////////// NAVEGATION MENU /////////////////////////
@@ -409,22 +424,31 @@ void Calibration::GUI(){
         global_box.pack_start(menu_bar, Gtk::PACK_SHRINK);
         global_box.pack_start(under_menu_box);
 		
-    add(global_box);
-    show_all();
+    window.add(global_box);
+    window.show_all();
 
-  	app->run(*this);
+  	app->run(window);
     
     end_calibration = true;
 }
 
 void Calibration::initCameraConfig(){
     string value;
+
     value = executeCommand("uvcdynctrl -g brightness");
-    camera_config.brightness = stoi(value);
+    if(value.compare("ERROR: Unknown control specified.\n") != 0){
+        camera_config.brightness = stoi(value);
+    }
+
     value = executeCommand("uvcdynctrl -g contrast");
-    camera_config.contrast = stoi(value);
+    if(value.compare("ERROR: Unknown control specified.\n") != 0){
+        camera_config.contrast = stoi(value);
+    }
+
     value = executeCommand("uvcdynctrl -g saturation");
-    camera_config.saturation = stoi(value);
+    if(value.compare("ERROR: Unknown control specified.\n") != 0){
+        camera_config.saturation = stoi(value);
+    }
 
     value = executeCommand("uvcdynctrl -g gain");
     if(value.compare("ERROR: Unknown control specified.\n") != 0){
@@ -432,9 +456,14 @@ void Calibration::initCameraConfig(){
     }
 
     value = executeCommand("uvcdynctrl -g sharpness");
-    camera_config.sharpness = stoi(value);
+    if(value.compare("ERROR: Unknown control specified.\n") != 0){
+        camera_config.sharpness = stoi(value);
+    }
+
     value = executeCommand("uvcdynctrl -g 'exposure (absolute)'");
-    camera_config.exposure = stoi(value);
+    if(value.compare("ERROR: Unknown control specified.\n") != 0){
+        camera_config.exposure = stoi(value);
+    }
 }
 
 void Calibration::updateDevices(){
@@ -455,7 +484,6 @@ void Calibration::updateDevices(){
         menu_device1.set_label(name_device);
         //vec_devices.push_back(menu_aux2);
     }
-  
 }
 
 bool Calibration::setImage(CairoCalibration *c){

@@ -14,7 +14,7 @@
 
 using namespace rodetas;
 
-class Calibration : public Gtk::Window, public OpenCV {
+class Calibration : public OpenCV {
 
 private:
 
@@ -91,6 +91,7 @@ private:
 	void onRadioButtonImage();
 	void onRadioButtonCamera();
 
+	vector<Point> drawCalibratedColor(cv::Mat image);
 public:
 
 	void GUI();

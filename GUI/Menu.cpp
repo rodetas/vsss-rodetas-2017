@@ -14,7 +14,6 @@ int Menu::GUI(){
 		window.set_position(Gtk::WIN_POS_CENTER_ALWAYS);
 		window.set_title("Rodetas");
 
-	
 	Gtk::Button button_play, button_calibration, button_simulator, button_arduino, button_exit;
 		button_play.add_label("Play");
 		button_calibration.add_label("Calibration");
