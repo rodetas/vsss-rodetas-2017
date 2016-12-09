@@ -13,7 +13,7 @@ Manipulation::Manipulation(){
 /*
  * Method for saving all parameters calibrated
  */
-void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRGB, vector<float> &blobSize, Point pointCutField1, 
+void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRGB, Point pointCutField1, 
 		Point pointCutField2, Point goal, int angleImageRotation, bool cameraOn){
 
     ofstream output;
@@ -29,8 +29,7 @@ void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRG
             output << colorsHSV[i].v[0] << "\t" << colorsHSV[i].v[1] << "\t" << colorsHSV[i].v[2] << "\t";
             output << colorsRGB[i].b    << "\t" << colorsRGB[i].g    << "\t" << colorsRGB[i].r    << "\t";
             output << colorsHSV[i].variationH_MAX << "\t" << colorsHSV[i].variationS_MAX << "\t" << colorsHSV[i].variationV_MAX << "\t";
-            output << colorsHSV[i].variationH_MIN << "\t" << colorsHSV[i].variationS_MIN << "\t" << colorsHSV[i].variationV_MIN << "\t";
-            output << blobSize[i] << endl;
+            output << colorsHSV[i].variationH_MIN << "\t" << colorsHSV[i].variationS_MIN << "\t" << colorsHSV[i].variationV_MIN << "\t" << endl;
         }
 
         output << pointCutField1.x << "\t" << pointCutField1.y << "\t";
@@ -91,7 +90,6 @@ pair<vector<Hsv>, vector<Rgb>> Manipulation::loadCalibration(){
             input >> colorsHSV[i].variationH_MIN;
             input >> colorsHSV[i].variationS_MIN;
             input >> colorsHSV[i].variationV_MIN;
-            input >> blobSize[i];
         }
 
         input >> pointCutField1.x;

@@ -12,7 +12,6 @@
 #define EXIT 5
 
 #define SAVE_COORD
-#define CAMERACONFIG
 #define FPS 30
 //#define camera 0
 

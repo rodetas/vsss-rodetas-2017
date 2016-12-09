@@ -36,7 +36,7 @@ void Vision::makeVision(){
 
     imageWebCam();
 
-    opencvImageHSV = opencvColorSpace(opencvTransformation(opencvImageBGR, angleImageRotation + rotateField, pointCutField1, pointCutField2, Point(0,0)), cv::COLOR_BGR2HSV_FULL);
+    opencvImageHSV = opencvColorSpace(opencvTransformation(opencvImageBGR, angleImageRotation + rotateField, pointCutField1, pointCutField2), cv::COLOR_BGR2HSV_FULL);
 
     //Team
     BlobsContours teamContours = blobContour( opencvBinary(colorsHSV[team], opencvImageHSV), blobSize[team]);
@@ -160,12 +160,6 @@ void Vision::initializeWebcam(){
             cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
             cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> opencvImageBGR;
-
-            if(!opencvImageBGR.empty()){
-                #ifdef CAMERACONFIG
-                    configureCamera();
-                #endif
-            }
         }
     }
 }

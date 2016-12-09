@@ -15,6 +15,7 @@ typedef pair<int, int> Pwm;
 typedef sf::Clock Clock;
 
 enum{H, S, V};
+enum{MIN, MAX, MID};
 enum{H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN};
 
 enum{player0, player1, player2, team, opponent, ball};
@@ -41,29 +42,27 @@ struct Hsv{
 	};
 
 	void setH(int pointH){
-		h[0] = pointH - variationH_MIN;
-    	h[1] = pointH + variationH_MAX;
-    	h[2] = pointH;
-		if (h[0] < 0) h[0] = 0;
-		if (h[0] > 255) h[0] = 255;
+		h[MIN] = pointH - variationH_MIN;
+    	h[MAX] = pointH + variationH_MAX;
+    	h[MID] = pointH;
+		if (h[MIN] < 0) h[MIN] = 0;
+		if (h[MAX] > 255) h[MAX] = 255;
 	}
 
 	void setS(int pointS){
-		s[0] = pointS * (1 - variationS_MIN * 0.01);
-    	s[1] = pointS * (1 + variationS_MAX * 0.01);
-    	s[2] = pointS;
-    	if (s[0] < 0) s[0] = 0;
-		if (s[0] > 255) s[0] = 255;
-
+		s[MIN] = pointS * (1 - variationS_MIN * 0.01);
+    	s[MAX] = pointS * (1 + variationS_MAX * 0.01);
+    	s[MID] = pointS;
+    	if (s[MIN] < 0) s[MIN] = 0;
+		if (s[MAX] > 255) s[MAX] = 255;
 	}
 
 	void setV(int pointV){
-		v[0] = pointV * (1 - variationV_MIN * 0.01);
-    	v[1] = pointV * (1 + variationV_MAX * 0.01);
-    	v[2] = pointV;
-    	if (v[0] < 0) v[0] = 0;
-		if (v[0] > 255) v[0] = 255;
-
+		v[MIN] = pointV * (1 - variationV_MIN * 0.01);
+    	v[MAX] = pointV * (1 + variationV_MAX * 0.01);
+    	v[MID] = pointV;
+    	if (v[MIN] < 0) v[MIN] = 0;
+		if (v[MAX] > 255) v[MAX] = 255;
 	}
 
 	void print(){
@@ -119,10 +118,10 @@ struct Object{
 };
 
 struct BlobsContours {
-	vector<Point2f>		center;
-    vector<float>		radius;
-    vector<Point2f>   cutPoint1;
-    vector<Point2f>   cutPoint2;
+	vector<Point2f>	center;
+    vector<float>	radius;
+    vector<Point2f> cutPoint1;
+    vector<Point2f> cutPoint2;
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
@@ -201,7 +200,6 @@ float calcCos(const T a, const U b){
 }
 
 int getCameraNumber();
-void configureCamera();
 string executeCommand(string cmd);
 
 }

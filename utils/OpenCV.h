@@ -14,7 +14,7 @@ public:
 	OpenCV();
 	cv::Mat opencvBinary(Hsv, cv::Mat);
 	cv::Mat opencvColorSpace(cv::Mat, int);
-	cv::Mat opencvTransformation(cv::Mat, int, cv::Point, cv::Point, cv::Point);
+	cv::Mat opencvTransformation(cv::Mat, int, cv::Point, cv::Point);
 	BlobsContours blobContour(cv::Mat, float);
 	float blobRadius(cv::Mat image);
 };

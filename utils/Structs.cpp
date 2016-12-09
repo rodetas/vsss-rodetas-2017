@@ -9,10 +9,6 @@ int getCameraNumber(){
     return cameraNumber;
 }
 
-void configureCamera(){
-    system("utils/./cameraConfig.sh configure"); 
-}
-
 string executeCommand(string cmd){
 
     char buf[256];

@@ -32,7 +32,6 @@ private:
 
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
-	vector<float> blobSize;
 
     int camera;
 	int program_state;
@@ -40,32 +39,27 @@ private:
 
 	CameraConfiguration camera_config;
 
-	Point resolutionCamera;
-
     double angle_image;
 
     bool end_calibration;
+	bool camera_on;
+	
 
 	Glib::RefPtr<Gtk::Application> app;
 
 	Gtk::ComboBoxText combo_choose_player;
-
 	Gtk::RadioButton radio_button_image;
     Gtk::RadioButton radio_button_camera;
-
 	Gtk::Button button_HSV_popover;
 	Gtk::Button button_CAM_popover;
-
 	Gtk::Popover HSV_popover;
 	Gtk::Popover CAM_popover;
-
     Gtk::Scale scale_rotate;
-    vector<Gtk::Scale> scale_CAM_popover;
-    vector<Gtk::Scale> scale_HSV_popover;
-
-    vector<Gtk::ImageMenuItem> vec_devices;
     Gtk::ImageMenuItem menu_device0;
     Gtk::ImageMenuItem menu_device1;
+	vector<Gtk::Scale> scale_CAM_popover;
+    vector<Gtk::Scale> scale_HSV_popover;
+    vector<Gtk::ImageMenuItem> vec_devices;
 	
 
 	bool setImage(CairoCalibration*);
@@ -101,38 +95,19 @@ public:
 
 	void GUI();
 
-	Point imageSize;
 	Point pointCutField1;
 	Point pointCutField2;
-	bool cameraOn;
-	bool changedColor;
-    int selectedTab;
-    vector<int> range;
-    Point imageSizeZoom;
     Point goal;
     Point margin;
 
 	Calibration();
 	int calibrate();
-
 	void initCameraConfig();
 	void updateDevices();
-
-	void updateRGB();
-	void updateHSV();
 	void updateColorPixel(Point);
-	void updateTab();
-	void updateSlider();
 
-	sf::VertexArray drawBlobs(cv::Mat);
-	Point changeCordinates(Point);
 	void imageInitialize();
 	void imageWebCam();
-	void imageCanCut();
-	void emptyImage();
-	void closeConectionCamera();
-	void pointCutFieldDefault();
-
 	void getCalibration();
 
 };

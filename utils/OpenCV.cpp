@@ -29,15 +29,11 @@ cv::Mat OpenCV::opencvColorSpace(cv::Mat image, int code){
 /*
  * Method that cuts, rotates and resize
  */
-cv::Mat OpenCV::opencvTransformation(cv::Mat image, int angle, cv::Point pointCutField1, cv::Point pointCutField2, cv::Point size){
+cv::Mat OpenCV::opencvTransformation(cv::Mat image, int angle, cv::Point pointCutField1, cv::Point pointCutField2){
 
     cv::Mat imageRotated;
     cv::warpAffine( image, imageRotated, cv::getRotationMatrix2D( cv::Point(image.cols/2, image.rows/2), angle - 180, 1), imageRotated.size() );
     cv::Mat cutImage = imageRotated( cv::Rect(pointCutField1, pointCutField2) );
-
-    if (size.x != 0 && size.y != 0){
-    	cv::resize(cutImage, cutImage, size, 0, 0, cv::INTER_LINEAR);
-    }
 
     return cutImage;
 }

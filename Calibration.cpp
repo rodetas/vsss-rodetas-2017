@@ -1,230 +1,78 @@
 #include "Calibration.h"
 
-/*
- * class constructor
- */
 Calibration::Calibration(){
-    end_calibration = false;
-    
-    selectedTab = 0;
-    resolutionCamera = {1920,1080};
     colorsHSV.resize(6);
     colorsRGB.resize(6);
-    blobSize.resize(6);
-    range.resize(6);   
-
-    changedColor = false;
-
-    getCalibration();
-    camera = getCameraNumber();
 
     selected_player = 0;
     program_state = MENU;
+    end_calibration = false;
 
-    initCameraConfig();
+    getCalibration();
+    camera = getCameraNumber();
+    camera_on = false;
+
+    //initCameraConfig();
 }
 
-/*
- * calibration main loop
- */ 
 int Calibration::calibrate(){
 
     imageInitialize();
-
+    
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
     while(!end_calibration){
         imageWebCam();
-        
-        opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2, imageSizeZoom);
+        opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
-        opencv_image_binary     = opencvBinary(colorsHSV[selectedTab], opencv_image_HSV);
+        opencv_image_binary     = opencvBinary(colorsHSV[selected_player], opencv_image_HSV);
     }
 
-    manipulation.saveCalibration(colorsHSV, colorsRGB, blobSize, pointCutField1, pointCutField2, goal, angle_image, cameraOn);
+    manipulation.saveCalibration(colorsHSV, colorsRGB, pointCutField1, pointCutField2, goal, angle_image, camera_on);
     cam.release();
 
     calibration_thread.detach();
     return program_state;
 }
 
-void Calibration::updateRGB(){
-    colorsRGB[selectedTab].r = rgbPoint[2];
-    colorsRGB[selectedTab].g = rgbPoint[1];
-    colorsRGB[selectedTab].b = rgbPoint[0];
-}
-
-/*  
- * update treated image color that is showing to the user
- */
-void Calibration::updateHSV(){
-
-    colorsHSV[selectedTab].setH(hsvPoint[0]);
-    colorsHSV[selectedTab].setS(hsvPoint[1]);
-    colorsHSV[selectedTab].setV(hsvPoint[2]);
-
-    blobSize[selectedTab] = blobRadius( opencvBinary(colorsHSV[selectedTab], opencv_image_HSV) );
-    
-    changedColor = false;
-}
-
-/*  
- * update the slider value in GUI
- */
-void Calibration::updateSlider(){
-
-    hsvPoint[0] = colorsHSV[selectedTab].h[2];
-    hsvPoint[1] = colorsHSV[selectedTab].s[2];
-    hsvPoint[2] = colorsHSV[selectedTab].v[2];
-
-    colorsHSV[selectedTab].variationH_MAX = range[H_MAX];
-    colorsHSV[selectedTab].variationS_MAX = range[S_MAX];
-    colorsHSV[selectedTab].variationV_MAX = range[V_MAX];
-    colorsHSV[selectedTab].variationH_MIN = range[H_MIN];
-    colorsHSV[selectedTab].variationS_MIN = range[S_MIN];
-    colorsHSV[selectedTab].variationV_MIN = range[V_MIN];
-
-    if(changedColor) {   
-        updateHSV();
-    }
-}
-
-/*  
- * update the value of the clicked pixel
- */
 void Calibration::updateColorPixel(Point pixelPoint){
-
     hsvPoint = opencv_image_HSV.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
+    colorsHSV[selected_player].h[MID] = hsvPoint[H];
+    colorsHSV[selected_player].s[MID] = hsvPoint[S];
+    colorsHSV[selected_player].v[MID] = hsvPoint[V];
+
     rgbPoint = opencv_image_BGR_cuted.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
-
-    if(changedColor) 
-        updateHSV();
-}
-/*  
- * updated hsvPoint for the current color
- */
-void Calibration::updateTab(){
-
-    hsvPoint[0] = colorsHSV[selectedTab].h[2];
-    hsvPoint[1] = colorsHSV[selectedTab].s[2];
-    hsvPoint[2] = colorsHSV[selectedTab].v[2];
-
-    range[H_MAX] = colorsHSV[selectedTab].variationH_MAX;
-    range[S_MAX] = colorsHSV[selectedTab].variationS_MAX;
-    range[V_MAX] = colorsHSV[selectedTab].variationV_MAX;
-    range[H_MIN] = colorsHSV[selectedTab].variationH_MIN;
-    range[S_MIN] = colorsHSV[selectedTab].variationS_MIN;
-    range[V_MIN] = colorsHSV[selectedTab].variationV_MIN;
-
-    if(changedColor)
-        updateHSV();
+    colorsRGB[selected_player].r = rgbPoint[2];
+    colorsRGB[selected_player].g = rgbPoint[1];
+    colorsRGB[selected_player].b = rgbPoint[0];
 }
 
-/*
- * Method that recognize blobs to draw
- */
-sf::VertexArray Calibration::drawBlobs(cv::Mat image){
-    
-    sf::VertexArray pointSFML(sf::Points);
-
-    for (int i = 0; i < image.rows ; i++){
-        for (int j = 0; j < image.cols ; j++){
-
-            int pointOpenCV = (int)image.at<uchar>(i, j);
-
-            if (pointOpenCV != 0){
-                pointSFML.append(sf::Vertex(sf::Vector2f(j + 0.5f + margin.x, i + 0.5f + margin.y), sf::Color(255,0,0,255)));
-            }
-        }
-    }
-
-    return pointSFML;
-}
-
-/*
- * Method to convert zoom cordinates in original image cordinates
- */
-Point Calibration::changeCordinates(Point pointZoom){
-    Point pointOriginal;
-
-        pointOriginal.x = float(pointZoom.x) * float(imageSize.x) / float(imageSizeZoom.x);
-        pointOriginal.y = float(pointZoom.y) * float(imageSize.y) / float(imageSizeZoom.y);
-        
-    return pointOriginal;
-}
-
-/*
- * Methods to initialize image
- */
 void Calibration::imageInitialize(){
 
-    if(!cameraOn){
-        if(cam.isOpened()) { cam.release(); }
-        
+    if(camera_on){
+        cam = cv::VideoCapture(camera);
+        if(cam.isOpened()){
+            cam >> opencv_image_BGR;
+        } else {
+            cout << "Conection with camera failed" << endl;
+        }
+    } else {
+        if(cam.isOpened()){ 
+            cam.release();
+        }
         opencv_image_BGR = cv::imread(imagePath);
 
         if(opencv_image_BGR.empty()){
-            emptyImage();
+            cout << "Problem to load image from computer" << endl;
         }
-
-    } else {
-
-        if(!cam.isOpened()) { cam = cv::VideoCapture(camera); }
-
-        if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, resolutionCamera.x);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, resolutionCamera.y);
-            cam >> opencv_image_BGR;
-            
-            if(!opencv_image_BGR.empty()){
-                #ifdef CAMERACONFIG
-                    configureCamera();
-                #endif
-            } else { emptyImage(); }
-
-        } else { closeConectionCamera(); }
     }
-
-    imageSize = opencv_image_BGR.size();
 }
 
-/*
- * Method that receives and analyzes image from webcam
- */
 void Calibration::imageWebCam(){
-
-    if(cameraOn){
-        cam >> opencv_image_BGR; 
-        if (opencv_image_BGR.empty()){
-            cout << "CRIAR TRATAMENTO DE ERRO PARA IMAGEM VAZIA" << endl;
-        }
+    if(camera_on){
+        cam >> opencv_image_BGR;
     }
-}
-
-void Calibration::imageCanCut(){
-
-    if( pointCutField1.x > opencv_image_BGR.cols || pointCutField1.y > opencv_image_BGR.rows ||
-        pointCutField2.x > opencv_image_BGR.cols || pointCutField2.y > opencv_image_BGR.rows ){
-        pointCutFieldDefault();
-    }
-
-    if( pointCutField1.x == 0 && pointCutField1.y == 0 && pointCutField2.x == 0 && pointCutField2.y == 0) {
-        pointCutFieldDefault();
-    }
-}
-
-void Calibration::emptyImage(){
-    cout << "Empty image from camera" << endl;
-}
-
-void Calibration::closeConectionCamera(){
-    cout << "Conection with camera failed" << endl;
-}
-
-void Calibration::pointCutFieldDefault(){
-    pointCutField1 = {0,0};
-    pointCutField2 = imageSize;
 }
 
 void Calibration::getCalibration(){
@@ -236,12 +84,11 @@ void Calibration::getCalibration(){
     pointCutField2 = manipulation.getPointField2();
     goal = manipulation.getGoal();
     angle_image = manipulation.getAngleImage();
-    cameraOn = manipulation.getCameraOn();
-    blobSize = manipulation.getBlobSize();
+    camera_on = manipulation.getCameraOn();
 
-    hsvPoint[0] = colorsHSV[selectedTab].h[2];
-    hsvPoint[1] = colorsHSV[selectedTab].s[2];
-    hsvPoint[2] = colorsHSV[selectedTab].v[2];
+    hsvPoint[0] = colorsHSV[selected_player].h[2];
+    hsvPoint[1] = colorsHSV[selected_player].s[2];
+    hsvPoint[2] = colorsHSV[selected_player].v[2];
 
   //  manipulation.showCalibration();
 
@@ -266,118 +113,114 @@ void Calibration::GUI(){
 
     std::vector< Glib::ustring > vec = theme->list_icons();
 
-    for(int i=0 ; i<vec.size() ; i++){
-       // cout << vec[i] << endl;
-    }
 
-    Gtk::MenuBar menu_bar;
-
-//////////////////////// NAVEGATION MENU /////////////////////////
-
-    Gtk::MenuItem menu_navegation;
-    menu_navegation.set_label("Navegation");
-
-    Gtk::Menu subMenuNavigation;
-    menu_navegation.set_submenu(subMenuNavigation);
+///////////////////////// NAVEGATION MENU /////////////////////////
 
     Gtk::MenuItem menu_play;
-
-    menu_play.set_label("_Start Game");
-    menu_play.set_use_underline(true);
-    menu_play.drag_source_set_icon(theme->load_icon("gtk-apply", 10));
-    menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
-    menu_play.show();
-
-    menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
-    subMenuNavigation.append(menu_play);
+        menu_play.set_label("_Start Game");
+        menu_play.set_use_underline(true);
+        menu_play.drag_source_set_icon(theme->load_icon("gtk-apply", 10));
+        menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
+        menu_play.show();
+        menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
 
     Gtk::MenuItem menu_calibration;
-    menu_calibration.set_label("_Calibrate");
-    menu_calibration.set_use_underline(true);
-    menu_calibration.add_accelerator("activate", accel_map, GDK_KEY_c, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-    menu_calibration.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuCalibration));
-    subMenuNavigation.append(menu_calibration);
+        menu_calibration.set_label("_Calibrate");
+        menu_calibration.set_use_underline(true);
+        menu_calibration.add_accelerator("activate", accel_map, GDK_KEY_c, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+        menu_calibration.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuCalibration));
 
     Gtk::MenuItem menu_simulator;
-    menu_simulator.set_label("S_imulate");
-    menu_simulator.set_use_underline(true);
-    menu_simulator.add_accelerator("activate", accel_map, GDK_KEY_s, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-    menu_simulator.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuSimulator));
-    subMenuNavigation.append(menu_simulator);
+        menu_simulator.set_label("S_imulate");
+        menu_simulator.set_use_underline(true);
+        menu_simulator.add_accelerator("activate", accel_map, GDK_KEY_s, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+        menu_simulator.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuSimulator));
 
     Gtk::MenuItem menu_arduino;
-    menu_arduino.set_label("_Upload Arduino");
-    menu_arduino.set_use_underline(true);
-    menu_arduino.add_accelerator("activate", accel_map, GDK_KEY_u, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-    menu_arduino.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuArduino));
-    subMenuNavigation.append(menu_arduino);
-
-    Gtk::SeparatorMenuItem separator;
-    subMenuNavigation.append(separator);
+        menu_arduino.set_label("_Upload Arduino");
+        menu_arduino.set_use_underline(true);
+        menu_arduino.add_accelerator("activate", accel_map, GDK_KEY_u, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+        menu_arduino.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuArduino));
 
     Gtk::MenuItem menu_quit;
-    menu_quit.set_label("_Quit");
-    menu_quit.set_use_underline(true);
-    menu_quit.add_accelerator("activate", accel_map, GDK_KEY_Escape, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
-    menu_quit.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
-    subMenuNavigation.append(menu_quit);
+        menu_quit.set_label("_Quit");
+        menu_quit.set_use_underline(true);
+        menu_quit.add_accelerator("activate", accel_map, GDK_KEY_Escape, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
+        menu_quit.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
 
-    menu_bar.append(menu_navegation);
+    Gtk::SeparatorMenuItem separator;    
 
-/////////////////// FILE MENU //////////////////////////
+    Gtk::Menu subMenuNavigation;
+        subMenuNavigation.append(menu_play);
+        subMenuNavigation.append(menu_calibration);
+        subMenuNavigation.append(menu_simulator);
+        subMenuNavigation.append(menu_arduino);
+        subMenuNavigation.append(separator);
+        subMenuNavigation.append(menu_quit);
 
-    Gtk::MenuItem menu_file;
-    menu_file.set_label("Calibration");
+    Gtk::MenuItem menu_navegation;
+        menu_navegation.set_label("Navegation");
+        menu_navegation.set_submenu(subMenuNavigation);
+    
 
-    Gtk::Menu subMenuFile;
-    menu_file.set_submenu(subMenuFile);
+///////////////////////// FILE MENU /////////////////////////
 
     Gtk::ImageMenuItem menu_save(Gtk::Stock::SAVE);
-    menu_save.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    menu_save.set_label("Save Calibration");
-    subMenuFile.append(menu_save);
+        menu_save.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        menu_save.set_label("Save Calibration");
 
     Gtk::ImageMenuItem menu_cut(Gtk::Stock::CUT);
-    menu_cut.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    menu_cut.set_label("Cut Image");
-    subMenuFile.append(menu_cut);
+        menu_cut.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        menu_cut.set_label("Cut Image");
 
     Gtk::ImageMenuItem menu_reset(Gtk::Stock::CLEAR);
-    menu_reset.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    menu_reset.set_label("Reset Values");
-    subMenuFile.append(menu_reset);
+        menu_reset.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        menu_reset.set_label("Reset Values");
 
-    menu_bar.append(menu_file);
+    Gtk::Menu subMenuFile;
+        subMenuFile.append(menu_save);
+        subMenuFile.append(menu_cut);
+        subMenuFile.append(menu_reset);
+        
+    Gtk::MenuItem menu_file;
+        menu_file.set_label("Calibration");
+        menu_file.set_submenu(subMenuFile);
 
-///////////////////// CAMERA MENU ////////////////////////////////////
 
-    Gtk::MenuItem menu_camera;
-    menu_camera.set_label("Camera");
-
-    Gtk::Menu subMenuCamera;
-    menu_camera.set_submenu(subMenuCamera);
-
-    updateDevices();
-
-    //menu_device0.drag_source_set_icon("edit-delete");
-    subMenuCamera.append(menu_device0);
-    subMenuCamera.append(menu_device1);
+///////////////////////// CAMERA MENU /////////////////////////
 
     Gtk::ImageMenuItem menu_load_camera_config(Gtk::Stock::OPEN);
-    menu_load_camera_config.set_label("Load Camera Configuration");
-    menu_load_camera_config.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    subMenuCamera.append(menu_load_camera_config);
+        menu_load_camera_config.set_label("Load Camera Configuration");
+        menu_load_camera_config.set_state(Gtk::StateType::STATE_INSENSITIVE);
 
     Gtk::MenuItem menu_refresh;
-    menu_refresh.set_label("Refresh Device");
-    menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    menu_refresh.add_accelerator("activate", accel_map, GDK_KEY_F5, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); //116 -> f5
-    subMenuCamera.append(menu_refresh);
+        menu_refresh.set_label("Refresh Device");
+        menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        menu_refresh.add_accelerator("activate", accel_map, GDK_KEY_F5, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); //116 -> f5
+    
+    Gtk::Menu subMenuCamera;
+        updateDevices();
+        subMenuCamera.append(menu_device0);
+        subMenuCamera.append(menu_device1);
+        subMenuCamera.append(menu_load_camera_config);
+        subMenuCamera.append(menu_refresh);
 
-    menu_bar.append(menu_camera);
+    Gtk::MenuItem menu_camera;
+        menu_camera.set_label("Camera");
+        menu_camera.set_submenu(subMenuCamera);
 
-/////////////////// RADIO BUTTON - SET DEVICE ///////////////////////
 
+///////////////////////// MENU BAR /////////////////////////
+
+    Gtk::MenuBar menu_bar;
+        menu_bar.append(menu_navegation);
+        menu_bar.append(menu_file);
+        menu_bar.append(menu_camera);
+
+
+///////////////////////// RADIO BUTTON - SET DEVICE /////////////////////////
+    
+    // initialized on .h
     radio_button_image.set_label("Image");
     radio_button_camera.set_label("Camera");
 
@@ -393,8 +236,10 @@ void Calibration::GUI(){
         grid_radio_button.attach(radio_button_image, 0, 0, 1, 1);
         grid_radio_button.attach(radio_button_camera, 1, 0, 1, 1);
 
-/////////////////// COMBO BOX - SELECT Player /////////////////////////
 
+///////////////////////// COMBO BOX - SELECT Player /////////////////////////
+        
+        // initialized on .h
         combo_choose_player.set_size_request(200, -1);
         combo_choose_player.append("Player 0");
         combo_choose_player.append("Player 1");
@@ -404,11 +249,10 @@ void Calibration::GUI(){
         combo_choose_player.append("Ball");
         combo_choose_player.set_active_text("Player 0");
         combo_choose_player.signal_changed().connect(sigc::mem_fun(this, &Calibration::onChoosePlayer));
-        combo_choose_player.add_accelerator(
-                "popup", accel_map, 32, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); // 32 -> Space bar
+        combo_choose_player.add_accelerator("popup", accel_map, 32, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); // 32 -> Space bar
 
 
-/////////////////// BOX - SELECT HSV //////////////////////////
+///////////////////////// BOX - SELECT HSV /////////////////////////
 
     vector<Gtk::Label> text_HSV_popover(6);
         for (int i = 0; i < text_HSV_popover.size(); i++){
@@ -420,7 +264,8 @@ void Calibration::GUI(){
         text_HSV_popover[3].set_label("S min:");
         text_HSV_popover[4].set_label("V max:");
         text_HSV_popover[5].set_label("V min:");
-
+    
+    // initialized on .h
     scale_HSV_popover.resize(6);
         for (int i = 0; i < scale_HSV_popover.size(); i++){
             scale_HSV_popover[i].set_size_request(150,20);
@@ -445,14 +290,15 @@ void Calibration::GUI(){
         box_HSV_popover.set_border_width(20);
         box_HSV_popover.pack_start(grid_HSV_popover);
 
-    HSV_popover.set_position(Gtk::PositionType::POS_BOTTOM);
     HSV_popover.set_relative_to(button_HSV_popover);
     HSV_popover.add(box_HSV_popover);
 
+    // initialized on .h
     button_HSV_popover.add_label("HSV Controls");
     button_HSV_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
 
-/////////////////// BOX - CONFIG CAMERA //////////////////////////
+
+///////////////////////// BOX - CONFIG CAMERA /////////////////////////
 
     vector<Gtk::Label> text_CAM_popover(6);
         for (int i = 0; i < text_CAM_popover.size(); i++){
@@ -464,7 +310,8 @@ void Calibration::GUI(){
         text_CAM_popover[3].set_label("Gain:");
         text_CAM_popover[4].set_label("Sharpness:");
         text_CAM_popover[5].set_label("Exposure:");   
- 
+    
+    // initialized on .h
     scale_CAM_popover.resize(6);
         for (int i = 0; i < scale_CAM_popover.size(); i++){
             scale_CAM_popover[i].set_size_request(150,20);
@@ -501,6 +348,7 @@ void Calibration::GUI(){
     CAM_popover.set_relative_to(button_CAM_popover);
     CAM_popover.add(box_CAM_popover);
 
+    // initialized on .h
     button_CAM_popover.add_label("CAM Controls");
     button_CAM_popover.signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonCAM) );
 
@@ -508,7 +356,8 @@ void Calibration::GUI(){
         button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
     }
 
-//////////////////////// SCALE ROTATE IMAGE ///////////////////////
+
+///////////////////////// SCALE ROTATE IMAGE /////////////////////////
 
     Gtk::Label text_rotate("Rotate");
         scale_rotate.set_adjustment(Gtk::Adjustment::create(1.0, 0.0, 360.0, 0.5, 1.0, 2.0));
@@ -522,12 +371,14 @@ void Calibration::GUI(){
         grid_rotate.attach(text_rotate, 0, 0, 1, 1);
         grid_rotate.attach(scale_rotate, 1, 0, 1, 1);
 
-/////////////////// DRAW IMAGE //////////////////////////
+
+///////////////////////// DRAW IMAGE /////////////////////////
 
     CairoCalibration draw_image;	
 		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
 
-///////////////////////// CONTAINERS /////////////////////////////
+
+///////////////////////// CONTAINERS /////////////////////////
 
     Gtk::HSeparator seperator1, seperator2, seperator3, seperator4;
 
@@ -643,7 +494,6 @@ void Calibration::onButtonCAM() {
 
 void Calibration::onChoosePlayer(){
     selected_player = combo_choose_player.get_active_row_number();
-    cout << selected_player << endl;
     HSV_popover.show_all();
 }
 
@@ -672,27 +522,33 @@ void Calibration::onScaleCAMExposure(){
 }
 
 void Calibration::onScaleHMax(){
-    cout << scale_HSV_popover[0].get_value() << endl;
+    colorsHSV[selected_player].variationH_MAX = scale_HSV_popover[0].get_value();
+    colorsHSV[selected_player].setH(colorsHSV[selected_player].h[MID]);
 }
 
 void Calibration::onScaleHMin(){
-    cout << scale_HSV_popover[1].get_value() << endl;
+    colorsHSV[selected_player].variationH_MIN = scale_HSV_popover[1].get_value();   
+    colorsHSV[selected_player].setH(colorsHSV[selected_player].h[MID]);
 }
 
 void Calibration::onScaleSMax(){
-    cout << scale_HSV_popover[2].get_value() << endl;
+    colorsHSV[selected_player].variationS_MAX = scale_HSV_popover[2].get_value();
+    colorsHSV[selected_player].setS(colorsHSV[selected_player].s[MID]);
 }
 
 void Calibration::onScaleSMin(){
-    cout << scale_HSV_popover[3].get_value() << endl;
+    colorsHSV[selected_player].variationS_MIN = scale_HSV_popover[3].get_value();
+    colorsHSV[selected_player].setS(colorsHSV[selected_player].s[MID]);
 }
 
 void Calibration::onScaleVMax(){
-    cout << scale_HSV_popover[4].get_value() << endl;
+    colorsHSV[selected_player].variationV_MAX = scale_HSV_popover[4].get_value();
+    colorsHSV[selected_player].setV(colorsHSV[selected_player].v[MID]);
 }
 
 void Calibration::onScaleVMin(){
-    cout << scale_HSV_popover[5].get_value() << endl;
+    colorsHSV[selected_player].variationV_MIN = scale_HSV_popover[5].get_value();
+    colorsHSV[selected_player].setV(colorsHSV[selected_player].v[MID]);
 }
 
 void Calibration::onScaleRotate(){
@@ -701,8 +557,11 @@ void Calibration::onScaleRotate(){
 
 void Calibration::onRadioButtonImage(){
     button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
+    camera_on = false;
 }
 
 void Calibration::onRadioButtonCamera(){
     button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
+    camera_on = true;
+    imageInitialize();
 }
