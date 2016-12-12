@@ -122,20 +122,12 @@ void Calibration::GUI(){
         window.maximize();
         window.add_accel_group(accel_map);
 
-    vector<Glib::ustring> path;
-        //path.push_back("/usr/share/ubuntu/icons");
-        path.push_back("/usr/share/icons");
-
-    Glib::RefPtr<Gtk::IconTheme> theme = Gtk::IconTheme::get_default();
-        theme->set_search_path(path);
-
-
+   
 ///////////////////////// NAVEGATION MENU /////////////////////////
 
     Gtk::MenuItem menu_play;
         menu_play.set_label("_Start Game");
         menu_play.set_use_underline(true);
-        menu_play.drag_source_set_icon(theme->load_icon("gtk-apply", 10));
         menu_play.add_accelerator("activate", accel_map, GDK_KEY_n, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
         menu_play.show();
         menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
@@ -429,6 +421,7 @@ void Calibration::GUI(){
 
   	app->run(window);
     
+    draw_connection.disconnect();
     end_calibration = true;
 }
 
@@ -594,4 +587,8 @@ void Calibration::onRadioButtonCamera(){
     button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
     camera_on = true;
     imageInitialize();
+}
+
+void Calibration::onImage(){
+    cout << "Click" << endl;
 }

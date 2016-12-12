@@ -86,6 +86,7 @@ private:
 	void onScaleCAMGain();
 	void onScaleCAMSharpness();
 	void onScaleCAMExposure();
+	void onImage();
     
 	void onChoosePlayer();
 	void onRadioButtonImage();

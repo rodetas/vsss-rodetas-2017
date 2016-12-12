@@ -15,7 +15,8 @@ private:
     Point field_size;
 
 protected:
-    virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c);
+    virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &c);
+    virtual bool on_button_press_event(GdkEventButton* event);
 
 public:
 	CairoCalibration();
