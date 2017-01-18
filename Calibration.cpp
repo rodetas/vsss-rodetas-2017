@@ -20,12 +20,16 @@ int Calibration::calibrate(){
 
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
+    Fps fps;
+
     while(!end_calibration){
         imageWebCam();
         opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
-        opencv_image_binary     = opencvBinary(colorsHSV[selected_player], opencv_image_HSV);
+        opencv_image_binary     = opencvColorSpace( opencvBinary(colorsHSV[selected_player], opencv_image_HSV), cv::COLOR_GRAY2RGB);
+        
+        //cout << fps.framesPerSecond() << endl;
     }
 
     manipulation.saveCalibration(colorsHSV, colorsRGB, pointCutField1, pointCutField2, goal, angle_image, camera_on);
@@ -35,33 +39,17 @@ int Calibration::calibrate(){
     return program_state;
 }
 
-void Calibration::updateColorPixel(Point pixelPoint){
-    hsvPoint = opencv_image_HSV.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
-    colorsHSV[selected_player].h[MID] = hsvPoint[H];
-    colorsHSV[selected_player].s[MID] = hsvPoint[S];
-    colorsHSV[selected_player].v[MID] = hsvPoint[V];
+void Calibration::updateColorPixel(Point pixel_point){
+    hsvPoint = opencv_image_HSV.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
+    colorsHSV[selected_player].setH(hsvPoint[H]);
+    colorsHSV[selected_player].setS(hsvPoint[S]);
+    colorsHSV[selected_player].setV(hsvPoint[V]);
 
-    rgbPoint = opencv_image_BGR_cuted.at<cv::Vec3b>(pixelPoint.y-margin.y,pixelPoint.x-margin.x);
+    rgbPoint = opencv_image_BGR_cuted.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
     colorsRGB[selected_player].r = rgbPoint[2];
     colorsRGB[selected_player].g = rgbPoint[1];
     colorsRGB[selected_player].b = rgbPoint[0];
 }
-
-
-vector<Point> Calibration::drawCalibratedColor(cv::Mat image){
-    
-    vector<Point> point;
-    for (int y = 0; y < image.rows ; y++){
-        for (int x = 0; x < image.cols ; x++){
-            int point_openCV = (int)image.at<uchar>(y, x);
-            if (point_openCV != 0){
-                point.push_back({x,y});
-            }
-        }
-    }
-    return point;
-}
-
 
 void Calibration::imageInitialize(){
 
@@ -122,7 +110,7 @@ void Calibration::GUI(){
         window.maximize();
         window.add_accel_group(accel_map);
 
-   
+
 ///////////////////////// NAVEGATION MENU /////////////////////////
 
     Gtk::MenuItem menu_play;
@@ -158,18 +146,17 @@ void Calibration::GUI(){
 
     Gtk::SeparatorMenuItem separator;    
 
-    Gtk::Menu subMenuNavigation;
+    Gtk::MenuItem menu_navegation;
+    Gtk::Menu subMenuNavigation;    
+        menu_navegation.set_label("Navegation");
+        menu_navegation.set_submenu(subMenuNavigation);
         subMenuNavigation.append(menu_play);
         subMenuNavigation.append(menu_calibration);
         subMenuNavigation.append(menu_simulator);
         subMenuNavigation.append(menu_arduino);
         subMenuNavigation.append(separator);
         subMenuNavigation.append(menu_quit);
-
-    Gtk::MenuItem menu_navegation;
-        menu_navegation.set_label("Navegation");
-        menu_navegation.set_submenu(subMenuNavigation);
-    
+   
 
 ///////////////////////// FILE MENU /////////////////////////
 
@@ -185,14 +172,13 @@ void Calibration::GUI(){
         menu_reset.set_state(Gtk::StateType::STATE_INSENSITIVE);
         menu_reset.set_label("Reset Values");
 
+    Gtk::MenuItem menu_file;
     Gtk::Menu subMenuFile;
+        menu_file.set_label("Calibration");
+        menu_file.set_submenu(subMenuFile);
         subMenuFile.append(menu_save);
         subMenuFile.append(menu_cut);
         subMenuFile.append(menu_reset);
-        
-    Gtk::MenuItem menu_file;
-        menu_file.set_label("Calibration");
-        menu_file.set_submenu(subMenuFile);
 
 
 ///////////////////////// CAMERA MENU /////////////////////////
@@ -206,16 +192,15 @@ void Calibration::GUI(){
         menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
         menu_refresh.add_accelerator("activate", accel_map, GDK_KEY_F5, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); //116 -> f5
     
+    Gtk::MenuItem menu_camera;    
     Gtk::Menu subMenuCamera;
+        menu_camera.set_label("Camera");
+        menu_camera.set_submenu(subMenuCamera);
         updateDevices();
         subMenuCamera.append(menu_device0);
         subMenuCamera.append(menu_device1);
         subMenuCamera.append(menu_load_camera_config);
         subMenuCamera.append(menu_refresh);
-
-    Gtk::MenuItem menu_camera;
-        menu_camera.set_label("Camera");
-        menu_camera.set_submenu(subMenuCamera);
 
 
 ///////////////////////// MENU BAR /////////////////////////
@@ -382,8 +367,7 @@ void Calibration::GUI(){
 
 ///////////////////////// DRAW IMAGE /////////////////////////
 
-    CairoCalibration draw_image;	
-		sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &draw_image) , 50 );
+	sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &image_events) , 50 );
 
 
 ///////////////////////// CONTAINERS /////////////////////////
@@ -405,7 +389,7 @@ void Calibration::GUI(){
 
     Gtk::Box draw_box;
         draw_box.set_border_width(20);
-        draw_box.pack_start(draw_image);  
+        draw_box.pack_start(image_events);  
     
     Gtk::Box under_menu_box(Gtk::ORIENTATION_HORIZONTAL);
 		under_menu_box.pack_start(draw_box);    
@@ -417,6 +401,7 @@ void Calibration::GUI(){
         global_box.pack_start(under_menu_box);
 		
     window.add(global_box);
+    
     window.show_all();
 
   	app->run(window);
@@ -480,7 +465,13 @@ void Calibration::updateDevices(){
 }
 
 bool Calibration::setImage(CairoCalibration *c){
-	c->setImage(opencv_image_cairo);
+	c->setImage(opencv_image_cairo, opencv_image_binary);
+
+    Point p = c->getPixelColor(); 
+    if (p.x >= 0 && p.y >= 0 && p.x <= opencv_image_HSV.cols && p.y <= opencv_image_HSV.rows){
+        updateColorPixel(c->getPixelColor());      
+    }
+
 	return true;
 }
 
@@ -587,8 +578,4 @@ void Calibration::onRadioButtonCamera(){
     button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
     camera_on = true;
     imageInitialize();
-}
-
-void Calibration::onImage(){
-    cout << "Click" << endl;
 }

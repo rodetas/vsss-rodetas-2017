@@ -6,6 +6,7 @@
 #include "utils/OpenCV.h"
 #include "CRUD/Manipulation.h"
 #include "GUI/CairoCalibration.h"
+#include "utils/Fps.h"
 
 #include <gtkmm.h>
 #include <thread>
@@ -19,60 +20,55 @@ class Calibration : public OpenCV {
 private:
 
 	Manipulation manipulation;
+	CameraConfiguration camera_config;
 	
-	cv::VideoCapture cam;
-    cv::Mat opencv_image_BGR_cuted;
-    cv::Mat opencv_image_BGR;
-    cv::Mat opencv_image_HSV;
-    cv::Mat opencv_image_cairo;
-    cv::Mat opencv_image_binary;
-
-	cv::Vec3b hsvPoint;
-	cv::Vec3b rgbPoint;
-
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
 
     int camera;
 	int program_state;
 	int selected_player;
-
-	CameraConfiguration camera_config;
-
-    double angle_image;
-
     bool end_calibration;
 	bool camera_on;
+	double angle_image;
 	
-
-	Glib::RefPtr<Gtk::Application> app;
-
-	Gtk::ComboBoxText combo_choose_player;
-	Gtk::RadioButton radio_button_image;
-    Gtk::RadioButton radio_button_camera;
-	Gtk::Button button_HSV_popover;
-	Gtk::Button button_CAM_popover;
-	Gtk::Popover HSV_popover;
-	Gtk::Popover CAM_popover;
-    Gtk::Scale scale_rotate;
-    Gtk::ImageMenuItem menu_device0;
-    Gtk::ImageMenuItem menu_device1;
-	vector<Gtk::Scale> scale_CAM_popover;
-    vector<Gtk::Scale> scale_HSV_popover;
-    vector<Gtk::ImageMenuItem> vec_devices;
+	//OPENCV
+	cv::VideoCapture 	cam;
+    cv::Mat 			opencv_image_BGR_cuted;
+    cv::Mat 			opencv_image_BGR;
+    cv::Mat 			opencv_image_HSV;
+    cv::Mat 			opencv_image_cairo;
+    cv::Mat 			opencv_image_binary;
+	cv::Vec3b 			hsvPoint;
+	cv::Vec3b 			rgbPoint;
 	
-
+	//GTKMM
+	Glib::RefPtr<Gtk::Application> 	app;
+	Gtk::ComboBoxText 				combo_choose_player;
+	Gtk::RadioButton 				radio_button_image;
+    Gtk::RadioButton 				radio_button_camera;
+	Gtk::Button 					button_HSV_popover;
+	Gtk::Button 					button_CAM_popover;
+	Gtk::Popover 					HSV_popover;
+	Gtk::Popover 					CAM_popover;
+    Gtk::Scale 						scale_rotate;
+    Gtk::ImageMenuItem 				menu_device0;
+    Gtk::ImageMenuItem 				menu_device1;
+	vector<Gtk::Scale> 				scale_CAM_popover;
+    vector<Gtk::Scale> 				scale_HSV_popover;
+    vector<Gtk::ImageMenuItem> 		vec_devices;
+	CairoCalibration 				image_events;
+	
+	
 	bool setImage(CairoCalibration*);
-
+	
 	void onMenuGame();
 	void onMenuCalibration();
 	void onMenuSimulator();
 	void onMenuArduino();
-	void onMenuQuit();
-	
+	void onMenuQuit();	
 	void onButtonHSV();
 	void onButtonCAM();
-
     void onScaleRotate();
     void onScaleHMax();
     void onScaleHMin();
@@ -85,14 +81,12 @@ private:
 	void onScaleCAMSaturation();
 	void onScaleCAMGain();
 	void onScaleCAMSharpness();
-	void onScaleCAMExposure();
-	void onImage();
-    
+	void onScaleCAMExposure();    
 	void onChoosePlayer();
 	void onRadioButtonImage();
 	void onRadioButtonCamera();
+	
 
-	vector<Point> drawCalibratedColor(cv::Mat image);
 public:
 
 	void GUI();
@@ -100,7 +94,6 @@ public:
 	Point pointCutField1;
 	Point pointCutField2;
     Point goal;
-    Point margin;
 
 	Calibration();
 	int calibrate();

@@ -25,5 +25,12 @@ string executeCommand(string cmd){
     return output;
 }
 
+Point changeCordinates(Point point_before, Point size_before, Point size_after){
+    Point point_after;
+        point_after.x = float(point_before.x) * float(size_after.x) / float(size_before.x);
+        point_after.y = float(point_before.y) * float(size_after.y) / float(size_before.y);
+    return point_after;
+}
+
 
 }
