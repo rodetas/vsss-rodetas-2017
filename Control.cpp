@@ -16,7 +16,7 @@ void Control::handle(){
 
 				std::thread menu_thread(bind(&Control::GUIInformation, this));
   
-			// initialize classes
+				// initialize classes
 				vision.initialize();
 				strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 

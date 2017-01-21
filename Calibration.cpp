@@ -11,7 +11,6 @@ Calibration::Calibration(){
     camera = getCameraNumber();
 
     getCalibration();    
-    initCameraConfig();
 }
 
 int Calibration::calibrate(){
@@ -44,7 +43,7 @@ void Calibration::updateColorPixel(Point pixel_point){
     colorsHSV[selected_player].setH(hsvPoint[H]);
     colorsHSV[selected_player].setS(hsvPoint[S]);
     colorsHSV[selected_player].setV(hsvPoint[V]);
-
+    
     rgbPoint = opencv_image_BGR_cuted.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
     colorsRGB[selected_player].r = rgbPoint[2];
     colorsRGB[selected_player].g = rgbPoint[1];
@@ -61,10 +60,13 @@ void Calibration::imageInitialize(){
         } else {
             cout << "Conection with camera failed" << endl;
         }
+
+        initCameraConfig();
     } else {
         if(cam.isOpened()){ 
             cam.release();
         }
+
         opencv_image_BGR = cv::imread(imagePath);
 
         if(opencv_image_BGR.empty()){
