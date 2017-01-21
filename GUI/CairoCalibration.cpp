@@ -2,11 +2,8 @@
 
 CairoCalibration::CairoCalibration(){   
     add_events(Gdk::BUTTON_PRESS_MASK);
-    add_events(Gdk::KEY_PRESS_MASK);
-    set_can_focus(true);
 
     pixel_color = {0,0};
-    binary_image = false;
     opencv_image = cv::Mat::zeros(1, 1, CV_64F);
 }
 
@@ -28,31 +25,11 @@ bool CairoCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw)
     return true;
 }
 
-bool CairoCalibration::on_button_press_event(GdkEventButton* event) {
-    if(event->button == GDK_BUTTON_PRIMARY && !binary_image) {
-        pixel_color = { event->x, event->y };
-		return true;
-	} 
-	return false;
-}
-
-bool CairoCalibration::on_key_press_event(GdkEventKey* key_event){
-    if (key_event->keyval == GDK_KEY_F1) {
-        binary_image = !binary_image;
-        return true;
-    }
-    return false;
-}
-
-void CairoCalibration::setImage(cv::Mat image, cv::Mat image_binary){
-    if (binary_image){
-       opencv_image = image_binary;
-    } else {
-       opencv_image = image;
-    }
+void CairoCalibration::setImage(cv::Mat image){
+    opencv_image = image;
     queue_draw();
 }
 
-Point CairoCalibration::getPixelColor(){
-    return changeCordinates(pixel_color, cairo_image_size, opencv_image_size);
+Point CairoCalibration::getCairoImageSize(){
+    return cairo_image_size;
 }

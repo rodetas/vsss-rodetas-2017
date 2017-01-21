@@ -6,6 +6,7 @@ Calibration::Calibration(){
 
     selected_player = 0;
     end_calibration = false;
+    cairo_binary_image = false;
     program_state = MENU;    
 
     camera = getCameraNumber();
@@ -111,6 +112,7 @@ void Calibration::GUI(){
         window.set_icon_from_file("files/images/logo-rodetas.png");
         window.maximize();
         window.add_accel_group(accel_map);
+        window.signal_key_press_event().connect(sigc::mem_fun(this, &Calibration::onKeyboard));
 
 
 ///////////////////////// NAVEGATION MENU /////////////////////////
@@ -368,7 +370,7 @@ void Calibration::GUI(){
 
 
 ///////////////////////// DRAW IMAGE /////////////////////////
-    
+    draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &Calibration::onMouseClick) );
 	sigc::connection draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Calibration::updateScreen) , 50 );
     
 ///////////////////////// CONTAINERS /////////////////////////
@@ -466,19 +468,31 @@ void Calibration::updateDevices(){
 }
 
 bool Calibration::updateScreen(){
-    cv::Mat img1 = opencv_image_cairo.clone();
-    cv::Mat img2 = opencv_image_binary.clone();
-
-	draw_area.setImage(img1, img2);
-
-    cout << draw_area.getPixelColor() << endl;    
-
-    /*Point p = c->getPixelColor(); 
-    if (p.x >= 0 && p.y >= 0 && p.x <= opencv_image_HSV.cols && p.y <= opencv_image_HSV.rows){
-        updateColorPixel(draw_area.getPixelColor());      
+    cv::Mat clone_image;
+    if (cairo_binary_image){
+        clone_image = opencv_image_binary.clone();
+    } else {
+        clone_image = opencv_image_cairo.clone();
     }
-*/
+	draw_area.setImage(clone_image);
+
 	return true;
+}
+
+bool Calibration::onMouseClick(GdkEventButton* event){
+    Point pixel = {event->x, event->y};
+    pixel = changeCordinates(pixel, draw_area.getCairoImageSize(), opencv_image_cairo.size());
+    updateColorPixel(pixel);
+
+    return true;
+}
+
+bool Calibration::onKeyboard(GdkEventKey* event){
+    if (event->keyval == GDK_KEY_F1) {
+        cairo_binary_image = !cairo_binary_image;        
+    }
+
+    return true;
 }
 
 void Calibration::onMenuGame(){

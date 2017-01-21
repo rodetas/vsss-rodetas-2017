@@ -30,6 +30,7 @@ private:
 	int selected_player;
     bool end_calibration;
 	bool camera_on;
+	bool cairo_binary_image;
 	double angle_image;
 	
 	//OPENCV
@@ -59,7 +60,8 @@ private:
     vector<Gtk::ImageMenuItem> 		vec_devices;
 	CairoCalibration 				draw_area;
 	
-	
+	bool onMouseClick(GdkEventButton*);
+	bool onKeyboard(GdkEventKey*);
 	bool updateScreen();
 	void onMenuGame();
 	void onMenuCalibration();
