@@ -24,6 +24,7 @@ int Calibration::calibrate(){
     while(!end_calibration){
         imageWebCam();
         opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2);
+        cout << "LOOP: " << &opencv_image_BGR << " " << opencv_image_BGR.size() << " " << &opencv_image_BGR_cuted << " " << opencv_image_BGR_cuted.size() << endl;
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
         opencv_image_binary     = opencvColorSpace( opencvBinary(colorsHSV[selected_player], opencv_image_HSV), cv::COLOR_GRAY2RGB);
@@ -43,7 +44,7 @@ void Calibration::updateColorPixel(Point pixel_point){
     colorsHSV[selected_player].setH(hsvPoint[H]);
     colorsHSV[selected_player].setS(hsvPoint[S]);
     colorsHSV[selected_player].setV(hsvPoint[V]);
-    
+
     rgbPoint = opencv_image_BGR_cuted.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
     colorsRGB[selected_player].r = rgbPoint[2];
     colorsRGB[selected_player].g = rgbPoint[1];
@@ -467,13 +468,18 @@ void Calibration::updateDevices(){
 }
 
 bool Calibration::setImage(CairoCalibration *c){
-	c->setImage(opencv_image_cairo, opencv_image_binary);
+    cv::Mat img1 = opencv_image_cairo.clone();
+    cv::Mat img2 = opencv_image_binary.clone();
 
-    Point p = c->getPixelColor(); 
+    cout << &img1 << " " << &opencv_image_cairo << endl;
+
+	c->setImage(img1, img2);
+
+    /*Point p = c->getPixelColor(); 
     if (p.x >= 0 && p.y >= 0 && p.x <= opencv_image_HSV.cols && p.y <= opencv_image_HSV.rows){
         updateColorPixel(c->getPixelColor());      
     }
-
+*/
 	return true;
 }
 
@@ -499,7 +505,7 @@ void Calibration::onMenuQuit(){
 
 void Calibration::onButtonHSV() {
     HSV_popover.show_all();
-    HSV_popover.set_visible(button_HSV_popover.get_focus_on_click());
+    //HSV_popover.set_visible(button_HSV_popover.get_focus_on_click());
 }
 
 void Calibration::onButtonCAM() {
