@@ -57,11 +57,10 @@ private:
 	vector<Gtk::Scale> 				scale_CAM_popover;
     vector<Gtk::Scale> 				scale_HSV_popover;
     vector<Gtk::ImageMenuItem> 		vec_devices;
-	CairoCalibration 				image_events;
+	CairoCalibration 				draw_area;
 	
 	
-	bool setImage(CairoCalibration*);
-	
+	bool updateScreen();
 	void onMenuGame();
 	void onMenuCalibration();
 	void onMenuSimulator();

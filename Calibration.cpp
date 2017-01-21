@@ -24,7 +24,6 @@ int Calibration::calibrate(){
     while(!end_calibration){
         imageWebCam();
         opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2);
-        cout << "LOOP: " << &opencv_image_BGR << " " << opencv_image_BGR.size() << " " << &opencv_image_BGR_cuted << " " << opencv_image_BGR_cuted.size() << endl;
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
         opencv_image_binary     = opencvColorSpace( opencvBinary(colorsHSV[selected_player], opencv_image_HSV), cv::COLOR_GRAY2RGB);
@@ -369,10 +368,9 @@ void Calibration::GUI(){
 
 
 ///////////////////////// DRAW IMAGE /////////////////////////
-
-	sigc::connection draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoCalibration* > ( sigc::mem_fun(this, &Calibration::setImage), &image_events) , 50 );
-
-
+    
+	sigc::connection draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Calibration::updateScreen) , 50 );
+    
 ///////////////////////// CONTAINERS /////////////////////////
 
     Gtk::HSeparator seperator1, seperator2, seperator3, seperator4;
@@ -392,7 +390,7 @@ void Calibration::GUI(){
 
     Gtk::Box draw_box;
         draw_box.set_border_width(20);
-        draw_box.pack_start(image_events);  
+        draw_box.pack_start(draw_area);  
     
     Gtk::Box under_menu_box(Gtk::ORIENTATION_HORIZONTAL);
 		under_menu_box.pack_start(draw_box);    
@@ -467,17 +465,17 @@ void Calibration::updateDevices(){
     }
 }
 
-bool Calibration::setImage(CairoCalibration *c){
+bool Calibration::updateScreen(){
     cv::Mat img1 = opencv_image_cairo.clone();
     cv::Mat img2 = opencv_image_binary.clone();
 
-    cout << &img1 << " " << &opencv_image_cairo << endl;
+	draw_area.setImage(img1, img2);
 
-	c->setImage(img1, img2);
+    cout << draw_area.getPixelColor() << endl;    
 
     /*Point p = c->getPixelColor(); 
     if (p.x >= 0 && p.y >= 0 && p.x <= opencv_image_HSV.cols && p.y <= opencv_image_HSV.rows){
-        updateColorPixel(c->getPixelColor());      
+        updateColorPixel(draw_area.getPixelColor());      
     }
 */
 	return true;
@@ -505,7 +503,7 @@ void Calibration::onMenuQuit(){
 
 void Calibration::onButtonHSV() {
     HSV_popover.show_all();
-    //HSV_popover.set_visible(button_HSV_popover.get_focus_on_click());
+    HSV_popover.set_visible(button_HSV_popover.get_focus_on_click());
 }
 
 void Calibration::onButtonCAM() {
@@ -515,31 +513,13 @@ void Calibration::onButtonCAM() {
 
 void Calibration::onChoosePlayer(){
     selected_player = combo_choose_player.get_active_row_number();
-    HSV_popover.show_all();
-}
-
-void Calibration::onScaleCAMBrightness(){
-    cout << scale_CAM_popover[0].get_value() << endl;
-}
-
-void Calibration::onScaleCAMContrast(){
-    cout << scale_CAM_popover[1].get_value() << endl;
-}
-
-void Calibration::onScaleCAMSaturation(){
-    cout << scale_CAM_popover[2].get_value() << endl;
-}
-
-void Calibration::onScaleCAMGain(){
-    cout << scale_CAM_popover[3].get_value() << endl;
-}
-
-void Calibration::onScaleCAMSharpness(){
-    cout << scale_CAM_popover[4].get_value() << endl;
-}
-
-void Calibration::onScaleCAMExposure(){
-    cout << scale_CAM_popover[5].get_value() << endl;
+    scale_HSV_popover[0].set_value(colorsHSV[selected_player].variationH_MAX);
+    scale_HSV_popover[1].set_value(colorsHSV[selected_player].variationH_MIN);
+    scale_HSV_popover[2].set_value(colorsHSV[selected_player].variationS_MAX);
+    scale_HSV_popover[3].set_value(colorsHSV[selected_player].variationS_MIN);
+    scale_HSV_popover[4].set_value(colorsHSV[selected_player].variationV_MAX);
+    scale_HSV_popover[5].set_value(colorsHSV[selected_player].variationV_MIN);
+    //HSV_popover.show_all();
 }
 
 void Calibration::onScaleHMax(){
@@ -586,4 +566,28 @@ void Calibration::onRadioButtonCamera(){
     button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
     camera_on = true;
     imageInitialize();
+}
+
+void Calibration::onScaleCAMBrightness(){
+    cout << scale_CAM_popover[0].get_value() << endl;
+}
+
+void Calibration::onScaleCAMContrast(){
+    cout << scale_CAM_popover[1].get_value() << endl;
+}
+
+void Calibration::onScaleCAMSaturation(){
+    cout << scale_CAM_popover[2].get_value() << endl;
+}
+
+void Calibration::onScaleCAMGain(){
+    cout << scale_CAM_popover[3].get_value() << endl;
+}
+
+void Calibration::onScaleCAMSharpness(){
+    cout << scale_CAM_popover[4].get_value() << endl;
+}
+
+void Calibration::onScaleCAMExposure(){
+    cout << scale_CAM_popover[5].get_value() << endl;
 }

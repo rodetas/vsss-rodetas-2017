@@ -1,12 +1,13 @@
 #include "CairoCalibration.h"
 
-CairoCalibration::CairoCalibration(){
-    pixel_color = {0,0};
-    binary_image = false;
-    opencv_image = cv::Mat::zeros(1, 1, CV_64F);
+CairoCalibration::CairoCalibration(){   
     add_events(Gdk::BUTTON_PRESS_MASK);
     add_events(Gdk::KEY_PRESS_MASK);
     set_can_focus(true);
+
+    pixel_color = {0,0};
+    binary_image = false;
+    opencv_image = cv::Mat::zeros(1, 1, CV_64F);
 }
 
 bool CairoCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw){
