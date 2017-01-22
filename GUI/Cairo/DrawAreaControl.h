@@ -1,13 +1,13 @@
-#ifndef CAIRO_DRAW_H_
-#define CAIRO_DRAW_H_
+#ifndef DRAW_AREA_CONTROL_H_
+#define DRAW_AREA_CONTROL_H_
 
-#include "../Header.h"
-#include "../utils/Structs.h"
-#include "../CRUD/Manipulation.h"
+#include "../../Header.h"
+#include "../../utils/Structs.h"
+#include "../../CRUD/Manipulation.h"
 
 #include <gtkmm.h>
 
-class CairoDraw : public Gtk::DrawingArea {
+class DrawAreaControl : public Gtk::DrawingArea {
 
 private:
     const int number_robot = 6;
@@ -37,7 +37,7 @@ protected:
 
 public:
 
-	CairoDraw();
+	DrawAreaControl();
     void setPosition(vector<rodetas::Object> o);
 };
 

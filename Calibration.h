@@ -5,7 +5,7 @@
 #include "utils/Structs.h"
 #include "utils/OpenCV.h"
 #include "CRUD/Manipulation.h"
-#include "GUI/CairoCalibration.h"
+#include "GUI/Cairo/DrawAreaCalibration.h"
 #include "utils/Fps.h"
 
 #include <gtkmm.h>
@@ -58,7 +58,7 @@ private:
 	vector<Gtk::Scale> 				scale_CAM_popover;
     vector<Gtk::Scale> 				scale_HSV_popover;
     vector<Gtk::ImageMenuItem> 		vec_devices;
-	CairoCalibration 				draw_area;
+	DrawAreaCalibration 				draw_area;
 	
 	bool onMouseClick(GdkEventButton*);
 	bool onKeyboard(GdkEventKey*);

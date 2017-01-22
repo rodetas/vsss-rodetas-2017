@@ -80,8 +80,8 @@ void Control::GUIInformation() {
 		window.maximize();
 		window.set_title("Rodetas");
 	
-	CairoDraw draw_robot;	
-		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< CairoDraw* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
+	DrawAreaControl draw_robot;	
+		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< DrawAreaControl* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
 
 	Gtk::Button button_play, button_pause, button_side, button_penalty;
 		button_play.add_label("Play");
@@ -120,7 +120,7 @@ void Control::GUIInformation() {
 	program_state = MENU;
 } 
 
-bool Control::setRobot(CairoDraw *c){
+bool Control::setRobot(DrawAreaControl *c){
 	c->setPosition(objects);
 	return true;
 } 

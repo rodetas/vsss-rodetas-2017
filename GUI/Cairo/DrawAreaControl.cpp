@@ -1,13 +1,13 @@
-#include "CairoDraw.h"
+#include "DrawAreaControl.h"
 
-CairoDraw::CairoDraw(){
+DrawAreaControl::DrawAreaControl(){
     robot.resize(number_robot);
     colors_rgb.resize(6);
 
     colors_rgb = manipulation.getColorsRgbCairo();
 }
 
-void CairoDraw::setPosition(vector<rodetas::Object> o){
+void DrawAreaControl::setPosition(vector<rodetas::Object> o){
     
     for (int i = 0; i < robot.size(); i++){
         robot[i].x = o[i].x;
@@ -18,7 +18,7 @@ void CairoDraw::setPosition(vector<rodetas::Object> o){
     queue_draw();
 }
 
-bool CairoDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
+bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
       
         Gtk::Allocation allocation = get_allocation();
             field_size.x = allocation.get_width();

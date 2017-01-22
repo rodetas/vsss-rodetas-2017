@@ -4,13 +4,14 @@
 #include "Header.h"
 #include "utils/OpenCV.h"
 #include "CRUD/Manipulation.h"
+#include <unistd.h>
 
 class Vision : public OpenCV {
 private:
 
 	Manipulation manipulation;
 
-	bool cameraOn;
+	bool camera_on;
 	bool begin;
 
 	const int number_robots = 3;
@@ -29,7 +30,7 @@ private:
 	
 	cv::VideoCapture cam;
 	cv::Mat opencvImageHSV;
-	cv::Mat opencvImageBGR;
+	cv::Mat opencv_image_BGR;
 
     vector<Hsv> colorsHSV;
     vector<float> blobSize;
@@ -48,7 +49,7 @@ public:
 
 	BlobsContours orderBlobsContours(BlobsContours);
 
-	void initializeWebcam();
+	void imageInitialize();
 	void imageWebCam();
 
 	vector<rodetas::Object> getPositions();

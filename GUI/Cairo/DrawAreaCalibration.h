@@ -1,14 +1,14 @@
-#ifndef CAIRO_CALIBRATION_H_
-#define CAIRO_CALIBRATION_H_
+#ifndef DRAW_AREA_CALIBRATION_H_
+#define DRAW_AREA_CALIBRATION_H_
 
-#include "../Header.h"
-#include "../utils/Structs.h"
-#include "../utils/OpenCV.h"
+#include "../../Header.h"
+#include "../../utils/Structs.h"
+#include "../../utils/OpenCV.h"
 #include <gtkmm.h>
 
 using namespace rodetas;
 
-class CairoCalibration : public Gtk::DrawingArea {
+class DrawAreaCalibration : public Gtk::DrawingArea {
 
 private:
     cv::Mat opencv_image;
@@ -20,7 +20,7 @@ protected:
     virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &c);
 
 public:
-	CairoCalibration();
+	DrawAreaCalibration();
     void setImage(cv::Mat);
     Point getCairoImageSize();
 };

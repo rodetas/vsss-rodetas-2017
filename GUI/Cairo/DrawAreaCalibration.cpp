@@ -1,13 +1,13 @@
-#include "CairoCalibration.h"
+#include "DrawAreaCalibration.h"
 
-CairoCalibration::CairoCalibration(){   
+DrawAreaCalibration::DrawAreaCalibration(){   
     add_events(Gdk::BUTTON_PRESS_MASK);
 
     pixel_color = {0,0};
     opencv_image = cv::Mat::zeros(1, 1, CV_64F);
 }
 
-bool CairoCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw){
+bool DrawAreaCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw){
 
     Gtk::Allocation allocation = get_allocation();
         cairo_image_size.x = allocation.get_width();
@@ -25,11 +25,11 @@ bool CairoCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw)
     return true;
 }
 
-void CairoCalibration::setImage(cv::Mat image){
+void DrawAreaCalibration::setImage(cv::Mat image){
     opencv_image = image;
     queue_draw();
 }
 
-Point CairoCalibration::getCairoImageSize(){
+Point DrawAreaCalibration::getCairoImageSize(){
     return cairo_image_size;
 }

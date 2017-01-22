@@ -18,7 +18,7 @@ Vision::Vision(){
 void Vision::initialize(){
     manipulation.loadCalibration();  
     colorsHSV = manipulation.getColorsHsv();
-    cameraOn = manipulation.getCameraOn();
+    camera_on = manipulation.getCameraOn();
     pointCutField1 = manipulation.getPointField1();
     pointCutField2 = manipulation.getPointField2();
     angleImageRotation = manipulation.getAngleImage();
@@ -26,7 +26,7 @@ void Vision::initialize(){
 
     //manipulation.showCalibration();
 
-    initializeWebcam();
+    imageInitialize();
 }
 
 /*
@@ -36,7 +36,7 @@ void Vision::makeVision(){
 
     imageWebCam();
 
-    opencvImageHSV = opencvColorSpace(opencvTransformation(opencvImageBGR, angleImageRotation + rotateField, pointCutField1, pointCutField2), cv::COLOR_BGR2HSV_FULL);
+    opencvImageHSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angleImageRotation + rotateField, pointCutField1, pointCutField2), cv::COLOR_BGR2HSV_FULL);
 
     //Team
     BlobsContours teamContours = blobContour( opencvBinary(colorsHSV[team], opencvImageHSV), blobSize[team]);
@@ -132,35 +132,40 @@ void Vision::colorPositionBall(BlobsContours ballContours){
 }
 
 /*
- * Method that receives and analyzes image from webcam
+ * Method for initialize image
  */
-void Vision::imageWebCam(){
+void Vision::imageInitialize(){
 
-    if(cameraOn){
-        cam >> opencvImageBGR;
-        if (opencvImageBGR.empty()){
-            cout << "CRIAR TRATAMENTO DE ERRO PARA IMAGEM VAZIA" << endl;
+    if(camera_on){
+        cam = cv::VideoCapture(camera);
+        usleep(10000); //time to camera answer
+        if(cam.isOpened()){
+            //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+            //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+            cam >> opencv_image_BGR;
+        } else {
+            cout << "Conection with camera failed" << endl;
+        }
+
+    } else {
+        if(cam.isOpened()){ 
+            cam.release();
+        }
+
+        opencv_image_BGR = cv::imread(imagePath);
+
+        if(opencv_image_BGR.empty()){
+            cout << "Problem to load image from computer" << endl;
         }
     }
 }
 
 /*
- * Method for initialize webcam
+ * Method that receives and analyzes image from webcam
  */
-void Vision::initializeWebcam(){
-
-    if(!cameraOn){
-        if(cam.isOpened()) cam.release();
-        opencvImageBGR = cv::imread(imagePath);
-
-    } else {
-        if(!cam.isOpened()) cam = cv::VideoCapture(camera);
-
-        if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-            cam >> opencvImageBGR;
-        }
+void Vision::imageWebCam(){
+     if(camera_on && cam.isOpened()){
+        cam >> opencv_image_BGR;
     }
 }
 

@@ -8,7 +8,7 @@
 #include "Strategy.h"
 #include "GUI/Arduino.h"
 #include "GUI/Menu.h"
-#include "GUI/CairoDraw.h"
+#include "GUI/Cairo/DrawAreaControl.h"
 #include "utils/Fps.h"
 #include "CRUD/Manipulation.h"
 #include <thread>
@@ -31,7 +31,7 @@ private:
 	int  program_state;
 	
 	void GUIInformation();
-	bool setRobot(CairoDraw*);
+	bool setRobot(DrawAreaControl*);
 	
 public:
 	Control();
