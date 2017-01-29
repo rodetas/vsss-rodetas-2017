@@ -62,6 +62,7 @@ void Calibration::imageInitialize(){
             cout << "Conection with camera failed" << endl;
         }
 
+
         initCameraConfig();
     } else {
         if(cam.isOpened()){ 
