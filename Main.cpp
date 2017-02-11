@@ -2,7 +2,7 @@
 #include "Calibration.h"
 #include "GUI/Menu.h"
 #include "GUI/Arduino.h"
-#include "Transmission.h"
+#include "Transmission/Transmission.h"
 
 int main(int argc, char *argv[]) {
 
@@ -37,8 +37,8 @@ int main(int argc, char *argv[]) {
 			} break;
 			
 			case EXIT:{
-				Transmission transmission;
-				program_state = transmission.closeTransmission();
+				//Transmission transmission;
+				//program_state = transmission.closeTransmission();
 			} break;
 		}
 	}

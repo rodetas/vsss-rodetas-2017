@@ -9,7 +9,6 @@
 #include "Transmission/Desconectado.h"
 
 #include "Strategy.h"
-#include "Transmission.h"
 #include "CRUD/Manipulation.h"
 
 #include "GUI/Cairo/DrawAreaControl.h"
