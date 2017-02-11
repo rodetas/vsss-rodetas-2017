@@ -3,32 +3,42 @@
 Control::Control(){	
 	objects.resize(7);
 	movements.resize(3);
-	manipulation.loadCalibration();
+	manipulation.loadCalibration();	
+	transmission = new Desconectado();
 	program_state = GAME;	
 }
 
 int Control::handle(){	
 
-	std::thread menu_thread(bind(&Control::GUIInformation, this));
+    std::thread menu_thread(bind(&Control::GUIInformation, this));
 
-	// initialize classes
-	vision.initialize();
-	strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
+    // initialize classes
+    vision.initialize();
+    strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 
-	// game loop
-	while(program_state == GAME){
+    // game loop
+    bool game = true;
+    transmission = new ConectadoJogo();
+    while(program_state == GAME){
 
-	// recognize robot's points
-		vision.makeVision(); 
-	// set informations to other classes
-		setInformations(); 
-	// apply strategies
-		strategy.handleStrategies(); 
+      // recognize robot's points
+      vision.makeVision();
+      // set informations to other classes
+      setInformations();
+      // apply strategies
+      strategy.handleStrategies();
 
-	}
+      transmission->setMovements(strategy.getMovements());
+      transmission->send();
 
-	menu_thread.detach();
+      usleep(33000);
+    }
 
+    delete transmission;
+    transmission = new Desconectado();
+
+    menu_thread.detach();
+			
 	return program_state;
 }
 
@@ -56,7 +66,7 @@ void Control::GUIInformation() {
 
 	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::sendPosition), 50); 
 
-
+  
 ///////////////////////// BUTTONS /////////////////////////
 
 	Gtk::Button button_play, button_pause, button_side, button_penalty;

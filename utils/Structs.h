@@ -10,7 +10,6 @@ namespace rodetas{
 
 typedef cv::Point Point;
 typedef cv::Point2f Point2f;
-typedef pair<string, int[2]> Command;
 typedef pair<int, int> Pwm;
 typedef sf::Clock Clock;
 
@@ -22,6 +21,29 @@ enum{player0, player1, player2, team, opponent, ball};
 enum{graphicPlayer0, graphicPlayer1, graphicPlayer2, graphicOpponent1, graphicOpponent2, graphicOpponent3, graphicBall};
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
+
+struct Command{
+	char direcao;
+	int pwm1;
+	int pwm2;
+
+	Command(){
+		direcao = 'P';
+		pwm1 = pwm2 = 0;
+	}
+
+	Command(const Command &m){
+		direcao = m.direcao;
+		pwm1 = m.pwm1;
+		pwm2 = m.pwm2;
+	}	
+
+	Command(char d, int p1, int p2){
+		direcao = d;
+		pwm1 = p1;
+		pwm2 = p2;
+	}
+};
 
 struct Hsv{
 
@@ -131,7 +153,8 @@ struct BlobsContours {
 };
 
 struct Information{
-	string strategy, move;
+	string strategy;
+	char move;
 	int pwm1, pwm2, angle, x, y;
 	float sin, cos;
 
@@ -144,7 +167,7 @@ struct Information{
 		cout << "Cos: " << cos << endl << endl;
 	};
 
-	void update(string m, int p1, int p2, int a, int px, int py, float sinAngle, float cosAngle){
+	void update(char m, int p1, int p2, int a, int px, int py, float sinAngle, float cosAngle){
 		move = m;
 		pwm1 = p1;
 		pwm2 = p2;

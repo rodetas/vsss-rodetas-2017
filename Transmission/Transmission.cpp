@@ -11,10 +11,12 @@ Transmission::Transmission() {
     time = 0;
     status = false;
     openStatus = false;
+}
 
-    openConection();
-
-}    
+Transmission::~Transmission(){
+    closeTransmission();
+    closeConnection();
+}
 
 int Transmission::closeTransmission(){
     for(int i=0 ; i<3 ; i++) { 
@@ -27,7 +29,7 @@ void Transmission::closeConnection(){
     close(usb);   
 }
 
-void Transmission::openConection(){   
+bool Transmission::openConection(){   
 
     usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
 
@@ -76,34 +78,34 @@ void Transmission::openConection(){
     }
 }
 
-void Transmission::setMovements(vector<string> movements){
-    string comand = "";
-    for(int i=0; i<3 ; i++){
-        string movement = movements[i];
-        comand = comand + checksum(i, movement);
+// recebe um comando e retorna a string equivalente para ser enviada
+string Transmission::geraStringComando(int robot, Command comand){
+
+    stringstream ss, ss1;
+    ss << setfill('0') << setw(3) << comand.pwm1;
+    ss1 << setfill('0') << setw(3) << comand.pwm2;
+
+    string pwm_str = comand.direcao + ss.str() + ss1.str();
+
+    int checksum = 0; // gera a soma acumulada do checksum
+    for(int i=0 ; i<pwm_str.size() ; i++){
+        checksum += int(pwm_str[i]);
     }
 
-    transmitting(comand);
+    checksum += int(initialCaracter[robot]); // adiciona aos caracteres inicial e final do robo
+    checksum += int(finalCaracter[robot]);
+
+    string checksumString = to_string(checksum);    //converte para string
+
+    // retorna a string pronta para ser enviada
+    string comando_str =    initialCaracter[robot] + pwm_str +
+                            checksumString + finalCaracter[robot];
+
+    return comando_str;
 }
 
-string Transmission::checksum(int robot, string comand){
-    int checksum = 0;
-
-    for (int i = 0; i < comand.size(); i++){
-        checksum = checksum + int(comand[i]);
-    }
-
-    checksum = checksum + int(initialCaracter[robot]);    
-    checksum = checksum + int(finalCaracter[robot]);
-
-    string checksumString = to_string(checksum);
- 
-    comand = initialCaracter[robot] + comand + checksumString + finalCaracter[robot];
-
-    return comand;
-}
-
-void Transmission::transmitting(string comand){
+// recebe uma string para enviar
+void Transmission::transmite(string comand){
     const int size = comand.size();
     unsigned char send_bytes[size];
 
@@ -124,6 +126,7 @@ void Transmission::transmitting(string comand){
     if(status == false || openStatus == false){
         closeConnection();
         openConection();
+        cout << "fa,se" << endl;
 
     } else {
 
@@ -131,16 +134,37 @@ void Transmission::transmitting(string comand){
             if (i < comand.size())
                 send_bytes[i] = comand[i];
             else
-            send_bytes[i] = ' ';
+                send_bytes[i] = ' ';
         }
 
-       // cout << send_bytes << endl;
+        cout << send_bytes << endl;
 
         write(usb, send_bytes, size);
     }
 }
 
-void Transmission::sendMovement(int robot, string comand, int power){
+bool Transmission::getConnectionStatus(){
+    return status && openStatus;
+}
+
+void Transmission::setMovements(vector<Command> mov){
+    swap(movements, mov); // movements = mov;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Transmission::sendMovement(int robot, char comand, int power){
     string movementConfigure;
     string stopped = "000000";
 
@@ -150,9 +174,5 @@ void Transmission::sendMovement(int robot, string comand, int power){
         movementConfigure = comand + to_string(power);
     }
 
-    transmitting( checksum(robot, movementConfigure) );
-}
-
-bool Transmission::getConnectionStatus(){
-    return status && openStatus;
+    //transmite( checksum(robot, movementConfigure) );
 }

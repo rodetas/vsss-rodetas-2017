@@ -53,14 +53,14 @@ Command Movimentation::movePlayers(Point destination, bool corner, Information& 
 	}
 
 	Command movement;
-	movement.first = movements[robot.id].first;
-	movement.second[0] = movements[robot.id].second[0];
-	movement.second[1] = movements[robot.id].second[1];
+	movement.direcao = movements[robot.id].direcao;
+	movement.pwm1 = movements[robot.id].pwm1;
+	movement.pwm2 = movements[robot.id].pwm2;
 
 	return movement;
 }
 
-void Movimentation::setPwm(Point destination, string direction){
+void Movimentation::setPwm(Point destination, char direction){
 
 	Pwm pwms = PWMCorrection(destination);
 
@@ -89,9 +89,9 @@ void Movimentation::setPwm(Point destination, string direction){
 		pwm2Correction = pwm1Correction = 0;
 	}
 	
-	movements[robot.id].first = direction;
-	movements[robot.id].second[0] = pwm1 - pwm1Correction;
-	movements[robot.id].second[1] = pwm2 - pwm2Correction;
+	movements[robot.id].direcao = direction;
+	movements[robot.id].pwm1 = pwm1 - pwm1Correction;
+	movements[robot.id].pwm2 = pwm2 - pwm2Correction;
 }
 
 /*
@@ -130,21 +130,21 @@ Pwm Movimentation::PWMCorrection(Point destination){
 }
 
 void Movimentation::turnLeft(int pwm1, int pwm2){
-	movements[robot.id].first = LEFT_MOVE;
-	movements[robot.id].second[0] = pwm1;
-	movements[robot.id].second[1] = pwm2;
+	movements[robot.id].direcao = LEFT_MOVE;
+	movements[robot.id].pwm1 = pwm1;
+	movements[robot.id].pwm2 = pwm2;
 }
 
 void Movimentation::turnRight(int pwm1, int pwm2){
-	movements[robot.id].first = RIGHT_MOVE;
-	movements[robot.id].second[0] = pwm1;
-	movements[robot.id].second[1] = pwm2;
+	movements[robot.id].direcao = RIGHT_MOVE;
+	movements[robot.id].pwm1 = pwm1;
+	movements[robot.id].pwm2 = pwm2;
 }
 
 void Movimentation::stop(){
-	movements[robot.id].first = STOPPED_MOVE;
-	movements[robot.id].second[0] = 0;
-	movements[robot.id].second[1] = 0;
+	movements[robot.id].direcao = STOPPED_MOVE;
+	movements[robot.id].pwm1 = 0;
+	movements[robot.id].pwm2 = 0;
 }
 
 float Movimentation::calculateSpeed(){

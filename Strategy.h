@@ -84,7 +84,7 @@ public:
     void setPowerCurve(float a);
     void setVecTarget(int, Point);
     
-    vector<string> getMovements();
+    vector<Command> getMovements();
     vector<Point> getTargets();
     vector<Information> getInformation();
 };

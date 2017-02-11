@@ -3,10 +3,17 @@
 
 #include "Header.h"
 #include "Vision.h"
+#include "Calibration.h"
+#include "Transmission/Transmission.h"
+#include "Transmission/ConectadoJogo.h"
+#include "Transmission/Desconectado.h"
+
 #include "Strategy.h"
 #include "Transmission.h"
 #include "CRUD/Manipulation.h"
+
 #include "GUI/Cairo/DrawAreaControl.h"
+
 #include <thread>
 #include <gtkmm.h>
 
@@ -15,7 +22,7 @@ class Control {
 private:
 
 	Manipulation manipulation;
-	Transmission transmission;
+	Transmission* transmission;
 	Strategy strategy;
 	Vision vision;
 
@@ -28,6 +35,7 @@ private:
 	int program_state;
 	
 	void GUIInformation();
+
 	
 public:
 	Control();

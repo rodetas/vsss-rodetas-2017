@@ -1,17 +1,19 @@
 #ifndef TRANSMISSION_H_
 #define TRANSMISSION_H_
 
-#include "Header.h"
+#include "../Header.h"
+#include "../utils/Structs.h"
+
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <cstring>
-#include "utils/Structs.h"
 
 using namespace std;
 using namespace rodetas;
 
-class Transmission{
+class Transmission {
+
 private:
     int usb;
     int time;
@@ -19,15 +21,25 @@ private:
     bool openStatus;
     char initialCaracter[3];
     char finalCaracter[3];
+
+protected:
+    vector<Command> movements;
+
 public:
 	Transmission();
-    void openConection();
-    void sendMovement(int, string, int);
-    void transmitting(string);
-    string checksum(int, string);
-    void setMovements(vector<string>);
+    virtual ~Transmission();
+
+    virtual void send() = 0;
+
+    bool openConection();
+
+    void sendMovement(int, char, int);
+    void transmite(string);
+    string geraStringComando(int, Command);
     bool getConnectionStatus();
     void closeConnection();
     int closeTransmission();
+
+    void setMovements(vector<Command>);
 };
 #endif
