@@ -3,76 +3,43 @@
 Control::Control(){	
 	objects.resize(7);
 	movements.resize(3);
-	manipulation.loadCalibration();
-	program_state = MENU;
+	manipulation.loadCalibration();	
 	transmission = new Desconectado();
+	program_state = GAME;	
 }
 
-void Control::handle(){	
+int Control::handle(){	
 
-	while(program_state != EXIT){
-		
-		switch(program_state){
+    std::thread menu_thread(bind(&Control::GUIInformation, this));
 
-			case GAME:{
+    // initialize classes
+    vision.initialize();
+    strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 
-				std::thread menu_thread(bind(&Control::GUIInformation, this));
-  
-				// initialize classes
-				vision.initialize();
-				strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
+    // game loop
+    bool game = true;
+    transmission = new ConectadoJogo();
+    while(program_state == GAME){
 
-				// game loop
-				bool game = true;
-				int cont = 0;
-				int pwm = 255;
-				transmission = new ConectadoJogo();
-				while(program_state == GAME){
-					
-					// recognize robot's points
-					vision.makeVision();
-					// set informations to other classes
-					setInformations();
-					// apply strategies
-					strategy.handleStrategies();
+      // recognize robot's points
+      vision.makeVision();
+      // set informations to other classes
+      setInformations();
+      // apply strategies
+      strategy.handleStrategies();
 
-					transmission->setMovements(strategy.getMovements());
-					transmission->send();
+      transmission->setMovements(strategy.getMovements());
+      transmission->send();
 
-					usleep(33000);
-				}
+      usleep(33000);
+    }
 
-				delete transmission;
-				transmission = new Desconectado();
+    delete transmission;
+    transmission = new Desconectado();
 
-				menu_thread.detach();
-			} break;
-
-			case SIMULATOR:{
-				
-			} break;
+    menu_thread.detach();
 			
-			case CALIBRATION:{
-				Calibration calibration;
-				program_state = calibration.calibrate();
-			} break;
-			
-			case ARDUINO:{
-				Arduino arduino;
-				program_state = arduino.GUI();
-			} break;
-
-			case MENU:{
-				Menu menu;
-				program_state = menu.GUI();
-			} break;
-			
-			case EXIT:{
-				program_state = transmission->closeTransmission();
-				delete transmission;
-			} break;
-		}
-	}
+	return program_state;
 }
 
 void Control::setInformations(){
@@ -97,11 +64,9 @@ void Control::GUIInformation() {
 	
 ///////////////////////// DRAW IMAGE /////////////////////////
 
-	//sigc::connection robot_draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Control::setRobot) , 50 );
+	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::sendPosition), 50); 
 
-	DrawAreaControl draw_robot;	
-	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< DrawAreaControl* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
-
+  
 ///////////////////////// BUTTONS /////////////////////////
 
 	Gtk::Button button_play, button_pause, button_side, button_penalty;
@@ -142,9 +107,9 @@ void Control::GUIInformation() {
 	robot_draw_connection.disconnect();
 
 	program_state = MENU;
-} 
+}
 
-bool Control::setRobot(DrawAreaControl *c){
-  	c->setPosition(objects);
-  	return true;
-  }
+bool Control::sendPosition(){
+	draw_robot.setPosition(objects);
+	return true;
+}
