@@ -17,8 +17,7 @@
 class Control {
 
 private:
-	Menu menu;
-	//Calibration calibration;
+
 	Manipulation manipulation;
 	Transmission transmission;
 	Strategy strategy;
@@ -29,9 +28,12 @@ private:
 	vector<string> movements;
 	
 	int  program_state;
+
+	//GTKMM
+	DrawAreaControl draw_robot;	
 	
 	void GUIInformation();
-	bool setRobot(DrawAreaControl*);
+	bool setRobot();
 	
 public:
 	Control();

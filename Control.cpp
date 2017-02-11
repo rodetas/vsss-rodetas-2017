@@ -7,9 +7,10 @@ Control::Control(){
 	program_state = MENU;
 }
 
-void Control::handle(){
+void Control::handle(){	
 
 	while(program_state != EXIT){
+		
 		switch(program_state){
 
 			case GAME:{
@@ -51,6 +52,7 @@ void Control::handle(){
 			} break;
 
 			case MENU:{
+				Menu menu;
 				program_state = menu.GUI();
 			} break;
 			
@@ -73,6 +75,7 @@ void Control::setInformations(){
 }
 
 void Control::GUIInformation() {
+	
 	Glib::RefPtr<Gtk::Application> app;
 		app = Gtk::Application::create();
 
@@ -80,15 +83,21 @@ void Control::GUIInformation() {
 		window.maximize();
 		window.set_title("Rodetas");
 	
-	DrawAreaControl draw_robot;	
-		sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< DrawAreaControl* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
+///////////////////////// DRAW IMAGE /////////////////////////
+
+	sigc::connection robot_draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Control::setRobot) , 50 );
+
+///////////////////////// BUTTONS /////////////////////////
 
 	Gtk::Button button_play, button_pause, button_side, button_penalty;
 		button_play.add_label("Play");
 		button_pause.add_label("Pause");
 		button_side.add_label("Side");
 		button_penalty.add_label("Penalty");
-		
+
+
+///////////////////////// CONTAINERS /////////////////////////
+
 	Gtk::ButtonBox box_left(Gtk::ORIENTATION_VERTICAL);
 		box_left.set_layout(Gtk::BUTTONBOX_CENTER );
 		box_left.set_spacing(20);		 
@@ -120,7 +129,7 @@ void Control::GUIInformation() {
 	program_state = MENU;
 } 
 
-bool Control::setRobot(DrawAreaControl *c){
-	c->setPosition(objects);
+bool Control::setRobot(){
+	draw_robot.setPosition(objects);
 	return true;
 } 

@@ -58,7 +58,7 @@ private:
 	vector<Gtk::Scale> 				scale_CAM_popover;
     vector<Gtk::Scale> 				scale_HSV_popover;
     vector<Gtk::ImageMenuItem> 		vec_devices;
-	DrawAreaCalibration 				draw_area;
+	DrawAreaCalibration 			draw_area;
 	
 	bool onMouseClick(GdkEventButton*);
 	bool onKeyboard(GdkEventKey*);
