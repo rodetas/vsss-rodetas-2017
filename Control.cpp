@@ -4,63 +4,32 @@ Control::Control(){
 	objects.resize(7);
 	movements.resize(3);
 	manipulation.loadCalibration();
-	program_state = MENU;
+	program_state = GAME;	
 }
 
-void Control::handle(){	
+int Control::handle(){	
 
-	while(program_state != EXIT){
-		
-		switch(program_state){
+	std::thread menu_thread(bind(&Control::GUIInformation, this));
 
-			case GAME:{
+	// initialize classes
+	vision.initialize();
+	strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 
-				std::thread menu_thread(bind(&Control::GUIInformation, this));
-  
-				// initialize classes
-				vision.initialize();
-				strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
+	// game loop
+	while(program_state == GAME){
 
-				// game loop
-				bool game = true;
-				while(program_state == GAME){
+	// recognize robot's points
+		vision.makeVision(); 
+	// set informations to other classes
+		setInformations(); 
+	// apply strategies
+		strategy.handleStrategies(); 
 
-				// recognize robot's points
-					vision.makeVision(); 
-				// set informations to other classes
-					setInformations(); 
-				// apply strategies
-					strategy.handleStrategies(); 
-
-				}
-
-				menu_thread.detach();
-			} break;
-
-			case SIMULATOR:{
-				
-			} break;
-			
-			case CALIBRATION:{
-				Calibration calibration;
-				program_state = calibration.calibrate();
-			} break;
-			
-			case ARDUINO:{
-				Arduino arduino;
-				program_state = arduino.GUI();
-			} break;
-
-			case MENU:{
-				Menu menu;
-				program_state = menu.GUI();
-			} break;
-			
-			case EXIT:{
-				program_state = transmission.closeTransmission();
-			} break;
-		}
 	}
+
+	menu_thread.detach();
+
+	return program_state;
 }
 
 void Control::setInformations(){
@@ -85,7 +54,8 @@ void Control::GUIInformation() {
 	
 ///////////////////////// DRAW IMAGE /////////////////////////
 
-	sigc::connection robot_draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Control::setRobot) , 50 );
+	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::sendPosition), 50); 
+
 
 ///////////////////////// BUTTONS /////////////////////////
 
@@ -127,9 +97,9 @@ void Control::GUIInformation() {
 	robot_draw_connection.disconnect();
 
 	program_state = MENU;
-} 
+}
 
-bool Control::setRobot(){
+bool Control::sendPosition(){
 	draw_robot.setPosition(objects);
 	return true;
-} 
+}

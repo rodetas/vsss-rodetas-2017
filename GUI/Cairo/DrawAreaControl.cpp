@@ -14,7 +14,7 @@ void DrawAreaControl::setPosition(vector<rodetas::Object> o){
         robot[i].y = o[i].y;
         //r[i].angle = o[i].angle;
     }
-
+    
     queue_draw();
 }
 

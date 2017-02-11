@@ -3,14 +3,10 @@
 
 #include "Header.h"
 #include "Vision.h"
-#include "Calibration.h"
-#include "Transmission.h"
 #include "Strategy.h"
-#include "GUI/Arduino.h"
-#include "GUI/Menu.h"
-#include "GUI/Cairo/DrawAreaControl.h"
-#include "utils/Fps.h"
+#include "Transmission.h"
 #include "CRUD/Manipulation.h"
+#include "GUI/Cairo/DrawAreaControl.h"
 #include <thread>
 #include <gtkmm.h>
 
@@ -22,23 +18,23 @@ private:
 	Transmission transmission;
 	Strategy strategy;
 	Vision vision;
-	Fps fps;
+
+	//GTKMM
+	DrawAreaControl draw_robot;
 
 	vector<rodetas::Object> objects;
 	vector<string> movements;
-	
-	int  program_state;
 
-	//GTKMM
-	DrawAreaControl draw_robot;	
+	int program_state;
 	
 	void GUIInformation();
-	bool setRobot();
 	
 public:
 	Control();
+	int handle();
+	bool sendPosition();
 	void setInformations();
-	void handle();
+
 };
 
 #endif
