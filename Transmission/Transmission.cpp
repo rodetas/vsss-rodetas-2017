@@ -126,7 +126,6 @@ void Transmission::transmite(string comand){
     if(status == false || openStatus == false){
         closeConnection();
         openConection();
-        cout << "fa,se" << endl;
 
     } else {
 
@@ -137,7 +136,7 @@ void Transmission::transmite(string comand){
                 send_bytes[i] = ' ';
         }
 
-        cout << send_bytes << endl;
+        //cout << send_bytes << endl;
 
         write(usb, send_bytes, size);
     }
