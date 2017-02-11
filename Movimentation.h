@@ -55,7 +55,7 @@ public:
 
 	void setPower(float);
 	void setPowerCurve(float);
-	void setPwm(Point, string);
+	void setPwm(Point, char);
 	void setRobot(rodetas::Object);
 	void setObjects(vector<rodetas::Object>);
 	void setImage(Point);

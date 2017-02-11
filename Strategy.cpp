@@ -81,7 +81,7 @@ void Strategy::applyAttackStrategy(){
 
 	cornerStrategy("Attack");
 
-	information[0].update( movement.first, movement.second[0], movement.second[1], robot.angle, robot.x, robot.y, 
+	information[0].update( movement.direcao, movement.pwm1, movement.pwm2, robot.angle, robot.x, robot.y, 
 				 sinAngle_robot_destination, cosAngle_robot_destination);
 
 	//information[0].print();
@@ -186,7 +186,7 @@ void Strategy::applyDefenseStrategy(){
 	//////// @TODO ESTRATEGIAS ////////
 	///////////////////////////////////
 
-	information[1].update( movement.first, movement.second[0], movement.second[1], robot.angle, robot.x, robot.y, 
+	information[1].update( movement.direcao, movement.pwm1, movement.pwm2, robot.angle, robot.x, robot.y, 
 				 		   sinAngle_robot_destination, cosAngle_robot_destination);
 
 	//information[1].print();
@@ -281,7 +281,7 @@ void Strategy::applyGoalStrategy(){
 	//////// @TODO ESTRATEGIAS ////////
 	///////////////////////////////////
 
-	information[2].update( movement.first, movement.second[0], movement.second[1], robot.angle, robot.x, robot.y, 
+	information[2].update( movement.direcao, movement.pwm1, movement.pwm2, robot.angle, robot.x, robot.y, 
 				 		   sinAngle_robot_destination, cosAngle_robot_destination);
 
 	//information[2].print();
@@ -386,14 +386,15 @@ void Strategy::setVecTarget(int id, Point target){
 	targets[id] = target;
 }
 
-vector<string> Strategy::getMovements(){
+vector<Command> Strategy::getMovements(){
 	//retorna movimentos sem alteracao
 	movements = movimentation.getMovements();
-
+	return movements;
+/*
 	vector<string> movementsString;
 	movementsString.resize(3);
 	
-	/* converts to string */
+	// converts to string 
 	for(int i=0 ; i<3 ; i++){
 		if (movements[i].second[0] == 0 && movements[i].second[1] == 0){
 			movements[i].first = STOPPED_MOVE;
@@ -403,7 +404,9 @@ vector<string> Strategy::getMovements(){
 		ss1 << setfill('0') << setw(3) << movements[i].second[1];
 		movementsString[i] = movements[i].first + ss.str() + ss1.str();
 	}
+
 	return movementsString;
+	*/
 }
 
 vector<Point> Strategy::getTargets(){

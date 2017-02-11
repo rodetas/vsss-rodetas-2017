@@ -3,7 +3,6 @@
 
 #define RADIAN_TO_DEGREE (180/CV_PI)
 
-
 #define MENU 0
 #define GAME 1
 #define CALIBRATION 2
@@ -21,11 +20,11 @@
 #define robot2FinalCharacter '}'
 #define robot0InitialCharacter '['
 #define robot0FinalCharacter ']'
-#define FORWARD_MOVE "A"
-#define BACK_MOVE "V"
-#define RIGHT_MOVE "D"
-#define LEFT_MOVE "E"
-#define STOPPED_MOVE "P"
+#define FORWARD_MOVE 'A'
+#define BACK_MOVE 'V'
+#define RIGHT_MOVE 'D'
+#define LEFT_MOVE 'E'
+#define STOPPED_MOVE 'P'
 
 #define imagePath "files/images/imageTest1(640x480).png"
 #define backgroundPath "files/textures/background.jpg"

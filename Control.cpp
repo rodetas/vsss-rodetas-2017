@@ -5,6 +5,7 @@ Control::Control(){
 	movements.resize(3);
 	manipulation.loadCalibration();
 	program_state = MENU;
+	transmission = new Desconectado();
 }
 
 void Control::handle(){	
@@ -23,16 +24,26 @@ void Control::handle(){
 
 				// game loop
 				bool game = true;
+				int cont = 0;
+				int pwm = 255;
+				transmission = new ConectadoJogo();
 				while(program_state == GAME){
+					
+					// recognize robot's points
+					vision.makeVision();
+					// set informations to other classes
+					setInformations();
+					// apply strategies
+					strategy.handleStrategies();
 
-				// recognize robot's points
-					vision.makeVision(); 
-				// set informations to other classes
-					setInformations(); 
-				// apply strategies
-					strategy.handleStrategies(); 
+					transmission->setMovements(strategy.getMovements());
+					transmission->send();
 
+					usleep(33000);
 				}
+
+				delete transmission;
+				transmission = new Desconectado();
 
 				menu_thread.detach();
 			} break;
@@ -57,7 +68,8 @@ void Control::handle(){
 			} break;
 			
 			case EXIT:{
-				program_state = transmission.closeTransmission();
+				program_state = transmission->closeTransmission();
+				delete transmission;
 			} break;
 		}
 	}
@@ -85,7 +97,10 @@ void Control::GUIInformation() {
 	
 ///////////////////////// DRAW IMAGE /////////////////////////
 
-	sigc::connection robot_draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Control::setRobot) , 50 );
+	//sigc::connection robot_draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Control::setRobot) , 50 );
+
+	DrawAreaControl draw_robot;	
+	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::bind< DrawAreaControl* > ( sigc::mem_fun(this, &Control::setRobot), &draw_robot) , 50 );
 
 ///////////////////////// BUTTONS /////////////////////////
 
@@ -129,7 +144,7 @@ void Control::GUIInformation() {
 	program_state = MENU;
 } 
 
-bool Control::setRobot(){
-	draw_robot.setPosition(objects);
-	return true;
-} 
+bool Control::setRobot(DrawAreaControl *c){
+  	c->setPosition(objects);
+  	return true;
+  }
