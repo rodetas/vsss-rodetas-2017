@@ -115,11 +115,12 @@ void loop() {
     }
   }
 
-  Serial.print(message);
-  Serial.print(" | ");  
+  Serial.print("[");
   Serial.print(speedMotorLeft());
-  Serial.print(" | ");
-  Serial.println(speedMotorRight());
+  Serial.print("|");
+  Serial.print(speedMotorRight());
+  Serial.println("]");
+  
 }
 
 
@@ -131,7 +132,6 @@ message = "";
 
     if (c == CARACTER_ROBOI) {
       Serial.readBytes(caracter, 10);
-
 
       for (int i = 0; i < 10; i++) {
         message = message + caracter[i];

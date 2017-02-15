@@ -8,6 +8,9 @@ Transmission::Transmission() {
     finalCaracter[1] = robot1FinalCharacter;
     finalCaracter[2] = robot2FinalCharacter;
 
+    receiving = false;
+    robot_speed = "";
+
     time = 0;
     status = false;
     openStatus = false;
@@ -125,7 +128,7 @@ void Transmission::transmite(string comand){
             send_bytes[i] = comand[i];
         }
 
-        //cout << send_bytes << endl;
+        cout << send_bytes << endl;
         write(usb, send_bytes, size);
         reading();
     }
@@ -136,9 +139,18 @@ void Transmission::reading(){
     int n_bytes_readed = read (usb, buffer, sizeof buffer);
 
     for (int i = 0; i < n_bytes_readed; i++){
-        cout << buffer[i];
+        
+        if (buffer[i] == finalCaracter[0]){
+            receiving = false;
+            cout << robot_speed << "]" << endl;
+            robot_speed = "";
+        } else if (buffer[i] == initialCaracter[0] || receiving){
+            if (robot_speed.size() < 13){
+                robot_speed = robot_speed + buffer[i];
+                receiving = true;            
+            }
+        } 
     }
-    if (n_bytes_readed > 0) cout << endl;
 }
 
 bool Transmission::getConnectionStatus(){
