@@ -11,7 +11,6 @@ namespace rodetas{
 typedef cv::Point Point;
 typedef cv::Point2f Point2f;
 typedef pair<int, int> Pwm;
-typedef sf::Clock Clock;
 
 enum{H, S, V};
 enum{MIN, MAX, MID};

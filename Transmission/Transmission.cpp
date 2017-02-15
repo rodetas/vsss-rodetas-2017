@@ -14,16 +14,8 @@ Transmission::Transmission() {
 }
 
 Transmission::~Transmission(){
-    closeTransmission();
     closeConnection();
 }
-
-int Transmission::closeTransmission(){
-    for(int i=0 ; i<3 ; i++) { 
-        sendMovement(i, STOPPED_MOVE,0); 
-    }
-    return EXIT;
-}   
 
 void Transmission::closeConnection(){
     close(usb);   
@@ -130,16 +122,23 @@ void Transmission::transmite(string comand){
     } else {
 
         for (int i = 0; i < size; i++) {
-            if (i < comand.size())
-                send_bytes[i] = comand[i];
-            else
-                send_bytes[i] = ' ';
+            send_bytes[i] = comand[i];
         }
 
         //cout << send_bytes << endl;
-
         write(usb, send_bytes, size);
+        reading();
     }
+}
+
+void Transmission::reading(){
+    char buffer[500];
+    int n_bytes_readed = read (usb, buffer, sizeof buffer);
+
+    for (int i = 0; i < n_bytes_readed; i++){
+        cout << buffer[i];
+    }
+    if (n_bytes_readed > 0) cout << endl;
 }
 
 bool Transmission::getConnectionStatus(){
@@ -148,30 +147,4 @@ bool Transmission::getConnectionStatus(){
 
 void Transmission::setMovements(vector<Command> mov){
     swap(movements, mov); // movements = mov;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Transmission::sendMovement(int robot, char comand, int power){
-    string movementConfigure;
-    string stopped = "000000";
-
-    if (power == 0){
-        movementConfigure = STOPPED_MOVE + stopped; 
-    } else {
-        movementConfigure = comand + to_string(power);
-    }
-
-    //transmite( checksum(robot, movementConfigure) );
 }

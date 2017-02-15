@@ -53,8 +53,6 @@ private:
 
     int state;
 
-    Clock clockChange;
-
 public:
     Strategy();
 

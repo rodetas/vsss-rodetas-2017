@@ -28,17 +28,15 @@ protected:
 public:
 	Transmission();
     virtual ~Transmission();
-
     virtual void send() = 0;
 
     bool openConection();
 
-    void sendMovement(int, char, int);
     void transmite(string);
+    void reading();
     string geraStringComando(int, Command);
     bool getConnectionStatus();
     void closeConnection();
-    int closeTransmission();
 
     void setMovements(vector<Command>);
 };
