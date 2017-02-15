@@ -40,7 +40,7 @@ void Strategy::handleStrategies(){
  */
 void Strategy::defineFunctions(){
 
-	if (distance(objects[graphicPlayer1], ball) < distance(objects[graphicPlayer0], ball) && clockChange.getElapsedTime().asMilliseconds() > 1000){
+	if (distance(objects[graphicPlayer1], ball) < distance(objects[graphicPlayer0], ball)){
 		attackNumber = graphicPlayer1;
 		defenseNumber = graphicPlayer0;
 	} else {

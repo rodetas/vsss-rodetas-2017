@@ -8,6 +8,8 @@
 #include "Transmission/ConectadoJogo.h"
 #include "Transmission/Desconectado.h"
 
+#include "utils/Timer.h"
+
 #include "Strategy.h"
 #include "CRUD/Manipulation.h"
 
@@ -34,6 +36,7 @@ private:
 	int program_state;
 	
 	void GUIInformation();
+	bool onKeyboard(GdkEventKey*);
 
 	
 public:

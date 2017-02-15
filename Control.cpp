@@ -16,22 +16,27 @@ int Control::handle(){
     vision.initialize();
     strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
 
+	Timer timer;
     // game loop
     bool game = true;
     transmission = new ConectadoJogo();
     while(program_state == GAME){
+		
+		timer.startTime();
+		
+		// recognize robot's points
+		vision.makeVision();
+		// set informations to other classes
+		setInformations();
+		// apply strategies
+		strategy.handleStrategies();
 
-      // recognize robot's points
-      vision.makeVision();
-      // set informations to other classes
-      setInformations();
-      // apply strategies
-      strategy.handleStrategies();
+		transmission->setMovements(strategy.getMovements());
+		transmission->send();
 
-      transmission->setMovements(strategy.getMovements());
-      transmission->send();
+		timer.waitTime(33);
 
-      usleep(33000);
+		cout << timer.framesPerSecond() << endl;
     }
 
     delete transmission;
@@ -61,6 +66,7 @@ void Control::GUIInformation() {
 	Gtk::Window window;	
 		window.maximize();
 		window.set_title("Rodetas");
+		window.signal_key_press_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
 	
 ///////////////////////// DRAW IMAGE /////////////////////////
 
@@ -112,4 +118,22 @@ void Control::GUIInformation() {
 bool Control::sendPosition(){
 	draw_robot.setPosition(objects);
 	return true;
+}
+
+bool Control::onKeyboard(GdkEventKey* event){
+    if (event->keyval == GDK_KEY_Left) {
+		cout << "Left" << endl;
+
+    } else if (event->keyval == GDK_KEY_Right) {
+		cout << "Right" << endl;
+	
+	} else if (event->keyval == GDK_KEY_Up) {
+		cout << "Up" << endl;
+
+	} else if (event->keyval == GDK_KEY_Down) {
+		cout << "Down" << endl;
+
+	}
+
+    return true;
 }

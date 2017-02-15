@@ -8,7 +8,6 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 OPENCVLIB = `pkg-config opencv --cflags --libs`
 GTKMMLIB = `pkg-config gtkmm-3.0 --cflags --libs`
-SFMLLIB = -lsfml-graphics -lsfml-window -lsfml-system
 LIBS = $(SFMLLIB) $(OPENCVLIB) $(GTKMMLIB) -lpthread
 
 all: $(EXEC_PROG)

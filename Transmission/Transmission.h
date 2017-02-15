@@ -21,24 +21,23 @@ private:
     bool openStatus;
     char initialCaracter[3];
     char finalCaracter[3];
-
+    string robot_speed;
+    bool receiving;
 protected:
     vector<Command> movements;
 
 public:
 	Transmission();
     virtual ~Transmission();
-
     virtual void send() = 0;
 
     bool openConection();
 
-    void sendMovement(int, char, int);
     void transmite(string);
+    void reading();
     string geraStringComando(int, Command);
     bool getConnectionStatus();
     void closeConnection();
-    int closeTransmission();
 
     void setMovements(vector<Command>);
 };

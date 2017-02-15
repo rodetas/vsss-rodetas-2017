@@ -6,7 +6,6 @@
 #include "utils/OpenCV.h"
 #include "CRUD/Manipulation.h"
 #include "GUI/Cairo/DrawAreaCalibration.h"
-#include "utils/Fps.h"
 
 #include <gtkmm.h>
 #include <thread>

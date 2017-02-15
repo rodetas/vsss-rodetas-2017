@@ -2,6 +2,7 @@
 #include "Calibration.h"
 #include "GUI/Menu.h"
 #include "GUI/Arduino.h"
+#include "utils/Plot.h"
 #include "Transmission/Transmission.h"
 
 int main(int argc, char *argv[]) {
@@ -33,12 +34,12 @@ int main(int argc, char *argv[]) {
 			} break;
 
 			case SIMULATOR:{
-				program_state = MENU;
+				Plot plot("NO_TEMPORAL" , 100, 0, 100, 0);
+				program_state = plot.GUI();
 			} break;
 			
 			case EXIT:{
-				//Transmission transmission;
-				//program_state = transmission.closeTransmission();
+				
 			} break;
 		}
 	}
