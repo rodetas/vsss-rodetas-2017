@@ -110,7 +110,7 @@ void Transmission::transmite(string comand){
     unsigned char send_bytes[size];
 
     if(time > 60){
-        string out = executeCommand("ls /dev/ttyUSB0");
+        string out = executeCommand("ls /dev/ttyUSB0 2> /dev/null");
 
         if(out.compare("") == 0){
             status = false;
