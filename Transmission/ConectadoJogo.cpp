@@ -5,23 +5,31 @@ ConectadoJogo::ConectadoJogo() : Transmission(){
 }
 
 ConectadoJogo::~ConectadoJogo(){
-    Command c(STOPPED_MOVE,0,0);
-    string envia = "";
-
-    for(int i=0 ; i<3 ; i++)
-        envia += Transmission::geraStringComando(i,c);
-
-    Transmission::transmite(envia);
-
+    stopRobot();
     Transmission::closeConnection();
 }
 
-void ConectadoJogo::send(){
-    
+void ConectadoJogo::send(){    
     string comand = "";
     for(int i=0; i<3 ; i++){
-        comand += Transmission::geraStringComando(i, movements[i]);
+        comand += Transmission::generateChecksum(i, movements[i]);
     }
 
-    Transmission::transmite(comand);
+    Transmission::transmitting(comand);
+}
+
+void ConectadoJogo::movementRobot(Command c){
+    string message = "";
+    for(int i=0 ; i<3 ; i++)
+        message += Transmission::generateChecksum(i,c);
+
+    Transmission::transmitting(message);
+}
+
+void ConectadoJogo::stopRobot(){
+    movementRobot(Command(STOPPED_MOVE,0,0));
+}
+
+void ConectadoJogo::setMovements(vector<Command> mov){
+    swap(movements, mov); // movements = mov;
 }

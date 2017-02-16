@@ -23,7 +23,8 @@ class Control {
 private:
 
 	Manipulation manipulation;
-	Transmission* transmission;
+	//Transmission* transmission;
+	ConectadoJogo transmission;
 	Strategy strategy;
 	Vision vision;
 
@@ -34,9 +35,11 @@ private:
 	vector<string> movements;
 
 	int program_state;
+	bool play;
 	
 	void GUIInformation();
 	bool onKeyboard(GdkEventKey*);
+	void onButtonPlay();
 
 	
 public:

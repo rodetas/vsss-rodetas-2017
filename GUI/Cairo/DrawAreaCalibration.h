@@ -15,9 +15,18 @@ private:
     Point cairo_image_size;
     Point opencv_image_size;
     Point pixel_color;
+    Point rectangle_point;
+    Point rectangle_size;
+
+    void drawRectangle(Point, Point);
+
 
 protected:
     virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &c);
+    virtual bool on_button_press_event(GdkEventButton* event);
+    virtual bool on_button_release_event (GdkEventButton* event);
+    virtual bool on_motion_notify_event (GdkEventMotion* event);
+
 
 public:
 	DrawAreaCalibration();

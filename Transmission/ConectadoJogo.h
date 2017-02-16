@@ -8,11 +8,15 @@ class ConectadoJogo : public Transmission{
 
     private:
 
-
     public:
         ConectadoJogo();
         virtual ~ConectadoJogo();
-        virtual void send();    
+        //virtual void send();
+        void send();
+        void setMovements(vector<Command>);
+
+        void stopRobot();
+        void movementRobot(Command);
 
 };
 

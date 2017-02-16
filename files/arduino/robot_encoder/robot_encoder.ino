@@ -17,22 +17,22 @@
 #define CARACTER_ROBOF '}'
 #endif
 
-int pwm_motor1 = 5;
-int ain2 = 6;
-int ain1 = 7;
-int stby = 8;
-int bin1 = 9;
-int bin2 = 10;
-int pwm_motor2 = 11;
+int PWM_MOTOR1 = 5;
+int AIN2 = 6;
+int AIN1 = 7;
+int STBY = 8;
+int BIN1 = 9;
+int BIN2 = 10;
+int PWM_MOTOR2 = 11;
 
+String message;
+int pwm = 0;
+int failed_read = 0;
 int encoder_left = 0;
 int encoder_right = 0;
-
-int pwm = 0;
-String message;
-
 unsigned long last_millis_left = 0;
 unsigned long last_millis_right = 0;
+unsigned long last_millis_send = 0;
 
 const float speed_calculation =  (2 * PI * 1.6) / 450; //1.6 -> raio da roda, 450 -> numero de leituras que o encoder da em uma volta
 
@@ -43,20 +43,20 @@ void turnLeft();
 void stopped();
 void forward();
 void back();
-void motorTest();
+void sendParameter();
 float speedMotorLeft();
 float speedMotorRight();
 boolean checkSum();
 boolean messageReceived();
 
 void setup() {
-  pinMode(pwm_motor1, OUTPUT);//PWMA
-  pinMode(ain2, OUTPUT);//AIN2
-  pinMode(ain1, OUTPUT);//AIN1
-  pinMode(stby, OUTPUT);//STBY
-  pinMode(bin1, OUTPUT);//BIN1
-  pinMode(bin2, OUTPUT);//BIN2
-  pinMode(pwm_motor2, OUTPUT);//PWMB
+  pinMode(PWM_MOTOR1, OUTPUT);//PWMA
+  pinMode(AIN2, OUTPUT);//AIN2
+  pinMode(AIN1, OUTPUT);//AIN1
+  pinMode(STBY, OUTPUT);//STBY
+  pinMode(BIN1, OUTPUT);//BIN1
+  pinMode(BIN2, OUTPUT);//BIN2
+  pinMode(PWM_MOTOR2, OUTPUT);//PWMB
 
   Serial.begin(19200); 
 
@@ -70,18 +70,14 @@ void loop() {
 
   if (messageReceived() && checkSum()) {
 
-    String pwm1_s = message.substring(4, 7);
-    String pwm2_s = message.substring(1, 4);
+    int pwm1 = (message.substring(4, 7)).toInt();
+    int pwm2 = (message.substring(1, 4)).toInt();
 
-    int pwm1 = pwm1_s.toInt();
-    int pwm2 = pwm2_s.toInt();
+    analogWrite(PWM_MOTOR1, pwm1);
+    analogWrite(PWM_MOTOR2, pwm2);
+    digitalWrite(STBY, HIGH); //NAO FUNCIONA SEM ISSO!!
 
-    analogWrite(pwm_motor1, pwm1);
-    analogWrite(pwm_motor2, pwm2);
-    digitalWrite(stby, HIGH); //NAO FUNCIONA SEM ISSO!!
-
-    char direcao = message[0];
-    switch (direcao) {
+    switch (message[0]) {
     case 'A': 
       {
         forward();
@@ -113,41 +109,47 @@ void loop() {
       } 
       break;
     }
-  }
+  } 
+  sendParameter();
+}
 
-  Serial.print("[");
-  Serial.print(speedMotorLeft());
-  Serial.print("|");
-  Serial.print(speedMotorRight());
-  Serial.println("]");
-  
+void sendParameter(){
+  if (millis() - last_millis_send > 30){
+    Serial.print(CARACTER_ROBOI);
+    Serial.print(speedMotorLeft());
+    Serial.print("|");
+    Serial.print(speedMotorRight());
+    Serial.print("|");
+    Serial.print(failed_read);
+    Serial.println(CARACTER_ROBOF);
+    last_millis_send = millis();
+  }
 }
 
 
 boolean messageReceived() {
-message = "";
+
   if (Serial.available() > 0) {
     char c = Serial.read();
-    char caracter[10] = "";
 
     if (c == CARACTER_ROBOI) {
-      Serial.readBytes(caracter, 10);
+      char caracter[10] = "";
+      Serial.readBytes(caracter, 10); 
 
+      message = "";
       for (int i = 0; i < 10; i++) {
-        message = message + caracter[i];
+        message += caracter[i];
       }
-      return true;
 
-    } else {
-      return false;
+      return true;
+      failed_read++;
     }
-  } else {
-    return false;
   }
+  return false;
 }
 
 boolean checkSum() {
-  int checkSumRecebido = 1;
+  int checkSumRecebido = 0;
   int checkSumLido = 0;
 
   String num = message.substring(7, 10);
@@ -160,9 +162,11 @@ boolean checkSum() {
     checkSumLido += int(message[i]);
   }
 
-  if (checkSumLido == checkSumRecebido) return true;
-  else return false;
-
+  if (checkSumLido == checkSumRecebido){
+    return true;
+    failed_read--;
+  } 
+  return false;
 }
 
 void contEncoderLeft() {
@@ -188,33 +192,35 @@ float speedMotorRight() {
 }
 
 void forward() {
-  digitalWrite(ain2, HIGH);
-  digitalWrite(ain1, LOW);
-  digitalWrite(bin1, HIGH);
-  digitalWrite(bin2, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
 }
 
 void back() {
-  digitalWrite(ain2, LOW);
-  digitalWrite(ain1, HIGH);
-  digitalWrite(bin1, LOW);
-  digitalWrite(bin2, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
 }
 
 void turnRight() {
-  digitalWrite(ain2, LOW);
-  digitalWrite(ain1, HIGH);
-  digitalWrite(bin1, HIGH);
-  digitalWrite(bin2, LOW);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
 }
 
 void turnLeft() {
-  digitalWrite(ain2, HIGH);
-  digitalWrite(ain1, LOW);
-  digitalWrite(bin1, LOW);
-  digitalWrite(bin2, HIGH);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
 }
 
 void stopped() {
-  digitalWrite(stby, LOW);
+  digitalWrite(STBY, LOW);
 }
+
+
