@@ -11,7 +11,7 @@ Transmission::Transmission() {
     receiving = false;
     robot_speed = "";
 
-    time = 0;
+    last_time = 0;
     status = false;
     openStatus = false;
 }
@@ -74,7 +74,7 @@ bool Transmission::openConection(){
 }
 
 // recebe um comando e retorna a string equivalente para ser enviada
-string Transmission::geraStringComando(int robot, Command comand){
+string Transmission::generateChecksum(int robot, Command comand){
 
     stringstream ss, ss1;
     ss << setfill('0') << setw(3) << comand.pwm1;
@@ -100,23 +100,19 @@ string Transmission::geraStringComando(int robot, Command comand){
 }
 
 // recebe uma string para enviar
-void Transmission::transmite(string comand){
+void Transmission::transmitting(string comand){
     const int size = comand.size();
     unsigned char send_bytes[size];
 
-    if(time > 60){
+    if(timer.getTime() - last_time > 2000){
         string out = executeCommand("ls /dev/ttyUSB0 2> /dev/null");
+        //cout << "Problem with Xbee" << endl;
 
-        if(out.compare("") == 0){
-            status = false;
-        } else {
-            status = true;
-        }
-        time = 0;
+        if(out.compare("") == 0) status = false;
+        else status = true;
 
-    } else {
-        time++;
-    }
+        last_time = timer.getTime();
+    } 
 
     if(status == false || openStatus == false){
         closeConnection();
@@ -128,9 +124,8 @@ void Transmission::transmite(string comand){
             send_bytes[i] = comand[i];
         }
 
-        cout << send_bytes << endl;
+        //cout << send_bytes << endl;
         write(usb, send_bytes, size);
-        reading();
     }
 }
 
@@ -139,7 +134,8 @@ void Transmission::reading(){
     int n_bytes_readed = read (usb, buffer, sizeof buffer);
 
     for (int i = 0; i < n_bytes_readed; i++){
-        
+        cout << buffer[i];
+        /*
         if (buffer[i] == finalCaracter[0]){
             receiving = false;
             cout << robot_speed << "]" << endl;
@@ -150,6 +146,7 @@ void Transmission::reading(){
                 receiving = true;            
             }
         } 
+        */
     }
 }
 
@@ -157,6 +154,8 @@ bool Transmission::getConnectionStatus(){
     return status && openStatus;
 }
 
+/*
 void Transmission::setMovements(vector<Command> mov){
     swap(movements, mov); // movements = mov;
 }
+*/

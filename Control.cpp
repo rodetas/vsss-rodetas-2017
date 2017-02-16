@@ -4,8 +4,9 @@ Control::Control(){
 	objects.resize(7);
 	movements.resize(3);
 	manipulation.loadCalibration();	
-	transmission = new Desconectado();
-	program_state = GAME;	
+	//transmission = new Desconectado();
+	program_state = GAME;
+	play = false;
 }
 
 int Control::handle(){	
@@ -19,7 +20,7 @@ int Control::handle(){
 	Timer timer;
     // game loop
     bool game = true;
-    transmission = new ConectadoJogo();
+    //transmission = new ConectadoJogo();
     while(program_state == GAME){
 		
 		timer.startTime();
@@ -31,16 +32,17 @@ int Control::handle(){
 		// apply strategies
 		strategy.handleStrategies();
 
-		transmission->setMovements(strategy.getMovements());
-		transmission->send();
+		if (play){
+			transmission.setMovements(strategy.getMovements());
+			transmission.send();
+		}
+		transmission.reading();
 
 		timer.waitTime(33);
-
-		cout << timer.framesPerSecond() << endl;
     }
 
-    delete transmission;
-    transmission = new Desconectado();
+    //delete transmission;
+    //transmission = new Desconectado();	
 
     menu_thread.detach();
 			
@@ -75,11 +77,15 @@ void Control::GUIInformation() {
   
 ///////////////////////// BUTTONS /////////////////////////
 
-	Gtk::Button button_play, button_pause, button_side, button_penalty;
-		button_play.add_label("Play");
+	Gtk::Button button_pause, button_side, button_penalty;
 		button_pause.add_label("Pause");
 		button_side.add_label("Side");
 		button_penalty.add_label("Penalty");
+	
+	Gtk::ToggleButton button_play;
+
+		button_play.add_label("Play");		
+		button_play.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonPlay) );
 
 
 ///////////////////////// CONTAINERS /////////////////////////
@@ -122,18 +128,25 @@ bool Control::sendPosition(){
 
 bool Control::onKeyboard(GdkEventKey* event){
     if (event->keyval == GDK_KEY_Left) {
-		cout << "Left" << endl;
+		transmission.movementRobot(Command('E', 150, 150));
 
     } else if (event->keyval == GDK_KEY_Right) {
-		cout << "Right" << endl;
+		transmission.movementRobot(Command('D', 150, 150));
 	
 	} else if (event->keyval == GDK_KEY_Up) {
-		cout << "Up" << endl;
+		transmission.movementRobot(Command('A', 80, 80));
 
 	} else if (event->keyval == GDK_KEY_Down) {
-		cout << "Down" << endl;
+		transmission.movementRobot(Command('A', 250, 250));
 
+	} else {
+		transmission.movementRobot(Command('P', 0, 0));
 	}
 
     return true;
+}
+
+void Control::onButtonPlay() {
+    play = !play;
+	transmission.stopRobot();
 }

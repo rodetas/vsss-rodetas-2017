@@ -3,6 +3,7 @@
 
 #include "../Header.h"
 #include "../utils/Structs.h"
+#include "../utils/Timer.h"
 
 #include <termios.h>
 #include <unistd.h>
@@ -15,30 +16,37 @@ using namespace rodetas;
 class Transmission {
 
 private:
+    Timer timer;
     int usb;
-    int time;
+    int last_time;
     bool status;
     bool openStatus;
     char initialCaracter[3];
     char finalCaracter[3];
+
+
     string robot_speed;
     bool receiving;
+
+    
 protected:
     vector<Command> movements;
 
 public:
 	Transmission();
     virtual ~Transmission();
-    virtual void send() = 0;
+    //virtual void send() = 0;
 
     bool openConection();
-
-    void transmite(string);
-    void reading();
-    string geraStringComando(int, Command);
     bool getConnectionStatus();
     void closeConnection();
 
-    void setMovements(vector<Command>);
+    void reading();
+    void transmitting(string);
+
+    void readChecksum();
+    string generateChecksum(int, Command);
+
+    //void setMovements(vector<Command>);
 };
 #endif
