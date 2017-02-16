@@ -11,9 +11,7 @@ class ConectadoJogo : public Transmission{
     public:
         ConectadoJogo();
         virtual ~ConectadoJogo();
-        //virtual void send();
         void send();
-        void setMovements(vector<Command>);
 
         void stopRobot();
         void movementRobot(Command);

@@ -35,7 +35,6 @@ protected:
 public:
 	Transmission();
     virtual ~Transmission();
-    //virtual void send() = 0;
 
     bool openConection();
     bool getConnectionStatus();
@@ -45,8 +44,8 @@ public:
     void transmitting(string);
 
     void readChecksum();
-    string generateChecksum(int, Command);
+    string generateMessage(int, Command);
 
-    //void setMovements(vector<Command>);
+    void setMovements(vector<Command>);
 };
 #endif

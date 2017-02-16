@@ -12,7 +12,7 @@ ConectadoJogo::~ConectadoJogo(){
 void ConectadoJogo::send(){    
     string comand = "";
     for(int i=0; i<3 ; i++){
-        comand += Transmission::generateChecksum(i, movements[i]);
+        comand += Transmission::generateMessage(i, movements[i]);
     }
 
     Transmission::transmitting(comand);
@@ -21,7 +21,7 @@ void ConectadoJogo::send(){
 void ConectadoJogo::movementRobot(Command c){
     string message = "";
     for(int i=0 ; i<3 ; i++)
-        message += Transmission::generateChecksum(i,c);
+        message += Transmission::generateMessage(i,c);
 
     Transmission::transmitting(message);
 }
@@ -30,6 +30,6 @@ void ConectadoJogo::stopRobot(){
     movementRobot(Command(STOPPED_MOVE,0,0));
 }
 
-void ConectadoJogo::setMovements(vector<Command> mov){
+/*void ConectadoJogo::setMovements(vector<Command> mov){
     swap(movements, mov); // movements = mov;
-}
+}*/

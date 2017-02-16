@@ -74,7 +74,7 @@ bool Transmission::openConection(){
 }
 
 // recebe um comando e retorna a string equivalente para ser enviada
-string Transmission::generateChecksum(int robot, Command comand){
+string Transmission::generateMessage(int robot, Command comand){
 
     stringstream ss, ss1;
     ss << setfill('0') << setw(3) << comand.pwm1;
@@ -131,7 +131,7 @@ void Transmission::transmitting(string comand){
 
 void Transmission::reading(){
     char buffer[500];
-    int n_bytes_readed = read (usb, buffer, sizeof buffer);
+    int n_bytes_readed = read (usb, buffer, sizeof(buffer));
 
     for (int i = 0; i < n_bytes_readed; i++){
         cout << buffer[i];
@@ -154,8 +154,7 @@ bool Transmission::getConnectionStatus(){
     return status && openStatus;
 }
 
-/*
+
 void Transmission::setMovements(vector<Command> mov){
     swap(movements, mov); // movements = mov;
 }
-*/
