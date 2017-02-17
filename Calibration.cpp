@@ -47,6 +47,8 @@ void Calibration::updateColorPixel(Point pixel_point){
     colorsRGB[selected_player].r = rgbPoint[2];
     colorsRGB[selected_player].g = rgbPoint[1];
     colorsRGB[selected_player].b = rgbPoint[0];
+
+    setPopoverHSVDefault();
 }
 
 void Calibration::imageInitialize(){
@@ -644,4 +646,10 @@ void Calibration::updateCameraValues(){
 void Calibration::setCameraOn(bool value){
     camera_on = value;
     radio_button_camera.set_active(camera_on);
+}
+
+void Calibration::setPopoverHSVDefault(){
+    for (int i = 0; i < scale_HSV_popover.size(); i++){
+        scale_HSV_popover[i].set_value(50);
+    }
 }

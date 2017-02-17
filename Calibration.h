@@ -105,6 +105,7 @@ public:
 	void getCalibration();
 
 	void setCameraOn(bool);
+	void setPopoverHSVDefault();
 
 };
 #endif
