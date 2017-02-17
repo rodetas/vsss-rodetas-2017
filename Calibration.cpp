@@ -487,7 +487,7 @@ bool Calibration::updateScreen(){
 
 bool Calibration::onMouseClick(GdkEventButton* event){
     if(event->button == GDK_BUTTON_PRIMARY) {
-        updateColorPixel( changeCordinates({event->x, event->y}, draw_area.getCairoImageSize(), opencv_image_BGR.size()) );
+        updateColorPixel( changeCordinates({event->x, event->y}, draw_area.getCairoImageSize(), opencv_image_BGR_cuted.size()) );
     }
     if(event->button == GDK_BUTTON_SECONDARY) {
         draw_area.setRectanglePoint({event->x, event->y});

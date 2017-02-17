@@ -5,7 +5,7 @@
 #include "Vision.h"
 #include "Strategy.h"
 #include "utils/Timer.h"
-#include "Transmission/ConectadoJogo.h"
+#include "Transmission/Connected.h"
 #include "GUI/Cairo/DrawAreaControl.h"
 
 #include <thread>
@@ -14,7 +14,7 @@
 class Control {
 
 private:
-	ConectadoJogo transmission;
+	Connected transmission;
 	Strategy strategy;
 	Vision vision;
 	Timer timer;

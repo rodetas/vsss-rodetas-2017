@@ -4,13 +4,13 @@
 #include "../utils/Structs.h"
 #include "Transmission.h"
 
-class ConectadoJogo : public Transmission{
+class Connected : public Transmission{
 
     private:
 
     public:
-        ConectadoJogo();
-        virtual ~ConectadoJogo();
+        Connected();
+        virtual ~Connected();
         void send();
 
         void stopRobot();

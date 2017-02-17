@@ -1,15 +1,15 @@
-#include "ConectadoJogo.h"
+#include "Connected.h"
 
-ConectadoJogo::ConectadoJogo() : Transmission(){
+Connected::Connected() : Transmission(){
     openConection();
 }
 
-ConectadoJogo::~ConectadoJogo(){
+Connected::~Connected(){
     stopRobot();
     Transmission::closeConnection();
 }
 
-void ConectadoJogo::send(){    
+void Connected::send(){    
     string comand = "";
     for(int i=0; i<3 ; i++){
         comand += Transmission::generateMessage(i, movements[i]);
@@ -18,7 +18,7 @@ void ConectadoJogo::send(){
     Transmission::transmitting(comand);
 }
 
-void ConectadoJogo::movementRobot(Command c){
+void Connected::movementRobot(Command c){
     string message = "";
     for(int i=0 ; i<3 ; i++)
         message += Transmission::generateMessage(i,c);
@@ -26,6 +26,6 @@ void ConectadoJogo::movementRobot(Command c){
     Transmission::transmitting(message);
 }
 
-void ConectadoJogo::stopRobot(){
+void Connected::stopRobot(){
     movementRobot(Command(STOPPED_MOVE,0,0));
 }
