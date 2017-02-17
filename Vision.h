@@ -3,13 +3,14 @@
 
 #include "Header.h"
 #include "utils/OpenCV.h"
+#include "utils/Timer.h"
 #include "CRUD/Manipulation.h"
-#include <unistd.h>
 
 class Vision : public OpenCV {
 private:
 
 	Manipulation manipulation;
+	Timer timer;
 
 	bool camera_on;
 	bool begin;

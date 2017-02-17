@@ -31,8 +31,12 @@ float Timer::endTime(){
     return (getTime() - start_time);
 }
 
-void Timer::waitTime(float time_wait){
+void Timer::waitTimeStarted(float time_wait){
     while((getTime() - start_time) < time_wait){
         usleep(1000);
     }
-} 
+}
+
+void Timer::wait(int t){
+    usleep(t);
+}

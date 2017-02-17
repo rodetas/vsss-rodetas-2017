@@ -222,5 +222,3 @@ void turnLeft() {
 void stopped() {
   digitalWrite(STBY, LOW);
 }
-
-

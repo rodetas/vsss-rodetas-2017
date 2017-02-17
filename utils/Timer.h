@@ -17,6 +17,7 @@ public:
     float framesPerSecond();
     float endTime();
     void startTime();
-    void waitTime(float);
+    void waitTimeStarted(float);
+    void wait(int);
 };
 #endif

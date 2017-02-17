@@ -154,7 +154,6 @@ bool Transmission::getConnectionStatus(){
     return status && openStatus;
 }
 
-
 void Transmission::setMovements(vector<Command> mov){
     swap(movements, mov); // movements = mov;
 }
