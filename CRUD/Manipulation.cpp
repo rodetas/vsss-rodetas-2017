@@ -61,10 +61,15 @@ void Manipulation::saveCameraConfig(CameraConfiguration cam_config){
     ofstream arquivo("files/instances/cameraConfig.txt", std::ofstream::trunc);
 
     arquivo << cam_config.brightness;
+    arquivo << " ";
     arquivo << cam_config.contrast;
+    arquivo << " ";
     arquivo << cam_config.saturation;
+    arquivo << " ";
     arquivo << cam_config.gain;
+    arquivo << " ";
     arquivo << cam_config.sharpness;
+    arquivo << " ";
     arquivo << cam_config.exposure;
 
     arquivo.close();

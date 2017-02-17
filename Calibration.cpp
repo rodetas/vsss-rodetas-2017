@@ -30,6 +30,7 @@ int Calibration::calibrate(){
     }
 
     manipulation.saveCalibration(colorsHSV, colorsRGB, pointCutField1, pointCutField2, goal, angle_image, camera_on);
+    manipulation.saveCameraConfig(camera_config);
     cam.release();
 
     calibration_thread.detach();
