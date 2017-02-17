@@ -9,8 +9,6 @@
 
 #include <gtkmm.h>
 #include <thread>
-#include <fstream>
-#include <string>
 
 using namespace rodetas;
 

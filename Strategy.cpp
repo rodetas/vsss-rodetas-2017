@@ -15,10 +15,12 @@ Strategy::Strategy(){
 /*	
  * Method to initialize strategy
  */
-void Strategy::initialize(Point size, Point size2){
-	this->imageSize = size;
-	this->goalSize = size2;
-	movimentation.setImage(size);	
+void Strategy::initialize(){
+	manipulation.loadCalibration();  
+	imageSize = manipulation.getImageSize();
+	goalSize = manipulation.getGoal();
+	
+	movimentation.setImage(imageSize);	
 
 	goalArea = {imageSize.x*0.2, imageSize.y*0.6};
 }
@@ -390,23 +392,6 @@ vector<Command> Strategy::getMovements(){
 	//retorna movimentos sem alteracao
 	movements = movimentation.getMovements();
 	return movements;
-/*
-	vector<string> movementsString;
-	movementsString.resize(3);
-	
-	// converts to string 
-	for(int i=0 ; i<3 ; i++){
-		if (movements[i].second[0] == 0 && movements[i].second[1] == 0){
-			movements[i].first = STOPPED_MOVE;
-		}
-		stringstream ss, ss1;
-		ss << setfill('0') << setw(3) << movements[i].second[0];
-		ss1 << setfill('0') << setw(3) << movements[i].second[1];
-		movementsString[i] = movements[i].first + ss.str() + ss1.str();
-	}
-
-	return movementsString;
-	*/
 }
 
 vector<Point> Strategy::getTargets(){

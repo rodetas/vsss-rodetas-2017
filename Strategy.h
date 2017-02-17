@@ -2,8 +2,9 @@
 #define STRATEGY_H_
 
 #include "Header.h"
-#include "utils/Structs.h"
 #include "Movimentation.h"
+#include "utils/Structs.h"
+#include "CRUD/Manipulation.h"
 
 using namespace rodetas;
 
@@ -13,6 +14,7 @@ class Strategy {
 private:
 
     Movimentation movimentation;
+    Manipulation manipulation;
 
     vector<rodetas::Object> objects;
     vector<Information> information;
@@ -56,7 +58,7 @@ private:
 public:
     Strategy();
 
-    void initialize(Point, Point);
+    void initialize();
     void handleStrategies();
     void defineFunctions();
 

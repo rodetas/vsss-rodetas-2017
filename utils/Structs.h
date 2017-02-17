@@ -4,7 +4,6 @@
 #include "../Header.h"
 #include "opencv2/highgui/highgui.hpp"
 #include <iomanip>
-#include <SFML/Graphics.hpp>
 
 namespace rodetas{
 

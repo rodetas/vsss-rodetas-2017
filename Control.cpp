@@ -1,26 +1,18 @@
 #include "Control.h"
 
-Control::Control(){	
-	objects.resize(7);
-	movements.resize(3);
-	manipulation.loadCalibration();	
-	//transmission = new Desconectado();
+Control::Control(){
 	program_state = GAME;
 	play = false;
 }
 
-int Control::handle(){	
+int Control::handle(){
 
     std::thread menu_thread(bind(&Control::GUIInformation, this));
 
     // initialize classes
     vision.initialize();
-    strategy.initialize(manipulation.getImageSize(), manipulation.getGoal());
+    strategy.initialize();
 
-	Timer timer;
-    // game loop
-    bool game = true;
-    //transmission = new ConectadoJogo();
     while(program_state == GAME){
 		
 		timer.startTime();
@@ -28,7 +20,7 @@ int Control::handle(){
 		// recognize robot's points
 		vision.makeVision();
 		// set informations to other classes
-		setInformations();
+		strategy.setObjects(vision.getPositions());
 		// apply strategies
 		strategy.handleStrategies();
 
@@ -36,28 +28,14 @@ int Control::handle(){
 			transmission.setMovements(strategy.getMovements());
 			transmission.send();
 		}
-		transmission.reading();
+		//transmission.reading();
 
-		timer.waitTime(33);
+		timer.waitTimeStarted(33);
     }
-
-    //delete transmission;
-    //transmission = new Desconectado();	
 
     menu_thread.detach();
 			
 	return program_state;
-}
-
-void Control::setInformations(){
-
-	objects = vision.getPositions();
-
-/*
-	strategy.setObjects(objects);
-	strategy.setPowerCurve(graphic.getPowerCurve());
-	strategy.setPower(graphic.getPower());
-*/
 }
 
 void Control::GUIInformation() {
@@ -72,7 +50,7 @@ void Control::GUIInformation() {
 	
 ///////////////////////// DRAW IMAGE /////////////////////////
 
-	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::sendPosition), 50); 
+	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::setPositionToDraw), 50); 
 
   
 ///////////////////////// BUTTONS /////////////////////////
@@ -121,10 +99,6 @@ void Control::GUIInformation() {
 	program_state = MENU;
 }
 
-bool Control::sendPosition(){
-	draw_robot.setPosition(objects);
-	return true;
-}
 
 bool Control::onKeyboard(GdkEventKey* event){
     if (event->keyval == GDK_KEY_Left) {
@@ -149,4 +123,9 @@ bool Control::onKeyboard(GdkEventKey* event){
 void Control::onButtonPlay() {
     play = !play;
 	transmission.stopRobot();
+}
+
+bool Control::setPositionToDraw(){
+	draw_robot.setPosition(vision.getPositions());
+	return true;
 }

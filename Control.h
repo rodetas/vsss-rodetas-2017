@@ -3,16 +3,9 @@
 
 #include "Header.h"
 #include "Vision.h"
-#include "Calibration.h"
-#include "Transmission/Transmission.h"
-#include "Transmission/ConectadoJogo.h"
-#include "Transmission/Desconectado.h"
-
-#include "utils/Timer.h"
-
 #include "Strategy.h"
-#include "CRUD/Manipulation.h"
-
+#include "utils/Timer.h"
+#include "Transmission/ConectadoJogo.h"
 #include "GUI/Cairo/DrawAreaControl.h"
 
 #include <thread>
@@ -21,33 +14,25 @@
 class Control {
 
 private:
-
-	Manipulation manipulation;
-	//Transmission* transmission;
 	ConectadoJogo transmission;
 	Strategy strategy;
 	Vision vision;
+	Timer timer;
 
 	//GTKMM
 	DrawAreaControl draw_robot;
-
-	vector<rodetas::Object> objects;
-	vector<string> movements;
 
 	int program_state;
 	bool play;
 	
 	void GUIInformation();
-	bool onKeyboard(GdkEventKey*);
 	void onButtonPlay();
+	bool onKeyboard(GdkEventKey*);
+	bool setPositionToDraw();
 
-	
 public:
 	Control();
 	int handle();
-	bool sendPosition();
-	void setInformations();
-
 };
 
 #endif

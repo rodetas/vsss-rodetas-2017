@@ -138,7 +138,7 @@ void Vision::imageInitialize(){
 
     if(camera_on){
         cam = cv::VideoCapture(camera);
-        usleep(10000); //time to camera answer
+        timer.wait(10000); //time to camera answer
         if(cam.isOpened()){
             //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
             //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
@@ -192,4 +192,4 @@ vector<rodetas::Object> Vision::getPositions(){
     objects.push_back(objectBall);
 
     return objects;
-}
+} 

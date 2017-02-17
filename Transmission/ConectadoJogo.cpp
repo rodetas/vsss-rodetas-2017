@@ -29,7 +29,3 @@ void ConectadoJogo::movementRobot(Command c){
 void ConectadoJogo::stopRobot(){
     movementRobot(Command(STOPPED_MOVE,0,0));
 }
-
-/*void ConectadoJogo::setMovements(vector<Command> mov){
-    swap(movements, mov); // movements = mov;
-}*/

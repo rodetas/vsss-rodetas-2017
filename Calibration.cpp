@@ -477,18 +477,28 @@ bool Calibration::updateScreen(){
 }
 
 bool Calibration::onMouseClick(GdkEventButton* event){
-    Point pixel = {event->x, event->y};
-    pixel = changeCordinates(pixel, draw_area.getCairoImageSize(), opencv_image_cairo.size());
-    updateColorPixel(pixel);
-
+    if(event->button == GDK_BUTTON_PRIMARY) {
+        updateColorPixel( changeCordinates({event->x, event->y}, draw_area.getCairoImageSize(), opencv_image_BGR.size()) );
+    }
+    if(event->button == GDK_BUTTON_SECONDARY) {
+        draw_area.setRectanglePoint({event->x, event->y});
+    } 
     return true;
 }
 
 bool Calibration::onKeyboard(GdkEventKey* event){
     if (event->keyval == GDK_KEY_F1) {
-        cairo_binary_image = !cairo_binary_image;        
+        cairo_binary_image = !cairo_binary_image;
     }
-
+    if (event->keyval == GDK_KEY_C || event->keyval == GDK_KEY_c) {
+        pointCutField1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
+        pointCutField2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
+        draw_area.setRectangleInvisible();
+    }
+    if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
+        pointCutField1 = {0,0};
+        pointCutField2 = opencv_image_BGR.size();
+    }
     return true;
 }
 
