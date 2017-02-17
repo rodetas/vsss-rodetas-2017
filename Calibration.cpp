@@ -218,7 +218,6 @@ void Calibration::GUI(){
     radio_button_image.set_label("Image");
     radio_button_camera.set_label("Camera");
 
-
     Gtk::RadioButton::Group group;
         radio_button_image.signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonImage));
         radio_button_camera.signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonCamera));
@@ -232,8 +231,6 @@ void Calibration::GUI(){
         grid_radio_button.set_column_homogeneous(true);
         grid_radio_button.attach(radio_button_image, 0, 0, 1, 1);
         grid_radio_button.attach(radio_button_camera, 1, 0, 1, 1);
-
-    
 
 
 ///////////////////////// COMBO BOX - SELECT Player /////////////////////////
@@ -319,13 +316,17 @@ void Calibration::GUI(){
         }
 
         scale_CAM_popover[0].set_value(camera_config.brightness);
-        scale_CAM_popover[0].set_range(-64,64);
+        scale_CAM_popover[0].set_range(0,255);
         scale_CAM_popover[1].set_value(camera_config.contrast);
+        scale_CAM_popover[1].set_range(0,255);
         scale_CAM_popover[2].set_value(camera_config.saturation);
+        scale_CAM_popover[2].set_range(0,255);
         scale_CAM_popover[3].set_value(camera_config.gain);
+        scale_CAM_popover[3].set_range(0,255);        
         scale_CAM_popover[4].set_value(camera_config.sharpness);
+        scale_CAM_popover[4].set_range(0,255);
         scale_CAM_popover[5].set_value(camera_config.exposure);
-        scale_CAM_popover[5].set_range(50,10000);
+        scale_CAM_popover[5].set_range(3,2047);
 
         scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMBrightness) );        
         scale_CAM_popover[1].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMContrast) );        
@@ -599,25 +600,25 @@ void Calibration::onRadioButtonCamera(){
 }
 
 void Calibration::onScaleCAMBrightness(){
-    cout << scale_CAM_popover[0].get_value() << endl;
+    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Brightness' " + to_string(scale_CAM_popover[0].get_value()));
 }
 
 void Calibration::onScaleCAMContrast(){
-    cout << scale_CAM_popover[1].get_value() << endl;
+    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Contrast' " + to_string(scale_CAM_popover[1].get_value()));
 }
 
 void Calibration::onScaleCAMSaturation(){
-    cout << scale_CAM_popover[2].get_value() << endl;
+    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Saturation' " + to_string(scale_CAM_popover[2].get_value()));
 }
 
 void Calibration::onScaleCAMGain(){
-    cout << scale_CAM_popover[3].get_value() << endl;
+    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Gain' " + to_string(scale_CAM_popover[3].get_value()));
 }
 
 void Calibration::onScaleCAMSharpness(){
-    cout << scale_CAM_popover[4].get_value() << endl;
+    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Sharpness' " + to_string(scale_CAM_popover[4].get_value()));
 }
 
 void Calibration::onScaleCAMExposure(){
-    cout << scale_CAM_popover[5].get_value() << endl;
+    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Exposure (Absolute)' " + to_string(scale_CAM_popover[5].get_value()));
 }
