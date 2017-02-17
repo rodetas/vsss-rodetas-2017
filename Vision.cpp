@@ -10,6 +10,7 @@ Vision::Vision(){
     robotOpponent.resize(number_robots);
     
     camera = getCameraNumber();
+    camera_config = manipulation.loadCameraConfig();
 }
 
 /*
@@ -138,16 +139,19 @@ void Vision::imageInitialize(){
 
     if(camera_on){
         cam = cv::VideoCapture(camera);
-        timer.wait(10000); //time to camera answer
+        usleep(10000); //time to camera answer
         if(cam.isOpened()){
             //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
             //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> opencv_image_BGR;
+            updateCameraValues(camera_config, camera);
         } else {
             cout << "Conection with camera failed" << endl;
+            camera_on = false;  
         }
-
-    } else {
+    } 
+    
+    if(!camera_on) {
         if(cam.isOpened()){ 
             cam.release();
         }
