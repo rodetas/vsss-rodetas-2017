@@ -64,6 +64,7 @@ private:
 	void onMenuCalibration();
 	void onMenuSimulator();
 	void onMenuArduino();
+	void onMenuRefresh();
 	void onMenuQuit();	
 	void onButtonHSV();
 	void onButtonCAM();

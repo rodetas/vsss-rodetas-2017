@@ -194,8 +194,9 @@ void Calibration::GUI(){
         menu_load_camera_config.set_state(Gtk::StateType::STATE_INSENSITIVE);
 
     Gtk::MenuItem menu_refresh;
-        menu_refresh.set_label("Refresh Device");
-        menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        menu_refresh.set_label("Default Configuration");
+        //menu_refresh.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        menu_refresh.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuRefresh));
         menu_refresh.add_accelerator("activate", accel_map, GDK_KEY_F5, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE); //116 -> f5
     
     Gtk::MenuItem menu_camera;    
@@ -624,6 +625,19 @@ void Calibration::onScaleCAMGain(){
 void Calibration::onScaleCAMSharpness(){
     camera_config.sharpness = scale_CAM_popover[4].get_value();
     rodetas::updateCameraValues(camera_config, camera);
+}
+
+void Calibration::onMenuRefresh(){
+    camera_config.brightness = 128;
+    camera_config.contrast = 128;
+    camera_config.saturation = 128;
+    camera_config.gain = 0;
+    camera_config.sharpness = 128;
+    camera_config.exposure = 416;
+
+    setValuesCamPopOver();
+    updateCameraValues(camera_config, camera);
+
 }
 
 void Calibration::onScaleCAMExposure(){
