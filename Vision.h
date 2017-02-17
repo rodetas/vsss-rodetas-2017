@@ -20,7 +20,6 @@ private:
 
 	int camera;
 	int angleImageRotation;
-	int rotateField;
 
 	vector<rodetas::Object> lastTeam;
 	vector<rodetas::Object> robotTeam;
