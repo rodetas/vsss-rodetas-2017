@@ -108,10 +108,10 @@ bool Control::onKeyboard(GdkEventKey* event){
 		transmission.movementRobot(Command('D', 150, 150));
 	
 	} else if (event->keyval == GDK_KEY_Up) {
-		transmission.movementRobot(Command('A', 80, 80));
+		transmission.movementRobot(Command('A', 255, 255));
 
 	} else if (event->keyval == GDK_KEY_Down) {
-		transmission.movementRobot(Command('A', 250, 250));
+		transmission.movementRobot(Command('V', 150, 150));
 
 	} else {
 		transmission.movementRobot(Command('P', 0, 0));
