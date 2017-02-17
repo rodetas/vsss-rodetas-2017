@@ -37,7 +37,7 @@ void Vision::makeVision(){
 
     imageWebCam();
 
-    opencvImageHSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angleImageRotation + rotateField, pointCutField1, pointCutField2), cv::COLOR_BGR2HSV_FULL);
+    opencvImageHSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angleImageRotation, pointCutField1, pointCutField2), cv::COLOR_BGR2HSV_FULL);
 
     //Team
     BlobsContours teamContours = blobContour( opencvBinary(colorsHSV[team], opencvImageHSV), blobSize[team]);
@@ -49,6 +49,9 @@ void Vision::makeVision(){
 
     //Ball
     colorPositionBall( blobContour( opencvBinary(colorsHSV[ball], opencvImageHSV), blobSize[ball]));
+
+    //cv::imshow("teste", opencvTransformation(opencv_image_BGR, angleImageRotation, pointCutField1, pointCutField2));
+    //cv::waitKey(10);
 }
 
 /*
@@ -141,8 +144,8 @@ void Vision::imageInitialize(){
         cam = cv::VideoCapture(camera);
         usleep(10000); //time to camera answer
         if(cam.isOpened()){
-            //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> opencv_image_BGR;
             updateCameraValues(camera_config, camera);
         } else {
@@ -194,12 +197,12 @@ vector<rodetas::Object> Vision::getPositions(){
         objects.push_back(robotOpponent[i]);
     
     objects.push_back(objectBall);
-/*
+
     for (int i = 0; i < objects.size(); i++) {
-        if (objects[i].x == 0 || objects[i].y == 0) {
+        //if (objects[i].x == 0 || objects[i].y == 0) {
             objects[i].print();
-        } 
+        //} 
     }
-*/
+
     return objects;
 } 

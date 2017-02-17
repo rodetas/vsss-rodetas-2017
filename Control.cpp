@@ -7,7 +7,7 @@ Control::Control(){
 
 int Control::handle(){
 
-    std::thread menu_thread(bind(&Control::GUIInformation, this));
+    //std::thread menu_thread(bind(&Control::GUIInformation, this));
 
     // initialize classes
     vision.initialize();
@@ -33,7 +33,7 @@ int Control::handle(){
 		timer.waitTimeStarted(33);
     }
 
-    menu_thread.detach();
+    //menu_thread.detach();
 			
 	return program_state;
 }

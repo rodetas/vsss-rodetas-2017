@@ -57,6 +57,8 @@ void Calibration::imageInitialize(){
         cam = cv::VideoCapture(camera);
         usleep(10000); //time to camera answer
         if(cam.isOpened()){
+            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> opencv_image_BGR;
             updateCameraValues(camera_config, camera);
         } else {
