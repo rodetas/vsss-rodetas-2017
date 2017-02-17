@@ -476,14 +476,11 @@ void Calibration::updateDevices(){
 }
 
 bool Calibration::updateScreen(){
-    cv::Mat clone_image;
     if (cairo_binary_image){
-        clone_image = opencv_image_binary.clone();
+        draw_area.setImage(opencv_image_binary);
     } else {
-        clone_image = opencv_image_cairo.clone();
+        draw_area.setImage(opencv_image_cairo);
     }
-	draw_area.setImage(clone_image);
-
 	return true;
 }
 

@@ -190,6 +190,12 @@ vector<rodetas::Object> Vision::getPositions(){
         objects.push_back(robotOpponent[i]);
     
     objects.push_back(objectBall);
-
+/*
+    for (int i = 0; i < objects.size(); i++) {
+        if (objects[i].x == 0 || objects[i].y == 0) {
+            objects[i].print();
+        } 
+    }
+*/
     return objects;
 } 
