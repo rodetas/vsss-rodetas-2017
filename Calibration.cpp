@@ -640,6 +640,7 @@ void Calibration::setPopoverHSVDefault(){
     for (int i = 0; i < scale_HSV_popover.size(); i++){
         scale_HSV_popover[i].set_value(50);
     }
+}
 
 void Calibration::setValuesCamPopOver(){
     scale_CAM_popover[0].set_value(camera_config.brightness);
