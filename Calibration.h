@@ -95,13 +95,16 @@ public:
 
 	Calibration();
 	int calibrate();
-	void initCameraConfig();
+	void defaultCameraConfig();
+	void updateCameraValues();
 	void updateDevices();
 	void updateColorPixel(Point);
 
 	void imageInitialize();
 	void imageWebCam();
 	void getCalibration();
+
+	void setCameraOn(bool);
 
 };
 #endif

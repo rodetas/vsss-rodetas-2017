@@ -29,8 +29,11 @@ private:
 public:
 	Manipulation();
 	void saveCalibration(vector<Hsv>&, vector<Rgb>&, Point, Point, Point, int, bool);
+	void saveCameraConfig(CameraConfiguration cam_config);
 	void saveCoordinates(vector<rodetas::Object>&);
+
 	pair<vector<Hsv>, vector<Rgb>> loadCalibration();
+	CameraConfiguration loadCameraConfig();
 
 	void showCalibration();
 

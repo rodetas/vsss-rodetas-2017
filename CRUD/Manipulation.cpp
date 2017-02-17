@@ -56,6 +56,39 @@ void Manipulation::saveCoordinates(vector<rodetas::Object>& positions){
     arquivo.close();
 }
 
+void Manipulation::saveCameraConfig(CameraConfiguration cam_config){
+
+    ofstream arquivo("files/instances/cameraConfig.txt", std::ofstream::trunc);
+
+    arquivo << cam_config.brightness;
+    arquivo << cam_config.contrast;
+    arquivo << cam_config.saturation;
+    arquivo << cam_config.gain;
+    arquivo << cam_config.sharpness;
+    arquivo << cam_config.exposure;
+
+    arquivo.close();
+}
+
+CameraConfiguration Manipulation::loadCameraConfig(){
+
+    CameraConfiguration cam;
+
+    ifstream arquivo("files/instances/cameraConfig.txt", std::ifstream::in);
+
+    arquivo >> cam.brightness;
+    arquivo >> cam.contrast;
+    arquivo >> cam.saturation;
+    arquivo >> cam.gain;
+    arquivo >> cam.sharpness;
+    arquivo >> cam.exposure;
+
+    arquivo.close();
+
+    return cam;
+
+}
+
 /*
  * Method for loading all parameters calibrated
  */

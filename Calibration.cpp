@@ -11,7 +11,8 @@ Calibration::Calibration(){
 
     camera = getCameraNumber();
 
-    getCalibration();    
+    getCalibration();
+    camera_config = manipulation.loadCameraConfig();
 }
 
 int Calibration::calibrate(){
@@ -54,13 +55,14 @@ void Calibration::imageInitialize(){
         usleep(10000); //time to camera answer
         if(cam.isOpened()){
             cam >> opencv_image_BGR;
+            updateCameraValues();
         } else {
             cout << "Conection with camera failed" << endl;
+            setCameraOn(false);
         }
-
-
-        initCameraConfig();
-    } else {
+    } 
+    
+    if(!camera_on) {
         if(cam.isOpened()){ 
             cam.release();
         }
@@ -88,7 +90,7 @@ void Calibration::getCalibration(){
     pointCutField2 = manipulation.getPointField2();
     goal = manipulation.getGoal();
     angle_image = manipulation.getAngleImage();
-    camera_on = manipulation.getCameraOn();
+    setCameraOn(manipulation.getCameraOn());
 
     hsvPoint[0] = colorsHSV[selected_player].h[2];
     hsvPoint[1] = colorsHSV[selected_player].s[2];
@@ -416,7 +418,7 @@ void Calibration::GUI(){
     end_calibration = true;
 }
 
-void Calibration::initCameraConfig(){
+void Calibration::defaultCameraConfig(){
     string value;
 
     value = executeCommand("uvcdynctrl -g brightness");
@@ -586,7 +588,7 @@ void Calibration::onScaleRotate(){
 void Calibration::onRadioButtonImage(){
     if (!radio_button_image.get_active()){
         button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
-        camera_on = false;
+        setCameraOn(false);
         imageInitialize();    
     }
 }
@@ -594,31 +596,51 @@ void Calibration::onRadioButtonImage(){
 void Calibration::onRadioButtonCamera(){
     if (!radio_button_camera.get_active()){    
         button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
-        camera_on = true;
+        setCameraOn(true);
         imageInitialize();
     }
 }
 
 void Calibration::onScaleCAMBrightness(){
-    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Brightness' " + to_string(scale_CAM_popover[0].get_value()));
+   camera_config.brightness = scale_CAM_popover[0].get_value();
+   updateCameraValues();
 }
 
 void Calibration::onScaleCAMContrast(){
-    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Contrast' " + to_string(scale_CAM_popover[1].get_value()));
+    camera_config.contrast = scale_CAM_popover[1].get_value();
+    updateCameraValues();
 }
 
 void Calibration::onScaleCAMSaturation(){
-    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Saturation' " + to_string(scale_CAM_popover[2].get_value()));
+    camera_config.saturation = scale_CAM_popover[2].get_value();
+    updateCameraValues();
 }
 
 void Calibration::onScaleCAMGain(){
-    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Gain' " + to_string(scale_CAM_popover[3].get_value()));
+    camera_config.gain = scale_CAM_popover[3].get_value();
+    updateCameraValues();
 }
 
 void Calibration::onScaleCAMSharpness(){
-    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Sharpness' " + to_string(scale_CAM_popover[4].get_value()));
+    camera_config.sharpness = scale_CAM_popover[4].get_value();
+    updateCameraValues();
 }
 
 void Calibration::onScaleCAMExposure(){
-    executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Exposure (Absolute)' " + to_string(scale_CAM_popover[5].get_value()));
+    camera_config.exposure = scale_CAM_popover[5].get_value();
+    updateCameraValues();
+}
+
+void Calibration::updateCameraValues(){
+     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Brightness' " + to_string(camera_config.brightness));
+     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Contrast' " + to_string(camera_config.contrast));
+     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Saturation' " + to_string(camera_config.saturation));
+     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Gain' " + to_string(camera_config.gain));
+     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Sharpness' " + to_string(camera_config.sharpness));
+     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Exposure (Absolute)' " + to_string(camera_config.exposure));
+}
+
+void Calibration::setCameraOn(bool value){
+    camera_on = value;
+    radio_button_camera.set_active(camera_on);
 }
