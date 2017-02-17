@@ -112,7 +112,6 @@ void loop() {
   } 
   sendParameter();
 }
-
 void sendParameter(){
   if (millis() - last_millis_send > 30){
     Serial.print(CARACTER_ROBOI);

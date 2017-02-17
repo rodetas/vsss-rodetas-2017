@@ -32,7 +32,7 @@ CONFIGURE_CAMERA () {
 	uvcdynctrl -d ${CAMERA} -v -s 'Contrast' 150
 	uvcdynctrl -d ${CAMERA} -v -s 'Saturation' 190
 	uvcdynctrl -d ${CAMERA} -v -s 'White Balance Temperature, Auto' 0
-	uvcdynctrl -d ${CAMERA} -v -s 'Gain' 0
+	uvcdynctrl -d ${CAMERA} -v -s 'Gain' 50
 	uvcdynctrl -d ${CAMERA} -v -s 'Sharpness' 128 #Nitidez
 	uvcdynctrl -d ${CAMERA} -v -s 'Backlight Compensation' 0
 	uvcdynctrl -d ${CAMERA} -v -s 'Exposure, Auto' 1

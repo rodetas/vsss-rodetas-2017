@@ -218,17 +218,22 @@ void Calibration::GUI(){
     radio_button_image.set_label("Image");
     radio_button_camera.set_label("Camera");
 
+
     Gtk::RadioButton::Group group;
         radio_button_image.signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonImage));
         radio_button_camera.signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonCamera));
 
         radio_button_image.set_group(group);
         radio_button_camera.set_group(group);
+        
+        radio_button_camera.set_active(camera_on);
 
     Gtk::Grid grid_radio_button;
         grid_radio_button.set_column_homogeneous(true);
         grid_radio_button.attach(radio_button_image, 0, 0, 1, 1);
         grid_radio_button.attach(radio_button_camera, 1, 0, 1, 1);
+
+    
 
 
 ///////////////////////// COMBO BOX - SELECT Player /////////////////////////
@@ -578,15 +583,19 @@ void Calibration::onScaleRotate(){
 }
 
 void Calibration::onRadioButtonImage(){
-    button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
-    camera_on = false;
-    imageInitialize();    
+    if (!radio_button_image.get_active()){
+        button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        camera_on = false;
+        imageInitialize();    
+    }
 }
 
 void Calibration::onRadioButtonCamera(){
-    button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
-    camera_on = true;
-    imageInitialize();
+    if (!radio_button_camera.get_active()){    
+        button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
+        camera_on = true;
+        imageInitialize();
+    }
 }
 
 void Calibration::onScaleCAMBrightness(){
