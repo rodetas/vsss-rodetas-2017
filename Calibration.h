@@ -96,7 +96,6 @@ public:
 	Calibration();
 	int calibrate();
 	void defaultCameraConfig();
-	void updateCameraValues();
 	void updateDevices();
 	void updateColorPixel(Point);
 
@@ -105,6 +104,7 @@ public:
 	void getCalibration();
 
 	void setCameraOn(bool);
+	void setValuesCamPopOver();
 
 };
 #endif

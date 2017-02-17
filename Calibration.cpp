@@ -56,7 +56,7 @@ void Calibration::imageInitialize(){
         usleep(10000); //time to camera answer
         if(cam.isOpened()){
             cam >> opencv_image_BGR;
-            updateCameraValues();
+            updateCameraValues(camera_config, camera);
         } else {
             cout << "Conection with camera failed" << endl;
             setCameraOn(false);
@@ -604,44 +604,44 @@ void Calibration::onRadioButtonCamera(){
 
 void Calibration::onScaleCAMBrightness(){
    camera_config.brightness = scale_CAM_popover[0].get_value();
-   updateCameraValues();
+   updateCameraValues(camera_config, camera);
 }
 
 void Calibration::onScaleCAMContrast(){
     camera_config.contrast = scale_CAM_popover[1].get_value();
-    updateCameraValues();
+    rodetas::updateCameraValues(camera_config, camera);
 }
 
 void Calibration::onScaleCAMSaturation(){
     camera_config.saturation = scale_CAM_popover[2].get_value();
-    updateCameraValues();
+    rodetas::updateCameraValues(camera_config, camera);
 }
 
 void Calibration::onScaleCAMGain(){
     camera_config.gain = scale_CAM_popover[3].get_value();
-    updateCameraValues();
+    rodetas::updateCameraValues(camera_config, camera);
 }
 
 void Calibration::onScaleCAMSharpness(){
     camera_config.sharpness = scale_CAM_popover[4].get_value();
-    updateCameraValues();
+    rodetas::updateCameraValues(camera_config, camera);
 }
 
 void Calibration::onScaleCAMExposure(){
     camera_config.exposure = scale_CAM_popover[5].get_value();
-    updateCameraValues();
-}
-
-void Calibration::updateCameraValues(){
-     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Brightness' " + to_string(camera_config.brightness));
-     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Contrast' " + to_string(camera_config.contrast));
-     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Saturation' " + to_string(camera_config.saturation));
-     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Gain' " + to_string(camera_config.gain));
-     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Sharpness' " + to_string(camera_config.sharpness));
-     executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Exposure (Absolute)' " + to_string(camera_config.exposure));
+    rodetas::updateCameraValues(camera_config, camera);
 }
 
 void Calibration::setCameraOn(bool value){
     camera_on = value;
     radio_button_camera.set_active(camera_on);
+}
+
+void Calibration::setValuesCamPopOver(){
+    scale_CAM_popover[0].set_value(camera_config.brightness);
+    scale_CAM_popover[1].set_value(camera_config.contrast);
+    scale_CAM_popover[2].set_value(camera_config.saturation);
+    scale_CAM_popover[3].set_value(camera_config.gain); 
+    scale_CAM_popover[4].set_value(camera_config.sharpness);
+    scale_CAM_popover[5].set_value(camera_config.exposure);
 }

@@ -10,6 +10,7 @@ class Vision : public OpenCV {
 private:
 
 	Manipulation manipulation;
+	CameraConfiguration camera_config;
 	Timer timer;
 
 	bool camera_on;
