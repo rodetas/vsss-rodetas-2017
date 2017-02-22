@@ -5,7 +5,6 @@
  */
 Vision::Vision(){
     colorsHSV.resize(6);
-    blobSize.resize(6);
     robotTeam.resize(number_robots);
     robotOpponent.resize(number_robots);
     
@@ -22,7 +21,6 @@ void Vision::initialize(){
     point_cut_field_1 = manipulation.getPointField1();
     point_cut_field_2 = manipulation.getPointField2();
     angle_image = manipulation.getAngleImage();
-    blobSize = manipulation.getBlobSize();
 
     //manipulation.showCalibration();
 
@@ -32,22 +30,22 @@ void Vision::initialize(){
 /*
  * Calls the functions to make robots
  */
-void Vision::makeVision(){
+void Vision::computerVision(){
 
     imageWebCam(camera_on);
 
-    opencvImageHSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2), cv::COLOR_BGR2HSV_FULL);
+    opencv_image_HSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2), cv::COLOR_BGR2HSV_FULL);
 
     //Team
-    BlobsContours teamContours = blobContour( opencvBinary(colorsHSV[team], opencvImageHSV), blobSize[team]);
-    colorPositionPlayer(opencvImageHSV, teamContours);
+    team_position = position(opencvBinary(opencv_image_HSV, colorsHSV[team]));
+    colorPositionPlayer(opencv_image_HSV, team_position);
 
     //Opponent
-    BlobsContours opponentContours = blobContour( opencvBinary(colorsHSV[opponent], opencvImageHSV), blobSize[opponent]);
-    colorPositionOpponent(opponentContours);
+    opponent_position = position(opencvBinary(opencv_image_HSV, colorsHSV[opponent]));
+    colorPositionOpponent(opponent_position);
 
     //Ball
-    colorPositionBall( blobContour( opencvBinary(colorsHSV[ball], opencvImageHSV), blobSize[ball]));
+    colorPositionBall( position( opencvBinary(opencv_image_HSV, colorsHSV[ball])));
 
     //cv::imshow("teste", opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2));
     //cv::waitKey(10);
@@ -56,23 +54,23 @@ void Vision::makeVision(){
 /*
  * method to join team color with the player to create a robot
  */
-rodetas::Object Vision::makeRobot(BlobsContours playerContours, BlobsContours teamContours, int numberTeam){
+rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, ContoursPosition team_position, int number_team){
 
     rodetas::Object robot;
 
-    for (int i = 0; i < playerContours.center.size(); i++){
-        playerContours.center[i].x += teamContours.cutPoint1[numberTeam].x;
-        playerContours.center[i].y += teamContours.cutPoint1[numberTeam].y;
+    for (int i = 0; i < color_player_position.center.size(); i++){
 
-        float distance = rodetas::distance(playerContours.center[i], teamContours.center[numberTeam]);
+        // sum team cutPoint because the cut of the image
+        color_player_position.center[i].x += team_position.cutPoint1[number_team].x;
+        color_player_position.center[i].y += team_position.cutPoint1[number_team].y;
 
-        if (distance <= teamContours.radius[numberTeam] && distance >= teamContours.radius[numberTeam]/6){
-            robot.x = teamContours.center[numberTeam].x;
-            robot.y = teamContours.center[numberTeam].y;
-            robot.angle = atan2 ((playerContours.center[i].y - teamContours.center[numberTeam].y),
-                                 (playerContours.center[i].x - teamContours.center[numberTeam].x)) * (180 / CV_PI) + 180 + 45;
+        if (rodetas::insideCircle(color_player_position.center[i], team_position.center[number_team], team_position.radius[number_team] )){
+            robot.x = team_position.center[number_team].x;
+            robot.y = team_position.center[number_team].y;
+            robot.angle = atan2 ((color_player_position.center[i].y - team_position.center[number_team].y),
+                                 (color_player_position.center[i].x - team_position.center[number_team].x)) * (180 / CV_PI) + 180 + 45;
         }
-    }
+    }   
 
     return robot;
 }
@@ -80,23 +78,23 @@ rodetas::Object Vision::makeRobot(BlobsContours playerContours, BlobsContours te
 /*
  * Method for find the color position of the player and make the robots
  */
-void Vision::colorPositionPlayer(cv::Mat image, BlobsContours teamContours){
+void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
 
     // can be less than 3 robots
-    robotTeam.clear();
-    robotTeam.resize(number_robots);
+    //robotTeam.clear();
+    //robotTeam.resize(number_robots);
 
     // cropped image around the color team
-    for (int i = 0; i < teamContours.center.size(); i++){
-        cv::Mat cutImage = image( cv::Rect(teamContours.cutPoint1[i], teamContours.cutPoint2[i]) );
+    for (int i = 0; i < team_position.center.size(); i++){
+        cv::Mat cut_image = image( cv::Rect(team_position.cutPoint1[i], team_position.cutPoint2[i]) );
 
         // search player's color on a cropped image
         for (int j = 0; j < number_robots; j++){
-            BlobsContours contours = blobContour( opencvBinary(colorsHSV[j], cutImage), blobSize[j]);
+            ContoursPosition color_player_position = position( opencvBinary(cut_image, colorsHSV[j]));
 
             // check if finds the specified color in image
-            if (contours.center.size() != 0){
-                robotTeam[j] = makeRobot(contours, teamContours, i);
+            if (color_player_position.center.size() != 0){
+                robotTeam[j] = robotPosition(color_player_position, team_position, i);
                 break;
             }
         }
@@ -106,30 +104,30 @@ void Vision::colorPositionPlayer(cv::Mat image, BlobsContours teamContours){
 /*
  * Method for set the position of opponent's color
  */
-void Vision::colorPositionOpponent(BlobsContours opponentContours){
+void Vision::colorPositionOpponent(ContoursPosition opponent_position){
 
     robotOpponent.clear();
     robotOpponent.resize(number_robots);
 
-    for (int i = 0; i < opponentContours.center.size(); i++){
-        robotOpponent[i].x = opponentContours.center[i].x;
-        robotOpponent[i].y = opponentContours.center[i].y;
+    for (int i = 0; i < opponent_position.center.size(); i++){
+        robotOpponent[i].x = opponent_position.center[i].x;
+        robotOpponent[i].y = opponent_position.center[i].y;
     }
 }
 
 /*
  * Method for set the position of ball's color
  */
-void Vision::colorPositionBall(BlobsContours ballContours){
+void Vision::colorPositionBall(ContoursPosition ball_position){
 
     objectBall.clear();
 
     int radiusBall = 0; 
-    for(int i = 0; i < ballContours.center.size(); i++){ 
-        if (ballContours.radius[i] >= radiusBall && ballContours.center.size() > 0){
-            radiusBall = ballContours.radius[i];
-            objectBall.x = int(ballContours.center[i].x);
-            objectBall.y = int(ballContours.center[i].y);
+    for(int i = 0; i < ball_position.center.size(); i++){ 
+        if (ball_position.radius[i] >= radiusBall && ball_position.center.size() > 0){
+            radiusBall = ball_position.radius[i];
+            objectBall.x = int(ball_position.center[i].x);
+            objectBall.y = int(ball_position.center[i].y);
         }
     }
 }
@@ -148,12 +146,12 @@ vector<rodetas::Object> Vision::getPositions(){
         objects.push_back(robotOpponent[i]);
     
     objects.push_back(objectBall);
-/*
-    for (int i = 0; i < objects.size(); i++) {
-        //if (objects[i].x == 0 || objects[i].y == 0) {
-            objects[i].print();
-        //} 
+
+    for (int j = 0; j < number_robots; j++){
+        if (robotTeam[j].x == 0 || robotTeam[j].y == 0){
+            robotTeam[j].print();
+        }
     }
-*/
+
     return objects;
-} 
+}

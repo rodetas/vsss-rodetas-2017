@@ -8,13 +8,7 @@ DrawAreaControl::DrawAreaControl(){
 }
 
 void DrawAreaControl::setPosition(vector<rodetas::Object> o){
-    
-    for (int i = 0; i < robot.size(); i++){
-        robot[i].x = o[i].x;
-        robot[i].y = o[i].y;
-        //r[i].angle = o[i].angle;
-    }
-    
+    robot = o;
     queue_draw();
 }
 
@@ -113,9 +107,11 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
         for (int i = 0; i < 3; i++) {
 
             Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };
-            
             // team colors rectangle        
             c->save();
+                c->translate(r.x + color_team_size/2, r.y + color_team_size/2);
+                c->rotate_degrees(robot[i].angle - 90);
+                c->translate(-r.x - color_team_size/2, -r.y - color_team_size/2);
                 c->rectangle(r.x, r.y, color_team_size, color_team_size);
                 c->set_source_rgb(colors_rgb[3].r, colors_rgb[3].g, colors_rgb[3].b);
                 c->fill_preserve();
@@ -124,9 +120,13 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             
             // player colors rectangle            
             c->save();
+                c->translate(r.x + color_team_size/2, r.y + color_team_size/2);
+                c->rotate_degrees(robot[i].angle - 90);
+                c->translate(-r.x - color_team_size/2, -r.y - color_team_size/2);
                 c->rectangle(r.x, r.y, color_player_size, color_player_size);    
                 c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
                 c->fill_preserve();
+                
             c->restore();
             c->stroke ();
         }

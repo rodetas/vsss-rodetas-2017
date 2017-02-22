@@ -3,7 +3,6 @@
 Manipulation::Manipulation(){
 	colorsHSV.resize(6);
 	colorsRGB.resize(6);
-	blobSize.resize(6);
 
     created = false;
 
@@ -184,10 +183,6 @@ vector<Rgb> Manipulation::getColorsRgbCairo(){
     }
 
     return colorsRGB;
-}
-
-vector<float> Manipulation::getBlobSize(){
-	return blobSize;
 }
 
 Point Manipulation::getPointField1(){

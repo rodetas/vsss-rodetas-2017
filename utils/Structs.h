@@ -137,11 +137,22 @@ struct Object{
 	};
 };
 
-struct BlobsContours {
+struct ContoursPosition {
 	vector<Point2f>	center;
     vector<float>	radius;
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
+
+/*
+	ContoursPosition() {
+		cutPoint1 = {0,0};
+		cutPoint2 = {0,0};
+	}
+*/
+	bool cutPointDefined(){
+		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
+	}
+
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
@@ -197,6 +208,11 @@ string toString(const T value, const int n){
     std::ostringstream out;
     out << setprecision(n) << value;
 	return out.str();
+}
+
+template <typename T, typename U, typename X>
+bool insideCircle(const T a, const U b, const X r){
+	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)) < r;
 }
 
 template <typename T, typename U>

@@ -24,7 +24,7 @@ int Calibration::calibrate(){
         opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
-        opencv_image_binary     = opencvColorSpace( opencvBinary(colorsHSV[selected_player], opencv_image_HSV), cv::COLOR_GRAY2RGB);
+        opencv_image_binary     = opencvColorSpace( opencvBinary(opencv_image_HSV, colorsHSV[selected_player]), cv::COLOR_GRAY2RGB);
     }
 
     manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut_field_1, point_cut_field_2, goal, angle_image, camera_on);

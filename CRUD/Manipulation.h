@@ -15,7 +15,6 @@ private:
 	//variaveis de calibragem
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
-	vector<float> blobSize;
 	Point point_cut_field_1;
 	Point point_cut_field_2;
 	Point goal;
@@ -40,7 +39,6 @@ public:
 	vector<Hsv> getColorsHsv();
 	vector<Rgb> getColorsRgb();
 	vector<Rgb> getColorsRgbCairo();
-	vector<float> getBlobSize();
 	Point getPointField1();
 	Point getPointField2();
 	int getAngleImage();
