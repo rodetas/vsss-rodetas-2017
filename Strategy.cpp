@@ -42,17 +42,17 @@ void Strategy::handleStrategies(){
  */
 void Strategy::defineFunctions(){
 
-	if (distance(objects[graphicPlayer1], ball) < distance(objects[graphicPlayer0], ball)){
-		attackNumber = graphicPlayer1;
-		defenseNumber = graphicPlayer0;
+	if (distance(objects[GRAPHICPLAYER1], ball) < distance(objects[GRAPHICPLAYER0], ball)){
+		attackNumber = GRAPHICPLAYER1;
+		defenseNumber = GRAPHICPLAYER0;
 	} else {
-		attackNumber = graphicPlayer0;
-		defenseNumber = graphicPlayer1;
+		attackNumber = GRAPHICPLAYER0;
+		defenseNumber = GRAPHICPLAYER1;
 	}	
 
-	goalNumber = graphicPlayer2;
+	goalNumber = GRAPHICPLAYER2;
 
-	ball = objects[graphicBall];
+	ball = objects[GRAPHICBALL];
 
 	movimentation.setNumbers(attackNumber, defenseNumber, goalNumber);
 }

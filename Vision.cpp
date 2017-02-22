@@ -37,15 +37,15 @@ void Vision::computerVision(){
     opencv_image_HSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2), cv::COLOR_BGR2HSV_FULL);
 
     //Team
-    team_position = position(opencvBinary(opencv_image_HSV, colorsHSV[team]));
+    team_position = position(opencvBinary(opencv_image_HSV, colorsHSV[TEAM]));
     colorPositionPlayer(opencv_image_HSV, team_position);
 
     //Opponent
-    opponent_position = position(opencvBinary(opencv_image_HSV, colorsHSV[opponent]));
+    opponent_position = position(opencvBinary(opencv_image_HSV, colorsHSV[OPPONENT]));
     colorPositionOpponent(opponent_position);
 
     //Ball
-    colorPositionBall( position( opencvBinary(opencv_image_HSV, colorsHSV[ball])));
+    colorPositionBall( position( opencvBinary(opencv_image_HSV, colorsHSV[BALL])));
 
     //cv::imshow("teste", opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2));
     //cv::waitKey(10);
@@ -81,8 +81,8 @@ rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, Co
 void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
 
     // can be less than 3 robots
-    //robotTeam.clear();
-    //robotTeam.resize(number_robots);
+    robotTeam.clear();
+    robotTeam.resize(number_robots);
 
     // cropped image around the color team
     for (int i = 0; i < team_position.center.size(); i++){

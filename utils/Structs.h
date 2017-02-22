@@ -14,9 +14,9 @@ typedef pair<int, int> Pwm;
 enum{H, S, V};
 enum{MIN, MAX, MID};
 enum{H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN};
+enum{PLAYER0, PLAYER1, PLAYER2, TEAM, OPPONENT, BALL};
+enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOPPONENT2, GRAPHICOPPONENT3, GRAPHICBALL};
 
-enum{player0, player1, player2, team, opponent, ball};
-enum{graphicPlayer0, graphicPlayer1, graphicPlayer2, graphicOpponent1, graphicOpponent2, graphicOpponent3, graphicBall};
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
 
