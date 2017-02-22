@@ -9,29 +9,28 @@ Calibration::Calibration(){
     cairo_binary_image = false;
     program_state = MENU;    
 
-    camera = getCameraNumber();
-
     getCalibration();
     camera_config = manipulation.loadCameraConfig();
 }
 
 int Calibration::calibrate(){
 
-    imageInitialize();
+    imageInitialize(camera_on);
 
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
     while(!end_calibration){
-        imageWebCam();
-        opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, pointCutField1, pointCutField2);
+        imageWebCam(camera_on);
+        opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
         opencv_image_binary     = opencvColorSpace( opencvBinary(colorsHSV[selected_player], opencv_image_HSV), cv::COLOR_GRAY2RGB);
     }
 
-    manipulation.saveCalibration(colorsHSV, colorsRGB, pointCutField1, pointCutField2, goal, angle_image, camera_on);
+    manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut_field_1, point_cut_field_2, goal, angle_image, camera_on);
     manipulation.saveCameraConfig(camera_config);
-    cam.release();
+
+    setCameraRelease();
 
     calibration_thread.detach();
     return program_state;
@@ -51,48 +50,13 @@ void Calibration::updateColorPixel(Point pixel_point){
     setPopoverHSVDefault();
 }
 
-void Calibration::imageInitialize(){
-
-    if(camera_on){
-        cam = cv::VideoCapture(camera);
-        usleep(10000); //time to camera answer
-        if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-            cam >> opencv_image_BGR;
-            updateCameraValues(camera_config, camera);
-        } else {
-            cout << "Conection with camera failed" << endl;
-            setCameraOn(false);
-        }
-    } 
-    
-    if(!camera_on) {
-        if(cam.isOpened()){ 
-            cam.release();
-        }
-
-        opencv_image_BGR = cv::imread(imagePath);
-
-        if(opencv_image_BGR.empty()){
-            cout << "Problem to load image from computer" << endl;
-        }
-    }
-}
-
-void Calibration::imageWebCam(){
-    if(camera_on && cam.isOpened()){
-        cam >> opencv_image_BGR;
-    }
-}
-
 void Calibration::getCalibration(){
     manipulation.loadCalibration();
     colorsHSV = manipulation.getColorsHsv();
     colorsRGB = manipulation.getColorsRgb();
 
-    pointCutField1 = manipulation.getPointField1();
-    pointCutField2 = manipulation.getPointField2();
+    point_cut_field_1 = manipulation.getPointField1();
+    point_cut_field_2 = manipulation.getPointField2();
     goal = manipulation.getGoal();
     angle_image = manipulation.getAngleImage();
     setCameraOn(manipulation.getCameraOn());
@@ -189,7 +153,7 @@ void Calibration::GUI(){
         subMenuFile.append(menu_reset);
 
 
-///////////////////////// CAMERA MENU /////////////////////////
+///////////////////////// camera_number MENU /////////////////////////
 
     Gtk::ImageMenuItem menu_load_camera_config(Gtk::Stock::OPEN);
         menu_load_camera_config.set_label("Load Camera Configuration");
@@ -502,13 +466,13 @@ bool Calibration::onKeyboard(GdkEventKey* event){
         cairo_binary_image = !cairo_binary_image;
     }
     if (event->keyval == GDK_KEY_C || event->keyval == GDK_KEY_c) {
-        pointCutField1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
-        pointCutField2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
+        point_cut_field_1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
+        point_cut_field_2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
         draw_area.setRectangleInvisible();
     }
     if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
-        pointCutField1 = {0,0};
-        pointCutField2 = opencv_image_BGR.size();
+        point_cut_field_1 = {0,0};
+        point_cut_field_2 = opencv_image_BGR.size();
     }
     return true;
 }
@@ -592,7 +556,7 @@ void Calibration::onRadioButtonImage(){
     if (!radio_button_image.get_active()){
         button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
         setCameraOn(false);
-        imageInitialize();    
+        imageInitialize(camera_on);   
     }
 }
 
@@ -600,33 +564,33 @@ void Calibration::onRadioButtonCamera(){
     if (!radio_button_camera.get_active()){    
         button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
         setCameraOn(true);
-        imageInitialize();
+        imageInitialize(camera_on);
     }
 }
 
 void Calibration::onScaleCAMBrightness(){
    camera_config.brightness = scale_CAM_popover[0].get_value();
-   updateCameraValues(camera_config, camera);
+   updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::onScaleCAMContrast(){
     camera_config.contrast = scale_CAM_popover[1].get_value();
-    rodetas::updateCameraValues(camera_config, camera);
+    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::onScaleCAMSaturation(){
     camera_config.saturation = scale_CAM_popover[2].get_value();
-    rodetas::updateCameraValues(camera_config, camera);
+    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::onScaleCAMGain(){
     camera_config.gain = scale_CAM_popover[3].get_value();
-    rodetas::updateCameraValues(camera_config, camera);
+    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::onScaleCAMSharpness(){
     camera_config.sharpness = scale_CAM_popover[4].get_value();
-    rodetas::updateCameraValues(camera_config, camera);
+    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::onMenuRefresh(){
@@ -638,13 +602,13 @@ void Calibration::onMenuRefresh(){
     camera_config.exposure = 416;
 
     setValuesCamPopOver();
-    updateCameraValues(camera_config, camera);
+    updateCameraValues(camera_config, camera_number);
 
 }
 
 void Calibration::onScaleCAMExposure(){
     camera_config.exposure = scale_CAM_popover[5].get_value();
-    rodetas::updateCameraValues(camera_config, camera);
+    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::setCameraOn(bool value){

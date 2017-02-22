@@ -30,11 +30,14 @@ int pwm = 0;
 int failed_read = 0;
 int encoder_left = 0;
 int encoder_right = 0;
-unsigned long last_millis_left = 0;
-unsigned long last_millis_right = 0;
+float speed_left = 0;
+float speed_right = 0;
+int cont = 0;
+
 unsigned long last_millis_send = 0;
 
-const float speed_calculation =  (2 * PI * 1.6) / 450; //1.6 -> raio da roda, 450 -> numero de leituras que o encoder da em uma volta
+const float speed_calculation_frequency = 50; //Hz
+const float speed_calculation =  ((2 * PI * 1.6) / 750) * speed_calculation_frequency; //1.6 -> raio da roda, 450 -> numero de leituras que o encoder da em uma volta
 
 void contEncoderLeft();
 void contEncoderRight();
@@ -64,6 +67,22 @@ void setup() {
   PCintPort::attachInterrupt(A0, contEncoderLeft, CHANGE);
   pinMode(A3, INPUT);
   PCintPort::attachInterrupt(A3, contEncoderRight, CHANGE);
+
+  // INICILALIZANDO OS REGISTRADORES COM ZERO
+  TCCR1A = 0;
+  TCCR1B = 0;
+  // O VALOR REAL DO TEMPORIZADOR É ARMAZENADO AKI.
+  TCNT1  = 0;
+  // DEFININDO TEMPORIZADOR PARA  CADA 33ms OU 30Hz.
+  OCR1A = (16000000/1024/speed_calculation_frequency) - 1;// = 16BIT -> [(16Mhz/1024)/30Hz]  --> (7812.5 <65536)
+  // ATIVANDO MODO DE OPERAÇÃO CTC
+  TCCR1B |= (1 << WGM12);
+  // ESCOLHENDO PRESCALER DE 1024
+  TCCR1B |= (1 << CS12);   
+  TCCR1B |= (1 << CS10);  
+  // ATIVANDO O MODO CTC PARA TIMER1
+  TIMSK1 |= (1 << OCIE1A);
+
 }
 
 void loop() {
@@ -109,27 +128,93 @@ void loop() {
       } 
       break;
     }
-  } 
+  }
+  
   sendParameter();
+
 }
+
 void sendParameter(){
-  if (millis() - last_millis_send > 30){
+  if (millis() - last_millis_send > 1000){
+    Serial.println(cont);
+    cont = 0;
+    /*
     Serial.print(CARACTER_ROBOI);
-    Serial.print(speedMotorLeft());
+    Serial.print(speed_left);
     Serial.print("|");
-    Serial.print(speedMotorRight());
+    Serial.print(speed_right);
     Serial.print("|");
     Serial.print(failed_read);
     Serial.println(CARACTER_ROBOF);
-    last_millis_send = millis();
+    */
+    last_millis_send = millis();    
+  } else {
+    cont++;
   }
 }
 
+ISR(TIMER1_COMPA_vect) {
+  speed_left = speedMotorLeft();
+  speed_right = speedMotorRight();
+}
+
+float speedMotorLeft() {
+  float s = speed_calculation * encoder_left;
+  encoder_left = 0;
+  return s;
+}
+
+float speedMotorRight() {
+  float s = speed_calculation * encoder_right;
+  encoder_right = 0;
+  return s;
+}
+
+void contEncoderLeft() {
+  encoder_left++;
+}
+
+void contEncoderRight() {
+  encoder_right++;
+}
+
+void forward() {
+  digitalWrite(AIN2, HIGH);  
+  digitalWrite(AIN1, LOW);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+}
+
+void back() {
+  digitalWrite(AIN2, LOW);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+}
+
+void turnRight() {
+  digitalWrite(AIN2, LOW);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+}
+
+void turnLeft() {
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+}
+
+void stopped() {
+  digitalWrite(STBY, LOW);
+}
 
 boolean messageReceived() {
 
   if (Serial.available() > 0) {
     char c = Serial.read();
+    Serial.println(c);
 
     if (c == CARACTER_ROBOI) {
       char caracter[10] = "";
@@ -166,58 +251,4 @@ boolean checkSum() {
     failed_read--;
   } 
   return false;
-}
-
-void contEncoderLeft() {
-  encoder_left++;
-}
-
-void contEncoderRight() {
-  encoder_right++;
-}
-
-float speedMotorLeft() {
-  float speed_left = ((speed_calculation * encoder_left) / (millis() - last_millis_left)) * 1000;
-  last_millis_left = millis();
-  encoder_left = 0;
-  return speed_left;
-}
-
-float speedMotorRight() {
-  float speed_right = ((speed_calculation * encoder_right) / (millis() - last_millis_right)) * 1000;
-  last_millis_right = millis();
-  encoder_right = 0;
-  return speed_right;
-}
-
-void forward() {
-  digitalWrite(AIN2, HIGH);
-  digitalWrite(AIN1, LOW);
-  digitalWrite(BIN1, HIGH);
-  digitalWrite(BIN2, LOW);
-}
-
-void back() {
-  digitalWrite(AIN2, LOW);
-  digitalWrite(AIN1, HIGH);
-  digitalWrite(BIN1, LOW);
-  digitalWrite(BIN2, HIGH);
-}
-
-void turnRight() {
-  digitalWrite(AIN2, LOW);
-  digitalWrite(AIN1, HIGH);
-  digitalWrite(BIN1, HIGH);
-  digitalWrite(BIN2, LOW);
-}
-
-void turnLeft() {
-  digitalWrite(AIN2, HIGH);
-  digitalWrite(AIN1, LOW);
-  digitalWrite(BIN1, LOW);
-  digitalWrite(BIN2, HIGH);
-}
-
-void stopped() {
-  digitalWrite(STBY, LOW);
 }

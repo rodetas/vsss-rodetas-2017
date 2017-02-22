@@ -7,7 +7,7 @@ Control::Control(){
 
 int Control::handle(){
 
-    //std::thread menu_thread(bind(&Control::GUIInformation, this));
+    std::thread menu_thread(bind(&Control::GUIInformation, this));
 
     // initialize classes
     vision.initialize();
@@ -28,12 +28,12 @@ int Control::handle(){
 			transmission.setMovements(strategy.getMovements());
 			transmission.send();
 		}
-		//transmission.reading();
+		transmission.reading();
 
 		timer.waitTimeStarted(33);
     }
 
-    //menu_thread.detach();
+    menu_thread.detach();
 			
 	return program_state;
 }
@@ -102,16 +102,16 @@ void Control::GUIInformation() {
 
 bool Control::onKeyboard(GdkEventKey* event){
     if (event->keyval == GDK_KEY_Left) {
-		transmission.movementRobot(Command('E', 150, 150));
+		transmission.movementRobot(Command('A', 100, 100));
 
     } else if (event->keyval == GDK_KEY_Right) {
-		transmission.movementRobot(Command('D', 150, 150));
+		transmission.movementRobot(Command('A', 150, 150));
 	
 	} else if (event->keyval == GDK_KEY_Up) {
-		transmission.movementRobot(Command('A', 255, 255));
+		transmission.movementRobot(Command('A', 200, 200));
 
 	} else if (event->keyval == GDK_KEY_Down) {
-		transmission.movementRobot(Command('V', 150, 150));
+		transmission.movementRobot(Command('A', 254, 254));
 
 	} else {
 		transmission.movementRobot(Command('P', 0, 0));

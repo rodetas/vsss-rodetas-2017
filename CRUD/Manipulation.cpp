@@ -13,8 +13,8 @@ Manipulation::Manipulation(){
 /*
  * Method for saving all parameters calibrated
  */
-void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRGB, Point pointCutField1, 
-		Point pointCutField2, Point goal, int angleImageRotation, bool cameraOn){
+void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRGB, Point point_cut_field_1, 
+		Point point_cut_field_2, Point goal, int angle_image_rotation, bool cameraOn){
 
     ofstream output;
     output.open(instancePath);
@@ -32,10 +32,10 @@ void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRG
             output << colorsHSV[i].variationH_MIN << "\t" << colorsHSV[i].variationS_MIN << "\t" << colorsHSV[i].variationV_MIN << "\t" << endl;
         }
 
-        output << pointCutField1.x << "\t" << pointCutField1.y << "\t";
-        output << pointCutField2.x << "\t" << pointCutField2.y << "\t";
+        output << point_cut_field_1.x << "\t" << point_cut_field_1.y << "\t";
+        output << point_cut_field_2.x << "\t" << point_cut_field_2.y << "\t";
         output << int(goal.y) << "\t" << int(goal.x) << "\t";
-        output << angleImageRotation << "\t" << cameraOn;
+        output << angle_image_rotation << "\t" << cameraOn;
         
         cout << "Calibration Saved!" << endl;
     }
@@ -130,13 +130,13 @@ pair<vector<Hsv>, vector<Rgb>> Manipulation::loadCalibration(){
             input >> colorsHSV[i].variationV_MIN;
         }
 
-        input >> pointCutField1.x;
-        input >> pointCutField1.y;
-        input >> pointCutField2.x;
-        input >> pointCutField2.y;
+        input >> point_cut_field_1.x;
+        input >> point_cut_field_1.y;
+        input >> point_cut_field_2.x;
+        input >> point_cut_field_2.y;
         input >> goal.y;
         input >> goal.x;
-        input >> angleImageRotation;
+        input >> angle_image_rotation;
         input >> cameraOn;
 
     }
@@ -155,15 +155,15 @@ void Manipulation::showCalibration(){
         colorsRGB[i].print();
     }
 
-    cout << pointCutField1 << endl;
-    cout << pointCutField2 << endl;
+    cout << point_cut_field_1 << endl;
+    cout << point_cut_field_2 << endl;
 
 }
 
 Point Manipulation::getImageSize(){
     Point size;
-    size.x = abs(pointCutField2.x - pointCutField1.x);
-    size.y = abs(pointCutField2.y - pointCutField1.y);
+    size.x = abs(point_cut_field_2.x - point_cut_field_1.x);
+    size.y = abs(point_cut_field_2.y - point_cut_field_1.y);
     return size;
 }
 
@@ -191,15 +191,15 @@ vector<float> Manipulation::getBlobSize(){
 }
 
 Point Manipulation::getPointField1(){
-	return pointCutField1;
+	return point_cut_field_1;
 }
 
 Point Manipulation::getPointField2(){
-	return pointCutField2;
+	return point_cut_field_2;
 }
 
 int Manipulation::getAngleImage(){
-	return angleImageRotation;
+	return angle_image_rotation;
 }
 
 bool Manipulation::getCameraOn(){

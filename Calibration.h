@@ -17,23 +17,18 @@ class Calibration : public OpenCV {
 private:
 
 	Manipulation manipulation;
-	CameraConfiguration camera_config;
 	
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
 
-    int camera;
 	int program_state;
 	int selected_player;
     bool end_calibration;
-	bool camera_on;
 	bool cairo_binary_image;
-	double angle_image;
+    Point goal;
 	
 	//OPENCV
-	cv::VideoCapture 	cam;
     cv::Mat 			opencv_image_BGR_cuted;
-    cv::Mat 			opencv_image_BGR;
     cv::Mat 			opencv_image_HSV;
     cv::Mat 			opencv_image_cairo;
     cv::Mat 			opencv_image_binary;
@@ -90,18 +85,12 @@ public:
 
 	void GUI();
 
-	Point pointCutField1;
-	Point pointCutField2;
-    Point goal;
-
 	Calibration();
 	int calibrate();
 	void defaultCameraConfig();
 	void updateDevices();
 	void updateColorPixel(Point);
 
-	void imageInitialize();
-	void imageWebCam();
 	void getCalibration();
 
 	void setCameraOn(bool);

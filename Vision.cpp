@@ -9,7 +9,6 @@ Vision::Vision(){
     robotTeam.resize(number_robots);
     robotOpponent.resize(number_robots);
     
-    camera = getCameraNumber();
     camera_config = manipulation.loadCameraConfig();
 }
 
@@ -20,14 +19,14 @@ void Vision::initialize(){
     manipulation.loadCalibration();  
     colorsHSV = manipulation.getColorsHsv();
     camera_on = manipulation.getCameraOn();
-    pointCutField1 = manipulation.getPointField1();
-    pointCutField2 = manipulation.getPointField2();
-    angleImageRotation = manipulation.getAngleImage();
+    point_cut_field_1 = manipulation.getPointField1();
+    point_cut_field_2 = manipulation.getPointField2();
+    angle_image = manipulation.getAngleImage();
     blobSize = manipulation.getBlobSize();
 
     //manipulation.showCalibration();
 
-    imageInitialize();
+    imageInitialize(camera_on);
 }
 
 /*
@@ -35,9 +34,9 @@ void Vision::initialize(){
  */
 void Vision::makeVision(){
 
-    imageWebCam();
+    imageWebCam(camera_on);
 
-    opencvImageHSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angleImageRotation, pointCutField1, pointCutField2), cv::COLOR_BGR2HSV_FULL);
+    opencvImageHSV = opencvColorSpace(opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2), cv::COLOR_BGR2HSV_FULL);
 
     //Team
     BlobsContours teamContours = blobContour( opencvBinary(colorsHSV[team], opencvImageHSV), blobSize[team]);
@@ -50,7 +49,7 @@ void Vision::makeVision(){
     //Ball
     colorPositionBall( blobContour( opencvBinary(colorsHSV[ball], opencvImageHSV), blobSize[ball]));
 
-    //cv::imshow("teste", opencvTransformation(opencv_image_BGR, angleImageRotation, pointCutField1, pointCutField2));
+    //cv::imshow("teste", opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2));
     //cv::waitKey(10);
 }
 
@@ -136,54 +135,6 @@ void Vision::colorPositionBall(BlobsContours ballContours){
 }
 
 /*
- * Method for initialize image
- */
-void Vision::imageInitialize(){
-
-    if(camera_on){
-        cam = cv::VideoCapture(camera);
-        usleep(10000); //time to camera answer
-        if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-            cam >> opencv_image_BGR;
-            updateCameraValues(camera_config, camera);
-        } else {
-            cout << "Conection with camera failed" << endl;
-            camera_on = false;  
-        }
-    } 
-    
-    if(!camera_on) {
-        if(cam.isOpened()){ 
-            cam.release();
-        }
-
-        opencv_image_BGR = cv::imread(imagePath);
-
-        if(opencv_image_BGR.empty()){
-            cout << "Problem to load image from computer" << endl;
-        }
-    }
-}
-
-/*
- * Method that receives and analyzes image from webcam
- */
-void Vision::imageWebCam(){
-     if(camera_on && cam.isOpened()){
-        cam >> opencv_image_BGR;
-    }
-}
-
-/*
- * Setters
- */
-void Vision::setCameraRelease(){
-    cam.release();
-}
-
-/*
  * Getters
  */
 vector<rodetas::Object> Vision::getPositions(){
@@ -197,12 +148,12 @@ vector<rodetas::Object> Vision::getPositions(){
         objects.push_back(robotOpponent[i]);
     
     objects.push_back(objectBall);
-
+/*
     for (int i = 0; i < objects.size(); i++) {
         //if (objects[i].x == 0 || objects[i].y == 0) {
             objects[i].print();
         //} 
     }
-
+*/
     return objects;
 } 
