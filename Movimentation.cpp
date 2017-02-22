@@ -163,8 +163,8 @@ float Movimentation::calculateSpeed(){
 void Movimentation::updateCalculus(rodetas::Object robot, Point destination){
 
 	distance_robot_destination = distance(robot, destination);
-    distance_ball_destination = distance(objects[graphicBall], destination);
-    distance_robot_ball = distance(robot, objects[graphicBall]);
+    distance_ball_destination = distance(objects[GRAPHICBALL], destination);
+    distance_robot_ball = distance(robot, objects[GRAPHICBALL]);
 
 	angle_robot_destination = calcAngle(destination, robot);
     sinAngle_robot_destination = calcSen(destination, robot);

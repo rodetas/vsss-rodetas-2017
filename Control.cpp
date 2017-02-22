@@ -18,7 +18,7 @@ int Control::handle(){
 		timer.startTime();
 		
 		// recognize robot's points
-		vision.makeVision();
+		vision.computerVision();
 		// set informations to other classes
 		strategy.setObjects(vision.getPositions());
 		// apply strategies
@@ -28,7 +28,7 @@ int Control::handle(){
 			transmission.setMovements(strategy.getMovements());
 			transmission.send();
 		}
-		transmission.reading();
+		//transmission.reading();
 
 		timer.waitTimeStarted(33);
     }

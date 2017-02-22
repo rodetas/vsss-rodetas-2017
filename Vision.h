@@ -19,23 +19,25 @@ private:
 	vector<rodetas::Object> robotOpponent;
 	rodetas::Object objectBall;
 	
-	cv::Mat opencvImageHSV;
+	cv::Mat opencv_image_HSV;
 
     vector<Hsv> colorsHSV;
-    vector<float> blobSize;
+
+	ContoursPosition team_position;
+	ContoursPosition opponent_position;
 
 public:
 	Vision();
 	void initialize();
 	
-	void makeVision();
-	rodetas::Object makeRobot(BlobsContours, BlobsContours, int);
+	void computerVision();
+	rodetas::Object robotPosition(ContoursPosition, ContoursPosition, int);
 
-	void colorPositionBall(BlobsContours);
-	void colorPositionOpponent(BlobsContours);
-	void colorPositionPlayer(cv::Mat, BlobsContours);
+	void colorPositionBall(ContoursPosition);
+	void colorPositionOpponent(ContoursPosition);
+	void colorPositionPlayer(cv::Mat, ContoursPosition);
 
-	BlobsContours orderBlobsContours(BlobsContours);
+	ContoursPosition orderContoursPosition(ContoursPosition);
 
 	vector<rodetas::Object> getPositions();
 };

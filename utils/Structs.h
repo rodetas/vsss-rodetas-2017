@@ -14,9 +14,9 @@ typedef pair<int, int> Pwm;
 enum{H, S, V};
 enum{MIN, MAX, MID};
 enum{H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN};
+enum{PLAYER0, PLAYER1, PLAYER2, TEAM, OPPONENT, BALL};
+enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOPPONENT2, GRAPHICOPPONENT3, GRAPHICBALL};
 
-enum{player0, player1, player2, team, opponent, ball};
-enum{graphicPlayer0, graphicPlayer1, graphicPlayer2, graphicOpponent1, graphicOpponent2, graphicOpponent3, graphicBall};
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
 
@@ -137,11 +137,22 @@ struct Object{
 	};
 };
 
-struct BlobsContours {
+struct ContoursPosition {
 	vector<Point2f>	center;
     vector<float>	radius;
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
+
+/*
+	ContoursPosition() {
+		cutPoint1 = {0,0};
+		cutPoint2 = {0,0};
+	}
+*/
+	bool cutPointDefined(){
+		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
+	}
+
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
@@ -197,6 +208,11 @@ string toString(const T value, const int n){
     std::ostringstream out;
     out << setprecision(n) << value;
 	return out.str();
+}
+
+template <typename T, typename U, typename X>
+bool insideCircle(const T a, const U b, const X r){
+	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)) < r;
 }
 
 template <typename T, typename U>

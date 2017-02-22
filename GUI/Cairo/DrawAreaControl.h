@@ -10,9 +10,9 @@
 class DrawAreaControl : public Gtk::DrawingArea {
 
 private:
-    const int number_robot = 6;
     int color_team_size;
     int color_player_size;
+    int ball_size;
 
     Manipulation manipulation;
 
