@@ -1,7 +1,9 @@
 #include "OpenCV.h"
 
 OpenCV::OpenCV(){
-
+    camera_number = getCameraNumber();
+    cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
 }
 
 /*
@@ -29,11 +31,11 @@ cv::Mat OpenCV::opencvColorSpace(cv::Mat image, int code){
 /*
  * Method that cuts, rotates and resize
  */
-cv::Mat OpenCV::opencvTransformation(cv::Mat image, int angle, cv::Point pointCutField1, cv::Point pointCutField2){
+cv::Mat OpenCV::opencvTransformation(cv::Mat image, int angle, cv::Point point_cut_field_1, cv::Point point_cut_field_2){
 
     cv::Mat imageRotated;
     cv::warpAffine( image, imageRotated, cv::getRotationMatrix2D( cv::Point(image.cols/2, image.rows/2), angle - 180, 1), imageRotated.size() );
-    cv::Mat cutImage = imageRotated( cv::Rect(pointCutField1, pointCutField2) );
+    cv::Mat cutImage = imageRotated( cv::Rect(point_cut_field_1, point_cut_field_2) );
 
     return cutImage;
 }
@@ -106,4 +108,53 @@ float OpenCV::blobRadius(cv::Mat image){
     }
 
     return blobRadius;
+}
+
+/*
+ * Method for initialize image
+ */
+void OpenCV::imageInitialize(bool camera_on){
+
+    if(camera_on){
+        cam = cv::VideoCapture(camera_number);
+        timer.wait(100000); //time to camera answer
+        if(cam.isOpened()){
+            cam >> opencv_image_BGR;
+            updateCameraValues(camera_config, camera_number);
+        } else {
+            cout << "CONECTION WITH CAMERA FAILED" << endl;
+            camera_on = false;  
+        }
+    } 
+    
+    if(!camera_on) {
+        setCameraRelease();
+
+        opencv_image_BGR = cv::imread(imagePath);
+
+        if(opencv_image_BGR.empty()){
+            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl;
+        }
+    }
+
+    if (point_cut_field_1.x > opencv_image_BGR.rows || point_cut_field_2.x > opencv_image_BGR.rows ||
+        point_cut_field_1.y > opencv_image_BGR.cols || point_cut_field_2.y > opencv_image_BGR.cols) {
+            point_cut_field_1 = {0,0};
+            point_cut_field_2 = opencv_image_BGR.size();
+    }
+}
+
+/*
+ * Method that receives and analyzes image from webcam
+ */
+void OpenCV::imageWebCam(bool camera_on){
+    if(camera_on && cam.isOpened()){
+        cam >> opencv_image_BGR;
+    }
+}
+
+void OpenCV::setCameraRelease(){
+    if(cam.isOpened()){
+        cam.release();
+    }
 }

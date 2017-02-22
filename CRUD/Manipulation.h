@@ -16,10 +16,10 @@ private:
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
 	vector<float> blobSize;
-	Point pointCutField1;
-	Point pointCutField2;
+	Point point_cut_field_1;
+	Point point_cut_field_2;
 	Point goal;
-	int angleImageRotation;
+	int angle_image_rotation;
 	bool cameraOn;
 
 	//variaveis de salvar posicoes

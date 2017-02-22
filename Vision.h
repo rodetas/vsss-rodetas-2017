@@ -10,28 +10,16 @@ class Vision : public OpenCV {
 private:
 
 	Manipulation manipulation;
-	CameraConfiguration camera_config;
 	Timer timer;
 
-	bool camera_on;
-	bool begin;
-
 	const int number_robots = 3;
-
-	int camera;
-	int angleImageRotation;
 
 	vector<rodetas::Object> lastTeam;
 	vector<rodetas::Object> robotTeam;
 	vector<rodetas::Object> robotOpponent;
 	rodetas::Object objectBall;
-
-	Point pointCutField1;
-	Point pointCutField2;
 	
-	cv::VideoCapture cam;
 	cv::Mat opencvImageHSV;
-	cv::Mat opencv_image_BGR;
 
     vector<Hsv> colorsHSV;
     vector<float> blobSize;
@@ -39,7 +27,6 @@ private:
 public:
 	Vision();
 	void initialize();
-	void setCameraRelease();
 	
 	void makeVision();
 	rodetas::Object makeRobot(BlobsContours, BlobsContours, int);
@@ -49,9 +36,6 @@ public:
 	void colorPositionPlayer(cv::Mat, BlobsContours);
 
 	BlobsContours orderBlobsContours(BlobsContours);
-
-	void imageInitialize();
-	void imageWebCam();
 
 	vector<rodetas::Object> getPositions();
 };
