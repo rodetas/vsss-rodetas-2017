@@ -23,6 +23,7 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
         color_team_size = field_size.x * 0.05;
         color_player_size = field_size.x * 0.02;
+        ball_size = field_size.x * 0.012;
         int line_field_width = 4;
         int corner_size = field_size.x*(0.05);
 
@@ -135,7 +136,7 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
             Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };
             
-            // team colors rectangle        
+            // opponent colors rectangle        
             c->save();
                 c->rectangle(r.x, r.y, color_team_size, color_team_size);
                 c->set_source_rgb(colors_rgb[4].r, colors_rgb[4].g, colors_rgb[4].b);
@@ -144,6 +145,15 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             c->stroke ();
         }
 
+        Point r = { changeCoordinate(robot[6]).x, changeCoordinate(robot[6]).y };
+
+        // ball
+        c->save();
+                c->arc(r.x, r.y, ball_size, 0, 2*CV_PI);
+                c->set_source_rgb(colors_rgb[5].r, colors_rgb[5].g, colors_rgb[5].b);
+                c->fill_preserve();
+        c->restore();
+        c->stroke ();
 
     
         return true;
