@@ -33,16 +33,15 @@ namespace rodetas{
     }
 
     void updateCameraValues(CameraConfiguration camera_config, int camera){
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Brightness' " + to_string(camera_config.brightness));
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Contrast' " + to_string(camera_config.contrast));
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Saturation' " + to_string(camera_config.saturation));
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Gain' " + to_string(camera_config.gain));
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Sharpness' " + to_string(camera_config.sharpness));
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Exposure (Absolute)' " + to_string(camera_config.exposure));
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Focus, Auto' 0 ");
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Exposure, Auto' 1 ");
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'White Balance Temperature, Auto' 0");
-        executeCommand("uvcdynctrl -d video" + to_string(camera) + " -v -s 'Backlight Compensation' 0");
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl brightness=" + to_string(camera_config.brightness));
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl contrast=" + to_string(camera_config.contrast));
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl saturation=" + to_string(camera_config.saturation));
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl gain=" + to_string(camera_config.gain));
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl sharpness=" + to_string(camera_config.sharpness));
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl exposure_absolute=" + to_string(camera_config.exposure));
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl focus_auto=0 ");
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl exposure_auto=1 ");
+        executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl backlight_compensation=0");
     }
  
 }

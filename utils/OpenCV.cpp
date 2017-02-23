@@ -2,8 +2,6 @@
 
 OpenCV::OpenCV(){
     camera_number = getCameraNumber();
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
     review_all_image = false;
 }
 
@@ -153,52 +151,52 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 }
 
 /*
- * Method for initialize image
- */
-void OpenCV::imageInitialize(bool camera_on){
-
-    if(camera_on){
-        cam = cv::VideoCapture(camera_number);
-        timer.wait(100000); //time to camera answer
-        if(cam.isOpened()){
-            cam >> opencv_image_BGR;
-            updateCameraValues(camera_config, camera_number);
-        } else {
-            cout << "CONECTION WITH CAMERA FAILED" << endl;
-            camera_on = false;  
-        }
-    } 
-    
-    if(!camera_on) {
-        setCameraRelease();
-
-        opencv_image_BGR = cv::imread(imagePath);
-
-        if(opencv_image_BGR.empty()){
-            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl;
-        }
-    }
-
-    if (point_cut_field_1.x > opencv_image_BGR.rows || point_cut_field_2.x > opencv_image_BGR.rows ||
-        point_cut_field_1.y > opencv_image_BGR.cols || point_cut_field_2.y > opencv_image_BGR.cols) {
-            point_cut_field_1 = {0,0};
-            point_cut_field_2 = opencv_image_BGR.size();
-    }
-}
-
-/*
  * Method that receives image from webcam
  */
-void OpenCV::imageWebCam(bool camera_on){
+void OpenCV::imageWebCam(){
     if(camera_on && cam.isOpened()){
         cam >> opencv_image_BGR;
     }
 }
 
 /*
+ * Method for initialize image
+ */
+void OpenCV::imageInitialize(){
+    cameraRelease();
+    do {
+        if (!opencv_image_BGR.empty()){
+            opencv_image_BGR = cv::imread(imagePath);
+        } else {
+            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl;
+        }
+    } while(opencv_image_BGR.empty());
+}
+
+
+/*
+ * Method to initialize camera
+ */
+void OpenCV::cameraInitialize(){
+    while(!cam.isOpened()){
+        updateCameraValues(camera_config, camera_number);
+        cam = cv::VideoCapture(camera_number);
+        timer.wait(500000); //time to camera answer
+
+        if(cam.isOpened()){
+            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+            cam >> opencv_image_BGR;            
+        } else {
+            cout << "CONECTION WITH CAMERA FAILED" << endl;
+        }  
+    }
+}
+
+/*
  * Method to disconnect camera
  */
-void OpenCV::setCameraRelease(){
+void OpenCV::cameraRelease(){
     if(cam.isOpened()){
         cam.release();
     }

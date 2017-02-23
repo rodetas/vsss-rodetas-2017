@@ -31,9 +31,10 @@ public:
 	cv::Mat opencvColorSpace(cv::Mat, int);
 	cv::Mat opencvCutImage(cv::Mat, cv::Point, cv::Point);
 	cv::Mat opencvRotateImage(cv::Mat, int);
-	void imageInitialize(bool);
-	void imageWebCam(bool);
-	void setCameraRelease();
+	void imageWebCam();
+	void imageInitialize();
+	void cameraRelease();
+	void cameraInitialize();
 	
 	ContoursPosition findPosition(cv::Mat);
 	ContoursPosition position(cv::Mat, ContoursPosition, Hsv);

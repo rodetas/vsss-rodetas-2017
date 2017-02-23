@@ -14,13 +14,15 @@ Calibration::Calibration(){
 }
 
 int Calibration::calibrate(){
-
-    imageInitialize(camera_on);
+    
+    cameraInitialize();
 
     std::thread calibration_thread(bind(&Calibration::GUI, this));
 
+    updateCameraValues(camera_config, camera_number);
+
     while(!end_calibration){
-        imageWebCam(camera_on);
+        imageWebCam();
         opencv_image_BGR_cuted  = opencvRotateImage(opencv_image_BGR, angle_image);
         opencv_image_BGR_cuted  = opencvCutImage(opencv_image_BGR_cuted, point_cut_field_1, point_cut_field_2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
@@ -31,7 +33,7 @@ int Calibration::calibrate(){
     manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut_field_1, point_cut_field_2, goal, angle_image, camera_on);
     manipulation.saveCameraConfig(camera_config);
 
-    setCameraRelease();
+    cameraRelease();
 
     calibration_thread.detach();
     return program_state;
@@ -285,28 +287,27 @@ void Calibration::GUI(){
         for (int i = 0; i < scale_CAM_popover.size(); i++){
             scale_CAM_popover[i].set_size_request(150,20);
             scale_CAM_popover[i].set_draw_value(false);
-            scale_CAM_popover[i].set_range(0,100);
         }
 
-        scale_CAM_popover[0].set_value(camera_config.brightness);
         scale_CAM_popover[0].set_range(0,255);
-        scale_CAM_popover[1].set_value(camera_config.contrast);
+        scale_CAM_popover[0].set_value(camera_config.brightness);
         scale_CAM_popover[1].set_range(0,255);
-        scale_CAM_popover[2].set_value(camera_config.saturation);
+        scale_CAM_popover[1].set_value(camera_config.contrast);
         scale_CAM_popover[2].set_range(0,255);
-        scale_CAM_popover[3].set_value(camera_config.gain);
+        scale_CAM_popover[2].set_value(camera_config.saturation);
         scale_CAM_popover[3].set_range(0,255);        
-        scale_CAM_popover[4].set_value(camera_config.sharpness);
+        scale_CAM_popover[3].set_value(camera_config.gain);
         scale_CAM_popover[4].set_range(0,255);
+        scale_CAM_popover[4].set_value(camera_config.sharpness);
+        scale_CAM_popover[5].set_range(3,800);
         scale_CAM_popover[5].set_value(camera_config.exposure);
-        scale_CAM_popover[5].set_range(3,2047);
 
         scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMBrightness) );        
         scale_CAM_popover[1].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMContrast) );        
         scale_CAM_popover[2].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSaturation) );        
         scale_CAM_popover[3].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMGain) );        
         scale_CAM_popover[4].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSharpness) );        
-        scale_CAM_popover[5].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMExposure) );         
+        scale_CAM_popover[5].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMExposure) );
 
     Gtk::Grid grid_CAM_popover;
         for (int i = 0; i < scale_CAM_popover.size(); i++){
@@ -557,7 +558,6 @@ void Calibration::onRadioButtonImage(){
     if (!radio_button_image.get_active()){
         button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
         setCameraOn(false);
-        imageInitialize(camera_on);   
     }
 }
 
@@ -565,7 +565,6 @@ void Calibration::onRadioButtonCamera(){
     if (!radio_button_camera.get_active()){    
         button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
         setCameraOn(true);
-        imageInitialize(camera_on);
     }
 }
 
@@ -600,7 +599,7 @@ void Calibration::onMenuRefresh(){
     camera_config.saturation = 128;
     camera_config.gain = 0;
     camera_config.sharpness = 128;
-    camera_config.exposure = 416;
+    camera_config.exposure = 300;
 
     setValuesCamPopOver();
     updateCameraValues(camera_config, camera_number);

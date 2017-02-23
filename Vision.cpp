@@ -24,7 +24,7 @@ void Vision::initialize(){
 
     //manipulation.showCalibration();
 
-    imageInitialize(camera_on);
+    cameraInitialize();
 }
 
 /*
@@ -32,7 +32,7 @@ void Vision::initialize(){
  */
 void Vision::computerVision(){
 
-    imageWebCam(camera_on);
+    imageWebCam();
 
     //Team
     team_position = position(opencv_image_BGR, team_position, colorsHSV[TEAM]);
