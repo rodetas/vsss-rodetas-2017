@@ -4,6 +4,7 @@ OpenCV::OpenCV(){
     camera_number = getCameraNumber();
     cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
     cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+    review_all_image = false;
 }
 
 /*
@@ -29,21 +30,25 @@ cv::Mat OpenCV::opencvColorSpace(cv::Mat image, int code){
 }
 
 /*
- * Method that cuts, rotates and resize
+ * Method that cut image
  */
-cv::Mat OpenCV::opencvTransformation(cv::Mat image, int angle, cv::Point point_cut_field_1, cv::Point point_cut_field_2){
+cv::Mat OpenCV::opencvCutImage(cv::Mat image, cv::Point point_cut_field_1, cv::Point point_cut_field_2){
+    return image( cv::Rect(point_cut_field_1, point_cut_field_2) );
+}
 
+/*
+ * Method that rotate image
+ */
+cv::Mat OpenCV::opencvRotateImage(cv::Mat image, int angle){
     cv::Mat imageRotated;
     cv::warpAffine( image, imageRotated, cv::getRotationMatrix2D( cv::Point(image.cols/2, image.rows/2), angle - 180, 1), imageRotated.size() );
-    cv::Mat cutImage = imageRotated( cv::Rect(point_cut_field_1, point_cut_field_2) );
-
-    return cutImage;
+    return imageRotated;
 }
 
 /*
  * Method for find contours in binarized image
  */
-ContoursPosition OpenCV::position(cv::Mat image){
+ContoursPosition OpenCV::findPosition(cv::Mat image){
 
     ContoursPosition position;
  
@@ -60,25 +65,91 @@ ContoursPosition OpenCV::position(cv::Mat image){
         cv::approxPolyDP( cv::Mat(contours[i]), contours_poly[i], 3, true );
         cv::minEnclosingCircle(contours_poly[i], center[i], radius[i] );
 
-        Point2f cutPoint1 = cv::Point( (center[i].x - radius[i]) * 0.9, (center[i].y - radius[i]) * 0.9 );
-        Point2f cutPoint2 = cv::Point( (center[i].x + radius[i]) * 1.1, (center[i].y + radius[i]) * 1.1 );
-
-        if (cutPoint1.x < 0) cutPoint1.x = 0;
-        if (cutPoint1.y < 0) cutPoint1.y = 0;
-        if (cutPoint2.x < 0) cutPoint2.x = 0;
-        if (cutPoint2.y < 0) cutPoint2.y = 0;
-        if (cutPoint1.x > image.cols) cutPoint1.x = image.cols;
-        if (cutPoint1.y > image.rows) cutPoint1.y = image.rows;
-        if (cutPoint2.x > image.cols) cutPoint2.x = image.cols;
-        if (cutPoint2.y > image.rows) cutPoint2.y = image.rows;
-
         position.center.push_back(center[i]);
         position.radius.push_back(radius[i]);
-        position.cutPoint1.push_back(cutPoint1);
-        position.cutPoint2.push_back(cutPoint2);
     }
 
     return position;
+}
+
+ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position, Hsv color_hsv){
+
+    ContoursPosition atual_position, find_position;
+
+    if (last_position.cutPointDefined() && review_all_image) {
+
+        for(int j = 0; j < last_position.center.size(); j++) {
+            
+            cv::Mat image_cut = opencvCutImage(image, last_position.cutPoint1[j], last_position.cutPoint2[j]);
+                    image_cut = opencvRotateImage(image_cut, angle_image);
+                    image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
+                    image_cut = opencvBinary(image_cut, color_hsv);
+
+            find_position = findPosition(image_cut);
+            
+            for(int i = 0; i < find_position.center.size(); i++){
+
+                Point2f cutPoint1 = cv::Point( (find_position.center[i].x - find_position.radius[i] + last_position.cutPoint1[j].x)  * 0.9, (find_position.center[i].y - find_position.radius[i] + last_position.cutPoint1[j].y)  * 0.9);
+                Point2f cutPoint2 = cv::Point( (find_position.center[i].x + find_position.radius[i] + last_position.cutPoint1[j].x)  * 1.1, (find_position.center[i].y + find_position.radius[i] + last_position.cutPoint1[j].y)  * 1.1);
+                Point2f center_position = cv::Point( find_position.center[i].x + last_position.cutPoint1[j].x, find_position.center[i].y + last_position.cutPoint1[j].y);
+                
+                if (cutPoint1.x < 0) cutPoint1.x = 0;
+                if (cutPoint1.y < 0) cutPoint1.y = 0;
+                if (cutPoint2.x < 0) cutPoint2.x = 0;
+                if (cutPoint2.y < 0) cutPoint2.y = 0;
+                if (cutPoint1.x > image.cols) cutPoint1.x = image.cols;
+                if (cutPoint1.y > image.rows) cutPoint1.y = image.rows;
+                if (cutPoint2.x > image.cols) cutPoint2.x = image.cols;
+                if (cutPoint2.y > image.rows) cutPoint2.y = image.rows;
+                if (center_position.x > image.cols) center_position.x = image.cols;
+                if (center_position.y > image.rows) center_position.y = image.rows;
+
+                atual_position.center.push_back(center_position);
+                atual_position.radius.push_back(find_position.radius[i]);
+                atual_position.cutPoint1.push_back(cutPoint1);
+                atual_position.cutPoint2.push_back(cutPoint2);
+
+                if (center_position.x == 0 || center_position.y == 0){
+                    review_all_image = false;
+                }
+            }
+        }
+        
+    } else {
+
+        cv::Mat binary_image = opencvRotateImage(image, angle_image);
+                binary_image = opencvCutImage(binary_image, point_cut_field_1, point_cut_field_2);
+                binary_image = opencvColorSpace(binary_image, cv::COLOR_BGR2HSV_FULL);
+                binary_image = opencvBinary(binary_image, color_hsv);
+
+            find_position = findPosition(binary_image);
+            
+            for(int i = 0; i < find_position.center.size(); i++){
+
+                Point2f cutPoint1 = cv::Point( (find_position.center[i].x - find_position.radius[i]) * 0.9, (find_position.center[i].y - find_position.radius[i]) * 0.9 );
+                Point2f cutPoint2 = cv::Point( (find_position.center[i].x + find_position.radius[i]) * 1.1, (find_position.center[i].y + find_position.radius[i]) * 1.1 );
+
+                if (cutPoint1.x < 0) cutPoint1.x = 0;
+                if (cutPoint1.y < 0) cutPoint1.y = 0;
+                if (cutPoint2.x < 0) cutPoint2.x = 0;
+                if (cutPoint2.y < 0) cutPoint2.y = 0;
+                if (cutPoint1.x > binary_image.cols) cutPoint1.x = binary_image.cols;
+                if (cutPoint1.y > binary_image.rows) cutPoint1.y = binary_image.rows;
+                if (cutPoint2.x > binary_image.cols) cutPoint2.x = binary_image.cols;
+                if (cutPoint2.y > binary_image.rows) cutPoint2.y = binary_image.rows;
+
+                atual_position.center.push_back(find_position.center[i]);
+                atual_position.radius.push_back(find_position.radius[i]);
+                atual_position.cutPoint1.push_back(cutPoint1);
+                atual_position.cutPoint2.push_back(cutPoint2);
+
+                review_all_image = true;
+        }
+    }
+
+    //cout << "Size: " << find_position.center.size() << endl;
+
+    return atual_position;
 }
 
 /*

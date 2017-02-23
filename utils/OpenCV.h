@@ -11,6 +11,7 @@ class OpenCV {
 
 private:
 	Timer timer;
+	bool review_all_image;
 
 protected:
 	CameraConfiguration camera_config;
@@ -28,11 +29,13 @@ public:
 	OpenCV();
 	cv::Mat opencvBinary(cv::Mat, Hsv);
 	cv::Mat opencvColorSpace(cv::Mat, int);
-	cv::Mat opencvTransformation(cv::Mat, int, cv::Point, cv::Point);
+	cv::Mat opencvCutImage(cv::Mat, cv::Point, cv::Point);
+	cv::Mat opencvRotateImage(cv::Mat, int);
 	void imageInitialize(bool);
 	void imageWebCam(bool);
 	void setCameraRelease();
 	
-	ContoursPosition position(cv::Mat);
+	ContoursPosition findPosition(cv::Mat);
+	ContoursPosition position(cv::Mat, ContoursPosition, Hsv);
 };
 #endif

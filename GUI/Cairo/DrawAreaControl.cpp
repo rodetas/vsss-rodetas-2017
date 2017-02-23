@@ -2,6 +2,8 @@
 
 DrawAreaControl::DrawAreaControl(){
     colors_rgb = manipulation.getColorsRgbCairo();
+    image_size = manipulation.getImageSize();
+    goal_size = manipulation.getGoal();
 }
 
 void DrawAreaControl::setPosition(vector<rodetas::Object> o){
@@ -134,7 +136,8 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
          for (int i = 3; i < 6; i++) {
 
             if (!robot[i].isNull()) {
-                Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };                
+                Point r = { changeCoordinate(robot[i]).x, changeCoordinate(robot[i]).y };
+                    
                 // opponent colors rectangle        
                 c->save();
                     c->rectangle(r.x, r.y, color_team_size, color_team_size);

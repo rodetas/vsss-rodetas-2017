@@ -20,8 +20,8 @@ private:
     vector<rodetas::Rgb> colors_rgb;
 
     Point field_size;
-    Point image_size = {640,480};
-    Point goal_size  = {50,200};
+    Point image_size;
+    Point goal_size;
     
     template <typename typePoint>
     typePoint changeCoordinate(typePoint point){

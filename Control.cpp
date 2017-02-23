@@ -15,7 +15,7 @@ int Control::handle(){
 
     while(program_state == GAME){
 		
-		timer.startTime();
+		//timer.startTime();
 		
 		// recognize robot's points
 		vision.computerVision();
@@ -30,9 +30,11 @@ int Control::handle(){
 		}
 		//transmission.reading();
 
-		timer.waitTimeStarted(33);
+		//timer.waitTimeStarted(33);
+		cout << timer.framesPerSecond() << endl;
     }
-
+	
+	vision.setCameraRelease();
     menu_thread.detach();
 			
 	return program_state;
