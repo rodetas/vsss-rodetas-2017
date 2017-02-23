@@ -21,7 +21,8 @@ int Calibration::calibrate(){
 
     while(!end_calibration){
         imageWebCam(camera_on);
-        opencv_image_BGR_cuted  = opencvTransformation(opencv_image_BGR, angle_image, point_cut_field_1, point_cut_field_2);
+        opencv_image_BGR_cuted  = opencvRotateImage(opencv_image_BGR, angle_image);
+        opencv_image_BGR_cuted  = opencvCutImage(opencv_image_BGR_cuted, point_cut_field_1, point_cut_field_2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
         opencv_image_binary     = opencvColorSpace( opencvBinary(opencv_image_HSV, colorsHSV[selected_player]), cv::COLOR_GRAY2RGB);

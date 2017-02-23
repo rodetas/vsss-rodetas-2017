@@ -19,10 +19,9 @@ private:
 	vector<rodetas::Object> robotOpponent;
 	rodetas::Object objectBall;
 	
-	cv::Mat opencv_image_HSV;
-
     vector<Hsv> colorsHSV;
-
+	
+	ContoursPosition ball_position;
 	ContoursPosition team_position;
 	ContoursPosition opponent_position;
 

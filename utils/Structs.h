@@ -143,16 +143,9 @@ struct ContoursPosition {
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
 
-/*
-	ContoursPosition() {
-		cutPoint1 = {0,0};
-		cutPoint2 = {0,0};
-	}
-*/
 	bool cutPointDefined(){
 		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
 	}
-
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;

@@ -26,7 +26,7 @@
 #define LEFT_MOVE 'E'
 #define STOPPED_MOVE 'P'
 
-#define imagePath "files/images/imageTest1(640x480).png"
+#define imagePath "files/images/imageTest1.png"
 #define backgroundPath "files/textures/background.jpg"
 #define backgroundPath_menu "files/textures/background_menu.jpg"
 #define textureBallPath "files/textures/ball.png"
