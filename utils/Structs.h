@@ -142,10 +142,18 @@ struct ContoursPosition {
     vector<float>	radius;
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
+	float minimum_size = 0;
 
 	bool cutPointDefined(){
 		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
 	}
+
+	void setMinimumSize(float new_size){
+		if (minimum_size == 0)
+			minimum_size = new_size;
+
+		minimum_size = (minimum_size + new_size) / 2;
+	}	
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;

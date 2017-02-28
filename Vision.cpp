@@ -4,11 +4,8 @@
  * Constructor of the class
  */
 Vision::Vision(){
-    colorsHSV.resize(6);
     robotTeam.resize(number_robots);
     robotOpponent.resize(number_robots);
-    
-    camera_config = manipulation.loadCameraConfig();
 }
 
 /*
@@ -16,15 +13,16 @@ Vision::Vision(){
  */
 void Vision::initialize(){
     manipulation.loadCalibration();  
-    colorsHSV = manipulation.getColorsHsv();
-    camera_on = manipulation.getCameraOn();
-    point_cut_field_1 = manipulation.getPointField1();
-    point_cut_field_2 = manipulation.getPointField2();
-    angle_image = manipulation.getAngleImage();
+    colorsHSV           = manipulation.getColorsHsv();
+    camera_on           = manipulation.getCameraOn();
+    point_cut_field_1   = manipulation.getPointField1();
+    point_cut_field_2   = manipulation.getPointField2();
+    angle_image         = manipulation.getAngleImage();
+    camera_config       = manipulation.loadCameraConfig();
+    camera_initialize   = manipulation.getCameraOn();
+    image_initialize    = !manipulation.getCameraOn();
 
-    //manipulation.showCalibration();
-
-    cameraInitialize();
+    setImage();
 }
 
 /*
@@ -32,18 +30,18 @@ void Vision::initialize(){
  */
 void Vision::computerVision(){
 
-    imageWebCam();
+    setImage();
 
     //Team
-    team_position = position(opencv_image_BGR, team_position, colorsHSV[TEAM]);
+    team_position = position(opencv_image_BGR, team_position, colorsHSV[TEAM], 3);
     colorPositionPlayer(opencv_image_BGR, team_position);
 
     //Opponent
-    opponent_position = position(opencv_image_BGR, opponent_position, colorsHSV[OPPONENT]);
+    opponent_position = position(opencv_image_BGR, opponent_position, colorsHSV[OPPONENT], 3);
     colorPositionOpponent(opponent_position);
 
     //Ball
-    ball_position = position(opencv_image_BGR, ball_position, colorsHSV[BALL]);
+    ball_position = position(opencv_image_BGR, ball_position, colorsHSV[BALL], 1);
     colorPositionBall(ball_position);
 }
 
@@ -87,7 +85,7 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
         // search player's color on a cropped image
         for (int j = 0; j < number_robots; j++){
             cv::Mat image_binary = opencvBinary(image_cut, colorsHSV[j]);
-            ContoursPosition find_position = findPosition(image_binary);
+            ContoursPosition find_position = findPosition(image_binary, 1);
 
             // check if finds the specified color in image
             if (find_position.center.size() != 0){

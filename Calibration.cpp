@@ -7,22 +7,18 @@ Calibration::Calibration(){
     selected_player = 0;
     end_calibration = false;
     cairo_binary_image = false;
-    program_state = MENU;    
+    program_state = MENU;
 
     getCalibration();
-    camera_config = manipulation.loadCameraConfig();
+    setImage();
 }
 
 int Calibration::calibrate(){
-    
-    cameraInitialize();
 
     std::thread calibration_thread(bind(&Calibration::GUI, this));
-
-    updateCameraValues(camera_config, camera_number);
-
+    
     while(!end_calibration){
-        imageWebCam();
+        setImage();
         opencv_image_BGR_cuted  = opencvRotateImage(opencv_image_BGR, angle_image);
         opencv_image_BGR_cuted  = opencvCutImage(opencv_image_BGR_cuted, point_cut_field_1, point_cut_field_2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
@@ -55,13 +51,16 @@ void Calibration::updateColorPixel(Point pixel_point){
 
 void Calibration::getCalibration(){
     manipulation.loadCalibration();
-    colorsHSV = manipulation.getColorsHsv();
-    colorsRGB = manipulation.getColorsRgb();
-
-    point_cut_field_1 = manipulation.getPointField1();
-    point_cut_field_2 = manipulation.getPointField2();
-    goal = manipulation.getGoal();
-    angle_image = manipulation.getAngleImage();
+    goal                = manipulation.getGoal();
+    colorsHSV           = manipulation.getColorsHsv();
+    colorsRGB           = manipulation.getColorsRgb();
+    angle_image         = manipulation.getAngleImage();
+    point_cut_field_1   = manipulation.getPointField1();
+    point_cut_field_2   = manipulation.getPointField2();
+    camera_config       = manipulation.loadCameraConfig();
+    camera_initialize   = manipulation.getCameraOn();
+    image_initialize    = !manipulation.getCameraOn();
+    
     setCameraOn(manipulation.getCameraOn());
 
     hsvPoint[0] = colorsHSV[selected_player].h[2];
@@ -390,40 +389,6 @@ void Calibration::GUI(){
     end_calibration = true;
 }
 
-void Calibration::defaultCameraConfig(){
-    string value;
-
-    value = executeCommand("uvcdynctrl -g brightness");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.brightness = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g contrast");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.contrast = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g saturation");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.saturation = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g gain");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.gain = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g sharpness");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.sharpness = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g 'exposure (absolute)'");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.exposure = stoi(value);
-    }
-}
-
 void Calibration::updateDevices(){
     string device;
     string name_device;
@@ -554,19 +519,6 @@ void Calibration::onScaleRotate(){
     angle_image = scale_rotate.get_value();
 }
 
-void Calibration::onRadioButtonImage(){
-    if (!radio_button_image.get_active()){
-        button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
-        setCameraOn(false);
-    }
-}
-
-void Calibration::onRadioButtonCamera(){
-    if (!radio_button_camera.get_active()){    
-        button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
-        setCameraOn(true);
-    }
-}
 
 void Calibration::onScaleCAMBrightness(){
    camera_config.brightness = scale_CAM_popover[0].get_value();
@@ -593,6 +545,27 @@ void Calibration::onScaleCAMSharpness(){
     rodetas::updateCameraValues(camera_config, camera_number);
 }
 
+void Calibration::onScaleCAMExposure(){
+    camera_config.exposure = scale_CAM_popover[5].get_value();
+    rodetas::updateCameraValues(camera_config, camera_number);
+}
+
+void Calibration::onRadioButtonImage(){
+    if (!radio_button_image.get_active()){
+        button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        setCameraOn(false);
+        image_initialize = true;
+    }
+}
+
+void Calibration::onRadioButtonCamera(){
+    if (!radio_button_camera.get_active()){    
+        button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
+        setCameraOn(true);
+        camera_initialize = true;
+    }
+}
+
 void Calibration::onMenuRefresh(){
     camera_config.brightness = 128;
     camera_config.contrast = 128;
@@ -601,14 +574,8 @@ void Calibration::onMenuRefresh(){
     camera_config.sharpness = 128;
     camera_config.exposure = 300;
 
-    setValuesCamPopOver();
+    setPopoverCamValues();
     updateCameraValues(camera_config, camera_number);
-
-}
-
-void Calibration::onScaleCAMExposure(){
-    camera_config.exposure = scale_CAM_popover[5].get_value();
-    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::setCameraOn(bool value){
@@ -622,7 +589,7 @@ void Calibration::setPopoverHSVDefault(){
     }
 }
 
-void Calibration::setValuesCamPopOver(){
+void Calibration::setPopoverCamValues(){
     scale_CAM_popover[0].set_value(camera_config.brightness);
     scale_CAM_popover[1].set_value(camera_config.contrast);
     scale_CAM_popover[2].set_value(camera_config.saturation);
