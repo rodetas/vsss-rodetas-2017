@@ -75,7 +75,7 @@ rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, Co
  * Method for find the color position of the player and make the robots
  */
 void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
-
+/*
     vector<rodetas::Object> robot(number_robots);
 
     // cropped image around the color team
@@ -97,6 +97,15 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
         }
     }
     
+    robotTeam = robot;
+*/
+    vector<rodetas::Object> robot(number_robots);
+
+    for (int i = 0; i < team_position.center.size(); i++){
+        robot[i].x = team_position.center[i].x;
+        robot[i].y = team_position.center[i].y;
+    }
+
     robotTeam = robot;
 }
 

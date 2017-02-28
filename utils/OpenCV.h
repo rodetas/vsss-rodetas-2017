@@ -11,7 +11,7 @@ class OpenCV {
 
 private:
 	Timer timer;
-	bool review_all_image;
+	int frames = 0;
 
 protected:
 	CameraConfiguration camera_config;

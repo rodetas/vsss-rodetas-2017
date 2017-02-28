@@ -20,9 +20,9 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             goal_size.x = field_size.x*(0.05);
             goal_size.y = field_size.y*(0.3);
 
-        color_team_size = field_size.x * 0.05;
-        color_player_size = field_size.x * 0.02;
-        ball_size = field_size.x * 0.012;
+        color_team_size = field_size.x * 0.03;
+        color_player_size = field_size.x * 0.01;
+        ball_size = field_size.x * 0.008;
         int line_field_width = 4;
         int corner_size = field_size.x*(0.05);
 

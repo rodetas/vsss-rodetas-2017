@@ -2,7 +2,6 @@
 
 OpenCV::OpenCV(){
     camera_number = getCameraNumber();
-    review_all_image = true;
 }
 
 /*
@@ -72,7 +71,7 @@ ContoursPosition OpenCV::findPosition(cv::Mat image, int n_contours = 1){
         cv::minEnclosingCircle(contours_poly[i], center[i], radius[i] );
 
         position.center.push_back(center[i]);
-        position.radius.push_back(radius[i] * 1.1); // 1.1 para não correr risco da cor do jogador não ficar fora do raio da cor do time
+        position.radius.push_back(radius[i]);
     }
 
     return position;
@@ -82,7 +81,7 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 
     ContoursPosition atual_position, find_position;
 
-    if (last_position.cutPointDefined() && !review_all_image) {
+    if (!last_position.review_all_image) {
 
         for(int j = 0; j < last_position.center.size(); j++) {
 
@@ -90,13 +89,13 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                     image_cut = opencvRotateImage(image_cut, angle_image);
                     image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                     image_cut = opencvBinary(image_cut, color_hsv);
-
-            find_position = findPosition(image_cut);
             
+            find_position = findPosition(image_cut);
+
             for(int i = 0; i < find_position.center.size(); i++){
 
-                Point2f cutPoint1 = cv::Point( (find_position.center[i].x - find_position.radius[i] + last_position.cutPoint1[j].x)  * 0.9, (find_position.center[i].y - find_position.radius[i] + last_position.cutPoint1[j].y)  * 0.9);
-                Point2f cutPoint2 = cv::Point( (find_position.center[i].x + find_position.radius[i] + last_position.cutPoint1[j].x)  * 1.1, (find_position.center[i].y + find_position.radius[i] + last_position.cutPoint1[j].y)  * 1.1);
+                Point2f cutPoint1 = cv::Point( (find_position.center[i].x - find_position.radius[i] + last_position.cutPoint1[j].x)  * 0.95, (find_position.center[i].y - find_position.radius[i] + last_position.cutPoint1[j].y)  * 0.95);
+                Point2f cutPoint2 = cv::Point( (find_position.center[i].x + find_position.radius[i] + last_position.cutPoint1[j].x)  * 1.05, (find_position.center[i].y + find_position.radius[i] + last_position.cutPoint1[j].y)  * 1.05);
                 Point2f center_position = cv::Point( find_position.center[i].x + last_position.cutPoint1[j].x, find_position.center[i].y + last_position.cutPoint1[j].y);
                 
                 if (cutPoint1.x < 0) cutPoint1.x = 0;
@@ -114,12 +113,9 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                 atual_position.radius.push_back(find_position.radius[i]);
                 atual_position.cutPoint1.push_back(cutPoint1);
                 atual_position.cutPoint2.push_back(cutPoint2);
-
-                if (center_position.x == 0 || center_position.y == 0){
-                    review_all_image = true;
-                }
             }
         }
+                atual_position.reviewAllImage(last_position.frames);
         
     } else {
 
@@ -129,11 +125,11 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                 binary_image = opencvBinary(binary_image, color_hsv);
 
         find_position = findPosition(binary_image, n_contours);
-        
+
         for(int i = 0; i < find_position.center.size(); i++){
 
-            Point2f cutPoint1 = cv::Point( (find_position.center[i].x - find_position.radius[i]) * 0.9, (find_position.center[i].y - find_position.radius[i]) * 0.9 );
-            Point2f cutPoint2 = cv::Point( (find_position.center[i].x + find_position.radius[i]) * 1.1, (find_position.center[i].y + find_position.radius[i]) * 1.1 );
+            Point2f cutPoint1 = cv::Point( (find_position.center[i].x - find_position.radius[i]) * 0.95, (find_position.center[i].y - find_position.radius[i]) * 0.95 );
+            Point2f cutPoint2 = cv::Point( (find_position.center[i].x + find_position.radius[i]) * 1.05, (find_position.center[i].y + find_position.radius[i]) * 1.05 );
 
             if (cutPoint1.x < 0) cutPoint1.x = 0;
             if (cutPoint1.y < 0) cutPoint1.y = 0;
@@ -148,10 +144,9 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
             atual_position.radius.push_back(find_position.radius[i]);
             atual_position.cutPoint1.push_back(cutPoint1);
             atual_position.cutPoint2.push_back(cutPoint2);
-
-            review_all_image = false;
         }
-    }   
+            atual_position.review_all_image = false;
+    }
 
     return atual_position;
 }
