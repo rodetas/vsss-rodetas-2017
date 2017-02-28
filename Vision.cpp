@@ -5,7 +5,6 @@
  */
 Vision::Vision(){
     robotTeam.resize(number_robots);
-    robotOpponent.resize(number_robots);
 }
 
 /*
@@ -38,11 +37,9 @@ void Vision::computerVision(){
 
     //Opponent
     opponent_position = position(opencv_image_BGR, opponent_position, colorsHSV[OPPONENT], 3);
-    colorPositionOpponent(opponent_position);
 
     //Ball
     ball_position = position(opencv_image_BGR, ball_position, colorsHSV[BALL], 1);
-    colorPositionBall(ball_position);
 }
 
 /*
@@ -110,53 +107,25 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
 }
 
 /*
- * Method for set the position of opponent's color
- */
-void Vision::colorPositionOpponent(ContoursPosition opponent_position){
-
-    vector<rodetas::Object> robot(number_robots);
-
-    for (int i = 0; i < opponent_position.center.size(); i++){
-        robot[i].x = opponent_position.center[i].x;
-        robot[i].y = opponent_position.center[i].y;
-    }
-
-    robotOpponent = robot;
-}
-
-/*
- * Method for set the position of ball's color
- */
-void Vision::colorPositionBall(ContoursPosition ball_position){
-
-    rodetas::Object ball;
-
-    int radiusBall = 0; 
-    for(int i = 0; i < ball_position.center.size(); i++){ 
-        if (ball_position.radius[i] >= radiusBall && ball_position.center.size() > 0){
-            radiusBall = ball_position.radius[i];
-            ball.x = int(ball_position.center[i].x);
-            ball.y = int(ball_position.center[i].y);
-        }
-    }
-
-    objectBall = ball;
-}
-
-/*
  * Getters
  */
 vector<rodetas::Object> Vision::getPositions(){
     
-    vector<rodetas::Object> objects;
+    vector<rodetas::Object> objects(7);
 
-    for(int i = 0 ; i < robotTeam.size() ; i++)
-        objects.push_back(robotTeam[i]);
+    for(int i = 0 ; i < robotTeam.size() ; i++){
+        objects[i] = robotTeam[i];
+    }
+
+    for (int i = number_robots; i < opponent_position.center.size() + number_robots; i++){
+        objects[i].x = opponent_position.center[i-number_robots].x;
+        objects[i].y = opponent_position.center[i-number_robots].y;
+    }
     
-    for(int i = 0 ; i < robotOpponent.size() ; i++)
-        objects.push_back(robotOpponent[i]);
-    
-    objects.push_back(objectBall);
+    if (ball_position.center.size() > 0){
+        objects[6].x = ball_position.center[0].x;
+        objects[6].y = ball_position.center[0].y;
+    }
 
     return objects;
 }

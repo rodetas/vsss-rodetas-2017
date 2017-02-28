@@ -16,8 +16,6 @@ private:
 
 	vector<rodetas::Object> lastTeam;
 	vector<rodetas::Object> robotTeam;
-	vector<rodetas::Object> robotOpponent;
-	rodetas::Object objectBall;
 	
     vector<Hsv> colorsHSV;
 	
@@ -31,9 +29,6 @@ public:
 	
 	void computerVision();
 	rodetas::Object robotPosition(ContoursPosition, ContoursPosition, int);
-
-	void colorPositionBall(ContoursPosition);
-	void colorPositionOpponent(ContoursPosition);
 	void colorPositionPlayer(cv::Mat, ContoursPosition);
 
 	ContoursPosition orderContoursPosition(ContoursPosition);

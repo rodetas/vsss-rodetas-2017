@@ -77,18 +77,22 @@ ContoursPosition OpenCV::findPosition(cv::Mat image, int n_contours = 1){
     return position;
 }
 
+// fazer algo para se momentaneamente perder algo por conta da velocidade
+// cv::imshow("T", image_cut);   cv::waitKey();
+
 ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position, Hsv color_hsv, int n_contours){
 
     ContoursPosition atual_position, find_position;
 
-    if (!last_position.review_all_image) {
+    if (!last_position.review_all_image && last_position.cutPointDefined()) {
 
         for(int j = 0; j < last_position.center.size(); j++) {
 
-            cv::Mat image_cut = opencvCutImage(image, last_position.cutPoint1[j], last_position.cutPoint2[j]);
-                    image_cut = opencvRotateImage(image_cut, angle_image);
-                    image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
-                    image_cut = opencvBinary(image_cut, color_hsv);
+            cv::Mat full_image_cut  = opencvCutImage(image, point_cut_field_1, point_cut_field_2);
+            cv::Mat image_cut       = opencvCutImage(full_image_cut, last_position.cutPoint1[j], last_position.cutPoint2[j]);
+                    image_cut       = opencvRotateImage(image_cut, angle_image);
+                    image_cut       = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
+                    image_cut       = opencvBinary(image_cut, color_hsv);
             
             find_position = findPosition(image_cut);
 
@@ -102,12 +106,12 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                 if (cutPoint1.y < 0) cutPoint1.y = 0;
                 if (cutPoint2.x < 0) cutPoint2.x = 0;
                 if (cutPoint2.y < 0) cutPoint2.y = 0;
-                if (cutPoint1.x > image.cols) cutPoint1.x = image.cols;
-                if (cutPoint1.y > image.rows) cutPoint1.y = image.rows;
-                if (cutPoint2.x > image.cols) cutPoint2.x = image.cols;
-                if (cutPoint2.y > image.rows) cutPoint2.y = image.rows;
-                if (center_position.x > image.cols) center_position.x = image.cols;
-                if (center_position.y > image.rows) center_position.y = image.rows;
+                if (cutPoint1.x > full_image_cut.cols) cutPoint1.x = full_image_cut.cols;
+                if (cutPoint1.y > full_image_cut.rows) cutPoint1.y = full_image_cut.rows;
+                if (cutPoint2.x > full_image_cut.cols) cutPoint2.x = full_image_cut.cols;
+                if (cutPoint2.y > full_image_cut.rows) cutPoint2.y = full_image_cut.rows;
+                if (center_position.x > full_image_cut.cols) center_position.x = full_image_cut.cols;
+                if (center_position.y > full_image_cut.rows) center_position.y = full_image_cut.rows;
 
                 atual_position.center.push_back(center_position);
                 atual_position.radius.push_back(find_position.radius[i]);
@@ -115,9 +119,8 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                 atual_position.cutPoint2.push_back(cutPoint2);
             }
         }
-                atual_position.reviewAllImage(last_position.frames);
         
-    } else {
+    } else if (last_position.review_all_image) {
 
         cv::Mat binary_image = opencvRotateImage(image, angle_image);
                 binary_image = opencvCutImage(binary_image, point_cut_field_1, point_cut_field_2);
@@ -145,8 +148,9 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
             atual_position.cutPoint1.push_back(cutPoint1);
             atual_position.cutPoint2.push_back(cutPoint2);
         }
-            atual_position.review_all_image = false;
     }
+    
+    atual_position.reviewAllImage(last_position.frames);
 
     return atual_position;
 }
