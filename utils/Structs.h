@@ -142,18 +142,10 @@ struct ContoursPosition {
     vector<float>	radius;
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
-	float minimum_size = 0;
 
 	bool cutPointDefined(){
 		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
 	}
-
-	void setMinimumSize(float new_size){
-		if (minimum_size == 0)
-			minimum_size = new_size;
-
-		minimum_size = (minimum_size + new_size) / 2;
-	}	
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
@@ -211,14 +203,14 @@ string toString(const T value, const int n){
 	return out.str();
 }
 
-template <typename T, typename U, typename X>
-bool insideCircle(const T a, const U b, const X r){
-	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)) < r;
-}
-
 template <typename T, typename U>
 float distance(const T a, const U b){
 	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+}
+
+template <typename T, typename U, typename X>
+bool insideCircle(const T a, const U b, const X r){
+	return distance(a,b) < r;
 }
 
 template <typename T, typename U>

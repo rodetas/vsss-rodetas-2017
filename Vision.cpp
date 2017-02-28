@@ -63,6 +63,8 @@ rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, Co
             robot.y = team_position.center[number_team].y;
             robot.angle = atan2 ((color_player_position.center[i].y - team_position.center[number_team].y),
                                  (color_player_position.center[i].x - team_position.center[number_team].x)) * (180 / CV_PI) + 180 + 45;
+        } else {
+            cout << "COLOR IS NOT INSIDE CIRCLE" << endl;
         }
     }   
 
@@ -94,7 +96,7 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
             }
         }
     }
-
+    
     robotTeam = robot;
 }
 

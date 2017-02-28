@@ -39,7 +39,8 @@ public:
 	void cameraInitialize();
 	void imageValidation();
 
-	ContoursPosition findPosition(cv::Mat, int);
+	ContoursPosition findPosition(cv::Mat, int n_contours);
+
 	ContoursPosition position(cv::Mat, ContoursPosition, Hsv, int);
 };
 #endif
