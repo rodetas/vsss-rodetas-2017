@@ -34,7 +34,7 @@ int Control::handle(){
 		cout << timer.framesPerSecond() << endl;
     }
 	
-	vision.setCameraRelease();
+	vision.cameraRelease();
     menu_thread.detach();
 			
 	return program_state;

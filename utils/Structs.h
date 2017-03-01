@@ -142,9 +142,22 @@ struct ContoursPosition {
     vector<float>	radius;
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
+	int frames = 0;
+	bool review_all_image = true;
+
 
 	bool cutPointDefined(){
 		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
+	}
+
+	void reviewAllImage(int last_frames){
+		if (last_frames >= 10){
+			review_all_image = true;
+			frames = 0;
+		} else {
+			review_all_image = false;
+			frames = last_frames + 1;
+		}	
 	}
 
     void print(int i){
@@ -203,14 +216,14 @@ string toString(const T value, const int n){
 	return out.str();
 }
 
-template <typename T, typename U, typename X>
-bool insideCircle(const T a, const U b, const X r){
-	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y)) < r;
-}
-
 template <typename T, typename U>
 float distance(const T a, const U b){
 	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+}
+
+template <typename T, typename U, typename X>
+bool insideCircle(const T a, const U b, const X r){
+	return distance(a,b) < r;
 }
 
 template <typename T, typename U>

@@ -7,20 +7,18 @@ Calibration::Calibration(){
     selected_player = 0;
     end_calibration = false;
     cairo_binary_image = false;
-    program_state = MENU;    
+    program_state = MENU;
 
     getCalibration();
-    camera_config = manipulation.loadCameraConfig();
+    setImage();
 }
 
 int Calibration::calibrate(){
 
-    imageInitialize(camera_on);
-
     std::thread calibration_thread(bind(&Calibration::GUI, this));
-
+    
     while(!end_calibration){
-        imageWebCam(camera_on);
+        setImage();
         opencv_image_BGR_cuted  = opencvRotateImage(opencv_image_BGR, angle_image);
         opencv_image_BGR_cuted  = opencvCutImage(opencv_image_BGR_cuted, point_cut_field_1, point_cut_field_2);
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
@@ -31,7 +29,7 @@ int Calibration::calibrate(){
     manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut_field_1, point_cut_field_2, goal, angle_image, camera_on);
     manipulation.saveCameraConfig(camera_config);
 
-    setCameraRelease();
+    cameraRelease();
 
     calibration_thread.detach();
     return program_state;
@@ -53,13 +51,16 @@ void Calibration::updateColorPixel(Point pixel_point){
 
 void Calibration::getCalibration(){
     manipulation.loadCalibration();
-    colorsHSV = manipulation.getColorsHsv();
-    colorsRGB = manipulation.getColorsRgb();
-
-    point_cut_field_1 = manipulation.getPointField1();
-    point_cut_field_2 = manipulation.getPointField2();
-    goal = manipulation.getGoal();
-    angle_image = manipulation.getAngleImage();
+    goal                = manipulation.getGoal();
+    colorsHSV           = manipulation.getColorsHsv();
+    colorsRGB           = manipulation.getColorsRgb();
+    angle_image         = manipulation.getAngleImage();
+    point_cut_field_1   = manipulation.getPointField1();
+    point_cut_field_2   = manipulation.getPointField2();
+    camera_config       = manipulation.loadCameraConfig();
+    camera_initialize   = manipulation.getCameraOn();
+    image_initialize    = !manipulation.getCameraOn();
+    
     setCameraOn(manipulation.getCameraOn());
 
     hsvPoint[0] = colorsHSV[selected_player].h[2];
@@ -285,28 +286,27 @@ void Calibration::GUI(){
         for (int i = 0; i < scale_CAM_popover.size(); i++){
             scale_CAM_popover[i].set_size_request(150,20);
             scale_CAM_popover[i].set_draw_value(false);
-            scale_CAM_popover[i].set_range(0,100);
         }
 
-        scale_CAM_popover[0].set_value(camera_config.brightness);
         scale_CAM_popover[0].set_range(0,255);
-        scale_CAM_popover[1].set_value(camera_config.contrast);
+        scale_CAM_popover[0].set_value(camera_config.brightness);
         scale_CAM_popover[1].set_range(0,255);
-        scale_CAM_popover[2].set_value(camera_config.saturation);
+        scale_CAM_popover[1].set_value(camera_config.contrast);
         scale_CAM_popover[2].set_range(0,255);
-        scale_CAM_popover[3].set_value(camera_config.gain);
+        scale_CAM_popover[2].set_value(camera_config.saturation);
         scale_CAM_popover[3].set_range(0,255);        
-        scale_CAM_popover[4].set_value(camera_config.sharpness);
+        scale_CAM_popover[3].set_value(camera_config.gain);
         scale_CAM_popover[4].set_range(0,255);
+        scale_CAM_popover[4].set_value(camera_config.sharpness);
+        scale_CAM_popover[5].set_range(3,800);
         scale_CAM_popover[5].set_value(camera_config.exposure);
-        scale_CAM_popover[5].set_range(3,2047);
 
         scale_CAM_popover[0].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMBrightness) );        
         scale_CAM_popover[1].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMContrast) );        
         scale_CAM_popover[2].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSaturation) );        
         scale_CAM_popover[3].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMGain) );        
         scale_CAM_popover[4].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMSharpness) );        
-        scale_CAM_popover[5].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMExposure) );         
+        scale_CAM_popover[5].signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMExposure) );
 
     Gtk::Grid grid_CAM_popover;
         for (int i = 0; i < scale_CAM_popover.size(); i++){
@@ -387,40 +387,6 @@ void Calibration::GUI(){
     
     draw_connection.disconnect();
     end_calibration = true;
-}
-
-void Calibration::defaultCameraConfig(){
-    string value;
-
-    value = executeCommand("uvcdynctrl -g brightness");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.brightness = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g contrast");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.contrast = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g saturation");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.saturation = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g gain");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.gain = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g sharpness");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.sharpness = stoi(value);
-    }
-
-    value = executeCommand("uvcdynctrl -g 'exposure (absolute)'");
-    if(value.compare("ERROR: Unknown control specified.\n") != 0){
-        camera_config.exposure = stoi(value);
-    }
 }
 
 void Calibration::updateDevices(){
@@ -553,21 +519,6 @@ void Calibration::onScaleRotate(){
     angle_image = scale_rotate.get_value();
 }
 
-void Calibration::onRadioButtonImage(){
-    if (!radio_button_image.get_active()){
-        button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
-        setCameraOn(false);
-        imageInitialize(camera_on);   
-    }
-}
-
-void Calibration::onRadioButtonCamera(){
-    if (!radio_button_camera.get_active()){    
-        button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
-        setCameraOn(true);
-        imageInitialize(camera_on);
-    }
-}
 
 void Calibration::onScaleCAMBrightness(){
    camera_config.brightness = scale_CAM_popover[0].get_value();
@@ -594,22 +545,37 @@ void Calibration::onScaleCAMSharpness(){
     rodetas::updateCameraValues(camera_config, camera_number);
 }
 
+void Calibration::onScaleCAMExposure(){
+    camera_config.exposure = scale_CAM_popover[5].get_value();
+    rodetas::updateCameraValues(camera_config, camera_number);
+}
+
+void Calibration::onRadioButtonImage(){
+    if (!radio_button_image.get_active()){
+        button_CAM_popover.set_state(Gtk::StateType::STATE_INSENSITIVE);
+        setCameraOn(false);
+        image_initialize = true;
+    }
+}
+
+void Calibration::onRadioButtonCamera(){
+    if (!radio_button_camera.get_active()){    
+        button_CAM_popover.set_state(Gtk::StateType::STATE_NORMAL);
+        setCameraOn(true);
+        camera_initialize = true;
+    }
+}
+
 void Calibration::onMenuRefresh(){
     camera_config.brightness = 128;
     camera_config.contrast = 128;
     camera_config.saturation = 128;
     camera_config.gain = 0;
     camera_config.sharpness = 128;
-    camera_config.exposure = 416;
+    camera_config.exposure = 300;
 
-    setValuesCamPopOver();
+    setPopoverCamValues();
     updateCameraValues(camera_config, camera_number);
-
-}
-
-void Calibration::onScaleCAMExposure(){
-    camera_config.exposure = scale_CAM_popover[5].get_value();
-    rodetas::updateCameraValues(camera_config, camera_number);
 }
 
 void Calibration::setCameraOn(bool value){
@@ -623,7 +589,7 @@ void Calibration::setPopoverHSVDefault(){
     }
 }
 
-void Calibration::setValuesCamPopOver(){
+void Calibration::setPopoverCamValues(){
     scale_CAM_popover[0].set_value(camera_config.brightness);
     scale_CAM_popover[1].set_value(camera_config.contrast);
     scale_CAM_popover[2].set_value(camera_config.saturation);

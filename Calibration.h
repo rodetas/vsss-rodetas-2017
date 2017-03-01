@@ -4,6 +4,7 @@
 #include "Header.h"
 #include "utils/Structs.h"
 #include "utils/OpenCV.h"
+#include "utils/Timer.h"
 #include "CRUD/Manipulation.h"
 #include "GUI/Cairo/DrawAreaCalibration.h"
 
@@ -87,7 +88,6 @@ public:
 
 	Calibration();
 	int calibrate();
-	void defaultCameraConfig();
 	void updateDevices();
 	void updateColorPixel(Point);
 
@@ -95,7 +95,7 @@ public:
 
 	void setCameraOn(bool);
 	void setPopoverHSVDefault();
-	void setValuesCamPopOver();
+	void setPopoverCamValues();
 
 };
 #endif
