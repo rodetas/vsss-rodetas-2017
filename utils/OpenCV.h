@@ -12,6 +12,7 @@ class OpenCV {
 private:
 	Timer timer;
 	int frames = 0;
+	float percent_cut;
 
 protected:
 	CameraConfiguration camera_config;
