@@ -14,25 +14,22 @@ private:
 
 	const int number_robots = 3;
 
-	vector<rodetas::Object> lastTeam;
 	vector<rodetas::Object> robotTeam;
 	
     vector<Hsv> colorsHSV;
 	
 	ContoursPosition ball_position;
 	ContoursPosition team_position;
+	ContoursPosition player_position;
 	ContoursPosition opponent_position;
 
 public:
 	Vision();
-	void initialize();
-	
+	void initialize();	
 	void computerVision();
-	rodetas::Object robotPosition(ContoursPosition, ContoursPosition, int);
-	void colorPositionPlayer(cv::Mat, ContoursPosition);
 
-	ContoursPosition orderContoursPosition(ContoursPosition);
-
+	ContoursPosition colorPositionPlayer(cv::Mat, ContoursPosition);
+	vector<rodetas::Object> robotPosition();	
 	vector<rodetas::Object> getPositions();
 };
 #endif
