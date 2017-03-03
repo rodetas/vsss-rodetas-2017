@@ -107,6 +107,7 @@ INSTALL_COMMONS_DEPEND () {
 		INSTALL Git git;
 		INSTALL g++ g++;
 		INSTALL webcam-control uvcdynctrl;
+		INSTALL webcam-control v4l-utils
 		INSTALL cmake cmake;
 		INSTALL qt5 qt5-default;
 		INSTALL libxvidcore libxvidcore-dev;

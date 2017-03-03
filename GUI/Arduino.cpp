@@ -14,6 +14,7 @@ int Arduino::GUI(){
 	show_all_children();
 	app->run(*this);
 
+	close();
 	return MENU;
 }
 
@@ -43,6 +44,7 @@ void Arduino::onButtonUpdate(){
 
 void Arduino::draw(){
 	set_default_size(400, 250);
+	set_icon_from_file("files/images/logo-rodetas.png");
 	set_position(Gtk::WIN_POS_CENTER_ALWAYS);
 	set_title("Arduino Interface");
 

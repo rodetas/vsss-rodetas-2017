@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) {
 
-	int  program_state = MENU;
+	int program_state = MENU;
 
 	while(program_state != EXIT){
 		

@@ -21,6 +21,8 @@ private:
 
 	//GTKMM
 	DrawAreaControl draw_robot;
+	Gtk::Window window;
+	Glib::RefPtr<Gtk::Application> app;
 
 	int program_state;
 	bool play;
@@ -29,6 +31,11 @@ private:
 	void onButtonPlay();
 	bool onKeyboard(GdkEventKey*);
 	bool setPositionToDraw();
+
+	void onMenuCalibration();
+	void onMenuSimulator();
+	void onMenuArduino();
+	void onMenuQuit();
 
 public:
 	Control();
