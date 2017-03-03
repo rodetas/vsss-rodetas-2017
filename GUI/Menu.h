@@ -8,6 +8,7 @@ class Menu {
 
 private:
 	Glib::RefPtr<Gtk::Application> app;
+	
 	int program_state;
 
 	void onButtonPlay();

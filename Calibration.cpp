@@ -32,6 +32,7 @@ int Calibration::calibrate(){
     cameraRelease();
 
     calibration_thread.detach();
+    
     return program_state;
 }
 
@@ -94,12 +95,6 @@ void Calibration::GUI(){
         menu_play.show();
         menu_play.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
 
-    Gtk::MenuItem menu_calibration;
-        menu_calibration.set_label("_Calibrate");
-        menu_calibration.set_use_underline(true);
-        menu_calibration.add_accelerator("activate", accel_map, GDK_KEY_c, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-        menu_calibration.signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuCalibration));
-
     Gtk::MenuItem menu_simulator;
         menu_simulator.set_label("S_imulate");
         menu_simulator.set_use_underline(true);
@@ -125,7 +120,6 @@ void Calibration::GUI(){
         menu_navegation.set_label("Navegation");
         menu_navegation.set_submenu(subMenuNavigation);
         subMenuNavigation.append(menu_play);
-        subMenuNavigation.append(menu_calibration);
         subMenuNavigation.append(menu_simulator);
         subMenuNavigation.append(menu_arduino);
         subMenuNavigation.append(separator);
@@ -385,6 +379,7 @@ void Calibration::GUI(){
 
   	app->run(window);
     
+    window.close();
     draw_connection.disconnect();
     end_calibration = true;
 }
@@ -446,10 +441,6 @@ bool Calibration::onKeyboard(GdkEventKey* event){
 
 void Calibration::onMenuGame(){
     program_state = GAME; app->quit();
-}
-
-void Calibration::onMenuCalibration(){
-    program_state = CALIBRATION; app->quit();
 }
 
 void Calibration::onMenuSimulator(){

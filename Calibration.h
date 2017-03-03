@@ -57,11 +57,10 @@ private:
 	bool onKeyboard(GdkEventKey*);
 	bool updateScreen();
 	void onMenuGame();
-	void onMenuCalibration();
 	void onMenuSimulator();
 	void onMenuArduino();
-	void onMenuRefresh();
 	void onMenuQuit();	
+	void onMenuRefresh();
 	void onButtonHSV();
 	void onButtonCAM();
     void onScaleRotate();

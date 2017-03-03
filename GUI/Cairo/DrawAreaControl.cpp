@@ -4,6 +4,7 @@ DrawAreaControl::DrawAreaControl(){
     colors_rgb = manipulation.getColorsRgbCairo();
     image_size = manipulation.getImageSize();
     goal_size = manipulation.getGoal();
+    robot.resize(7);
 }
 
 void DrawAreaControl::setPosition(vector<rodetas::Object> o){
@@ -12,7 +13,7 @@ void DrawAreaControl::setPosition(vector<rodetas::Object> o){
 }
 
 bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
-      
+
         Gtk::Allocation allocation = get_allocation();
             field_size.x = allocation.get_width();
             field_size.y = allocation.get_height();

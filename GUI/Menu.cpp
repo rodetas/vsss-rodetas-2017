@@ -11,6 +11,7 @@ int Menu::GUI(){
 
 	Gtk::Window window;	
 		window.set_default_size(800, 600);
+		window.set_icon_from_file("files/images/logo-rodetas.png");
 		window.set_position(Gtk::WIN_POS_CENTER_ALWAYS);
 		window.set_title("Rodetas");
 
@@ -42,6 +43,7 @@ int Menu::GUI(){
 
   	app->run(window);
 	
+	window.close();
 	return program_state;
 } 
 
