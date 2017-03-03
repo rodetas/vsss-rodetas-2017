@@ -33,7 +33,8 @@ void Vision::computerVision(){
 
     //Team
     team_position = position(opencv_image_BGR, team_position, colorsHSV[TEAM], 3);
-    colorPositionPlayer(opencv_image_BGR, team_position);
+    player_position = colorPositionPlayer(opencv_image_BGR, team_position);
+    robotTeam = robotPosition();
 
     //Opponent
     opponent_position = position(opencv_image_BGR, opponent_position, colorsHSV[OPPONENT], 3);
@@ -45,25 +46,26 @@ void Vision::computerVision(){
 /*
  * method to join team color with the player to create a robot
  */
-rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, ContoursPosition team_position, int number_team){
+vector<rodetas::Object> Vision::robotPosition(){
 
-    rodetas::Object robot;
+    vector<rodetas::Object> robot;
 
-    for (int i = 0; i < color_player_position.center.size(); i++){
+        for (int i = 0; i < player_position.center.size(); i++){
+            int number_team = player_position.order[i];
 
-        // sum team cutPoint because the cut of the image
-        color_player_position.center[i].x += team_position.cutPoint1[number_team].x;
-        color_player_position.center[i].y += team_position.cutPoint1[number_team].y;
+            if (rodetas::insideCircle(player_position.center[i], team_position.center[number_team], team_position.radius[number_team] * 1.1 )){
+                rodetas::Object r;
+                r.x = team_position.center[number_team].x;
+                r.y = team_position.center[number_team].y;
+                r.angle = atan2 ((player_position.center[i].y - team_position.center[number_team].y),
+                                ( player_position.center[i].x - team_position.center[number_team].x)) * (180 / CV_PI) + 180 + 45;
+                robot.push_back(r);
 
-        if (rodetas::insideCircle(color_player_position.center[i], team_position.center[number_team], team_position.radius[number_team] )){
-            robot.x = team_position.center[number_team].x;
-            robot.y = team_position.center[number_team].y;
-            robot.angle = atan2 ((color_player_position.center[i].y - team_position.center[number_team].y),
-                                 (color_player_position.center[i].x - team_position.center[number_team].x)) * (180 / CV_PI) + 180 + 45;
-        } else {
-            cout << "COLOR IS NOT INSIDE CIRCLE" << endl;
+            } else {
+                cout << "COLOR IS NOT INSIDE CIRCLE - RADIUS: " <<  team_position.radius[number_team] * 1.1;
+                cout << " Distance: " << rodetas::distance(player_position.center[i], team_position.center[number_team]) << endl;
+            }
         }
-    }   
 
     return robot;
 }
@@ -71,13 +73,18 @@ rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, Co
 /*
  * Method for find the color position of the player and make the robots
  */
-void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
-/*
-    vector<rodetas::Object> robot(number_robots);
+ContoursPosition Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
+
+    ContoursPosition player_position;
 
     // cropped image around the color team
     for (int i = 0; i < team_position.center.size(); i++){
-        cv::Mat image_cut = opencvCutImage(image, team_position.cutPoint1[i], team_position.cutPoint2[i]);
+
+        // multplying 1.05 and 0.95, to cut closer the robot
+        Point2f cutPoint1 = cv::Point( (team_position.cutPoint1[i].x)  * 1.05, (team_position.cutPoint1[i].y)  * 1.05);
+        Point2f cutPoint2 = cv::Point( (team_position.cutPoint2[i].x)  * 0.95, (team_position.cutPoint2[i].y)  * 0.95);
+
+        cv::Mat image_cut = opencvCutImage(image, cutPoint1, cutPoint2);
                 image_cut = opencvRotateImage(image_cut, angle_image);
                 image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                 
@@ -85,25 +92,20 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
         for (int j = 0; j < number_robots; j++){
             cv::Mat image_binary = opencvBinary(image_cut, colorsHSV[j]);
             ContoursPosition find_position = findPosition(image_binary, 1);
-
+            
             // check if finds the specified color in image
             if (find_position.center.size() != 0){
-                robot[j] = robotPosition(find_position, team_position, i);
+                // sum team cutPoint because the cut of the 
+                Point2f position = cv::Point(find_position.center[0].x + cutPoint1.x, find_position.center[0].y + cutPoint1.y);
+                player_position.center.push_back(position);
+                player_position.radius.push_back(find_position.radius[0]);
+                player_position.order.push_back(i);
                 break;
             }
         }
     }
     
-    robotTeam = robot;
-*/
-    vector<rodetas::Object> robot(number_robots);
-
-    for (int i = 0; i < team_position.center.size(); i++){
-        robot[i].x = team_position.center[i].x;
-        robot[i].y = team_position.center[i].y;
-    }
-
-    robotTeam = robot;
+    return player_position;
 }
 
 /*

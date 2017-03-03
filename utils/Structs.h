@@ -139,12 +139,13 @@ struct Object{
 
 struct ContoursPosition {
 	vector<Point2f>	center;
-    vector<float>	radius;
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
+    vector<float>	radius;
+    vector<int>		order;	
+	
 	int frames = 0;
 	bool review_all_image = true;
-
 
 	bool cutPointDefined(){
 		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
@@ -223,7 +224,7 @@ float distance(const T a, const U b){
 
 template <typename T, typename U, typename X>
 bool insideCircle(const T a, const U b, const X r){
-	return distance(a,b) < r;
+	return distance(a,b) < (r);
 }
 
 template <typename T, typename U>

@@ -78,6 +78,7 @@ ContoursPosition OpenCV::findPosition(cv::Mat image, int n_contours = 1){
 }
 
 // fazer algo para se momentaneamente perder algo por conta da velocidade
+// verificar tamanho padrão
 // cv::imshow("T", image_cut);   cv::waitKey();
 
 ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position, Hsv color_hsv, int n_contours){
