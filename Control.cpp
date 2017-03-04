@@ -16,7 +16,7 @@ int Control::handle(){
 
     while(program_state == GAME){
 		
-		timer.startTime();
+		//timer.startTime();
 		
 		// recognize robot's points
 		vision.computerVision();
@@ -31,7 +31,8 @@ int Control::handle(){
 		//transmission.reading();
 
 		timer.framesPerSecond();
-		timer.waitTimeStarted(33);
+		
+		//timer.waitTimeStarted(33);
 		
     }
 	
@@ -192,16 +193,16 @@ void Control::GUIInformation() {
 
 bool Control::onKeyboard(GdkEventKey* event){
     if (event->keyval == GDK_KEY_Left) {
-		transmission.movementRobot(Command('A', 100, 100));
+		transmission.movementRobot(Command('E', 150, 150));
 
     } else if (event->keyval == GDK_KEY_Right) {
-		transmission.movementRobot(Command('A', 150, 150));
+		transmission.movementRobot(Command('D', 150, 150));
 	
 	} else if (event->keyval == GDK_KEY_Up) {
-		transmission.movementRobot(Command('A', 200, 200));
+		transmission.movementRobot(Command('A', 150, 150));
 
 	} else if (event->keyval == GDK_KEY_Down) {
-		transmission.movementRobot(Command('A', 254, 254));
+		transmission.movementRobot(Command('V', 150, 150));
 
 	} else if(event->keyval == GDK_KEY_space) {
 		button_play.set_active(!button_play.get_active());

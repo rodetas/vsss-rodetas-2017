@@ -10,8 +10,8 @@ Movimentation::Movimentation(){
 	objects.resize(7);
 	movements.resize(3);
 
-	powerFactor = 1.5;
-	curveFactor = 1.3;
+	powerFactor = 1.4;
+	curveFactor = 1.0;
 	curveStrategy = 1;
 }
 
@@ -117,7 +117,7 @@ Pwm Movimentation::PWMCorrection(Point destination){
 	} else {
 		distanceFactor = 1;
 	}
-
+	distanceFactor = 1;
 
 	basePower = standardPower * powerFactor;
 	correctionPower = (standardPower/2) * sinAngle_robot_destination * curveFactor * curveStrategy;
