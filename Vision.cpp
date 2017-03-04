@@ -31,8 +31,8 @@ void Vision::computerVision(){
 
     setImage();
 
-    cv::Mat full_image_cut = opencvCutImage(opencv_image_BGR, point_cut_field_1, point_cut_field_2);
-            full_image_cut = opencvRotateImage(full_image_cut, angle_image);
+    cv::Mat full_image_cut = opencvRotateImage(opencv_image_BGR, angle_image);
+            full_image_cut = opencvCutImage(full_image_cut, point_cut_field_1, point_cut_field_2);
 
     //Team
     team_position = position(full_image_cut, team_position, colorsHSV[TEAM], 3);
@@ -106,9 +106,7 @@ vector<rodetas::Object> Vision::getPositions(){
     
     vector<rodetas::Object> objects(7);
 
-    for(int i = 0 ; i < team_position.center.size() ; i++){
-        //objects[i].x = team_position.center[i].x;
-        //objects[i].y = team_position.center[i].y;
+    for(int i = 0 ; i < robotTeam.size() ; i++){
         objects[i] = robotTeam[i];
     }
 

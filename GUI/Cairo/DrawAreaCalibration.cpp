@@ -20,7 +20,6 @@ bool DrawAreaCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_dr
             opencv_image_size  = opencv_image.size();
         
         cv::Mat opencv_image_resize;
-        cout << opencv_image.size() << " " << cairo_image_size << endl;
         cv::resize(opencv_image, opencv_image_resize, cairo_image_size, 0, 0, cv::INTER_LINEAR);
         
         Glib::RefPtr<Gdk::Pixbuf> pixbuf =  Gdk::Pixbuf::create_from_data( opencv_image_resize.data, Gdk::COLORSPACE_RGB, false, 8, opencv_image_resize.cols, opencv_image_resize.rows, opencv_image_resize.step);

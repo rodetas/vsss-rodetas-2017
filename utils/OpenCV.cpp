@@ -38,7 +38,7 @@ cv::Mat OpenCV::opencvCutImage(cv::Mat image, cv::Point point_cut_field_1, cv::P
  */
 cv::Mat OpenCV::opencvRotateImage(cv::Mat image, int angle){
     cv::Mat imageRotated;
-    cv::warpAffine( image, imageRotated, cv::getRotationMatrix2D( cv::Point(image.cols/2, image.rows/2), angle - 180, 1), imageRotated.size() );
+    cv::warpAffine( image, imageRotated, cv::getRotationMatrix2D( cv::Point(image.cols/2, image.rows/2), angle - 180, 1), image.size(), cv::INTER_CUBIC);
     return imageRotated;
 }
 
