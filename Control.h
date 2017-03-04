@@ -24,13 +24,23 @@ private:
 	Gtk::Window window;
 	Glib::RefPtr<Gtk::Application> app;
 
+	Gtk::ToggleButton button_play;
+	Gtk::Label label_fps;
+	Gtk::Label label_transmission;
+
 	int program_state;
+	bool changeTime;
 	bool play;
 	
 	void GUIInformation();
-	void onButtonPlay();
+
+	void onButtonPlay(Gtk::ToggleButton*);
+	void onPotencyChanged(Gtk::SpinButton*);
+	void onCurveChanged(Gtk::SpinButton*);
+	void onButtonTime(Gtk::Button*);
+	
 	bool onKeyboard(GdkEventKey*);
-	bool setPositionToDraw();
+	bool setInformations50MilliSec();
 
 	void onMenuCalibration();
 	void onMenuSimulator();

@@ -19,5 +19,6 @@ public:
     void startTime();
     void waitTimeStarted(float);
     void wait(int);
+    int getFps();
 };
 #endif

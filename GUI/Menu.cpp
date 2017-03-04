@@ -43,7 +43,7 @@ int Menu::GUI(){
 
   	app->run(window);
 	
-	window.close();
+	//window.close();
 	return program_state;
 } 
 

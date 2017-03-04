@@ -80,7 +80,7 @@ public:
     Point setGoalTarget();
 
     void setObjects(vector<rodetas::Object> o);
-    void setPower(float a);
+    void setPowerPotency(float a);
     void setPowerCurve(float a);
     void setVecTarget(int, Point);
     

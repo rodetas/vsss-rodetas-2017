@@ -3,6 +3,7 @@
 Control::Control(){
 	program_state = GAME;
 	play = false;
+	changeTime = true;
 }
 
 int Control::handle(){
@@ -15,13 +16,12 @@ int Control::handle(){
 
     while(program_state == GAME){
 		
-		//timer.startTime();
+		timer.startTime();
 		
 		// recognize robot's points
 		vision.computerVision();
-		// set informations to other classes
-		strategy.setObjects(vision.getPositions());
 		// apply strategies
+		strategy.setObjects(vision.getPositions());
 		strategy.handleStrategies();
 
 		if (play){
@@ -30,8 +30,9 @@ int Control::handle(){
 		}
 		//transmission.reading();
 
-		//timer.waitTimeStarted(33);
-		//cout << timer.framesPerSecond() << endl;
+		timer.framesPerSecond();
+		timer.waitTimeStarted(33);
+		
     }
 	
 	vision.cameraRelease();
@@ -55,20 +56,56 @@ void Control::GUIInformation() {
 
 ///////////////////////// DRAW IMAGE /////////////////////////
 
-	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::setPositionToDraw), 50); 
+	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::setInformations50MilliSec), 50); 
 
 
 ///////////////////////// BUTTONS /////////////////////////
 
-	Gtk::Button button_pause, button_side, button_penalty;
-		button_pause.add_label("Pause");
-		button_side.add_label("Side");
-		button_penalty.add_label("Penalty");
-	
-	Gtk::ToggleButton button_play;
+	button_play.add_label("Paused");	
+	button_play.signal_clicked().connect( sigc::bind<Gtk::ToggleButton*> (sigc::mem_fun(this, &Control::onButtonPlay), &button_play) );
 
-		button_play.add_label("Play");		
-		button_play.signal_clicked().connect( sigc::mem_fun(this, &Control::onButtonPlay) );
+	Gtk::Button button_penalty;
+		button_penalty.add_label("Penalty");
+
+	Gtk::Button button_side;
+		button_side.add_label("1º time");
+		button_side.signal_clicked().connect( sigc::bind<Gtk::Button*> (sigc::mem_fun(this, &Control::onButtonTime), &button_side) );
+
+	Gtk::Box box_potency(Gtk::ORIENTATION_VERTICAL);
+		box_potency.set_spacing(10);
+
+	Gtk::Label label_potency;
+		label_potency.set_text("Potency Factor:");
+		box_potency.pack_start(label_potency);
+
+	Gtk::SpinButton spin_potency;
+		spin_potency.set_range(0,3);
+		spin_potency.set_value(1.2);
+		spin_potency.set_digits(1);
+		spin_potency.set_increments(0.1,0.1);
+		spin_potency.signal_value_changed().connect( sigc::bind<Gtk::SpinButton*> (sigc::mem_fun(this, &Control::onPotencyChanged), &spin_potency) );
+		box_potency.pack_start(spin_potency);
+
+	Gtk::Box box_curve(Gtk::ORIENTATION_VERTICAL);
+		box_curve.set_spacing(10);
+
+	Gtk::Label label_curve;
+		label_curve.set_text("Curve Factor:");
+		label_curve.set_size_request(5,5);
+		box_curve.pack_start(label_curve);
+
+	Gtk::SpinButton spin_curve;
+		spin_curve.set_range(0,3);
+		spin_curve.set_value(1.2);
+		spin_curve.set_digits(1);
+		spin_curve.set_increments(0.1,0.3);
+		spin_curve.signal_value_changed().connect( sigc::bind<Gtk::SpinButton*> (sigc::mem_fun(this, &Control::onCurveChanged), &spin_curve) );
+		box_curve.pack_start(spin_curve);
+
+	label_fps.set_label("Fps: 0");
+
+	label_transmission.set_label("TRANSMISSION ERROR");
+	label_transmission.override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
 
 
 ///////////////////////// NAVEGATION MENU /////////////////////////
@@ -113,19 +150,21 @@ void Control::GUIInformation() {
         menu_bar.append(menu_navegation);
    
 ///////////////////////// CONTAINERS /////////////////////////
+		
+	Gtk::Grid box_right;
+		//box_right.set_layout(Gtk::BUTTONBOX_CENTER );
+		box_right.set_row_spacing(20);
+		box_right.set_border_width(20);
+		box_right.set_valign(Gtk::ALIGN_CENTER);
 
-	Gtk::ButtonBox box_left(Gtk::ORIENTATION_VERTICAL);
-		box_left.set_layout(Gtk::BUTTONBOX_CENTER );
-		box_left.set_spacing(20);		 
-		box_left.pack_start(button_play);
-		box_left.pack_start(button_pause);		
+		box_right.attach(button_play,0,0,1,1);
+		box_right.attach(button_penalty,0,1,1,1);
+		box_right.attach(button_side,0,2,1,1);
+		box_right.attach(box_potency,0,3,1,1);
+		box_right.attach(box_curve,0,4,1,1);
+		box_right.attach(label_fps,0,5,1,1);
+		box_right.attach(label_transmission,0,6,1,3);
 
-	Gtk::ButtonBox box_right(Gtk::ORIENTATION_VERTICAL);
-		box_right.set_layout(Gtk::BUTTONBOX_CENTER );
-		box_right.set_spacing(20);
-		box_right.pack_start(button_penalty);
-		box_right.pack_start(button_side);
-   
 	Gtk::Box box_center(Gtk::ORIENTATION_VERTICAL);
 		box_center.set_border_width(20);
 		box_center.pack_start(draw_robot);
@@ -135,7 +174,6 @@ void Control::GUIInformation() {
         box_top.pack_start(menu_bar, Gtk::PACK_SHRINK);
 
 	Gtk::Box box(Gtk::ORIENTATION_HORIZONTAL);
-		box.pack_start(box_left, false, false, 20);
 		box.pack_start(box_center);
 		box.pack_start(box_right, false, false, 20);
 
@@ -166,8 +204,11 @@ bool Control::onKeyboard(GdkEventKey* event){
 		transmission.movementRobot(Command('A', 254, 254));
 
 	} else if(event->keyval == GDK_KEY_space) {
-		onButtonPlay();
-
+		button_play.set_active(!button_play.get_active());
+	
+	} else if(event->keyval == GDK_KEY_Escape){
+		onMenuQuit();
+	
 	} else {
 		transmission.movementRobot(Command('P', 0, 0));
 	}
@@ -175,13 +216,51 @@ bool Control::onKeyboard(GdkEventKey* event){
     return true;
 }
 
-void Control::onButtonPlay() {
+void Control::onPotencyChanged(Gtk::SpinButton* bt){
+	strategy.setPowerPotency(bt->get_value());
+}
+
+void Control::onCurveChanged(Gtk::SpinButton* bt){
+	strategy.setPowerCurve(bt->get_value());
+}
+
+void Control::onButtonPlay(Gtk::ToggleButton* bt){
+
+	if(bt->get_active()){
+		bt->set_label("Playing");
+	} else {
+		bt->set_label("Paused");
+	}
+
     play = !play;
 	transmission.stopRobot();
 }
 
-bool Control::setPositionToDraw(){
+void Control::onButtonTime(Gtk::Button* bt){
+
+	if(changeTime == false){
+		bt->set_label("1º time");
+	} else {
+		bt->set_label("2º time");
+	}
+
+	changeTime = !changeTime;
+
+}
+
+bool Control::setInformations50MilliSec(){
 	draw_robot.setPosition(vision.getPositions());
+
+	string txt = "Fps: " + to_string(timer.getFps());
+	label_fps.set_label(txt);
+
+	bool transmissionStatus = transmission.getConnectionStatus();
+	if(transmissionStatus == false){
+		label_transmission.set_visible(true);
+	} else {
+		label_transmission.set_visible(false);
+	}
+
 	return true;
 }
 
