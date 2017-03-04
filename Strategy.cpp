@@ -376,7 +376,7 @@ void Strategy::setObjects(vector<rodetas::Object> o){
 	this->objects = o;
 }
 
-void Strategy::setPower(float a){
+void Strategy::setPowerPotency(float a){
 	movimentation.setPower(a);
 }
 

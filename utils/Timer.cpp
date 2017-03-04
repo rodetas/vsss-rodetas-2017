@@ -40,3 +40,7 @@ void Timer::waitTimeStarted(float time_wait){
 void Timer::wait(int t){
     usleep(t);
 }
+
+int Timer::getFps(){
+    return this->fps;
+}
