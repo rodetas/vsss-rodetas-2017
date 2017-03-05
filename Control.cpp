@@ -16,7 +16,7 @@ int Control::handle(){
 
     while(program_state == GAME){
 		
-		//timer.startTime();
+//		timer.startTime();
 		
 		// recognize robot's points
 		vision.computerVision();
@@ -31,7 +31,7 @@ int Control::handle(){
 		//transmission.reading();
 		timer.framesPerSecond();
 
-		//timer.waitTimeStarted(33);
+//		timer.waitTimeStarted(33);
 		
     }
 	
@@ -52,6 +52,7 @@ void Control::GUIInformation() {
 		window.set_title("Rodetas");
 		window.set_icon_from_file("files/images/logo-rodetas.png");
 		window.signal_key_press_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
+		window.signal_key_release_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
 		window.add_accel_group(accel_map);
 
 ///////////////////////// DRAW IMAGE /////////////////////////
@@ -191,7 +192,10 @@ void Control::GUIInformation() {
 
 
 bool Control::onKeyboard(GdkEventKey* event){
-    if (event->keyval == GDK_KEY_Left) {
+
+	if(event->type == GDK_KEY_RELEASE){
+		transmission.movementRobot(Command('P', 0, 0));
+	} else if (event->keyval == GDK_KEY_Left) {
 		transmission.movementRobot(Command('E', 150, 150));
 
     } else if (event->keyval == GDK_KEY_Right) {
@@ -205,7 +209,7 @@ bool Control::onKeyboard(GdkEventKey* event){
 
 	} else if(event->keyval == GDK_KEY_space) {
 		button_play.set_active(!button_play.get_active());
-	
+		
 	} else if(event->keyval == GDK_KEY_Escape){
 		onMenuQuit();
 	
@@ -245,7 +249,6 @@ void Control::onButtonTime(Gtk::Button* bt){
 	}
 
 	changeTime = !changeTime;
-
 }
 
 bool Control::setInformations50MilliSec(){
