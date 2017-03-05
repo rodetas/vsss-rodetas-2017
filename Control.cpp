@@ -29,9 +29,8 @@ int Control::handle(){
 			transmission.send();
 		}
 		//transmission.reading();
-
 		timer.framesPerSecond();
-		
+
 		//timer.waitTimeStarted(33);
 		
     }

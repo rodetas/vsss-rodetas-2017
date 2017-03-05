@@ -24,6 +24,7 @@ int Calibration::calibrate(){
         opencv_image_HSV        = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
         opencv_image_binary     = opencvColorSpace( opencvBinary(opencv_image_HSV, colorsHSV[selected_player]), cv::COLOR_GRAY2RGB);
+        timer.framesPerSecond();
     }
 
     manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut_field_1, point_cut_field_2, goal, angle_image, camera_on);
@@ -339,6 +340,9 @@ void Calibration::GUI(){
         grid_rotate.attach(scale_rotate, 1, 0, 1, 1);
 
 
+    label_fps.set_label("Fps: 0");
+
+
 ///////////////////////// DRAW IMAGE /////////////////////////
     draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &Calibration::onMouseClick) );
 	sigc::connection draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Calibration::updateScreen) , 50 );
@@ -359,6 +363,7 @@ void Calibration::GUI(){
         right_box.pack_start(button_CAM_popover, Gtk::PACK_SHRINK);
         right_box.pack_start(seperator4, Gtk::PACK_SHRINK);      
 		right_box.pack_start(grid_rotate, Gtk::PACK_SHRINK);
+        right_box.pack_start(label_fps, Gtk::PACK_SHRINK);
 
     Gtk::Box draw_box;
         draw_box.set_border_width(20);
@@ -410,6 +415,10 @@ bool Calibration::updateScreen(){
     } else {
         draw_area.setImage(opencv_image_cairo);
     }
+
+    string txt = "Fps: " + to_string(timer.getFps());
+	label_fps.set_label(txt);
+
 	return true;
 }
 

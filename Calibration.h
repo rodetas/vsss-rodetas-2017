@@ -18,6 +18,7 @@ class Calibration : public OpenCV {
 private:
 
 	Manipulation manipulation;
+	Timer timer;
 	
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
@@ -43,6 +44,7 @@ private:
     Gtk::RadioButton 				radio_button_camera;
 	Gtk::Button 					button_HSV_popover;
 	Gtk::Button 					button_CAM_popover;
+	Gtk::Label						label_fps;
 	Gtk::Popover 					HSV_popover;
 	Gtk::Popover 					CAM_popover;
     Gtk::Scale 						scale_rotate;
