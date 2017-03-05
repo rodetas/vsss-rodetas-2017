@@ -121,15 +121,12 @@ boolean recebeMensagem() {
     char c = XBee.read();
     char caracter[10] = "";
 
-    //Serial.println(c);
-
     if (c == CARACTER_ROBOI) {
       XBee.readBytes(caracter, 10);
       
       for (int i = 0; i < 10; i++) {
         mensagem = mensagem + caracter[i];
       }
-     // Serial.println(mensagem);
 
       return true;
     } else {

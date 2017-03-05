@@ -97,7 +97,7 @@ void Control::GUIInformation() {
 
 	Gtk::SpinButton spin_curve;
 		spin_curve.set_range(0,3);
-		spin_curve.set_value(1.2);
+		spin_curve.set_value(1.1);
 		spin_curve.set_digits(1);
 		spin_curve.set_increments(0.1,0.3);
 		spin_curve.signal_value_changed().connect( sigc::bind<Gtk::SpinButton*> (sigc::mem_fun(this, &Control::onCurveChanged), &spin_curve) );

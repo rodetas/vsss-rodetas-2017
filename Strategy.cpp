@@ -93,11 +93,11 @@ Point Strategy::setAttackTarget(){
 
 	Point target;
 
-	target.x = ballProjection.x;
-	target.y = ballProjection.y;
+	//target.x = ballProjection.x;
+	//target.y = ballProjection.y;
 
-	//target.x = 550;
-	//target.y = 420;
+	target.x = ball.x;
+	target.y = ball.y;
 
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
