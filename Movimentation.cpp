@@ -36,17 +36,17 @@ Command Movimentation::movePlayers(Point destination, bool corner, Information& 
 		if (sinAngle_robot_destination > 0) {
 			information.strategy = "Attack strategy:  Turn Right ";
 			if (corner) {
-				turnRight(100, 100);
+				turnRight(120, 120);
 			} else {
-				turnRight(30, 30);
+				turnRight(50, 50);
 			}
 
 	    } else {
 			information.strategy = "Attack strategy:  Turn Left ";
 			if (corner) {	
-				turnLeft(100, 100);
+				turnLeft(120, 120);
 			} else {
-				turnRight(30, 30);
+				turnRight(50, 50);
 			}
 	    }
 	}

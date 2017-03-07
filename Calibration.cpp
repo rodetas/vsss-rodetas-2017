@@ -441,6 +441,13 @@ bool Calibration::onKeyboard(GdkEventKey* event){
         point_cut_field_2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
         draw_area.setRectangleInvisible();
     }
+    if (event->keyval == GDK_KEY_G || event->keyval == GDK_KEY_g) {
+        Point p1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
+        Point p2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), opencv_image_BGR.size());
+        goal.x = abs(p1.x - p2.x);
+        goal.y = abs(p1.y - p2.y);
+        draw_area.setRectangleInvisible();
+    }
     if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
         point_cut_field_1 = {0,0};
         point_cut_field_2 = opencv_image_BGR.size();

@@ -125,7 +125,7 @@ void Transmission::transmitting(string comand){
         }
         send_bytes[size] = '\0';
 
-        cout << send_bytes << endl;
+        //cout << send_bytes << endl;
         write(usb, send_bytes, size);
     }
 }
