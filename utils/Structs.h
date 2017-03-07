@@ -142,7 +142,6 @@ struct ContoursPosition {
     vector<Point2f> cutPoint1;
     vector<Point2f> cutPoint2;
     vector<float>	radius;
-    vector<int>		order;	
 	
 	int frames = 0;
 	bool review_all_image = true;

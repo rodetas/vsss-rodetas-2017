@@ -81,6 +81,8 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
         cv::Mat image_cut = opencvCutImage(image, cutPoint1, cutPoint2);
                 image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                 
+        float biggest_radius = 0;
+
         // search player's color on a cropped image
         for (int j = 0; j < number_robots; j++){
             cv::Mat image_binary = opencvBinary(image_cut, colorsHSV[j]);
@@ -88,10 +90,14 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
             
             // check if finds the specified color in image
             if (find_position.center.size() != 0){
-                find_position.center[0].x += cutPoint1.x;
-                find_position.center[0].y += cutPoint1.y;
-                robot[j] = robotPosition(find_position, i);
-                break;
+                if (find_position.radius[0] > biggest_radius){
+
+                    find_position.center[0].x += cutPoint1.x;
+                    find_position.center[0].y += cutPoint1.y;
+                    robot[j] = robotPosition(find_position, i);
+                    
+                    biggest_radius = find_position.radius[0];
+                }
             }
         }
     }
