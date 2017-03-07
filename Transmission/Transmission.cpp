@@ -102,7 +102,7 @@ string Transmission::generateMessage(int robot, Command comand){
 // recebe uma string para enviar
 void Transmission::transmitting(string comand){
     const int size = comand.size();
-    unsigned char send_bytes[size];
+    unsigned char send_bytes[size+1];
 
     if(timer.getTime() - last_time > 2000){
         string out = executeCommand("ls /dev/ttyUSB0 2> /dev/null");
@@ -123,8 +123,9 @@ void Transmission::transmitting(string comand){
         for (int i = 0; i < size; i++) {
             send_bytes[i] = comand[i];
         }
+        send_bytes[size] = '\0';
 
-        //cout << send_bytes << endl;
+        cout << send_bytes << endl;
         write(usb, send_bytes, size);
     }
 }

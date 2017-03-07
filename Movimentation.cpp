@@ -10,9 +10,8 @@ Movimentation::Movimentation(){
 	objects.resize(7);
 	movements.resize(3);
 
-	powerFactor = 1.4;
-	curveFactor = 1.0;
-	curveStrategy = 1;
+	powerFactor = 1.2;
+	curveFactor = 1.1;
 }
 
 /*
@@ -70,12 +69,12 @@ void Movimentation::setPwm(Point destination, char direction){
 	if (pwm1 > 255) pwm1 = 255;
 	if (pwm2 > 255) pwm2 = 255;
 
-	// limitador de potencia - aceleracao progressiva(30 e a velocidade maxima)
-	maxPwm[robot.id] = (1.0 - float(velocity[robot.id])/30);	
+	// limitador de potencia - aceleracao progressiva( 30 e a velocidade maxima )
+	maxPwm[robot.id] = (1.0 - float(velocity[robot.id]) / 30);	
 
 	// 3 uma constante empirica de amortecimento
-	float pwm1Correction = maxPwm[robot.id]*pwm1/1.5;
-	float pwm2Correction = maxPwm[robot.id]*pwm2/1.5;
+	float pwm1Correction = maxPwm[robot.id] * pwm1 / 2;
+	float pwm2Correction = maxPwm[robot.id] * pwm2 / 2;
 
 	if (pwm1Correction < 0){
 		pwm1Correction = 0;
@@ -99,32 +98,12 @@ void Movimentation::setPwm(Point destination, char direction){
  */
 Pwm Movimentation::PWMCorrection(Point destination){
 
-	float distanceFactor = 0;
-
-	int basePower = 0;
 	int standardPower = 100;
-	int correctionPower = 0;
 
-	int pwmMotor1, pwmMotor2;
-
-	if(distance_robot_destination < 120 && distance_robot_destination > 50 && distance_ball_destination > 100){
-		distanceFactor = distance_robot_destination/80.0;
-	} else if(distance_robot_destination < 50 && distance_ball_destination > 70 && robot.id == defenseNumber) {
-		distanceFactor = 0;
-	//} else if(distance_robot_destination < 45 && distance_ball_destination > 70 &&  robot.id == goalNumber) {
-	} else if(destination.x + 100 > robot.x && destination.x - 100 < robot.x && abs(robot.y - destination.y ) < 60){
-		distanceFactor = 0;
-	} else {
-		distanceFactor = 1;
-	}
-	distanceFactor = 1;
-
-	basePower = standardPower * powerFactor;
-	correctionPower = (standardPower/2) * sinAngle_robot_destination * curveFactor * curveStrategy;
-	pwmMotor1 = (basePower-correctionPower)*distanceFactor;
-	pwmMotor2 = (basePower+correctionPower)*distanceFactor;
-
-	curveStrategy = 1;
+	int basePower = standardPower * powerFactor;
+	int correctionPower = (standardPower/3) * sinAngle_robot_destination * curveFactor;
+	int pwmMotor1 = (basePower - correctionPower);
+	int pwmMotor2 = (basePower + correctionPower);
 
 	return make_pair(pwmMotor1, pwmMotor2);
 }
@@ -193,10 +172,6 @@ void Movimentation::setPowerCurve(float curve){
 
 void Movimentation::setImage(Point p){
 	this->image = p;
-}
-
-void Movimentation::setCurveStrategy(int p){
-	this->curveStrategy = p;
 }
 
 void Movimentation::setNumbers(int attack, int defense, int goal){

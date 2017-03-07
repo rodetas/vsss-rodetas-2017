@@ -30,8 +30,6 @@ private:
     float powerFactor;
     float curveFactor;
 
-    float curveStrategy;
-
     Point image;
 
     int attackNumber;
@@ -59,7 +57,6 @@ public:
 	void setRobot(rodetas::Object);
 	void setObjects(vector<rodetas::Object>);
 	void setImage(Point);
-	void setCurveStrategy(int);
 	void setNumbers(int, int, int);
 
 	vector<Command> getMovements();
