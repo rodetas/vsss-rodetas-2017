@@ -18,36 +18,20 @@ Movimentation::Movimentation(){
  * calculates the basic movimentation
  */
 
-Command Movimentation::movePlayers(Point destination, bool corner, Information& information){
+Command Movimentation::movePlayers(Point destination){
 
 	/* movement along the field */
 	if (cosAngle_robot_destination < -0.3) {
-
-	 	information.strategy = "Attack strategy:  Forward Move ";
 		setPwm(destination, FORWARD_MOVE);
 	
 	} else if (cosAngle_robot_destination > 0.3){ 
-
-		information.strategy = "Attack strategy:  Back Move ";
 		setPwm(destination, BACK_MOVE);	
-
 
 	} else {
 		if (sinAngle_robot_destination > 0) {
-			information.strategy = "Attack strategy:  Turn Right ";
-			if (corner) {
-				turnRight(100, 100);
-			} else {
-				turnRight(30, 30);
-			}
-
+			turnRight(30, 30);
 	    } else {
-			information.strategy = "Attack strategy:  Turn Left ";
-			if (corner) {	
-				turnLeft(100, 100);
-			} else {
-				turnRight(30, 30);
-			}
+			turnLeft(30, 30);
 	    }
 	}
 
