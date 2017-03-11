@@ -53,7 +53,6 @@ void Strategy::defineFunctions(){
 	}	
 
 	goalNumber = GRAPHICPLAYER2;
-
 	ball = objects[GRAPHICBALL];
 
 	movimentation.setNumbers(attackNumber, defenseNumber, goalNumber);
@@ -90,17 +89,17 @@ Point Strategy::setAttackTarget(){
 
 	Point target;
 
-	//target.x = ballProjection.x;
-	//target.y = ballProjection.y;
+	target.x = ballProjection.x;
+	target.y = ballProjection.y;
 
-	target.x = ball.x;
-	target.y = ball.y;
+	/*target.x = ball.x;
+	target.y = ball.y;*/
 
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
 		target.y = ball.y;
 
-	} else if((cos_robot_ball < -0.7) && distance(ball, robot) < imageSize.x * 0.08){
+	} else if(((cos_robot_ball < -0.8) || cos_robot_ball > 0.8) && distance(ball, robot) < imageSize.x * 0.08){
 		target = {imageSize.x, imageSize.y/2};
 
 	} else if(robot.x > (ball.x - (abs(robot.y-ball.y))) && state == DEFESA) {
@@ -256,7 +255,7 @@ void Strategy::applyGoalStrategy(){
 		}
 	}
 
-	/*if (distance_robot_destination < 35 && distance_robot_ball > 300) {
+	if (distance_robot_destination < 35 && distance_robot_ball > 300) {
 	
 		float cosRobot = cos(robot.angle/RADIAN_TO_DEGREE);
 		
@@ -265,9 +264,7 @@ void Strategy::applyGoalStrategy(){
 		} else if (cosRobot < -0.2 ) {
 			movimentation.turnLeft(5 + 40*-cosRobot, 5 + 40*-cosRobot);
 		}
-	
-	}*/
-
+	}
 
 //////////////////////////////////////////////////////////
 
@@ -303,7 +300,7 @@ Point Strategy::setGoalTarget(){
 bool Strategy::isBoard(rodetas::Object object){
 	int halfGoal1 = imageSize.y/2 + (goalSize.y/2)*1.2;
 	int halfGoal2 = imageSize.y/2 - (goalSize.y/2)*1.2;
-	return (object.y > (imageSize.y*0.93) || object.y < (imageSize.y*0.07) || ((object.x > (imageSize.x*0.87) || object.x < (imageSize.x*0.13)) && (object.y > halfGoal1 || object.y < halfGoal2)));
+	return (object.y > (imageSize.y*0.9) || object.y < (imageSize.y*0.10) || ((object.x > (imageSize.x*0.90) || object.x < (imageSize.x*0.10)) && (object.y > halfGoal1 || object.y < halfGoal2)));
 }
 
 
