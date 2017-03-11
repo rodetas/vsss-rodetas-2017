@@ -36,6 +36,12 @@ private:
     cv::Mat 			opencv_image_binary;
 	cv::Vec3b 			hsvPoint;
 	cv::Vec3b 			rgbPoint;
+
+	//thread
+	std::mutex mutex;
+	cv::Mat thread_opencv_image_binary;
+	cv::Mat thread_opencv_image_cairo;
+	int thread_fps;
 	
 	//GTKMM
 	Glib::RefPtr<Gtk::Application> 	app;
@@ -57,7 +63,8 @@ private:
 	
 	bool onMouseClick(GdkEventButton*);
 	bool onKeyboard(GdkEventKey*);
-	bool updateScreen();
+	bool setInformations50MilliSec();
+	void setThreadVariables();
 	void onMenuGame();
 	void onMenuSimulator();
 	void onMenuArduino();

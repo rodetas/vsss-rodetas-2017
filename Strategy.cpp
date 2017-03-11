@@ -7,7 +7,6 @@ Strategy::Strategy(){
 	movements.resize(3);
 	objects.resize(7);
 	targets.resize(3);
-	information.resize(3);
 
 	state = PARADO;
 }
@@ -35,6 +34,9 @@ void Strategy::handleStrategies(){
 	applyAttackStrategy();
 	applyDefenseStrategy();
 	applyGoalStrategy();
+
+
+
 }
 
 /*
@@ -76,16 +78,11 @@ void Strategy::applyAttackStrategy(){
 
 	attackDestination = setAttackTarget();
 
-	Command movement(movimentation.movePlayers(attackDestination, isBoard(robot), information[0]));
+	Command movement(movimentation.movePlayers(attackDestination));
 
 //////////////////////////////////////////////////////////	
 
 	cornerStrategy("Attack");
-
-	information[0].update( movement.direcao, movement.pwm1, movement.pwm2, robot.angle, robot.x, robot.y, 
-				 sinAngle_robot_destination, cosAngle_robot_destination);
-
-	//information[0].print();
 }
 
 Point Strategy::setAttackTarget(){
@@ -178,7 +175,7 @@ void Strategy::applyDefenseStrategy(){
 
 	defenseDestination = setDefenseTarget();
 
-	Command movement(movimentation.movePlayers(defenseDestination, isBoard(robot), information[1]));
+	Command movement(movimentation.movePlayers(defenseDestination));
 
 
 //////////////////////////////////////////////////////////
@@ -187,10 +184,6 @@ void Strategy::applyDefenseStrategy(){
 	//////// @TODO ESTRATEGIAS ////////
 	///////////////////////////////////
 
-	information[1].update( movement.direcao, movement.pwm1, movement.pwm2, robot.angle, robot.x, robot.y, 
-				 		   sinAngle_robot_destination, cosAngle_robot_destination);
-
-	//information[1].print();
 }
 
 Point Strategy::setDefenseTarget(){
@@ -251,7 +244,7 @@ void Strategy::applyGoalStrategy(){
 	goalDestination = setGoalTarget();
 
 
-	Command movement(movimentation.movePlayers(goalDestination, isBoard(robot), information[2]));
+	Command movement(movimentation.movePlayers(goalDestination));
 
 
 	if (distance_robot_ball<60 && robot.x < ball.x) {
@@ -280,10 +273,6 @@ void Strategy::applyGoalStrategy(){
 	//////// @TODO ESTRATEGIAS ////////
 	///////////////////////////////////
 
-	information[2].update( movement.direcao, movement.pwm1, movement.pwm2, robot.angle, robot.x, robot.y, 
-				 		   sinAngle_robot_destination, cosAngle_robot_destination);
-
-	//information[2].print();
 }
 
 Point Strategy::setGoalTarget(){
@@ -323,10 +312,8 @@ void Strategy::cornerStrategy(string type){
 		if (distance_robot_ball < 55){		
 
 			if (robot.y > (imageSize.y/2)) {
-				information[0].strategy = type + " strategy: Corner Turn Left ";
 				movimentation.turnLeft(120, 120);	
 		    } else {
-				information[0].strategy = type + " strategy: Corner Turn Right ";
 				movimentation.turnRight(120, 120);
 			}
 		}
@@ -396,8 +383,4 @@ vector<Point> Strategy::getTargets(){
 		//cout << targets[i] << endl;
 	}
 	return targets;
-}
-
-vector<Information> Strategy::getInformation(){
-	return information;
 }

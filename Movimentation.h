@@ -40,7 +40,7 @@ public:
 
 	Movimentation();
 
-	Command movePlayers(Point, bool,Information&);
+	Command movePlayers(Point);
 	Pwm PWMCorrection(Point);
 
 	float calculateSpeed();

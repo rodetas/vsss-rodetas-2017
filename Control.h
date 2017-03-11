@@ -20,17 +20,21 @@ private:
 	Timer timer;
 
 	//GTKMM
+	Glib::RefPtr<Gtk::Application> app;
 	DrawAreaControl draw_robot;
 	Gtk::Window window;
-	Glib::RefPtr<Gtk::Application> app;
-
 	Gtk::ToggleButton button_play;
 	Gtk::Label label_fps;
 	Gtk::Label label_transmission;
 
 	int program_state;
-	bool changeTime;
+	bool change_time;
 	bool play;
+
+	mutable std::mutex mutex;
+	int thread_fps;
+	bool thread_transmission_status;
+	vector<rodetas::Object> thread_position;
 	
 	void GUIInformation();
 
@@ -41,6 +45,7 @@ private:
 	
 	bool onKeyboard(GdkEventKey*);
 	bool setInformations50MilliSec();
+	void setThreadVariables();
 
 	void onMenuCalibration();
 	void onMenuSimulator();

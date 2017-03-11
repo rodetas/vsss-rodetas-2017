@@ -25,6 +25,7 @@ int Calibration::calibrate(){
         opencv_image_cairo      = opencvColorSpace(opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
         opencv_image_binary     = opencvColorSpace( opencvBinary(opencv_image_HSV, colorsHSV[selected_player]), cv::COLOR_GRAY2RGB);
         timer.framesPerSecond();
+        setThreadVariables();
     }
 
     manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut_field_1, point_cut_field_2, goal, angle_image, camera_on);
@@ -35,6 +36,15 @@ int Calibration::calibrate(){
     calibration_thread.detach();
     
     return program_state;
+}
+
+void Calibration::setThreadVariables(){
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        thread_opencv_image_binary = opencv_image_binary;
+        thread_opencv_image_cairo = opencv_image_cairo;
+        thread_fps = timer.getFps();
+    }
 }
 
 void Calibration::updateColorPixel(Point pixel_point){
@@ -345,7 +355,7 @@ void Calibration::GUI(){
 
 ///////////////////////// DRAW IMAGE /////////////////////////
     draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &Calibration::onMouseClick) );
-	sigc::connection draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Calibration::updateScreen) , 50 );
+	sigc::connection draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Calibration::setInformations50MilliSec) , 50 );
     
 ///////////////////////// CONTAINERS /////////////////////////
 
@@ -409,14 +419,14 @@ void Calibration::updateDevices(){
     }
 }
 
-bool Calibration::updateScreen(){
+bool Calibration::setInformations50MilliSec(){
     if (cairo_binary_image){
-        draw_area.setImage(opencv_image_binary);
+        draw_area.setImage(thread_opencv_image_binary);
     } else {
-        draw_area.setImage(opencv_image_cairo);
+        draw_area.setImage(thread_opencv_image_cairo);
     }
 
-    string txt = "Fps: " + to_string(timer.getFps());
+    string txt = "Fps: " + to_string(thread_fps);
 	label_fps.set_label(txt);
 
 	return true;

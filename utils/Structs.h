@@ -167,34 +167,6 @@ struct ContoursPosition {
 	};
 };
 
-struct Information{
-	string strategy;
-	char move;
-	int pwm1, pwm2, angle, x, y;
-	float sin, cos;
-
-	void print(){
-		cout << strategy << " - " << move << endl;
-		cout << "PWM: " << pwm1 << " | " << pwm2 << endl;
-		cout << "Angle: " << angle << endl;
-		cout << "Point: {" << x << " , " << y << "}" << endl;
-		cout << "Sin: " << sin << endl;
-		cout << "Cos: " << cos << endl << endl;
-	};
-
-	void update(char m, int p1, int p2, int a, int px, int py, float sinAngle, float cosAngle){
-		move = m;
-		pwm1 = p1;
-		pwm2 = p2;
-		angle = a;
-		x = px;
-		y = py;
-		sin = sinAngle;
-		cos = cosAngle;
-	};
-
-};
-
 struct CameraConfiguration {
 	int brightness;
 	int contrast;

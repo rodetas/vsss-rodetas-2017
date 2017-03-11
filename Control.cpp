@@ -3,7 +3,7 @@
 Control::Control(){
 	program_state = GAME;
 	play = false;
-	changeTime = true;
+	change_time = true;
 }
 
 int Control::handle(){
@@ -31,8 +31,8 @@ int Control::handle(){
 		//transmission.reading();
 		timer.framesPerSecond();
 
+		setThreadVariables();
 //		timer.waitTimeStarted(33);
-		
     }
 	
 	vision.cameraRelease();
@@ -40,6 +40,15 @@ int Control::handle(){
     menu_thread.detach();
 
 	return program_state;
+}
+
+void Control::setThreadVariables(){
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		thread_position = vision.getPositions();
+		thread_fps = timer.getFps();
+		thread_transmission_status = transmission.getConnectionStatus();
+	}
 }
 
 void Control::GUIInformation() {
@@ -240,30 +249,29 @@ void Control::onButtonPlay(Gtk::ToggleButton* bt){
 	transmission.stopRobot();
 }
 
-void Control::onButtonTime(Gtk::Button* bt){
+void Control::onButtonTime(Gtk::Button* button){
 
-	if(changeTime == false){
-		bt->set_label("1º time");
+	if(change_time == false){
+		button->set_label("1º time");
 	} else {
-		bt->set_label("2º time");
+		button->set_label("2º time");
 	}
 
-	changeTime = !changeTime;
+	change_time = !change_time;
 }
 
 bool Control::setInformations50MilliSec(){
-	draw_robot.setPosition(vision.getPositions());
+	
+	draw_robot.setPosition(thread_position);
 
-	string txt = "Fps: " + to_string(timer.getFps());
-	label_fps.set_label(txt);
-
-	bool transmissionStatus = transmission.getConnectionStatus();
-	if(transmissionStatus == false){
+	if(thread_transmission_status == false){
 		label_transmission.set_visible(true);
 	} else {
 		label_transmission.set_visible(false);
 	}
-
+	
+	label_fps.set_label("Fps: " + to_string(thread_fps));
+	
 	return true;
 }
 

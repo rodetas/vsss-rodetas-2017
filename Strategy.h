@@ -17,7 +17,6 @@ private:
     Manipulation manipulation;
 
     vector<rodetas::Object> objects;
-    vector<Information> information;
     vector<Point> targets;
     vector<rodetas::Object> lastBallPositions;
     vector<Command> movements;
@@ -86,6 +85,5 @@ public:
     
     vector<Command> getMovements();
     vector<Point> getTargets();
-    vector<Information> getInformation();
 };
 #endif
