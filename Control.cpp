@@ -8,7 +8,7 @@ Control::Control(){
 
 int Control::handle(){
 
-    std::thread menu_thread(bind(&Control::GUIInformation, this));
+    std::thread menu_thread(&Control::GUIInformation, this);
 
     // initialize classes
     vision.initialize();
@@ -229,20 +229,20 @@ bool Control::onKeyboard(GdkEventKey* event){
     return true;
 }
 
-void Control::onPotencyChanged(Gtk::SpinButton* bt){
-	strategy.setPowerPotency(bt->get_value());
+void Control::onPotencyChanged(Gtk::SpinButton* button){
+	strategy.setPowerPotency(button->get_value());
 }
 
-void Control::onCurveChanged(Gtk::SpinButton* bt){
-	strategy.setPowerCurve(bt->get_value());
+void Control::onCurveChanged(Gtk::SpinButton* button){
+	strategy.setPowerCurve(button->get_value());
 }
 
-void Control::onButtonPlay(Gtk::ToggleButton* bt){
+void Control::onButtonPlay(Gtk::ToggleButton* button){
 
-	if(bt->get_active()){
-		bt->set_label("Playing");
+	if(button->get_active()){
+		button->set_label("Playing");
 	} else {
-		bt->set_label("Paused");
+		button->set_label("Paused");
 	}
 
     play = !play;

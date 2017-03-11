@@ -5,6 +5,8 @@
 #include "utils/OpenCV.h"
 #include "utils/Timer.h"
 #include "CRUD/Manipulation.h"
+#include <thread>
+
 
 class Vision : public OpenCV {
 private:
@@ -22,11 +24,17 @@ private:
 	ContoursPosition team_position;
 	ContoursPosition opponent_position;
 
+	cv::Mat full_image_cut;
+
 public:
 	Vision();
 	void initialize();	
 	void computerVision();
 	void colorPositionPlayer(cv::Mat, ContoursPosition);
+
+	void teamThread();
+	void opponentThread();
+	void ballThread();
 
 	rodetas::Object robotPosition(ContoursPosition, int);
 	vector<rodetas::Object> getPositions();

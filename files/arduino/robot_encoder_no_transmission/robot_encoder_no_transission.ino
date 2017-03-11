@@ -18,11 +18,12 @@ const float dt = 1 / controler_frequency;
 const float speed_calc = ( (2 * PI * 1.6) / 375 ) / 0.000001; // 1.6 -> raio | 375 -> leituras encoder | 0.000001 -> ajuste de microsegundo para segundo
 
 int left_array[5] = {0,0,0,0,0};
+int right_array[5] = {0,0,0,0,0};
 int speed_left = 0;
 int speed_right = 0;
 int pwm_left = 0;
 int pwm_right = 0;
-double time = 0;
+double time_to_print = 0;
 
 double error = 0, error_prior = 0;
 double integral = 0, derivative = 0;
@@ -60,12 +61,13 @@ void loop() {
 
   forward();
   
+  analogWrite(PWM_MOTOR1, 100);
   analogWrite(PWM_MOTOR2, 100);
   delay(1000);
   
+  analogWrite(PWM_MOTOR1, 255);
   analogWrite(PWM_MOTOR2, 255);
   delay(1000);
-  
 }
 
 int PID(double setpoint, double input){
@@ -80,73 +82,57 @@ int PID(double setpoint, double input){
   if (output > 255) output = 255;
   if (output < 0) output = 0;
 
-  return setpoint + output;
+  return output;
 }
 
 void encoderLeft() {
   left_border_millis = micros() - left_last_border_millis;
   left_last_border_millis = micros();
-  speed_left = speedAverage(speed_calc / left_border_millis);
-  //speed_left = (speed_left + speed_calc / left_border_millis) / 2;
+  speed_left = speedAverage(left_array, (speed_calc / left_border_millis));
 }
 
 void encoderRight() {
   right_border_millis = micros() - right_last_border_millis;
   right_last_border_millis = micros();
-  speed_right = (speed_right + speed_calc / right_border_millis) / 2;
+  speed_right = speedAverage(right_array, (speed_calc / right_border_millis));
 }
 
 void configTimerControler(){
-  // INICILALIZANDO OS REGISTRADORES COM ZERO
   TCCR1A = 0;
   TCCR1B = 0;
-  // O VALOR REAL DO TEMPORIZADOR É ARMAZENADO AKI.
   TCNT1  = 0;
-  // DEFININDO TEMPORIZADOR PARA  CADA 33ms OU 30Hz.
-  OCR1A = (16000000/1024/controler_frequency) - 1;// = 16BIT -> [(16Mhz/1024)/30Hz]  --> (7812.5 <65536)
-  // ATIVANDO MODO DE OPERAÇÃO CTC
+  OCR1A = (16000000/1024/controler_frequency) - 1;
   TCCR1B |= (1 << WGM12);
-  // ESCOLHENDO PRESCALER DE 1024
   TCCR1B |= (1 << CS12);   
   TCCR1B |= (1 << CS10);  
-  // ATIVANDO O MODO CTC PARA TIMER1
   TIMSK1 |= (1 << OCIE1A);
 }
 
 ISR(TIMER1_COMPA_vect) {
-  //pwm_left = PID(15, speed_left);
-  //pwm_right = PID(15, speed_right);
-    
-  //analogWrite(PWM_MOTOR1, pwm_right);
-  //analogWrite(PWM_MOTOR2, pwm_left);
-  
-  time += dt; 
-  
+  /*
+  pwm_left = PID(30, speed_left);
+  pwm_right = PID(30, speed_right);    
+  analogWrite(PWM_MOTOR1, pwm_right);
+  analogWrite(PWM_MOTOR2, pwm_left);
+  */
+
+  time_to_print += dt;   
   Serial.print(speed_left);
   Serial.print(" | ");
-  Serial.println(time);
+  Serial.print(speed_right);
+  Serial.print(" | ");
+  Serial.println(time_to_print);
 }
 
-int speedAverageLeft(int num){
-  left_array[5] = left_array[4];
-  left_array[4] = left_array[3];
-  left_array[3] = left_array[2];
-  left_array[2] = left_array[1];
-  left_array[1] = left_array[0];
-  left_array[0] = num;
+int speedAverage(int *array, int num){
+  int average = 0; 
+  for (int i = 1; i < 5; i++){
+    array[i-1] = array[i];
+    average += array[i];
+  }
+  array[4] = num;
   
-  return (left_array[0] + left_array[1] + left_array[2] + left_array[3] + left_array[4])/5;
-}
-
-int speedAverageRight(int num){
-  right_array[5] = right_array[4];
-  right_array[4] = right_array[3];
-  right_array[3] = right_array[2];
-  right_array[2] = right_array[1];
-  right_array[1] = right_array[0];
-  right_array[0] = num;
-  
-  return (left_array[0] + left_array[1] + left_array[2] + left_array[3] + left_array[4])/5;
+  return (average + num) / 5;
 }
 
 void forward() {

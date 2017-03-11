@@ -15,7 +15,7 @@ Calibration::Calibration(){
 
 int Calibration::calibrate(){
 
-    std::thread calibration_thread(bind(&Calibration::GUI, this));
+    std::thread calibration_thread(&Calibration::GUI, this);
     
     while(!end_calibration){
         setImage();
