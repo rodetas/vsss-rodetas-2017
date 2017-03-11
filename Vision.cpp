@@ -31,17 +31,28 @@ void Vision::computerVision(){
 
     setImage();
 
-    cv::Mat full_image_cut = opencvRotateImage(opencv_image_BGR, angle_image);
-            full_image_cut = opencvCutImage(full_image_cut, point_cut_field_1, point_cut_field_2);
+    full_image_cut = opencvRotateImage(opencv_image_BGR, angle_image);
+    full_image_cut = opencvCutImage(full_image_cut, point_cut_field_1, point_cut_field_2);
 
-    //Team
+    std::thread team_thread(&Vision::teamThread, this);
+    std::thread ball_thread(&Vision::ballThread, this);
+    std::thread opponent_thread(&Vision::opponentThread, this);
+
+    team_thread.join();
+    ball_thread.join();
+    opponent_thread.join();
+}
+
+void Vision::teamThread(){
     team_position = position(full_image_cut, team_position, colorsHSV[TEAM], 3);
     colorPositionPlayer(full_image_cut, team_position);
+}
 
-    //Opponent
+void Vision::opponentThread(){
     opponent_position = position(full_image_cut, opponent_position, colorsHSV[OPPONENT], 3);
+}
 
-    //Ball
+void Vision::ballThread(){
     ball_position = position(full_image_cut, ball_position, colorsHSV[BALL], 1);
 }
 
