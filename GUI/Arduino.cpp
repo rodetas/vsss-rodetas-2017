@@ -153,6 +153,7 @@ void Arduino::getBaudRates(){
 	baudrate_names.push_back("19200");
 	baudrate_names.push_back("28800");
 	baudrate_names.push_back("38400");
+	baudrate_names.push_back("115200");
 }
 
 

@@ -13,7 +13,7 @@ unsigned long left_last_border_millis = 0;
 unsigned long right_border_millis = 0;
 unsigned long right_last_border_millis = 0;
 
-const float controler_frequency = 150; // Hz
+const float controler_frequency = 120; // Hz
 const float dt = 1 / controler_frequency;
 const float speed_calc = ( (2 * PI * 1.6) / 375 ) / 0.000001; // 1.6 -> raio | 375 -> leituras encoder | 0.000001 -> ajuste de microsegundo para segundo
 
@@ -23,20 +23,13 @@ int speed_left = 0;
 int speed_right = 0;
 int pwm_left = 0;
 int pwm_right = 0;
-double time_to_print = 0;
 
-double error = 0, error_prior = 0;
-double integral = 0, derivative = 0;
-double KP = 15, KI = 0, KD = 0;
+double error_prior_left = 0, error_prior_right = 0;
+double integral_left = 0, integral_right = 0;
+double KP = 5.3, KI = 220, KD = 0;
 
-void encoderLeft();
-void encoderRight();
-
-void back();
-void forward();
-void stopped();
-void turnLeft();
-void turnRight();
+unsigned long fps_time = 0;
+int cont = 0;
 
 void setup() {
   pinMode(PWM_MOTOR1, OUTPUT);//PWMA
@@ -59,25 +52,37 @@ void setup() {
 
 void loop() {
 
+  if (millis() - fps_time > 1000){
+    Serial.println(cont);
+    cont = 0;
+    fps_time = millis(); 
+  } else {
+    cont++;
+  }
+
   forward();
-  
-  analogWrite(PWM_MOTOR1, 100);
-  analogWrite(PWM_MOTOR2, 100);
+
+  /*
+  pwm_left = 100;
+  analogWrite(PWM_MOTOR2, pwm_left);
   delay(1000);
   
-  analogWrite(PWM_MOTOR1, 255);
-  analogWrite(PWM_MOTOR2, 255);
+  pwm_left = 255;
+  analogWrite(PWM_MOTOR2, pwm_left);
   delay(1000);
+  */
 }
 
-int PID(double setpoint, double input){
+int PID(double setpoint, double input, double *integral, double *error_prior){
+  double error = 0;
+  double derivative = 0;
 
   error = setpoint - input;
-  integral = integral + (error * dt);
-  derivative = (error - error_prior) / dt;
-  error_prior = error;
+  *integral = *integral + (error * dt);
+  derivative = (error - (*error_prior)) / dt;
+  *error_prior = error;
 
-  double output = KP*error + KI*integral + KD*derivative;
+  double output = KP*error + KI*(*integral) + KD*derivative;
 
   if (output > 255) output = 255;
   if (output < 0) output = 0;
@@ -88,13 +93,13 @@ int PID(double setpoint, double input){
 void encoderLeft() {
   left_border_millis = micros() - left_last_border_millis;
   left_last_border_millis = micros();
-  speed_left = speedAverage(left_array, (speed_calc / left_border_millis));
+  speed_left = speedAverage(speed_calc / left_border_millis, left_array);
 }
 
 void encoderRight() {
   right_border_millis = micros() - right_last_border_millis;
   right_last_border_millis = micros();
-  speed_right = speedAverage(right_array, (speed_calc / right_border_millis));
+  speed_right = speedAverage(speed_calc / right_border_millis, right_array);
 }
 
 void configTimerControler(){
@@ -109,30 +114,31 @@ void configTimerControler(){
 }
 
 ISR(TIMER1_COMPA_vect) {
-  /*
-  pwm_left = PID(30, speed_left);
-  pwm_right = PID(30, speed_right);    
-  analogWrite(PWM_MOTOR1, pwm_right);
+  
+  pwm_left = PID(70, speed_left, &integral_left, &error_prior_left);
   analogWrite(PWM_MOTOR2, pwm_left);
-  */
-
-  time_to_print += dt;   
+  
+  pwm_right = PID(70, speed_right, &integral_right, &error_prior_right);    
+  analogWrite(PWM_MOTOR1, pwm_right);
+  
   Serial.print(speed_left);
-  Serial.print(" | ");
+  Serial.print("\t");
+  Serial.print(pwm_left);
+  Serial.print("\t");
   Serial.print(speed_right);
-  Serial.print(" | ");
-  Serial.println(time_to_print);
+  Serial.print("\t");
+  Serial.println(pwm_right);
 }
 
-int speedAverage(int *array, int num){
-  int average = 0; 
-  for (int i = 1; i < 5; i++){
-    array[i-1] = array[i];
-    average += array[i];
-  }
-  array[4] = num;
+int speedAverage(int num, int *array){
   
-  return (average + num) / 5;
+  array[0] = array[1];
+  array[1] = array[2];
+  array[2] = array[3];
+  array[3] = array[4];
+  array[4] = num;
+    
+  return (array[0] + array[1] + array[2] + array[3] + array[4]) / 5;
 }
 
 void forward() {
