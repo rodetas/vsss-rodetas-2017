@@ -11,8 +11,8 @@ const byte PWM_MOTOR2 = 11;
 unsigned long left_border_micros = 0, right_border_micros = 0;
 unsigned long left_last_border_micros = 0, right_last_border_micros = 0;
 
-const float controler_frequency = 150; // Hz
-const float dt = 1 / controler_frequency; // seconds
+const float frequency = 150; // Hz
+const float dt = 1 / frequency; // seconds
 const float speed_calc = ( (2 * PI * 1.6) / 375 ) / 0.000001; // radius, encoder readings, seconds
 
 int left_pwm = 0, right_pwm = 0;
@@ -164,7 +164,7 @@ void configTimerControler(){
   TCCR1A = 0;
   TCCR1B = 0;
   TCNT1  = 0;
-  OCR1A = (16000000/1024/controler_frequency) - 1;
+  OCR1A = (16000000/1024/frequency) - 1;
   TCCR1B |= (1 << WGM12);
   TCCR1B |= (1 << CS12);   
   TCCR1B |= (1 << CS10);  
