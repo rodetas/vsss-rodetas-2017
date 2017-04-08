@@ -28,11 +28,12 @@ int Control::handle(){
 			transmission.setMovements(strategy.getMovements());
 			transmission.send();
 		}
-		//transmission.reading();
+		transmission.reading();
 		timer.framesPerSecond();
 
 		setThreadVariables();
 //		timer.waitTimeStarted(33);
+
     }
 	
 	vision.cameraRelease();
