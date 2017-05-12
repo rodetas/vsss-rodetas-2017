@@ -49,7 +49,31 @@ void Vision::teamThread(){
 }
 
 void Vision::opponentThread(){
+    ContoursPosition opponent_position_aux;
+    ContoursPosition last_opponent_position = opponent_position;
     opponent_position = position(full_image_cut, opponent_position, colorsHSV[OPPONENT], 3);
+    
+    int position;
+
+    for(int i=0; i<last_opponent_position.center.size();i++){
+         long double distance = rodetas::distance(last_opponent_position.center[i],opponent_position.center[0]);
+         
+         for(int j=0; j<opponent_position.center.size();j++){
+             long double distance_aux = rodetas::distance(last_opponent_position.center[i],opponent_position.center[j]);
+             if(distance_aux <= distance){
+                 distance = distance_aux;
+                 position = j;
+             }
+        }
+        opponent_position_aux.center.push_back(opponent_position.center[position]);
+        opponent_position_aux.cutPoint1.push_back(opponent_position.cutPoint1[position]);
+        opponent_position_aux.cutPoint2.push_back(opponent_position.cutPoint2[position]);
+        opponent_position_aux.radius.push_back(opponent_position.radius[position]);
+    
+    }
+    if(last_opponent_position.center.size()!=0){
+        opponent_position = opponent_position_aux;
+    }
 }
 
 void Vision::ballThread(){

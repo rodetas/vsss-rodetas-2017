@@ -95,6 +95,7 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                     image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                     image_cut = opencvBinary(image_cut, color_hsv);
 
+
             find_position = findPosition(image_cut);
 
             for(int i = 0; i < find_position.center.size(); i++){
