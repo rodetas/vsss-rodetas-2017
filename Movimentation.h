@@ -6,12 +6,11 @@
 
 using namespace rodetas;
 
-class Movimentation{
+class Movimentation {
 
 private:
-	vector<rodetas::Object> objects;
-	vector<rodetas::Object> velocityPast;
 	rodetas::Object robot;
+	vector<rodetas::Object> velocityPast;
 
     Point image;
     Command movements;
@@ -27,6 +26,7 @@ private:
     float distance_ball_destination;
     float sinAngle_robot_destination;
     float cosAngle_robot_destination;
+	float cos_robot_ball;
 
 public:
 	Movimentation();
@@ -35,17 +35,16 @@ public:
 	Pwm PWMCorrection(Point);
 
 	float calculateSpeed();
-	void updateCalculus(rodetas::Object, Point);
+	void updateCalculus(rodetas::Object, rodetas::Object, Point);
 
+	void stop();
 	void turnLeft(int, int);
 	void turnRight(int, int);
-	void stop();
 
 	void setPower(float);
 	void setPowerCurve(float);
-	void setPwm(Point, char);
-	void setObjects(vector<rodetas::Object>);
 	void setImage(Point);
+	void setPwm(Point, char);
 
 	Command getMovement();
 };

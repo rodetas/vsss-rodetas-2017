@@ -1,7 +1,6 @@
 #include "Movimentation.h"
 
 Movimentation::Movimentation(){
-	objects.resize(7);
 	velocityPast.resize(3);
 	
 	maxPwm = 0;
@@ -120,19 +119,16 @@ float Movimentation::calculateSpeed(){
 	return velocity;
 }
 
-void Movimentation::updateCalculus(rodetas::Object robot, Point destination){
-
+void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, Point destination){
 	distance_robot_destination = distance(robot, destination);
-    distance_ball_destination = distance(objects[GRAPHICBALL], destination);
-    distance_robot_ball = distance(robot, objects[GRAPHICBALL]);
+    distance_ball_destination = distance(ball, destination);
+    distance_robot_ball = distance(robot, ball);
 
 	angle_robot_destination = calcAngle(destination, robot);
     sinAngle_robot_destination = calcSen(destination, robot);
     cosAngle_robot_destination = calcCos(destination, robot);
-}
 
-void Movimentation::setObjects(vector<rodetas::Object> vec){
-	this->objects = vec;
+	cos_robot_ball = calcCos(ball, robot);
 }
 
 Command Movimentation::getMovement(){
