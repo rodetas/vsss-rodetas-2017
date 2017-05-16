@@ -12,13 +12,11 @@ class Vision : public OpenCV {
 private:
 
 	Manipulation manipulation;
-	Timer timer;
 
 	const int number_robots = 3;
 
-	vector<rodetas::Object> robotTeam;
-	
     vector<Hsv> colorsHSV;
+	vector<rodetas::Object> robotTeam;
 	
 	ContoursPosition ball_position;
 	ContoursPosition team_position;

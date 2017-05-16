@@ -40,8 +40,7 @@ public:
 	void cameraInitialize();
 	void imageValidation();
 
-	ContoursPosition binarizedColorPosition(cv::Mat, int n_contours);
-
 	ContoursPosition position(cv::Mat, ContoursPosition, Hsv, int);
+	ContoursPosition binarizedColorPosition(cv::Mat, int n_contours);
 };
 #endif
