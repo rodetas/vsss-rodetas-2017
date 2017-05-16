@@ -16,7 +16,7 @@ int Control::handle(){
 
     while(program_state == GAME){
 		
-//		timer.startTime();
+		timer.startTime();
 		
 		// recognize robot's points
 		vision.computerVision();
@@ -29,10 +29,12 @@ int Control::handle(){
 			transmission.send();
 		}
 		//transmission.reading();
+		transmission.transmitting("TESTE");
 		timer.framesPerSecond();
 
 		setThreadVariables();
-//		timer.waitTimeStarted(33);
+		timer.waitTimeStarted(33);
+
     }
 	
 	vision.cameraRelease();
