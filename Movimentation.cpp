@@ -146,3 +146,31 @@ void Movimentation::setPowerCurve(float curve){
 void Movimentation::setImage(Point p){
 	this->image = p;
 }
+
+float Movimentation::getDistanceRobotBall(){
+	return distance_robot_ball;
+}
+    
+float Movimentation::getDistanceRobotDestination(){
+	return distance_ball_destination;
+}
+
+float Movimentation::getAngleRobotDestination(){
+	return angle_robot_destination;
+}
+
+float Movimentation::getDistanceBallDestination(){
+	return distance_ball_destination;
+}
+
+float Movimentation::getSinAngleRobotDestination(){
+	return angle_robot_destination;
+}
+
+float Movimentation::getCosAngleRobotDestination(){
+	return cosAngle_robot_destination;
+}
+
+float Movimentation::getCosRobotBall(){
+	return cos_robot_ball;
+}
