@@ -12,13 +12,21 @@ private:
 	vector<rodetas::Object> objects;
 	rodetas::Object robot;
 
-	vector<float> maxPwm;
-	vector<rodetas::Object> velocityPast1;
-    vector<rodetas::Object> velocityPast2;
-    vector<rodetas::Object> velocityPast3;
-    vector<int> velocity;
+	//vector<float> maxPwm;
+	float maxPwm;
 
-    vector<Command> movements;
+	//vector<rodetas::Object> velocityPast1;
+	float velocityPast1;
+    //vector<rodetas::Object> velocityPast2;
+    float velocityPast2;
+    //vector<rodetas::Object> velocityPast3;
+    float velocityPast3
+
+    //vector<int> velocity;
+    int velocity;
+
+    //vector<Command> movements;
+    Command *movements = new Command();
 
 	float distance_robot_ball;
     float distance_robot_destination;
@@ -57,9 +65,24 @@ public:
 	void setRobot(rodetas::Object);
 	void setObjects(vector<rodetas::Object>);
 	void setImage(Point);
-	void setNumbers(int, int, int);
 
-	vector<Command> getMovements();
+	//seters e geters novos
+	void setMaxPwm(float);
+
+	void setVelocityPast1(float);
+	void setVelocityPast2(float);
+	void setVelocityPast3(float);
+	void setVelocity(int);
+
+	float getMaxPwm();
+
+	float getVelocityPast1();
+	float getVelocityPast2();
+	float getVelocityPast3();
+	int getVelocity();
+
+
+	//vector<Command> getMovements();
 };
 
 #endif
