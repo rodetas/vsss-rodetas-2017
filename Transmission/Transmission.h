@@ -24,10 +24,8 @@ private:
     char initialCaracter[3];
     char finalCaracter[3];
 
-
     string robot_speed;
     bool receiving;
-
     
 protected:
     vector<Command> movements;
