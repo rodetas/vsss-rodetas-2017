@@ -1,23 +1,11 @@
 #include "Movimentation.h"
 
 Movimentation::Movimentation(){
-	//velocityPast1.resize(3);
-	velocityPast1 = 0.0;
-	//velocityPast2.resize(3);
-	velocityPast2 = 0.0;
-	//velocityPast3.resize(3);
-	velocityPast3 = 0.0;
-
-	//velocity.resize(3);
-	velocity = 0;
-
-	//maxPwm.resize(3);
-	maxPwm = 0.0;
-
 	objects.resize(7);
+	velocityPast.resize(3);
 	
-	//movements.resize(3);
-
+	maxPwm = 0;
+	velocity = 0;
 	powerFactor = 1.2;
 	curveFactor = 1.1;
 }
@@ -120,16 +108,14 @@ void Movimentation::stop(){
 	movements.pwm2 = 0;
 }
 
-
-//classe "modificada"
 float Movimentation::calculateSpeed(){
 	if (robot.x != 0 && robot.y != 0) {
-		setVelocityPast3(getVelocityPast2());
-		setVelocityPast2(getVelocityPast1())
-		setVelocityPast1(robot);
+		velocityPast[2] = velocityPast[1];
+		velocityPast[1] = velocityPast[0];
+		velocityPast[0] = robot;
 	}
 
-	velocity = distance(velocityPast1, velocityPast3);
+	velocity = distance(velocityPast[0], velocityPast[2]);
 
 	return velocity;
 }
@@ -149,11 +135,7 @@ void Movimentation::setObjects(vector<rodetas::Object> vec){
 	this->objects = vec;
 }
 
-void Movimentation::setRobot(rodetas::Object r){
-	this->robot = r;
-}
-
-vector<Command> Movimentation::getMovements(){
+Command Movimentation::getMovement(){
 	return movements;
 }
 
@@ -167,45 +149,4 @@ void Movimentation::setPowerCurve(float curve){
 
 void Movimentation::setImage(Point p){
 	this->image = p;
-}
-
-//seters e geters novos
-void setMaxPwm(float maxPwm){
-	this->maxPwm = maxPwm;
-}
-
-void setVelocityPast1(float velocity){
-	this->velocityPast1 = velocity;  
-}
-
-void setVelocityPast2(float velocity ){
-	this->velocityPast2 = velocity;
-}
-
-void setVelocityPast3(float velocity){
-	this->velocityPast3 = velocity;
-}
-
-void setvelocity(int velocity){
-	this->velocity = velocity;
-}
-
-float getMaxPwm(){
-	return maxPwm;
-}
-
-float getvelocityPast1 (){
-	return velocityPast1;
-}
-
-float getvelocityPast2 (){
-	return velocityPast2;
-}
-
-float getVelocityPast3 (){
-	return velocityPast3;
-}
-
-int getVelocity (){
-	return velocity;
 }
