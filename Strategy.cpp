@@ -334,8 +334,7 @@ void Strategy::updateCalculus(rodetas::Object robot, Point destination){
     cosAngle_robot_destination = calcCos(destination, robot);
     cos_robot_ball = calcCos(ball, robot); 
 
-    movimentation.updateCalculus(robot, destination);
-
+    movimentation.updateCalculus(robot, ball, destination);
 }
 
 
