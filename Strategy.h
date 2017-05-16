@@ -40,7 +40,7 @@ private:
 
     Point imageSize;
     Point goalSize;
-    Point2f goalArea;
+    Point2i goalArea;
 
     Point attackDestination;
     Point defenseDestination;

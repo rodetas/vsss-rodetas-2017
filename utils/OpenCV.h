@@ -30,17 +30,17 @@ protected:
 	
 public:
 	OpenCV();
-	cv::Mat opencvBinary(cv::Mat, Hsv);
-	cv::Mat opencvColorSpace(cv::Mat, int);
-	cv::Mat opencvCutImage(cv::Mat, cv::Point, cv::Point);
-	cv::Mat opencvRotateImage(cv::Mat, int);
+	cv::Mat binarize(cv::Mat, Hsv);
+	cv::Mat changeColorSpace(cv::Mat, int);
+	cv::Mat cutImage(cv::Mat, cv::Point, cv::Point);
+	cv::Mat rotateImage(cv::Mat, int);
 	void setImage();
 	void imageInitialize();
 	void cameraRelease();
 	void cameraInitialize();
 	void imageValidation();
 
-	ContoursPosition findPosition(cv::Mat, int n_contours);
+	ContoursPosition binarizedColorPosition(cv::Mat, int n_contours);
 
 	ContoursPosition position(cv::Mat, ContoursPosition, Hsv, int);
 };
