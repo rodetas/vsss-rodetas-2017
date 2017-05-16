@@ -1,14 +1,22 @@
 #include "Movimentation.h"
 
 Movimentation::Movimentation(){
-	velocityPast1.resize(3);
-	velocityPast2.resize(3);
-	velocityPast3.resize(3);
-	velocity.resize(3);
-	maxPwm.resize(3);
+	//velocityPast1.resize(3);
+	velocityPast1 = 0.0;
+	//velocityPast2.resize(3);
+	velocityPast2 = 0.0;
+	//velocityPast3.resize(3);
+	velocityPast3 = 0.0;
+
+	//velocity.resize(3);
+	velocity = 0;
+
+	//maxPwm.resize(3);
+	maxPwm = 0.0;
 
 	objects.resize(7);
-	movements.resize(3);
+	
+	//movements.resize(3);
 
 	powerFactor = 1.2;
 	curveFactor = 1.1;
@@ -36,9 +44,9 @@ Command Movimentation::movePlayers(Point destination){
 	}
 
 	Command movement;
-	movement.direcao = movements[robot.id].direcao;
-	movement.pwm1 = movements[robot.id].pwm1;
-	movement.pwm2 = movements[robot.id].pwm2;
+	movement.direcao = movements.direcao;
+	movement.pwm1 = movements.pwm1;
+	movement.pwm2 = movements.pwm2;
 
 	return movement;
 }
@@ -54,11 +62,12 @@ void Movimentation::setPwm(Point destination, char direction){
 	if (pwm2 > 255) pwm2 = 255;
 
 	// limitador de potencia - aceleracao progressiva( 30 e a velocidade maxima )
-	maxPwm[robot.id] = (1.0 - float(velocity[robot.id]) / 30);	
+	maxPwm = (1.0 - float(velocity) / 30);	
 
 	// 3 uma constante empirica de amortecimento
-	float pwm1Correction = maxPwm[robot.id] * pwm1 / 2;
-	float pwm2Correction = maxPwm[robot.id] * pwm2 / 2;
+	// ??????
+	float pwm1Correction = maxPwm * pwm1 / 2;
+	float pwm2Correction = maxPwm * pwm2 / 2;
 
 	if (pwm1Correction < 0){
 		pwm1Correction = 0;
@@ -68,13 +77,13 @@ void Movimentation::setPwm(Point destination, char direction){
 		pwm2Correction = 0;
 	}
 
-	if (velocity[robot.id] > 30) {
+	if (velocity > 30) {
 		pwm2Correction = pwm1Correction = 0;
 	}
 	
-	movements[robot.id].direcao = direction;
-	movements[robot.id].pwm1 = pwm1 - pwm1Correction;
-	movements[robot.id].pwm2 = pwm2 - pwm2Correction;
+	movements.direcao = direction;
+	movements.pwm1 = pwm1 - pwm1Correction;
+	movements.pwm2 = pwm2 - pwm2Correction;
 }
 
 /*
@@ -93,34 +102,36 @@ Pwm Movimentation::PWMCorrection(Point destination){
 }
 
 void Movimentation::turnLeft(int pwm1, int pwm2){
-	movements[robot.id].direcao = LEFT_MOVE;
-	movements[robot.id].pwm1 = pwm1;
-	movements[robot.id].pwm2 = pwm2;
+	movements.direcao = LEFT_MOVE;
+	movements.pwm1 = pwm1;
+	movements.pwm2 = pwm2;
+	//************************ tudo que tem id não é mais vector agora é variável
 }
 
 void Movimentation::turnRight(int pwm1, int pwm2){
-	movements[robot.id].direcao = RIGHT_MOVE;
-	movements[robot.id].pwm1 = pwm1;
-	movements[robot.id].pwm2 = pwm2;
+	movements.direcao = RIGHT_MOVE;
+	movements.pwm1 = pwm1;
+	movements.pwm2 = pwm2;
 }
 
 void Movimentation::stop(){
-	movements[robot.id].direcao = STOPPED_MOVE;
-	movements[robot.id].pwm1 = 0;
-	movements[robot.id].pwm2 = 0;
+	movements.direcao = STOPPED_MOVE;
+	movements.pwm1 = 0;
+	movements.pwm2 = 0;
 }
 
-float Movimentation::calculateSpeed(){
 
+//classe "modificada"
+float Movimentation::calculateSpeed(){
 	if (robot.x != 0 && robot.y != 0) {
-		velocityPast3[robot.id] = velocityPast2[robot.id];
-		velocityPast2[robot.id] = velocityPast1[robot.id];
-		velocityPast1[robot.id] = robot;
+		setVelocityPast3(getVelocityPast2());
+		setVelocityPast2(getVelocityPast1())
+		setVelocityPast1(robot);
 	}
 
-	velocity[robot.id] = distance(velocityPast1[robot.id], velocityPast3[robot.id]);
+	velocity = distance(velocityPast1, velocityPast3);
 
-	return velocity[robot.id];
+	return velocity;
 }
 
 void Movimentation::updateCalculus(rodetas::Object robot, Point destination){
@@ -158,8 +169,43 @@ void Movimentation::setImage(Point p){
 	this->image = p;
 }
 
-void Movimentation::setNumbers(int attack, int defense, int goal){
-	this->attackNumber = attack;
-	this->defenseNumber = defense;
-	this->goalNumber = goal;
+//seters e geters novos
+void setMaxPwm(float maxPwm){
+	this->maxPwm = maxPwm;
+}
+
+void setVelocityPast1(float velocity){
+	this->velocityPast1 = velocity;  
+}
+
+void setVelocityPast2(float velocity ){
+	this->velocityPast2 = velocity;
+}
+
+void setVelocityPast3(float velocity){
+	this->velocityPast3 = velocity;
+}
+
+void setvelocity(int velocity){
+	this->velocity = velocity;
+}
+
+float getMaxPwm(){
+	return maxPwm;
+}
+
+float getvelocityPast1 (){
+	return velocityPast1;
+}
+
+float getvelocityPast2 (){
+	return velocityPast2;
+}
+
+float getVelocityPast3 (){
+	return velocityPast3;
+}
+
+int getVelocity (){
+	return velocity;
 }
