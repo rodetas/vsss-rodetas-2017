@@ -47,5 +47,13 @@ public:
 	void setPwm(Point, char);
 
 	Command getMovement();
+
+	float getDistanceRobotBall();
+    float getDistanceRobotDestination();
+    float getAngleRobotDestination();
+    float getDistanceBallDestination();
+    float getSinAngleRobotDestination();
+    float getCosAngleRobotDestination();
+	float getCosRobotBall();
 };
 #endif

@@ -9,6 +9,7 @@
 #include "GUI/Cairo/DrawAreaControl.h"
 
 #include <thread>
+#include <mutex>
 #include <gtkmm.h>
 
 class Control {
