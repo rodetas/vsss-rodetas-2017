@@ -26,7 +26,8 @@ void Transmission::closeConnection(){
 
 bool Transmission::openConection(){   
 
-    usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+    //usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+    usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
 
     if (usb == -1 ) {
         openStatus = false;
@@ -45,8 +46,8 @@ bool Transmission::openConection(){
         }
 
         /* Set Baud Rate */
-        cfsetospeed(&options, (speed_t)B19200);
-        cfsetispeed(&options, (speed_t)B19200);
+        cfsetospeed(&options, (speed_t)B9600);
+        cfsetispeed(&options, (speed_t)B9600);
 
         /* Setting other Port Stuff */
         options.c_cflag     &=  ~PARENB;            // Make 8n1
@@ -125,30 +126,18 @@ void Transmission::transmitting(string comand){
         }
         send_bytes[size] = '\0';
 
-        //cout << send_bytes << endl;
-        write(usb, send_bytes, size);
-    }
-}
+        unsigned char bytestosend[] = { 0x7E , 0x00 , 0x0A , 0x01 , 0x01 , 0x00 , 0x00 , 0x00 , 0x54 , 0x65 , 0x73 , 0x74 , 0x65 , 0xF8};
 
-void Transmission::reading(){
+        write(usb, bytestosend, sizeof(bytestosend));
+    }
     char buffer[500];
     int n_bytes_readed = read (usb, buffer, sizeof(buffer));
 
     for (int i = 0; i < n_bytes_readed; i++){
-        cout << buffer[i];
-        /*
-        if (buffer[i] == finalCaracter[0]){
-            receiving = false;
-            cout << robot_speed << "]" << endl;
-            robot_speed = "";
-        } else if (buffer[i] == initialCaracter[0] || receiving){
-            if (robot_speed.size() < 13){
-                robot_speed = robot_speed + buffer[i];
-                receiving = true;            
-            }
-        } 
-        */
+         printf("%c", buffer[i]);        
+        // printf("%x", buffer[i] & 0xff);
     }
+    cout << endl;
 }
 
 bool Transmission::getConnectionStatus(){
