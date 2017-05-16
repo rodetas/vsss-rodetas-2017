@@ -8,7 +8,7 @@
 namespace rodetas{
 
 typedef cv::Point Point;
-typedef cv::Point2f Point2f;
+typedef cv::Point2i Point2i;
 typedef pair<int, int> Pwm;
 
 enum{H, S, V};
@@ -138,9 +138,9 @@ struct Object{
 };
 
 struct ContoursPosition {
-	vector<Point2f>	center;
-    vector<Point2f> cutPoint1;
-    vector<Point2f> cutPoint2;
+	vector<Point2i>	center;
+    vector<Point2i> cutPoint1;
+    vector<Point2i> cutPoint2;
     vector<float>	radius;
 	
 	int frames = 0;
@@ -158,6 +158,25 @@ struct ContoursPosition {
 			review_all_image = false;
 			frames = last_frames + 1;
 		}	
+	}
+
+	void verifyLimits(int cols, int rows){
+		for (int i = 0; i < center.size(); i++){
+			if (cutPoint1[i].x < 0) cutPoint1[i].x = 0;
+			if (cutPoint1[i].y < 0) cutPoint1[i].y = 0;
+			if (cutPoint1[i].x > cols) cutPoint1[i].x = cols;
+			if (cutPoint1[i].y > rows) cutPoint1[i].y = rows;
+
+			if (cutPoint2[i].x < 0) cutPoint2[i].x = 0;
+			if (cutPoint2[i].y < 0) cutPoint2[i].y = 0;
+			if (cutPoint2[i].x > cols) cutPoint2[i].x = cols;
+			if (cutPoint2[i].y > rows) cutPoint2[i].y = rows;
+
+			if (center[i].x < 0) center[i].x = 0;
+			if (center[i].y < 0) center[i].y = 0;
+			if (center[i].x > cols) center[i].x = cols;
+			if (center[i].y > rows) center[i].y = rows;
+		}
 	}
 
     void print(int i){

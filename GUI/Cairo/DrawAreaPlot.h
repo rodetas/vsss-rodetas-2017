@@ -10,8 +10,8 @@ using namespace rodetas;
 class DrawAreaPlot : public Gtk::DrawingArea {
 
 private:
-    Point2f max;
-    Point2f min;
+    Point2i max;
+    Point2i min;
     deque<float> x;
     deque<float> y;
     

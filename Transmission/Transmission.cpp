@@ -137,7 +137,6 @@ void Transmission::transmitting(string comand){
          printf("%c", buffer[i]);        
         // printf("%x", buffer[i] & 0xff);
     }
-    cout << endl;
 }
 
 bool Transmission::getConnectionStatus(){

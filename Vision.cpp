@@ -31,8 +31,8 @@ void Vision::computerVision(){
 
     setImage();
 
-    full_image_cut = opencvRotateImage(opencv_image_BGR, angle_image);
-    full_image_cut = opencvCutImage(full_image_cut, point_cut_field_1, point_cut_field_2);
+    full_image_cut = rotateImage(opencv_image_BGR, angle_image);
+    full_image_cut = cutImage(full_image_cut, point_cut_field_1, point_cut_field_2);
 
     std::thread team_thread(&Vision::teamThread, this);
     std::thread ball_thread(&Vision::ballThread, this);
@@ -110,18 +110,18 @@ void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
     // cropped image around the color team
     for (int i = 0; i < team_position.center.size(); i++){
 
-        Point2f cutPoint1 = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
-        Point2f cutPoint2 = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
+        Point2i cutPoint1 = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
+        Point2i cutPoint2 = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
 
-        cv::Mat image_cut = opencvCutImage(image, cutPoint1, cutPoint2);
-                image_cut = opencvColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
+        cv::Mat image_cut = cutImage(image, cutPoint1, cutPoint2);
+                image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                 
         float biggest_radius = 0;
 
         // search player's color on a cropped image
         for (int j = 0; j < number_robots; j++){
-            cv::Mat image_binary = opencvBinary(image_cut, colorsHSV[j]);
-            ContoursPosition find_position = findPosition(image_binary, 1);
+            cv::Mat image_binary = binarize(image_cut, colorsHSV[j]);
+            ContoursPosition find_position = binarizedColorPosition(image_binary, 1);
             
             // check if finds the specified color in image
             if (find_position.center.size() != 0){

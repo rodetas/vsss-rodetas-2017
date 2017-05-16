@@ -136,8 +136,8 @@ Point Strategy::setAttackTarget(){
 
 Point Strategy::applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination){
 
-	Point2f repulsion;
-	Point2f factorRepulsion = {5000, 20000};
+	Point2i repulsion;
+	Point2i factorRepulsion = {5000, 20000};
 
 	float sin_repulsion_destination = sin((calcAngle(toDestination, toRepulsion))/RADIAN_TO_DEGREE);
 	float cos_repulsion_destination = cos((calcAngle(toDestination, toRepulsion))/RADIAN_TO_DEGREE);
