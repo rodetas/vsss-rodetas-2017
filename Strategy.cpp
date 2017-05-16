@@ -55,7 +55,7 @@ void Strategy::defineFunctions(){
 	goalNumber = GRAPHICPLAYER2;
 	ball = objects[GRAPHICBALL];
 
-	movimentation.setNumbers(attackNumber, defenseNumber, goalNumber);
+	//movimentation.setNumbers(attackNumber, defenseNumber, goalNumber);
 }
 
 /*
@@ -70,7 +70,7 @@ void Strategy::applyAttackStrategy(){
 
 	robot.id = attackNumber; // seta o id do robo atual
 
-	movimentation.setRobot(robot); // seta na classe de movimentacao o robo atual
+	//movimentation.setRobot(robot); // seta na classe de movimentacao o robo atual
 
 	float velocity = movimentation.calculateSpeed(); // calcula sua velocidade
 
@@ -167,7 +167,7 @@ void Strategy::applyDefenseStrategy(){
 
 	robot.id = defenseNumber;
 
-	movimentation.setRobot(robot);
+	//movimentation.setRobot(robot);
 
 	float velocity = movimentation.calculateSpeed();
 
@@ -235,7 +235,7 @@ void Strategy::applyGoalStrategy(){
 	robot = objects[goalNumber];
 	robot.id = goalNumber;
 
-	movimentation.setRobot(robot);
+	//movimentation.setRobot(robot);
 
 	float velocity = movimentation.calculateSpeed();
 
@@ -374,7 +374,7 @@ void Strategy::setVecTarget(int id, Point target){
 
 vector<Command> Strategy::getMovements(){
 	//retorna movimentos sem alteracao
-	movements = movimentation.getMovements();
+	//movements = movimentation.getMovements();
 	return movements;
 }
 

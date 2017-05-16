@@ -79,7 +79,6 @@ ContoursPosition OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 
 
 
 // cv::imshow("T", image_cut);   cv::waitKey();
-
 ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position, Hsv color_hsv, int n_contours){
 
     ContoursPosition atual_position, find_position;
