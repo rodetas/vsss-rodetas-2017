@@ -2,21 +2,17 @@
 
 Menu::Menu(){
 }
-	
+
+Menu::~Menu(){
+}
+
 int Menu::GUI(){
 
 	program_state = EXIT;
 			
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Menu.glade");
-
-	Gtk::Window* window = nullptr;
-	Gtk::Button* button_play = nullptr;
-	Gtk::Button* button_calibration = nullptr;
-	Gtk::Button* button_simulator = nullptr;
-	Gtk::Button* button_arduino = nullptr;
-	Gtk::Button* button_exit = nullptr;
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Menu.glade");
 	
 	builder->get_widget("Window Menu", window);
 	builder->get_widget("Button Play", button_play);
@@ -33,28 +29,21 @@ int Menu::GUI(){
 	
 	app->run(*window);
 
-	delete window;
-	delete button_play;
-	delete button_calibration;
-	delete button_simulator;
-	delete button_arduino;
-	delete button_exit;	
-
 	return program_state;
 } 
 
 void Menu::onButtonPlay(){ 
-	program_state = GAME; app->quit(); 
+	program_state = GAME; window->close(); 
 }
 void Menu::onButtonCalibration(){ 
-	program_state = CALIBRATION; app->quit(); 
+	program_state = CALIBRATION; window->close(); 
 }
 void Menu::onButtonSimulator(){ 
-	program_state = SIMULATOR; app->quit(); 
+	program_state = SIMULATOR; window->close(); 
 }
 void Menu::onButtonArduino(){ 
-	program_state = ARDUINO; app->quit(); 
+	program_state = ARDUINO; window->close(); 
 }
 void Menu::onButtonExit(){
-	program_state = EXIT; app->quit();
+	program_state = EXIT; window->close();
 }

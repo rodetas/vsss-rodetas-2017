@@ -16,11 +16,10 @@ int Control::handle(){
 
     while(program_state == GAME){
 		
-		//timer.startTime();		
 		// recognize robot's points
 		vision.computerVision();
 		// apply strategies
-	/*
+	
 		strategy.setObjects(vision.getPositions());
 		strategy.handleStrategies();
 
@@ -30,17 +29,17 @@ int Control::handle(){
 		}
 		//transmission.reading();
 		transmission.transmitting("TESTE");
-	*/
+	
 		timer.framesPerSecond();
 
 		setThreadVariables();
-		//timer.waitTimeStarted(33);
+		timer.waitTimeStarted(33);
     }
 	
 	vision.cameraRelease();
 
     menu_thread.detach();
-
+	
 	return program_state;
 }
 
@@ -198,6 +197,7 @@ void Control::GUIInformation() {
 	
   	app->run(window);
 
+	program_state = MENU;
 	robot_draw_connection.disconnect();
 }
 

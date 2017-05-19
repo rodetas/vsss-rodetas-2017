@@ -8,7 +8,8 @@
     <property name="window_position">center-always</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
-    <property name="icon">../files/images/logo-rodetas.png</property>
+    <property name="icon">../../files/images/logo-rodetas.png</property>
+    <property name="urgency_hint">True</property>
     <child>
       <object class="GtkButtonBox" id="Button Box Menu">
         <property name="visible">True</property>
@@ -22,6 +23,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <accelerator key="1" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
             <property name="expand">True</property>

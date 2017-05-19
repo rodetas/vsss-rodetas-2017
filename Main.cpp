@@ -1,8 +1,8 @@
 #include "Control.h"
 #include "Calibration.h"
+#include "GUI/Test.h"
 #include "GUI/Menu.h"
 #include "GUI/Arduino.h"
-#include "utils/Plot.h"
 #include "Transmission/Transmission.h"
 
 int main(int argc, char *argv[]) {
@@ -34,8 +34,8 @@ int main(int argc, char *argv[]) {
 			} break;
 
 			case SIMULATOR:{
-				Plot plot("NO_TEMPORAL" , 100, 0, 100, 0);
-				program_state = plot.GUI();
+				Test test;
+				program_state = test.GUI();
 			} break;
 			
 			case EXIT:{
