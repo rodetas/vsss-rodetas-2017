@@ -45,7 +45,40 @@ void Vision::computerVision(){
 
 void Vision::teamThread(){
     team_position = position(full_image_cut, team_position, colorsHSV[TEAM], 3);
-    colorPositionPlayer(full_image_cut, team_position);
+
+    vector<rodetas::Object> robot(number_robots);
+
+    // cropped image around the color team
+    for (int i = 0; i < team_position.center.size(); i++){
+
+        Point2i cutPoint1 = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
+        Point2i cutPoint2 = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
+
+        cv::Mat image_cut = cutImage(full_image_cut, cutPoint1, cutPoint2);
+                image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
+                
+        float biggest_radius = 0;
+
+        // search player's color on a cropped image
+        for (int j = 0; j < number_robots; j++){
+            cv::Mat image_binary = binarize(image_cut, colorsHSV[j]);
+            ContoursPosition find_position = binarizedColorPosition(image_binary, 1);
+            
+            // check if finds the specified color in image
+            if (find_position.center.size() != 0){
+                if (find_position.radius[0] > biggest_radius){
+
+                    find_position.center[0].x += cutPoint1.x;
+                    find_position.center[0].y += cutPoint1.y;
+                    robot[j] = robotPosition(find_position, i);
+                    
+                    biggest_radius = find_position.radius[0];
+                }
+            }
+        }
+    }
+    
+    robotTeam = robot;
 }
 
 void Vision::opponentThread(){
@@ -71,6 +104,7 @@ void Vision::opponentThread(){
         opponent_position_aux.radius.push_back(opponent_position.radius[position]);
     
     }
+    
     if(last_opponent_position.center.size()!=0){
         opponent_position = opponent_position_aux;
     }
@@ -98,46 +132,6 @@ void Vision::ballThread(){
         }
 
     return robot;
-}
-
-/*
- * Method for find the color position of the player and make the robots
- */
-void Vision::colorPositionPlayer(cv::Mat image, ContoursPosition team_position){
-
-    vector<rodetas::Object> robot(number_robots);
-
-    // cropped image around the color team
-    for (int i = 0; i < team_position.center.size(); i++){
-
-        Point2i cutPoint1 = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
-        Point2i cutPoint2 = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
-
-        cv::Mat image_cut = cutImage(image, cutPoint1, cutPoint2);
-                image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
-                
-        float biggest_radius = 0;
-
-        // search player's color on a cropped image
-        for (int j = 0; j < number_robots; j++){
-            cv::Mat image_binary = binarize(image_cut, colorsHSV[j]);
-            ContoursPosition find_position = binarizedColorPosition(image_binary, 1);
-            
-            // check if finds the specified color in image
-            if (find_position.center.size() != 0){
-                if (find_position.radius[0] > biggest_radius){
-
-                    find_position.center[0].x += cutPoint1.x;
-                    find_position.center[0].y += cutPoint1.y;
-                    robot[j] = robotPosition(find_position, i);
-                    
-                    biggest_radius = find_position.radius[0];
-                }
-            }
-        }
-    }
-    
-    robotTeam = robot;
 }
 
 /*

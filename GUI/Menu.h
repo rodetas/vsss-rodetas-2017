@@ -8,6 +8,12 @@ class Menu {
 
 private:
 	Glib::RefPtr<Gtk::Application> app;
+	Gtk::Window* window = nullptr;
+	Gtk::Button* button_play = nullptr;
+	Gtk::Button* button_calibration = nullptr;
+	Gtk::Button* button_simulator = nullptr;
+	Gtk::Button* button_arduino = nullptr;
+	Gtk::Button* button_exit = nullptr;
 	
 	int program_state;
 
@@ -18,7 +24,8 @@ private:
 	void onButtonExit();
 
 public:
-	Menu();	
+	Menu();
+	~Menu();
 	int GUI();    
 };
 

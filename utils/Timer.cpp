@@ -34,6 +34,7 @@ float Timer::endTime(){
 void Timer::waitTimeStarted(float time_wait){
     while((getTime() - start_time) < time_wait){
         usleep(1000);
+        start_time = getTime();
     }
 }
 
