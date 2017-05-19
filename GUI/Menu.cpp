@@ -33,17 +33,22 @@ int Menu::GUI(){
 } 
 
 void Menu::onButtonPlay(){ 
-	program_state = GAME; window->close(); 
+	program_state = GAME; 
+	window->close(); 
 }
 void Menu::onButtonCalibration(){ 
-	program_state = CALIBRATION; window->close(); 
+	program_state = CALIBRATION; 
+	window->close(); 
 }
 void Menu::onButtonSimulator(){ 
-	program_state = SIMULATOR; window->close(); 
+	program_state = SIMULATOR; 
+	window->close(); 
 }
 void Menu::onButtonArduino(){ 
-	program_state = ARDUINO; window->close(); 
+	program_state = ARDUINO; 
+	window->close(); 
 }
 void Menu::onButtonExit(){
-	program_state = EXIT; window->close();
+	program_state = EXIT; 
+	window->close();
 }
