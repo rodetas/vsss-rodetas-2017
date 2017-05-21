@@ -13,16 +13,19 @@ int Arduino::GUI(){
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Arduino.glade");
 	
 	builder->get_widget("Window Arduino", window);
+	
 	builder->get_widget("Button Upload", btnUpload);
+	btnUpload->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpload) );
+	
 	builder->get_widget("Button Monitor", btnMonitor);
+	btnMonitor->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonMonitor) );
+	
 	builder->get_widget("Button Update", btnUpdate);
+	btnUpdate->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpdate) );
+	
 	builder->get_widget("ComboBoxText File", comboFile);
 	builder->get_widget("ComboBoxText Port", comboPort);
 	builder->get_widget("ComboBoxText BaudRate", comboBaudRate);
-
-	btnUpload->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpload) );
-	btnMonitor->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonMonitor) );
-	btnUpdate->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpdate) );
 
 	loadInformations();
 	setCombos();

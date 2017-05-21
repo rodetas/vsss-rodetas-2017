@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 			
 			case CALIBRATION:{
 				Calibration calibration;
-				program_state = calibration.calibrate();
+				program_state = calibration.GUI();
 			} break;
 			
 			case MENU:{

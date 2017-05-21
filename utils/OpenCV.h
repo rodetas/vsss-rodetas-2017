@@ -25,6 +25,7 @@ protected:
 	bool camera_on;
 	bool image_initialize;
 	bool camera_initialize;
+	Point goal;
 	Point point_cut_field_1;
 	Point point_cut_field_2;
 	

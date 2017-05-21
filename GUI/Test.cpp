@@ -15,13 +15,14 @@ int Test::GUI(){
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Test.glade");
 	
 	builder->get_widget("Window Test", window);
+	window->signal_key_press_event().connect(sigc::mem_fun(this, &Test::onKeyboard), false);
+	window->signal_key_release_event().connect(sigc::mem_fun(this, &Test::onKeyboard), false);
+	
 	builder->get_widget("Arrow Up", up_arrow);
 	builder->get_widget("Arrow Down", down_arrow);
 	builder->get_widget("Arrow Left", left_arrow);
 	builder->get_widget("Arrow Right", right_arrow);
 
-	window->signal_key_press_event().connect(sigc::mem_fun(this, &Test::onKeyboard), false);
-	window->signal_key_release_event().connect(sigc::mem_fun(this, &Test::onKeyboard), false);
 
 	app->run(*window);
 
