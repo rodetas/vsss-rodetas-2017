@@ -10,10 +10,6 @@
 #define ARDUINO 4
 #define EXIT 5
 
-#define SAVE_COORD
-#define FPS 30
-//#define camera 0
-
 #define robot1InitialCharacter '('
 #define robot1FinalCharacter ')'
 #define robot2InitialCharacter '{'
@@ -26,17 +22,8 @@
 #define LEFT_MOVE 'E'
 #define STOPPED_MOVE 'P'
 
-#define imagePath "files/images/imageTest1.png"
-#define backgroundPath "files/textures/background.jpg"
-#define backgroundPath_menu "files/textures/background_menu.jpg"
-#define textureBallPath "files/textures/ball.png"
-#define fontTitlePath "files/fonts/fontTitle.ttf"
-#define fontTextPath "files/fonts/fontText.ttf"
-#define tguiThemePath "files/tguiThemes/Black.txt"
+#define imagePath "files/images/1280 x 720.png"
 #define instancePath "files/instances/fileCalibration.txt"
-#define textureButtonPressed "files/textures/button2.png"
-#define textureButtonNonPressed "files/textures/button1.png"
-#define textureButtonHover "files/textures/button3.png"
 
 #include <iostream>
 #include <vector>

@@ -11,7 +11,6 @@ Calibration::Calibration(){
     setCairoBinaryImage(false);
 
     getCalibration();
-    setCameraOn(true);
 
     setCameraNumber(getCameraNumberScript());
     setImageInitialize(!getCameraOn());

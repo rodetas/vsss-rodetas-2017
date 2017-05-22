@@ -176,8 +176,10 @@ cv::Mat OpenCV::cameraInitialize(CameraConfiguration camera_config, int camera_n
         timer.wait(500000); //time to camera answer
 
         if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+            //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+            //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> image;
         } else {
             cout << "CONECTION WITH CAMERA FAILED" << endl;
