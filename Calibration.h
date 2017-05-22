@@ -20,22 +20,14 @@ private:
 
 	Manipulation manipulation;
 	Timer timer;
+	int program_state;
+	std::mutex mutex;
 	
+	//proteger variaveis
+	CameraConfiguration camera_config;	
 	vector<Hsv> colorsHSV;
 	vector<Rgb> colorsRGB;
 
-	int program_state;
-	int selected_player;
-	bool cairo_binary_image;
-	
-	//OPENCV    
-	cv::Vec3b 			hsvPoint;
-	cv::Vec3b 			rgbPoint;
-
-	//thread
-	std::mutex mutex;
-	
-	//GTKMM
 	Glib::RefPtr<Gtk::Application> 	app;
 	Gtk::Window* window = nullptr;
 	Gtk::MenuItem* menu_play = nullptr;
@@ -99,28 +91,59 @@ private:
 	void onChoosePlayer();
 	void onRadioButtonImage();
 	void onRadioButtonCamera();
+
+	void setCairoBinaryImage(bool);
+	bool getCairoBinaryImage();
+	bool cairo_binary_image;
+
+	void setHSVPoint(cv::Vec3b);
+	cv::Vec3b getHSVPoint();
+	cv::Vec3b hsvPoint;
+	
+	void setRGBPoint(cv::Vec3b);
+	cv::Vec3b getRGBPoint();
+	cv::Vec3b rgbPoint;
+
+	void setSelectedPlayer(int);
+	int getSelectedPlayer();
+	int selected_player;
 	
 	void setEndCalibration(bool);
 	bool getEndCalibration();
     bool end_calibration;
 
-	void setPointCutField1(Point);
-	Point getPointCutField1();
-
-	void setPointCutField2(Point);
-	Point getPointCutField2();
+	void setPointCutFirst(Point);
+	void setPointCutSecond(Point);
+	PointCut getPointCut();
+	PointCut point_cut;
 
 	void setGoal(Point);
 	Point getGoal();
+	Point goal;
 
 	void setAngleImage(int);
 	int getAngleImage();
+	int angle_image;	
 
 	void setCameraOn(bool);
 	bool getCameraOn();
+	bool camera_on;
+
+	void setCameraNumber(int);
+	int getCameraNumber();
+	int camera_number;
+
+	void setFps(float);
+	int getFps();
+	float fps;
 
 	void setOpenCVImageBGR(cv::Mat);
 	cv::Mat getOpencvImageBGR();
+	cv::Mat opencv_image_BGR;
+
+	void setOpenCVImageBGRRotated(cv::Mat);
+	cv::Mat getOpencvImageBGRRotated();
+	cv::Mat opencv_image_BGR_rotated;
 
 	void setOpenCVImageBGRCuted(cv::Mat);
 	cv::Mat getOpencvImageBGRCuted();
@@ -138,19 +161,24 @@ private:
 	cv::Mat getOpencvImageBinary();
     cv::Mat opencv_image_binary;
 
+	void setCameraInitialize(bool b);
+	bool getCameraInitialize();
+	bool camera_initialize;
+
+	void setImageInitialize(bool b);
+	bool getImageInitialize();
+	bool image_initialize;
+
 public:
 
-	int GUI();
-
 	Calibration();
+	int GUI();
 	void thread();
+	void updateImage();
 	void updateDevices();
 	void updateColorPixel(Point);
-
 	void getCalibration();
-
 	void setPopoverHSVDefault();
 	void setPopoverCamValues();
-
 };
 #endif

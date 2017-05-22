@@ -14,14 +14,14 @@ void Vision::initialize(){
     manipulation.loadCalibration();  
     colorsHSV           = manipulation.getColorsHsv();
     camera_on           = manipulation.getCameraOn();
-    point_cut_field_1   = manipulation.getPointField1();
-    point_cut_field_2   = manipulation.getPointField2();
+    point_cut.first     = manipulation.getPointField1();
+    point_cut.second    = manipulation.getPointField2();
     angle_image         = manipulation.getAngleImage();
     camera_config       = manipulation.loadCameraConfig();
     camera_initialize   = manipulation.getCameraOn();
     image_initialize    = !manipulation.getCameraOn();
 
-    setImage();
+    opencv_image_BGR = updateCameraImage();
 }
 
 /*
@@ -29,10 +29,10 @@ void Vision::initialize(){
  */
 void Vision::computerVision(){
 
-    setImage();
+    opencv_image_BGR = updateCameraImage();
 
     full_image_cut = rotateImage(opencv_image_BGR, angle_image);
-    full_image_cut = cutImage(full_image_cut, point_cut_field_1, point_cut_field_2);
+    full_image_cut = cutImage(full_image_cut, point_cut);
 
     std::thread team_thread(&Vision::teamThread, this);
     std::thread ball_thread(&Vision::ballThread, this);
@@ -51,10 +51,12 @@ void Vision::teamThread(){
     // cropped image around the color team
     for (int i = 0; i < team_position.center.size(); i++){
 
-        Point2i cutPoint1 = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
-        Point2i cutPoint2 = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
+        PointCut cutPoint;
 
-        cv::Mat image_cut = cutImage(full_image_cut, cutPoint1, cutPoint2);
+        cutPoint.first = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
+        cutPoint.second = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
+
+        cv::Mat image_cut = cutImage(full_image_cut, cutPoint);
                 image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                 
         float biggest_radius = 0;
@@ -68,8 +70,8 @@ void Vision::teamThread(){
             if (find_position.center.size() != 0){
                 if (find_position.radius[0] > biggest_radius){
 
-                    find_position.center[0].x += cutPoint1.x;
-                    find_position.center[0].y += cutPoint1.y;
+                    find_position.center[0].x += cutPoint.first.x;
+                    find_position.center[0].y += cutPoint.first.y;
                     robot[j] = robotPosition(find_position, i);
                     
                     biggest_radius = find_position.radius[0];
@@ -99,8 +101,7 @@ void Vision::opponentThread(){
              }
         }
         opponent_position_aux.center.push_back(opponent_position.center[position]);
-        opponent_position_aux.cutPoint1.push_back(opponent_position.cutPoint1[position]);
-        opponent_position_aux.cutPoint2.push_back(opponent_position.cutPoint2[position]);
+        opponent_position_aux.cutPoint.push_back(opponent_position.cutPoint[position]);
         opponent_position_aux.radius.push_back(opponent_position.radius[position]);
     
     }

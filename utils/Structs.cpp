@@ -2,7 +2,7 @@
 
 namespace rodetas{
 
-    int getCameraNumber(){
+    int getCameraNumberScript(){
         int cameraNumber = system("utils/./cameraConfig.sh get_camera");
         cameraNumber = WEXITSTATUS(cameraNumber);
 

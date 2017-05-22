@@ -221,15 +221,14 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkRadioButton" id="Radio Button Image">
                         <property name="label" translatable="yes">Image</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">Radio Button Camera</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -243,8 +242,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">Radio Button Image</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -265,8 +264,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="valign">center</property>
-                    <property name="active">1</property>
-                    <property name="active_id">1</property>
+                    <property name="active">0</property>
+                    <property name="active_id">0</property>
                     <items>
                       <item id="0" translatable="yes">Player 0</item>
                       <item id="1" translatable="yes">Player 1</item>

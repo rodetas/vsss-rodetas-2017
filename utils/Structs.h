@@ -20,6 +20,11 @@ enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOP
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
 
+struct PointCut {
+	Point2i first;
+	Point2i second;
+};
+
 struct Command{
 	char direcao;
 	int pwm1;
@@ -139,15 +144,14 @@ struct Object{
 
 struct ContoursPosition {
 	vector<Point2i>	center;
-    vector<Point2i> cutPoint1;
-    vector<Point2i> cutPoint2;
+    vector<PointCut> cutPoint;
     vector<float>	radius;
 	
 	int frames = 0;
 	bool review_all_image = true;
 
 	bool cutPointDefined(){
-		return (cutPoint1.size() > 0 && cutPoint2.size() > 0);
+		return (cutPoint.size() > 0);
 	}
 
 	void reviewAllImage(int last_frames){
@@ -162,15 +166,15 @@ struct ContoursPosition {
 
 	void verifyLimits(int cols, int rows){
 		for (int i = 0; i < center.size(); i++){
-			if (cutPoint1[i].x < 0) cutPoint1[i].x = 0;
-			if (cutPoint1[i].y < 0) cutPoint1[i].y = 0;
-			if (cutPoint1[i].x > cols) cutPoint1[i].x = cols;
-			if (cutPoint1[i].y > rows) cutPoint1[i].y = rows;
+			if (cutPoint[i].first.x < 0) cutPoint[i].first.x = 0;
+			if (cutPoint[i].first.y < 0) cutPoint[i].first.y = 0;
+			if (cutPoint[i].first.x > cols) cutPoint[i].first.x = cols;
+			if (cutPoint[i].first.y > rows) cutPoint[i].first.y = rows;
 
-			if (cutPoint2[i].x < 0) cutPoint2[i].x = 0;
-			if (cutPoint2[i].y < 0) cutPoint2[i].y = 0;
-			if (cutPoint2[i].x > cols) cutPoint2[i].x = cols;
-			if (cutPoint2[i].y > rows) cutPoint2[i].y = rows;
+			if (cutPoint[i].second.x < 0) cutPoint[i].second.x = 0;
+			if (cutPoint[i].second.y < 0) cutPoint[i].second.y = 0;
+			if (cutPoint[i].second.x > cols) cutPoint[i].second.x = cols;
+			if (cutPoint[i].second.y > rows) cutPoint[i].second.y = rows;
 
 			if (center[i].x < 0) center[i].x = 0;
 			if (center[i].y < 0) center[i].y = 0;
@@ -182,7 +186,7 @@ struct ContoursPosition {
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
 		cout << "RADIUS   [" << i << "]: " << radius[i] << endl;
-		cout << "CUTPOINT [" << i << "]: " << cutPoint1[i] << cutPoint2[i] << endl << endl;
+		cout << "CUTPOINT [" << i << "]: " << cutPoint[i].first << cutPoint[i].second << endl << endl;
 	};
 };
 
@@ -233,7 +237,7 @@ float calcCos(const T a, const U b){
 	return cos((calcAngle(b,a) - b.angle)/RADIAN_TO_DEGREE);
 }
 
-int getCameraNumber();
+int getCameraNumberScript();
 string executeCommand(string cmd);
 Point changeCordinates(Point, Point, Point);
 void updateCameraValues(CameraConfiguration, int);

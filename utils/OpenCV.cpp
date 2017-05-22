@@ -1,7 +1,6 @@
 #include "OpenCV.h"
 
 OpenCV::OpenCV(){
-    camera_number = getCameraNumber();
 }
 
 /*
@@ -29,8 +28,8 @@ cv::Mat OpenCV::changeColorSpace(cv::Mat image, int code){
 /*
  * Method that cut image
  */
-cv::Mat OpenCV::cutImage(cv::Mat image, cv::Point point_cut_field_1, cv::Point point_cut_field_2){
-    return image( cv::Rect(point_cut_field_1, point_cut_field_2) );
+cv::Mat OpenCV::cutImage(cv::Mat image, PointCut point){
+    return image( cv::Rect(point.first, point.second) );
 }
 
 /*
@@ -90,7 +89,7 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 
         for(int j = 0; j < last_position.center.size(); j++) {
 
-            cv::Mat image_cut = cutImage(image, last_position.cutPoint1[j], last_position.cutPoint2[j]);
+            cv::Mat image_cut = cutImage(image, last_position.cutPoint[j]);
                     image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                     image_cut = binarize(image_cut, color_hsv);
 
@@ -98,14 +97,14 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
             find_position = binarizedColorPosition(image_cut);
 
             for(int i = 0; i < find_position.center.size(); i++){
-                Point2i cutPoint1 = cv::Point( find_position.center[i].x - (percent_cut) + last_position.cutPoint1[j].x, find_position.center[i].y - (percent_cut) + last_position.cutPoint1[j].y);
-                Point2i cutPoint2 = cv::Point( find_position.center[i].x + (percent_cut) + last_position.cutPoint1[j].x, find_position.center[i].y + (percent_cut) + last_position.cutPoint1[j].y);
-                Point2i center_position = cv::Point( find_position.center[i].x + last_position.cutPoint1[j].x, find_position.center[i].y + last_position.cutPoint1[j].y);
+                PointCut cutPoint;
+                cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut) + last_position.cutPoint[i].first.x, find_position.center[i].y - (percent_cut) + last_position.cutPoint[i].first.y);
+                cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut) + last_position.cutPoint[i].first.x, find_position.center[i].y + (percent_cut) + last_position.cutPoint[i].first.y);
+                Point2i center_position = cv::Point( find_position.center[i].x + last_position.cutPoint[i].first.x, find_position.center[i].y + last_position.cutPoint[i].first.y);
 
                 atual_position.center.push_back(center_position);
                 atual_position.radius.push_back(find_position.radius[i]);
-                atual_position.cutPoint1.push_back(cutPoint1);
-                atual_position.cutPoint2.push_back(cutPoint2);
+                atual_position.cutPoint.push_back(cutPoint);
 
                 atual_position.verifyLimits(image.cols, image.rows);
             }
@@ -119,13 +118,13 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
         find_position = binarizedColorPosition(binary_image, n_contours);
 
         for(int i = 0; i < find_position.center.size(); i++){
-            Point2i cutPoint1 = cv::Point( find_position.center[i].x - (percent_cut), find_position.center[i].y - (percent_cut));
-            Point2i cutPoint2 = cv::Point( find_position.center[i].x + (percent_cut), find_position.center[i].y + (percent_cut));
+            PointCut cutPoint;            
+            cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut), find_position.center[i].y - (percent_cut));
+            cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut), find_position.center[i].y + (percent_cut));
 
             atual_position.center.push_back(find_position.center[i]);
             atual_position.radius.push_back(find_position.radius[i]);
-            atual_position.cutPoint1.push_back(cutPoint1);
-            atual_position.cutPoint2.push_back(cutPoint2);
+            atual_position.cutPoint.push_back(cutPoint);
             
             atual_position.verifyLimits(image.cols, image.rows);
         }
@@ -139,40 +138,39 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 /*
  * Method that receives image from webcam
  */
-void OpenCV::setImage(){    
-    if (image_initialize) 
-        imageInitialize();
-    
-    if (camera_initialize)
-        cameraInitialize();
+cv::Mat OpenCV::updateCameraImage(){
+    cv::Mat image;
 
-    if(camera_on && cam.isOpened())
-        cam >> opencv_image_BGR;
+    if(cam.isOpened())
+        cam >> image;
+
+    return image;
 }
 
 /*
  * Method for initialize image
  */
-void OpenCV::imageInitialize(){
+cv::Mat OpenCV::imageInitialize(){
+    cv::Mat image;
     cameraRelease();
-    do {        
-        opencv_image_BGR = cv::imread(imagePath);
-        
-        if (opencv_image_BGR.empty()){
-            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl;
-        }
 
-    } while(opencv_image_BGR.empty());
+    do {
+        image = cv::imread(imagePath);        
+        if (image.empty()){
+            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl; 
+        }
+    } while(image.empty());
     
-    image_initialize = false;
-    imageValidation();
+    return image;
 }
 
 /*
  * Method to initialize camera
  */
-void OpenCV::cameraInitialize(){
-    while(!cam.isOpened()){
+cv::Mat OpenCV::cameraInitialize(CameraConfiguration camera_config, int camera_number){
+    cv::Mat image;
+
+    do {
         updateCameraValues(camera_config, camera_number);
         cam = cv::VideoCapture(camera_number);
         timer.wait(500000); //time to camera answer
@@ -180,37 +178,34 @@ void OpenCV::cameraInitialize(){
         if(cam.isOpened()){
             cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
             cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-            cam >> opencv_image_BGR;
+            cam >> image;
         } else {
             cout << "CONECTION WITH CAMERA FAILED" << endl;
         }
-    }
-    camera_initialize = false;
-    imageValidation();
+    } while(!cam.isOpened());
+
+    return image;
 }
 
 /*
  * Method to verify the image integrity
  */
-void OpenCV::imageValidation(){
-    bool validate = false;
-    while (!validate){
-
-        if (opencv_image_BGR.empty()){
+void OpenCV::imageValidation(cv::Mat image, PointCut point){
+    do {
+        if (image.empty()){
             cout << "EMPTY IMAGE" << endl;
 
-        } else if ( point_cut_field_1.x > opencv_image_BGR.cols || point_cut_field_1.y > opencv_image_BGR.rows ||
-                    point_cut_field_2.x > opencv_image_BGR.cols || point_cut_field_2.y > opencv_image_BGR.rows) {
-            point_cut_field_1 = {0,0};
-            point_cut_field_2 = opencv_image_BGR.size();
+        } else if ( point.first.x > image.cols || point.first.y > image.rows ||
+                    point.second.x > image.cols || point.second.y > image.rows) {
+            point.first = {0,0};
+            point.second = image.size();
             cout << "POINT TO CUT IMAGE IS INVALID" << endl;
 
         } else {
-            validate = true;
             cout << "IMAGE IS VALID" << endl;
+            break;
         }
-
-    }
+    } while(true);
 }
 
 /*

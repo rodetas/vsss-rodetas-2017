@@ -24,6 +24,16 @@ private:
 
 	cv::Mat full_image_cut;
 
+	CameraConfiguration camera_config;	
+	cv::Mat opencv_image_BGR;
+	int angle_image;
+	int camera_number;
+	bool camera_on;
+	bool image_initialize;
+	bool camera_initialize;
+	Point goal;
+	PointCut point_cut;
+
 public:
 	Vision();
 	void initialize();	
