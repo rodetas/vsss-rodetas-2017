@@ -24,7 +24,7 @@ void Calibration::thread(){
         setOpenCVImageBGRCuted  ( cutImage( getOpencvImageBGRRotated(), getPointCut()));
         setOpenCVImageHSV       ( changeColorSpace( getOpencvImageBGRCuted(), cv::COLOR_BGR2HSV_FULL));
         setOpenCVImageCairo     ( changeColorSpace( getOpencvImageBGRCuted(), cv::COLOR_BGR2RGB));
-        setOpenCVImageBinary    ( changeColorSpace( binarize(getOpencvImageHSV(), colorsHSV[getSelectedPlayer()]), cv::COLOR_GRAY2RGB));
+        setOpenCVImageBinary    ( changeColorSpace( binarize(getOpencvImageHSV(), getColorsHSV()[getSelectedPlayer()]), cv::COLOR_GRAY2RGB));
         
         setFps(timer.framesPerSecond());
     }
@@ -32,7 +32,7 @@ void Calibration::thread(){
 
 void Calibration::updateImage(){
     if (getCameraInitialize()) {
-        setOpenCVImageBGR( cameraInitialize(camera_config, getCameraNumber()));
+        setOpenCVImageBGR( cameraInitialize(getCameraConfig(), getCameraNumber()));
         setCameraInitialize(false);
         imageValidation(getOpencvImageBGR(), getPointCut());
     }
@@ -50,25 +50,29 @@ void Calibration::updateImage(){
 
 void Calibration::updateColorPixel(Point pixel_point){
     setHSVPoint( getOpencvImageHSV().at<cv::Vec3b>(pixel_point.y, pixel_point.x));
-    colorsHSV[getSelectedPlayer()].setH(getHSVPoint()[H]);
-    colorsHSV[getSelectedPlayer()].setS(getHSVPoint()[S]);
-    colorsHSV[getSelectedPlayer()].setV(getHSVPoint()[V]);
+    Hsv h;
+        h.setH(getHSVPoint()[H]);
+        h.setS(getHSVPoint()[S]);
+        h.setV(getHSVPoint()[V]);
+    setColorsHSV(h, getSelectedPlayer());
 
     setRGBPoint( getOpencvImageBGRCuted().at<cv::Vec3b>(pixel_point.y, pixel_point.x));
-    colorsRGB[getSelectedPlayer()].r = getRGBPoint()[2];
-    colorsRGB[getSelectedPlayer()].g = getRGBPoint()[1];
-    colorsRGB[getSelectedPlayer()].b = getRGBPoint()[0];
+    Rgb r;
+        r.r = getRGBPoint()[2];
+        r.g = getRGBPoint()[1];
+        r.b = getRGBPoint()[0];
+    setColorsRGB(r, getSelectedPlayer());
 
-    setPopoverHSVDefault();
-}
+    setPopoverHSVDefault(); 
+}   
 
 void Calibration::getCalibration(){
     manipulation.loadCalibration();
 
     colorsHSV           = manipulation.getColorsHsv();
     colorsRGB           = manipulation.getColorsRgb();
-    camera_config       = manipulation.loadCameraConfig();
 
+    setCameraConfig(manipulation.loadCameraConfig());
     setAngleImage(manipulation.getAngleImage());
     setGoal(manipulation.getGoal());
     setPointCutFirst(manipulation.getPointField1());
@@ -76,9 +80,9 @@ void Calibration::getCalibration(){
     setCameraOn(manipulation.getCameraOn());
 
     cv::Vec3b v;
-        v[0] = colorsHSV[getSelectedPlayer()].h[2];
-        v[1] = colorsHSV[getSelectedPlayer()].s[2];
-        v[2] = colorsHSV[getSelectedPlayer()].v[2];
+        v[0] = getColorsHSV()[getSelectedPlayer()].h[2];
+        v[1] = getColorsHSV()[getSelectedPlayer()].s[2];
+        v[2] = getColorsHSV()[getSelectedPlayer()].v[2];
     setHSVPoint(v);
 }
 
@@ -178,7 +182,8 @@ int Calibration::GUI(){
 
     builder->get_widget("Scale Exposure", scale_exposure);
     scale_exposure->signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleCAMExposure) );
-
+    setPopoverCamValues();
+    
     builder->get_widget("Scale Rotate", scale_rotate);
     scale_rotate->signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );
     
@@ -205,7 +210,7 @@ int Calibration::GUI(){
     cameraRelease();
 
     manipulation.saveCalibration(colorsHSV, colorsRGB, getPointCut().first, getPointCut().second, getGoal(), getAngleImage(), getCameraOn());
-    manipulation.saveCameraConfig(camera_config);
+    manipulation.saveCameraConfig(getCameraConfig());
     
     return program_state;
 }
@@ -290,15 +295,16 @@ void Calibration::onRadioButtonCamera(){
 }
 
 void Calibration::onMenuRefresh(){
-    camera_config.brightness = 128;
-    camera_config.contrast = 128;
-    camera_config.saturation = 128;
-    camera_config.gain = 0;
-    camera_config.sharpness = 128;
-    camera_config.exposure = 300;
+    CameraConfiguration c;
+    c.brightness = 128;
+    c.contrast = 128;
+    c.saturation = 128;
+    c.gain = 0;
+    c.sharpness = 128;
+    c.exposure = 300;
 
     setPopoverCamValues();
-    updateCameraValues(camera_config, getCameraNumber());
+    updateCameraValues(c, getCameraNumber());
 }
 
 void Calibration::setPopoverHSVDefault(){
@@ -311,22 +317,22 @@ void Calibration::setPopoverHSVDefault(){
 }
 
 void Calibration::setPopoverCamValues(){
-    scale_brightness->set_value(camera_config.brightness);
-    scale_contrast->set_value(camera_config.contrast);
-    scale_saturation->set_value(camera_config.saturation);
-    scale_gain->set_value(camera_config.gain); 
-    scale_sharpness->set_value(camera_config.sharpness);
-    scale_exposure->set_value(camera_config.exposure);
+    scale_brightness->set_value(getCameraConfig().brightness);
+    scale_contrast->set_value(getCameraConfig().contrast);
+    scale_saturation->set_value(getCameraConfig().saturation);
+    scale_gain->set_value(getCameraConfig().gain); 
+    scale_sharpness->set_value(getCameraConfig().sharpness);
+    scale_exposure->set_value(getCameraConfig().exposure);
 }
 
 void Calibration::onChoosePlayer(){
     setSelectedPlayer(combo_choose_player->get_active_row_number());
-    scale_hmax->set_value(colorsHSV[getSelectedPlayer()].variationH_MAX);
-    scale_hmin->set_value(colorsHSV[getSelectedPlayer()].variationH_MIN);
-    scale_smax->set_value(colorsHSV[getSelectedPlayer()].variationS_MAX);
-    scale_smin->set_value(colorsHSV[getSelectedPlayer()].variationS_MIN);
-    scale_vmax->set_value(colorsHSV[getSelectedPlayer()].variationV_MAX);
-    scale_vmin->set_value(colorsHSV[getSelectedPlayer()].variationV_MIN);
+    scale_hmax->set_value(getColorsHSV()[getSelectedPlayer()].variationH_MAX);
+    scale_hmin->set_value(getColorsHSV()[getSelectedPlayer()].variationH_MIN);
+    scale_smax->set_value(getColorsHSV()[getSelectedPlayer()].variationS_MAX);
+    scale_smin->set_value(getColorsHSV()[getSelectedPlayer()].variationS_MIN);
+    scale_vmax->set_value(getColorsHSV()[getSelectedPlayer()].variationV_MAX);
+    scale_vmin->set_value(getColorsHSV()[getSelectedPlayer()].variationV_MIN);
 }
 
 void Calibration::onButtonHSV() {
@@ -340,67 +346,92 @@ void Calibration::onButtonCAM() {
 }
 
 void Calibration::onScaleHMax(){
-    colorsHSV[getSelectedPlayer()].variationH_MAX = scale_hmax->get_value();
-    colorsHSV[getSelectedPlayer()].setH(colorsHSV[getSelectedPlayer()].h[MID]);
+    Hsv h = getColorsHSV()[getSelectedPlayer()];
+    h.variationH_MAX = scale_hmax->get_value();
+    h.setH(getColorsHSV()[getSelectedPlayer()].h[MID]);
+    setColorsHSV(h, getSelectedPlayer());
 }
 
 void Calibration::onScaleHMin(){
-    colorsHSV[getSelectedPlayer()].variationH_MIN = scale_hmin->get_value();   
-    colorsHSV[getSelectedPlayer()].setH(colorsHSV[getSelectedPlayer()].h[MID]);
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationH_MIN = scale_hmin->get_value();   
+    h.setH(getColorsHSV()[getSelectedPlayer()].h[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
 }
 
 void Calibration::onScaleSMax(){
-    colorsHSV[getSelectedPlayer()].variationS_MAX = scale_smax->get_value();
-    colorsHSV[getSelectedPlayer()].setS(colorsHSV[getSelectedPlayer()].s[MID]);
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationS_MAX = scale_smax->get_value();
+    h.setS(getColorsHSV()[getSelectedPlayer()].s[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
 }
 
 void Calibration::onScaleSMin(){
-    colorsHSV[getSelectedPlayer()].variationS_MIN = scale_smin->get_value();
-    colorsHSV[getSelectedPlayer()].setS(colorsHSV[getSelectedPlayer()].s[MID]);
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationS_MIN = scale_smin->get_value();
+    h.setS(getColorsHSV()[getSelectedPlayer()].s[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
 }
 
 void Calibration::onScaleVMax(){
-    colorsHSV[getSelectedPlayer()].variationV_MAX = scale_vmax->get_value();
-    colorsHSV[getSelectedPlayer()].setV(colorsHSV[getSelectedPlayer()].v[MID]);
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationV_MAX = scale_vmax->get_value();
+    h.setV(getColorsHSV()[getSelectedPlayer()].v[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
 }
 
 void Calibration::onScaleVMin(){
-    colorsHSV[getSelectedPlayer()].variationV_MIN = scale_vmin->get_value();
-    colorsHSV[getSelectedPlayer()].setV(colorsHSV[getSelectedPlayer()].v[MID]);
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationV_MIN = scale_vmin->get_value();
+    h.setV(getColorsHSV()[getSelectedPlayer()].v[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
 }
 
 void Calibration::onScaleRotate(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
     setAngleImage(scale_rotate->get_value());
 }
 
 void Calibration::onScaleCAMBrightness(){
-   camera_config.brightness = scale_brightness->get_value();
-   updateCameraValues(camera_config, getCameraNumber());
+    CameraConfiguration c = getCameraConfig();
+    c.brightness = scale_brightness->get_value();
+    rodetas::updateCameraValues(c, getCameraNumber());
+    setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMContrast(){
-    camera_config.contrast = scale_contrast->get_value();
-    rodetas::updateCameraValues(camera_config, getCameraNumber());
+    CameraConfiguration c = getCameraConfig();
+    c.contrast = scale_contrast->get_value();
+    rodetas::updateCameraValues(c, getCameraNumber());
+    setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMSaturation(){
-    camera_config.saturation = scale_saturation->get_value();
-    rodetas::updateCameraValues(camera_config, getCameraNumber());
+    CameraConfiguration c = getCameraConfig();
+    c.saturation = scale_saturation->get_value();
+    rodetas::updateCameraValues(c, getCameraNumber());
+    setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMGain(){
-    camera_config.gain = scale_gain->get_value();
-    rodetas::updateCameraValues(camera_config, getCameraNumber());
+    CameraConfiguration c = getCameraConfig();
+    c.gain = scale_gain->get_value();
+    rodetas::updateCameraValues(c, getCameraNumber());
+    setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMSharpness(){
-    camera_config.sharpness = scale_sharpness->get_value();
-    rodetas::updateCameraValues(camera_config, getCameraNumber());
+    CameraConfiguration c = getCameraConfig();
+    c.sharpness = scale_sharpness->get_value();
+    rodetas::updateCameraValues(c, getCameraNumber());
+    setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMExposure(){
-    camera_config.exposure = scale_exposure->get_value();
-    rodetas::updateCameraValues(camera_config, getCameraNumber());
+    CameraConfiguration c = getCameraConfig();
+    c.exposure = scale_exposure->get_value();
+    rodetas::updateCameraValues(c, getCameraNumber());
+    setCameraConfig(c);
 }
 
 void Calibration::onMenuGame(){
@@ -611,4 +642,34 @@ void Calibration::setImageInitialize(bool b){
 bool Calibration::getImageInitialize(){
     std::lock_guard<std::mutex> lock(mutex);    
     return image_initialize;
+}
+
+void Calibration::setCameraConfig(CameraConfiguration c){
+    std::lock_guard<std::mutex> lock(mutex);    
+    camera_config = c;
+}
+
+CameraConfiguration Calibration::getCameraConfig(){
+    std::lock_guard<std::mutex> lock(mutex);    
+    return camera_config;
+}
+
+void Calibration::setColorsHSV(Hsv h, int i){
+    std::lock_guard<std::mutex> lock(mutex);    
+    colorsHSV[i] = h;
+}
+
+vector<Hsv> Calibration::getColorsHSV(){
+    std::lock_guard<std::mutex> lock(mutex);    
+    return colorsHSV;
+}
+
+void Calibration::setColorsRGB(Rgb r, int i){
+    std::lock_guard<std::mutex> lock(mutex);    
+    colorsRGB[i] = r;
+}
+
+vector<Rgb> Calibration::getColorsRGB(){
+    std::lock_guard<std::mutex> lock(mutex);    
+    return colorsRGB;
 }

@@ -22,11 +22,6 @@ private:
 	Timer timer;
 	int program_state;
 	std::mutex mutex;
-	
-	//proteger variaveis
-	CameraConfiguration camera_config;	
-	vector<Hsv> colorsHSV;
-	vector<Rgb> colorsRGB;
 
 	Glib::RefPtr<Gtk::Application> 	app;
 	Gtk::Window* window = nullptr;
@@ -161,14 +156,26 @@ private:
 	cv::Mat getOpencvImageBinary();
     cv::Mat opencv_image_binary;
 
-	void setCameraInitialize(bool b);
+	void setCameraInitialize(bool);
 	bool getCameraInitialize();
 	bool camera_initialize;
 
-	void setImageInitialize(bool b);
+	void setImageInitialize(bool);
 	bool getImageInitialize();
 	bool image_initialize;
 
+	void setCameraConfig(CameraConfiguration);
+	CameraConfiguration getCameraConfig();
+	CameraConfiguration camera_config;
+
+	void setColorsRGB(Rgb, int);
+	vector<Rgb> getColorsRGB();
+	vector<Rgb> colorsRGB;
+
+	void setColorsHSV(Hsv, int);
+	vector<Hsv> getColorsHSV();
+	vector<Hsv> colorsHSV;
+	
 public:
 
 	Calibration();
