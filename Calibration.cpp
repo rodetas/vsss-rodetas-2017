@@ -94,7 +94,8 @@ int Calibration::GUI(){
 	
 	builder->get_widget("Window Calibration", window);
     window->signal_key_press_event().connect(sigc::mem_fun(this, &Calibration::onKeyboard));
-	
+	window->maximize();
+    
     builder->get_widget("Menu Play", menu_play);
     menu_play->signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuGame));
 	
@@ -195,7 +196,6 @@ int Calibration::GUI(){
     draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &Calibration::onMouseClick) );
 	sigc::connection draw_connection = Glib::signal_timeout().connect( sigc::mem_fun(this, &Calibration::setInformations50MilliSec) , 50 );
 
-    window->maximize();
     window->show_all();
 
     std::thread calibration_thread(&Calibration::thread, this);
