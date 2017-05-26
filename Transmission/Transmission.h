@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <cstring>
+#include <bitset>
 
 using namespace std;
 using namespace rodetas;

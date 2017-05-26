@@ -4,6 +4,7 @@
 #include "../Header.h"
 #include "opencv2/highgui/highgui.hpp"
 #include <iomanip>
+#include <stdio.h>
 
 namespace rodetas{
 
@@ -40,6 +41,25 @@ struct Command{
 		direcao = d;
 		pwm1 = p1;
 		pwm2 = p2;
+	}
+
+	string to_string(){
+		stringstream ss;
+		ss << direcao << pwm1 << pwm2;
+		return ss.str();
+	}
+
+	vector<int> to_hex(){
+		//string cmd = this->to_string();
+		string cmd = "A255255";
+		vector<int> vec;
+
+		for(int i=0 ; i<cmd.size() ; i++){
+			vec.push_back(int(cmd[i]));
+//			cout << vec[i] << endl;
+		}
+
+		return vec;
 	}
 };
 
