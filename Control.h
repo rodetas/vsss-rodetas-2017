@@ -23,16 +23,20 @@ private:
 	//GTKMM
 	Glib::RefPtr<Gtk::Application> app;
 	DrawAreaControl draw_robot;
-	Gtk::Label label_fps;
-	Gtk::Label label_transmission;
-
+	
 	Gtk::Window *window = nullptr;
 	Gtk::ToggleButton *button_play = nullptr;
 	Gtk::ToggleButton *button_penalty = nullptr;
 	Gtk::ToggleButton *button_side = nullptr;
-	Gtk::SpinButton *spin_potency = nullptr; 
-
-
+	Gtk::SpinButton *spin_potency = nullptr;
+	Gtk::SpinButton *spin_curve  = nullptr;
+	Gtk::Label *label_fps = nullptr;
+	Gtk::Label *label_transmission = nullptr;
+	Gtk::MenuItem *menu_calibration = nullptr;
+	Gtk::MenuItem *menu_simulator = nullptr;
+	Gtk::MenuItem *menu_arduino = nullptr;
+	Gtk::MenuItem *menu_quit = nullptr;
+	Gtk::SeparatorMenuItem *separator = nullptr; 
 
 
 	int program_state;
@@ -48,7 +52,7 @@ private:
 
 	void onButtonPlay();
 	void onPotencyChanged();
-	void onCurveChanged(Gtk::SpinButton*);
+	void onCurveChanged();
 	void onButtonTime();
 	
 	bool onKeyboard(GdkEventKey*);

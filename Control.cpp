@@ -77,9 +77,34 @@ void Control::GUIInformation() {
 	builder->get_widget("Selector Potency", spin_potency);
 	spin_potency->signal_value_changed().connect(sigc::mem_fun(this, &Control::onPotencyChanged));
 
+	builder->get_widget("Selector Curve", spin_curve);
+	spin_curve->signal_value_changed().connect(sigc::mem_fun(this, &Control::onCurveChanged));
+
+	builder->get_widget("Label FPS", label_fps);
+
+	builder->get_widget("Transmission Erro", label_transmission);
+
+	///////////////////////// NAVEGATION MENU /////////////////////////
+
+	builder->get_widget("Menu Calibrate", menu_calibration);
+	menu_calibration->signal_activate().connect(sigc::mem_fun(this, &Control::onMenuCalibration));
+
+	builder->get_widget("Menu Simulate", menu_simulator);
+	menu_simulator->signal_activate().connect(sigc::mem_fun(this, &Control::onMenuSimulator));
+
+	builder->get_widget("Menu Upload Arduino", menu_arduino);
+	menu_arduino->signal_activate().connect(sigc::mem_fun(this, &Control::onMenuArduino));
+
+	builder->get_widget("Menu Quit", menu_quit);
+	menu_quit->signal_activate().connect(sigc::mem_fun(this, &Control::onMenuQuit));
+
+
+
+
+
 
 	
-	
+
 
 
 
@@ -95,87 +120,6 @@ void Control::GUIInformation() {
 	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::setInformations50MilliSec), 50); 
 
 
-///////////////////////// BUTTONS /////////////////////////
-
-
-	Gtk::Box box_potency(Gtk::ORIENTATION_VERTICAL);
-		box_potency.set_spacing(10);
-
-	Gtk::Label label_potency;
-		label_potency.set_text("Potency Factor:");
-		box_potency.pack_start(label_potency);
-
-	Gtk::SpinButton spin_potency;
-		spin_potency.set_range(0,3);
-		spin_potency.set_value(1.2);
-		spin_potency.set_digits(1);
-		spin_potency.set_increments(0.1,0.1);
-		spin_potency.signal_value_changed().connect( sigc::bind<Gtk::SpinButton*> (sigc::mem_fun(this, &Control::onPotencyChanged), &spin_potency) );
-		box_potency.pack_start(spin_potency);
-
-	Gtk::Box box_curve(Gtk::ORIENTATION_VERTICAL);
-		box_curve.set_spacing(10);
-
-	Gtk::Label label_curve;
-		label_curve.set_text("Curve Factor:");
-		label_curve.set_size_request(5,5);
-		box_curve.pack_start(label_curve);
-
-	Gtk::SpinButton spin_curve;
-		spin_curve.set_range(0,3);
-		spin_curve.set_value(1.1);
-		spin_curve.set_digits(1);
-		spin_curve.set_increments(0.1,0.3);
-		spin_curve.signal_value_changed().connect( sigc::bind<Gtk::SpinButton*> (sigc::mem_fun(this, &Control::onCurveChanged), &spin_curve) );
-		box_curve.pack_start(spin_curve);
-
-	label_fps.set_label("Fps: 0");
-
-	label_transmission.set_label("TRANSMISSION ERROR");
-	label_transmission.override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
-
-
-///////////////////////// NAVEGATION MENU /////////////////////////
-
-    Gtk::MenuItem menu_calibration;
-        menu_calibration.set_label("_Calibrate");
-        menu_calibration.set_use_underline(true);
-        menu_calibration.add_accelerator("activate", accel_map, GDK_KEY_c, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-        menu_calibration.signal_activate().connect(sigc::mem_fun(this, &Control::onMenuCalibration));
-
-    Gtk::MenuItem menu_simulator;
-        menu_simulator.set_label("S_imulate");
-        menu_simulator.set_use_underline(true);
-        menu_simulator.add_accelerator("activate", accel_map, GDK_KEY_s, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-        menu_simulator.signal_activate().connect(sigc::mem_fun(this, &Control::onMenuSimulator));
-
-    Gtk::MenuItem menu_arduino;
-        menu_arduino.set_label("_Upload Arduino");
-        menu_arduino.set_use_underline(true);
-        menu_arduino.add_accelerator("activate", accel_map, GDK_KEY_u, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
-        menu_arduino.signal_activate().connect(sigc::mem_fun(this, &Control::onMenuArduino));
-
-    Gtk::MenuItem menu_quit;
-        menu_quit.set_label("_Quit");
-        menu_quit.set_use_underline(true);
-        menu_quit.add_accelerator("activate", accel_map, GDK_KEY_Escape, Gdk::ModifierType(0), Gtk::ACCEL_VISIBLE);
-        menu_quit.signal_activate().connect(sigc::mem_fun(this, &Control::onMenuQuit));
-
-    Gtk::SeparatorMenuItem separator;    
-
-    Gtk::MenuItem menu_navegation;
-    Gtk::Menu subMenuNavigation;    
-        menu_navegation.set_label("Navegation");
-        menu_navegation.set_submenu(subMenuNavigation);
-        subMenuNavigation.append(menu_calibration);
-        subMenuNavigation.append(menu_simulator);
-        subMenuNavigation.append(menu_arduino);
-        subMenuNavigation.append(separator);
-        subMenuNavigation.append(menu_quit);
-
-	Gtk::MenuBar menu_bar;
-        menu_bar.append(menu_navegation);
-   
 ///////////////////////// CONTAINERS /////////////////////////
 		
 	Gtk::Grid box_right;
@@ -249,11 +193,10 @@ bool Control::onKeyboard(GdkEventKey* event){
 
 void Control::onPotencyChanged(){
 	strategy.setPowerPotency(spin_potency->get_value());
-	cout<<spin_potency->get_value()<<endl;
 }
 
-void Control::onCurveChanged(Gtk::SpinButton* button){
-	strategy.setPowerCurve(button->get_value());
+void Control::onCurveChanged(){
+	strategy.setPowerCurve(spin_curve->get_value());
 }
 
 void Control::onButtonPlay(){
@@ -284,12 +227,12 @@ bool Control::setInformations50MilliSec(){
 	draw_robot.setPosition(thread_position);
 
 	if(thread_transmission_status == false){
-		label_transmission.set_visible(true);
+		label_transmission->set_visible(true);
 	} else {
-		label_transmission.set_visible(false);
+		label_transmission->set_visible(false);
 	}
 	
-	label_fps.set_label("Fps: " + to_string(thread_fps));
+	label_fps->set_label("Fps: " + to_string(thread_fps));
 	
 	return true;
 }
