@@ -53,17 +53,42 @@ void Control::setThreadVariables(){
 }
 
 void Control::GUIInformation() {
-	
+
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::AccelGroup> accel_map = Gtk::AccelGroup::create();
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Control.glade");
 
-		window.maximize();
-		window.set_title("Rodetas");
-		window.set_icon_from_file("files/images/logo-rodetas.png");
-		window.signal_key_press_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
-		window.signal_key_release_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
-		window.add_accel_group(accel_map);
+	builder->get_widget("Window Control", window);
+   	window->signal_key_press_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
+	window->signal_key_release_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
+	window->maximize();
+
+///////////////////////// BUTTONS /////////////////////////
+
+	builder->get_widget("Button Paused", button_play); 
+	button_play->signal_clicked().connect(sigc::mem_fun(this, &Control::onButtonPlay));
+
+	builder->get_widget("Button Penalty", button_penalty); 
+	//button_penalty->signal_clicked().connect(sigc::mem_fun(this, &Control::));
+
+	builder->get_widget("Button Time", button_side);
+	button_side->signal_clicked().connect(sigc::mem_fun(this, &Control::onButtonTime));
+
+	builder->get_widget("Selector Potency", spin_potency);
+	spin_potency->signal_value_changed().connect(sigc::mem_fun(this, &Control::onPotencyChanged));
+
+
+	
+	
+
+
+
+
+    window->show_all();
+
+	app->run(*window);
+	
+	/*
 
 ///////////////////////// DRAW IMAGE /////////////////////////
 
@@ -72,15 +97,6 @@ void Control::GUIInformation() {
 
 ///////////////////////// BUTTONS /////////////////////////
 
-	button_play.add_label("Paused");	
-	button_play.signal_clicked().connect( sigc::bind<Gtk::ToggleButton*> (sigc::mem_fun(this, &Control::onButtonPlay), &button_play) );
-
-	Gtk::Button button_penalty;
-		button_penalty.add_label("Penalty");
-
-	Gtk::Button button_side;
-		button_side.add_label("1º time");
-		button_side.signal_clicked().connect( sigc::bind<Gtk::Button*> (sigc::mem_fun(this, &Control::onButtonTime), &button_side) );
 
 	Gtk::Box box_potency(Gtk::ORIENTATION_VERTICAL);
 		box_potency.set_spacing(10);
@@ -198,7 +214,7 @@ void Control::GUIInformation() {
   	app->run(window);
 
 	program_state = MENU;
-	robot_draw_connection.disconnect();
+	robot_draw_connection.disconnect();*/
 }
 
 
@@ -219,7 +235,7 @@ bool Control::onKeyboard(GdkEventKey* event){
 		transmission.movementRobot(Command('V', 150, 150));
 
 	} else if(event->keyval == GDK_KEY_space) {
-		button_play.set_active(!button_play.get_active());
+		button_play->set_active(!button_play->get_active());
 		
 	} else if(event->keyval == GDK_KEY_Escape){
 		onMenuQuit();
@@ -231,32 +247,33 @@ bool Control::onKeyboard(GdkEventKey* event){
     return true;
 }
 
-void Control::onPotencyChanged(Gtk::SpinButton* button){
-	strategy.setPowerPotency(button->get_value());
+void Control::onPotencyChanged(){
+	strategy.setPowerPotency(spin_potency->get_value());
+	cout<<spin_potency->get_value()<<endl;
 }
 
 void Control::onCurveChanged(Gtk::SpinButton* button){
 	strategy.setPowerCurve(button->get_value());
 }
 
-void Control::onButtonPlay(Gtk::ToggleButton* button){
+void Control::onButtonPlay(){
 
-	if(button->get_active()){
-		button->set_label("Playing");
+	if(button_play->get_active()){
+		button_play->set_label("Playing");
 	} else {
-		button->set_label("Paused");
+		button_play->set_label("Paused");
 	}
 
     play = !play;
 	transmission.stopRobot();
 }
 
-void Control::onButtonTime(Gtk::Button* button){
+void Control::onButtonTime(){
 
 	if(change_time == false){
-		button->set_label("1º time");
+		button_side->set_label("1º time");
 	} else {
-		button->set_label("2º time");
+		button_side->set_label("2º time");
 	}
 
 	change_time = !change_time;
