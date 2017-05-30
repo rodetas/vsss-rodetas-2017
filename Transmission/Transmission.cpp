@@ -140,24 +140,14 @@ void Transmission::transmitting(string comand){
         openConection();
 
     } else {
-        cout << "COMANDO: ";
         for(int i=0, cont=0 ; i<comand.size() ; i++){
             stringstream parcial;
-            parcial << "0x" << comand[i];
-            cout << comand[i];
             i++;
             cout << comand[i] << " ";
             parcial << comand[i];
             send_bytes[cont] = stoi(parcial.str().c_str(), 0, 16);
             cont++;
         }
-        cout << endl;
-
-        for(int i=0 ; i<size/2 ; i++){
-            cout << int(send_bytes[i]) << " ";
-        }
-        cout << endl;
-        //unsigned char bytestosend[] = { 0x7E , 0x00 , 0x0A , 0x01 , 0x01 , 0x00 , 0x00 , 0x00 , 0x54 , 0x65 , 0x73 , 0x74 , 0x65 , 0xF8};
 
         write(usb, send_bytes, sizeof(send_bytes));
     }

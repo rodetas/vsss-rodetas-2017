@@ -50,13 +50,11 @@ struct Command{
 	}
 
 	vector<int> to_hex(){
-		//string cmd = this->to_string();
-		string cmd = "A255255";
+		string cmd = this->to_string();
 		vector<int> vec;
 
 		for(int i=0 ; i<cmd.size() ; i++){
 			vec.push_back(int(cmd[i]));
-//			cout << vec[i] << endl;
 		}
 
 		return vec;
