@@ -36,19 +36,17 @@ private:
 	Gtk::MenuItem *menu_simulator = nullptr;
 	Gtk::MenuItem *menu_arduino = nullptr;
 	Gtk::MenuItem *menu_quit = nullptr;
-	Gtk::SeparatorMenuItem *separator = nullptr; 
+	Gtk::SeparatorMenuItem *separator = nullptr;
+	Gtk::Box *box = nullptr;
 
-
-	int program_state;
 	bool change_time;
 	bool play;
-
-	mutable std::mutex mutex;
+	std::mutex mutex;
 	int thread_fps;
 	bool thread_transmission_status;
 	vector<rodetas::Object> thread_position;
 	
-	void GUIInformation();
+	void handle();
 
 	void onButtonPlay();
 	void onPotencyChanged();
@@ -64,9 +62,13 @@ private:
 	void onMenuArduino();
 	void onMenuQuit();
 
+	int program_state;
+	void setProgramState(int);
+	int getProgramState();
+
 public:
 	Control();
-	int handle();
+	int GUI();
 };
 
 #endif

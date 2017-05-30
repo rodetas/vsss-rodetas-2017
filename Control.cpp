@@ -6,19 +6,14 @@ Control::Control(){
 	change_time = true;
 }
 
-int Control::handle(){
+void Control::handle(){
 
-    std::thread menu_thread(&Control::GUIInformation, this);
-
-    // initialize classes
     vision.initialize();
     strategy.initialize();
 
-    while(program_state == GAME){
+    while(getProgramState() == GAME){
 		
-		// recognize robot's points
 		vision.computerVision();
-		// apply strategies
 	
 		strategy.setObjects(vision.getPositions());
 		strategy.handleStrategies();
@@ -27,8 +22,6 @@ int Control::handle(){
 			transmission.setMovements(strategy.getMovements());
 			transmission.send();
 		}
-		//transmission.reading();
-		transmission.transmitting("TESTE");
 	
 		timer.framesPerSecond();
 
@@ -37,10 +30,6 @@ int Control::handle(){
     }
 	
 	vision.cameraRelease();
-
-    menu_thread.detach();
-	
-	return program_state;
 }
 
 void Control::setThreadVariables(){
@@ -52,7 +41,7 @@ void Control::setThreadVariables(){
 	}
 }
 
-void Control::GUIInformation() {
+int Control::GUI() {
 
 	app = Gtk::Application::create();
 
@@ -98,67 +87,23 @@ void Control::GUIInformation() {
 	builder->get_widget("Menu Quit", menu_quit);
 	menu_quit->signal_activate().connect(sigc::mem_fun(this, &Control::onMenuQuit));
 
-
-
-
-
-
-	
-
-
-
-
-
-    window->show_all();
-
-	app->run(*window);
-	
-	/*
-
-///////////////////////// DRAW IMAGE /////////////////////////
+	builder->get_widget("Box", box);
+    box->pack_start(draw_robot);
 
 	sigc::connection robot_draw_connection = Glib::signal_timeout().connect(sigc::mem_fun(this, &Control::setInformations50MilliSec), 50); 
 
+    window->show_all();
 
-///////////////////////// CONTAINERS /////////////////////////
-		
-	Gtk::Grid box_right;
-		//box_right.set_layout(Gtk::BUTTONBOX_CENTER );
-		box_right.set_row_spacing(20);
-		box_right.set_border_width(20);
-		box_right.set_valign(Gtk::ALIGN_CENTER);
+    std::thread control_thread(&Control::handle, this);	
 
-		box_right.attach(button_play,0,0,1,1);
-		box_right.attach(button_penalty,0,1,1,1);
-		box_right.attach(button_side,0,2,1,1);
-		box_right.attach(box_potency,0,3,1,1);
-		box_right.attach(box_curve,0,4,1,1);
-		box_right.attach(label_fps,0,5,1,1);
-		box_right.attach(label_transmission,0,6,1,3);
+	app->run(*window);
 
-	Gtk::Box box_center(Gtk::ORIENTATION_VERTICAL);
-		box_center.set_border_width(20);
-		box_center.pack_start(draw_robot);
+	robot_draw_connection.disconnect();
 
-	Gtk::Box box_top(Gtk::ORIENTATION_HORIZONTAL);
-		box_top.set_border_width(0);
-        box_top.pack_start(menu_bar, Gtk::PACK_SHRINK);
-
-	Gtk::Box box(Gtk::ORIENTATION_HORIZONTAL);
-		box.pack_start(box_center);
-		box.pack_start(box_right, false, false, 20);
-
-	Gtk::Box global_box(Gtk::ORIENTATION_VERTICAL);
-		global_box.pack_start(box_top, false, false, 0);
-		global_box.pack_start(box);
-
-	window.add(global_box);
-	window.show_all();
+	setProgramState(MENU);
+	control_thread.join();
 	
-  	app->run(window);
-
-	program_state = MENU;
-	robot_draw_connection.disconnect();*/
+	return program_state;
 }
 
 
@@ -238,17 +183,27 @@ bool Control::setInformations50MilliSec(){
 }
 
 void Control::onMenuCalibration(){
-    program_state = CALIBRATION; app->quit();
+    setProgramState(CALIBRATION); window->close();
 }
 
 void Control::onMenuSimulator(){
-    program_state = SIMULATOR; app->quit();
+    setProgramState(SIMULATOR); window->close();
 }
 
 void Control::onMenuArduino(){
-    program_state = ARDUINO; app->quit();
+    setProgramState(ARDUINO); window->close();
 }
 
 void Control::onMenuQuit(){
-    program_state = MENU; app->quit();
+    setProgramState(MENU); window->close();
+}
+
+void Control::setProgramState(int i){
+    std::lock_guard<std::mutex> lock(mutex);        
+    program_state = i;
+}
+
+int Control::getProgramState(){
+    std::lock_guard<std::mutex> lock(mutex);        
+    return program_state;
 }
