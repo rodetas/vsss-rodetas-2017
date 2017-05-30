@@ -240,7 +240,8 @@ float calcCos(const T a, const U b){
 int getCameraNumberScript();
 string executeCommand(string cmd);
 Point changeCordinates(Point, Point, Point);
-void updateCameraValues(CameraConfiguration, int);
+void updateCameraValuesScript(CameraConfiguration, int);
+void defaultCameraScript(int);
 
 }
 

@@ -32,7 +32,7 @@ namespace rodetas{
         return point_after;
     }
 
-    void updateCameraValues(CameraConfiguration camera_config, int camera){
+    void updateCameraValuesScript(CameraConfiguration camera_config, int camera){
         executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl brightness=" + to_string(camera_config.brightness));
         executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl contrast=" + to_string(camera_config.contrast));
         executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl saturation=" + to_string(camera_config.saturation));
@@ -42,6 +42,20 @@ namespace rodetas{
         executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl focus_auto=0 ");
         executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl exposure_auto=1 ");
         executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + " --set-ctrl backlight_compensation=0");
+    }
+
+    void defaultCameraScript(int camera){
+        cout << "Default Camera ..." << endl;        
+        string all_comands = executeCommand("v4l2-ctl -list | awk '{print $1 $7}' | grep default | sed 's/default//g'");
+        
+        for (int i = 0; i < all_comands.size(); i++){
+            string comand = "";
+            while (all_comands[i] != '\n'){
+                comand = comand + all_comands[i];
+                i++;
+            }
+            executeCommand("v4l2-ctl -d /dev/video" + to_string(camera) + "--set-ctrl " + comand);
+        }
     }
  
 }

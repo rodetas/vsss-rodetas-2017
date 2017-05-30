@@ -50,14 +50,14 @@ void Calibration::updateImage(){
 
 void Calibration::updateColorPixel(Point pixel_point){
     setHSVPoint( getOpencvImageHSV().at<cv::Vec3b>(pixel_point.y, pixel_point.x));
-    Hsv h;
+    Hsv h = getColorsHSV()[getSelectedPlayer()];
         h.setH(getHSVPoint()[H]);
         h.setS(getHSVPoint()[S]);
         h.setV(getHSVPoint()[V]);
     setColorsHSV(h, getSelectedPlayer());
 
     setRGBPoint( getOpencvImageBGRCuted().at<cv::Vec3b>(pixel_point.y, pixel_point.x));
-    Rgb r;
+    Rgb r = getColorsRGB()[getSelectedPlayer()];
         r.r = getRGBPoint()[2];
         r.g = getRGBPoint()[1];
         r.b = getRGBPoint()[0];
@@ -133,9 +133,6 @@ int Calibration::GUI(){
     builder->get_widget("Radio Button Camera", radio_button_camera);    
     radio_button_camera->signal_pressed().connect(sigc::mem_fun(this, &Calibration::onRadioButtonCamera));
     radio_button_camera->set_active(getCameraOn());
-    
-    builder->get_widget("Combo Box Text Calibration", combo_choose_player);    
-    combo_choose_player->signal_changed().connect(sigc::mem_fun(this, &Calibration::onChoosePlayer));
 
     builder->get_widget("Popover HSV", popover_hsv);
 
@@ -159,6 +156,10 @@ int Calibration::GUI(){
 
     builder->get_widget("Scale V min", scale_vmin);
     scale_vmin->signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleVMin) );
+
+    builder->get_widget("Combo Box Text Calibration", combo_choose_player);    
+    combo_choose_player->signal_changed().connect(sigc::mem_fun(this, &Calibration::onChoosePlayer));
+    onChoosePlayer();
 
     builder->get_widget("Popover CAM", popover_cam);
 
@@ -295,16 +296,8 @@ void Calibration::onRadioButtonCamera(){
 }
 
 void Calibration::onMenuRefresh(){
-    CameraConfiguration c;
-    c.brightness = 128;
-    c.contrast = 128;
-    c.saturation = 128;
-    c.gain = 0;
-    c.sharpness = 128;
-    c.exposure = 300;
-
+    defaultCameraScript(getCameraNumberScript());
     setPopoverCamValues();
-    updateCameraValues(c, getCameraNumber());
 }
 
 void Calibration::setPopoverHSVDefault(){
@@ -395,42 +388,42 @@ void Calibration::onScaleRotate(){
 void Calibration::onScaleCAMBrightness(){
     CameraConfiguration c = getCameraConfig();
     c.brightness = scale_brightness->get_value();
-    rodetas::updateCameraValues(c, getCameraNumber());
+    rodetas::updateCameraValuesScript(c, getCameraNumber());
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMContrast(){
     CameraConfiguration c = getCameraConfig();
     c.contrast = scale_contrast->get_value();
-    rodetas::updateCameraValues(c, getCameraNumber());
+    rodetas::updateCameraValuesScript(c, getCameraNumber());
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMSaturation(){
     CameraConfiguration c = getCameraConfig();
     c.saturation = scale_saturation->get_value();
-    rodetas::updateCameraValues(c, getCameraNumber());
+    rodetas::updateCameraValuesScript(c, getCameraNumber());
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMGain(){
     CameraConfiguration c = getCameraConfig();
     c.gain = scale_gain->get_value();
-    rodetas::updateCameraValues(c, getCameraNumber());
+    rodetas::updateCameraValuesScript(c, getCameraNumber());
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMSharpness(){
     CameraConfiguration c = getCameraConfig();
     c.sharpness = scale_sharpness->get_value();
-    rodetas::updateCameraValues(c, getCameraNumber());
+    rodetas::updateCameraValuesScript(c, getCameraNumber());
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMExposure(){
     CameraConfiguration c = getCameraConfig();
     c.exposure = scale_exposure->get_value();
-    rodetas::updateCameraValues(c, getCameraNumber());
+    rodetas::updateCameraValuesScript(c, getCameraNumber());
     setCameraConfig(c);
 }
 
