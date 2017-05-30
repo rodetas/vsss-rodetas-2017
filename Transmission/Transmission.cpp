@@ -82,7 +82,7 @@ string Transmission::generateMessage(int robot, Command comand){
     short int frame_id = 0x01;
     short int option = 0x00;
 
-    short int address = 0; // ALTERAR PARA ROBOT
+    short int address = robot; // ALTERAR PARA ROBOT
     int lenght = 0xC;
 
     vector<int> hex_message = comand.to_hex();
@@ -92,18 +92,18 @@ string Transmission::generateMessage(int robot, Command comand){
         unsigned char sum = 0;
 
         for(int i=0 ; i<hex_message.size() ; i++){
-            sum = sum + (hex_message[i]); // soma decimal: 405
+            sum = sum + (hex_message[i]);
         }
 
-        int aux = check+sum;
-        std::string binary = std::bitset<8>(aux).to_string();	// Pega os 8 primeiros bits do valor
+        int checksum = check+sum;
+        std::string binary = std::bitset<8>(checksum).to_string();	// Pega os 8 primeiros bits do valor
 	    unsigned long decimal = std::bitset<8>(binary).to_ulong();	// Volta para decimal
-        int checksum = 0xFF-decimal;
+        checksum = 0xFF-decimal;
 
         return checksum;
     }();
 
-    // retorna a string pronta para ser enviada
+    // agrupa os parametros formando a mensagem pronta para ser enviada
     stringstream ss;
     ss << std::hex << start_delimiter;
     ss << std::hex << 0x0 << 0x0 << 0x0 << lenght;
@@ -117,6 +117,7 @@ string Transmission::generateMessage(int robot, Command comand){
     }
     ss << std::hex << checksum;
 
+// retorna a string pronta para ser enviada
 //    cout << ss.str() << endl;
     return ss.str();
 }
