@@ -28,7 +28,6 @@ int Control::handle(){
 			transmission.send();
 		}
 		//transmission.reading();
-		transmission.transmitting("TESTE");
 	
 		timer.framesPerSecond();
 

@@ -11,11 +11,12 @@ Connected::~Connected(){
 
 void Connected::send(){    
     string comand = "";
+    
     for(int i=0; i<3 ; i++){
-        comand += Transmission::generateMessage(i, movements[i]);
+        comand = Transmission::generateMessage(i, movements[i]);
+        Transmission::transmitting(comand);
     }
 
-    Transmission::transmitting(comand);
 }
 
 void Connected::movementRobot(Command c){
