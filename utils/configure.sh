@@ -112,6 +112,7 @@ INSTALL_COMMONS_DEPEND () {
 		INSTALL qt5 qt5-default;
 		INSTALL libxvidcore libxvidcore-dev;
 		INSTALL libv4l libv4l-dev;
+		INSTALL libv4l libv4l-conf;
 		INSTALL libxine2 libxine2-dev;
 		INSTALL arduino arduino-mk;
 		INSTALL arduino arduino;

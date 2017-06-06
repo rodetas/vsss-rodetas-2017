@@ -77,37 +77,58 @@ bool Transmission::openConection(){
 // recebe um comando e retorna a string equivalente para ser enviada
 string Transmission::generateMessage(int robot, Command comand){
 
-    stringstream ss, ss1;
-    ss << setfill('0') << setw(3) << comand.pwm1;
-    ss1 << setfill('0') << setw(3) << comand.pwm2;
+    short int start_delimiter = 0x7E;
+    short int frame_type = 0x01;
+    short int frame_id = 0x01;
+    short int option = 0x00;
 
-    string pwm_str = comand.direcao + ss.str() + ss1.str();
+    short int address = robot; // ALTERAR PARA ROBOT
+    int lenght = 0xC;
 
-    int checksum = 0; // gera a soma acumulada do checksum
-    for(int i=0 ; i<pwm_str.size() ; i++){
-        checksum += int(pwm_str[i]);
+    vector<int> hex_message = comand.to_hex();
+
+    int checksum = [&](){
+        char check = frame_type + frame_id + address + option;
+        unsigned char sum = 0;
+
+        for(int i=0 ; i<hex_message.size() ; i++){
+            sum = sum + (hex_message[i]);
+        }
+
+        int checksum = check+sum;
+        std::string binary = std::bitset<8>(checksum).to_string();	// Pega os 8 primeiros bits do valor
+	    unsigned long decimal = std::bitset<8>(binary).to_ulong();	// Volta para decimal
+        checksum = 0xFF-decimal;
+
+        return checksum;
+    }();
+
+    // agrupa os parametros formando a mensagem pronta para ser enviada
+    stringstream ss;
+    ss << std::hex << start_delimiter;
+    ss << std::hex << 0x0 << 0x0 << 0x0 << lenght;
+    ss << std::hex << 0x0 << frame_type;
+    ss << std::hex << 0x0 << frame_id;
+    ss << std::hex << 0x0 << 0x0 << 0x0 << address;
+    ss << std::hex << 0x0 << option;
+
+    for(int i=0 ; i<hex_message.size() ; i++){
+        ss << std::hex << hex_message[i];
     }
+    ss << std::hex << checksum;
 
-    checksum += int(initialCaracter[robot]); // adiciona aos caracteres inicial e final do robo
-    checksum += int(finalCaracter[robot]);
-
-    string checksumString = to_string(checksum);    //converte para string
-
-    // retorna a string pronta para ser enviada
-    string comando_str =    initialCaracter[robot] + pwm_str +
-                            checksumString + finalCaracter[robot];
-
-    return comando_str;
+// retorna a string pronta para ser enviada
+//    cout << ss.str() << endl;
+    return ss.str();
 }
 
 // recebe uma string para enviar
 void Transmission::transmitting(string comand){
     const int size = comand.size();
-    unsigned char send_bytes[size+1];
+    unsigned char send_bytes[size/2];
 
     if(timer.getTime() - last_time > 2000){
         string out = executeCommand("ls /dev/ttyUSB0 2> /dev/null");
-        //cout << "Problem with Xbee" << endl;
 
         if(out.compare("") == 0) status = false;
         else status = true;
@@ -120,22 +141,16 @@ void Transmission::transmitting(string comand){
         openConection();
 
     } else {
-
-        for (int i = 0; i < size; i++) {
-            send_bytes[i] = comand[i];
+        for(int i=0, cont=0 ; i<comand.size() ; i++){
+            stringstream parcial;
+            i++;
+            cout << comand[i] << " ";
+            parcial << comand[i];
+            send_bytes[cont] = stoi(parcial.str().c_str(), 0, 16);
+            cont++;
         }
-        send_bytes[size] = '\0';
 
-        unsigned char bytestosend[] = { 0x7E , 0x00 , 0x0A , 0x01 , 0x01 , 0x00 , 0x00 , 0x00 , 0x54 , 0x65 , 0x73 , 0x74 , 0x65 , 0xF8};
-
-        write(usb, bytestosend, sizeof(bytestosend));
-    }
-    char buffer[500];
-    int n_bytes_readed = read (usb, buffer, sizeof(buffer));
-
-    for (int i = 0; i < n_bytes_readed; i++){
-         printf("%c", buffer[i]);        
-        // printf("%x", buffer[i] & 0xff);
+        write(usb, send_bytes, sizeof(send_bytes));
     }
 }
 
