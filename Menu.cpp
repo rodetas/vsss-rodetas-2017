@@ -15,16 +15,20 @@ int Menu::GUI(){
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Menu.glade");
 	
 	builder->get_widget("Window Menu", window);
+	
 	builder->get_widget("Button Play", button_play);
-	builder->get_widget("Button Calibration", button_calibration);
-	builder->get_widget("Button Simulator", button_simulator);
-	builder->get_widget("Button Arduino", button_arduino);
-	builder->get_widget("Button Exit", button_exit);
-
 	button_play->signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonPlay) );
+	
+	builder->get_widget("Button Calibration", button_calibration);
 	button_calibration->signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonCalibration) );
+	
+	builder->get_widget("Button Simulator", button_simulator);
 	button_simulator->signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonSimulator) );
+	
+	builder->get_widget("Button Arduino", button_arduino);
 	button_arduino->signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonArduino) );
+	
+	builder->get_widget("Button Exit", button_exit);
 	button_exit->signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonExit) );
 	
 	app->run(*window);

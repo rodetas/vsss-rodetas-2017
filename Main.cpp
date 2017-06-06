@@ -1,8 +1,8 @@
 #include "Control.h"
 #include "Calibration.h"
-#include "GUI/Test.h"
-#include "GUI/Menu.h"
-#include "GUI/Arduino.h"
+#include "Test.h"
+#include "Menu.h"
+#include "Arduino.h"
 #include "Transmission/Transmission.h"
 
 int main(int argc, char *argv[]) {
@@ -15,12 +15,12 @@ int main(int argc, char *argv[]) {
 
 			case GAME:{
 				Control control;
-				program_state = control.handle();
+				program_state = control.GUI();
 			} break;
 			
 			case CALIBRATION:{
 				Calibration calibration;
-				program_state = calibration.calibrate();
+				program_state = calibration.GUI();
 			} break;
 			
 			case MENU:{

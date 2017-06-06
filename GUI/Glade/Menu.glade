@@ -37,6 +37,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <accelerator key="2" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -50,6 +51,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <accelerator key="3" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -63,6 +65,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <accelerator key="4" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -76,6 +79,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <accelerator key="5" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
             <property name="expand">True</property>
