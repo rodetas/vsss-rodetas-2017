@@ -96,10 +96,10 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 
             for(int i = 0; i < find_position.center.size(); i++){
                 PointCut cutPoint;
-                cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut) + last_position.cutPoint[i].first.x, find_position.center[i].y - (percent_cut) + last_position.cutPoint[i].first.y);
-                cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut) + last_position.cutPoint[i].first.x, find_position.center[i].y + (percent_cut) + last_position.cutPoint[i].first.y);
+                cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut) + last_position.cutPoint[j].first.x, find_position.center[i].y - (percent_cut) + last_position.cutPoint[j].first.y);
+                cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut) + last_position.cutPoint[j].first.x, find_position.center[i].y + (percent_cut) + last_position.cutPoint[j].first.y);
 
-                Point2i center_position = cv::Point( find_position.center[i].x + last_position.cutPoint[i].first.x, find_position.center[i].y + last_position.cutPoint[i].first.y);
+                Point2i center_position = cv::Point( find_position.center[i].x + last_position.cutPoint[j].first.x, find_position.center[i].y + last_position.cutPoint[j].first.y);
 
                 atual_position.center.push_back(center_position);
                 atual_position.radius.push_back(find_position.radius[i]);
