@@ -46,7 +46,6 @@ private:
 	bool thread_transmission_status;
 	vector<rodetas::Object> thread_position;
 	
-	void handle();
 
 	void onButtonPlay();
 	void onPotencyChanged();
@@ -69,6 +68,7 @@ private:
 public:
 	Control();
 	int GUI();
+	void handle();
 };
 
 #endif

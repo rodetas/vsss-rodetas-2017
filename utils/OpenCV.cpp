@@ -82,8 +82,7 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 
     ContoursPosition atual_position, find_position;
 
-    percent_cut = 40;
-    
+    percent_cut = 30;
     
     if (!last_position.review_all_image && last_position.cutPointDefined()) {
 
@@ -93,13 +92,13 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
                     image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
                     image_cut = binarize(image_cut, color_hsv);
 
-
             find_position = binarizedColorPosition(image_cut);
 
             for(int i = 0; i < find_position.center.size(); i++){
                 PointCut cutPoint;
                 cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut) + last_position.cutPoint[i].first.x, find_position.center[i].y - (percent_cut) + last_position.cutPoint[i].first.y);
                 cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut) + last_position.cutPoint[i].first.x, find_position.center[i].y + (percent_cut) + last_position.cutPoint[i].first.y);
+
                 Point2i center_position = cv::Point( find_position.center[i].x + last_position.cutPoint[i].first.x, find_position.center[i].y + last_position.cutPoint[i].first.y);
 
                 atual_position.center.push_back(center_position);
