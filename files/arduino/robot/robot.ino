@@ -13,6 +13,10 @@ const byte BIN1 = 9;
 const byte BIN2 = 10;
 const byte PWM_MOTOR2 = 11;
 
+int direction;
+int pwm1;
+int pwm2;
+
 void setup() {
   pinMode(PWM_MOTOR1, OUTPUT);
   pinMode(AIN2, OUTPUT);
@@ -27,12 +31,12 @@ void setup() {
 }
 
 void loop() {
-  String message = receivingSerial();
+  receivingSerial();
 
-  analogWrite(PWM_MOTOR1, 0);
-  analogWrite(PWM_MOTOR2, 0);
+  analogWrite(PWM_MOTOR1, pwm1);
+  analogWrite(PWM_MOTOR2, pwm2);
 
-  switch (message[0]) {
+  switch (direction) {
     case 'F': {
         forward();
       } break;
@@ -51,8 +55,7 @@ void loop() {
   }
 }
 
-String receivingSerial() {
-  String buf = "";
+void receivingSerial() {
   xbee.readPacket();
 
   if (xbee.getResponse().isAvailable()) {
@@ -60,15 +63,12 @@ String receivingSerial() {
     if (xbee.getResponse().getApiId() == RX_16_RESPONSE) {
 
       xbee.getResponse().getRx16Response(rx);
-      for (int i = 0; i < rx.getDataLength(); i++) {
-        buf += rx.getData(i);
-      }
+
+      direction = int(rx.getData(0));
+      pwm1 = (rx.getData(1) - '0') * 100 + (rx.getData(2) - '0') * 10 + (rx.getData(3) - '0');
+      pwm2 = (rx.getData(4) - '0') * 100 + (rx.getData(5) - '0') * 10 + (rx.getData(6) - '0');
     }
   }
-
-  Serial.println(buf);
-
-  return buf;
 }
 
 void forward() {
