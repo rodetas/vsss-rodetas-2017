@@ -12,7 +12,7 @@ void Control::handle(){
     strategy.initialize();
 
     while(getProgramState() == GAME){
-		
+		timer.startTime();		
 		vision.computerVision();
 	
 		strategy.setObjects(vision.getPositions());
