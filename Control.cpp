@@ -9,17 +9,17 @@ Control::Control(){
 void Control::handle(){
 
     vision.initialize();
-    strategy.initialize();
+  //  strategy.initialize();
 
     while(getProgramState() == GAME){
 		timer.startTime();		
 		vision.computerVision();
 	
-		strategy.setObjects(vision.getPositions());
-		strategy.handleStrategies();
+//		strategy.setObjects(vision.getPositions());
+//		strategy.handleStrategies();
 
 		if (play){
-			transmission.setMovements(strategy.getMovements());
+		//	transmission.setMovements(strategy.getMovements());
 			transmission.send();
 		}
 	
@@ -137,11 +137,11 @@ bool Control::onKeyboard(GdkEventKey* event){
 }
 
 void Control::onPotencyChanged(){
-	strategy.setPowerPotency(spin_potency->get_value());
+//	strategy.setPowerPotency(spin_potency->get_value());
 }
 
 void Control::onCurveChanged(){
-	strategy.setPowerCurve(spin_curve->get_value());
+	//strategy.setPowerCurve(spin_curve->get_value());
 }
 
 void Control::onButtonPlay(){

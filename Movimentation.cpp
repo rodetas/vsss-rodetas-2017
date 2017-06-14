@@ -12,7 +12,6 @@ Movimentation::Movimentation(){
 /*
  * calculates the basic movimentation
  */
-
 Command Movimentation::movePlayers(Point destination){
 
 	/* movement along the field */
