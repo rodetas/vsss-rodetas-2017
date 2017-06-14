@@ -29,12 +29,7 @@ Command Movimentation::movePlayers(Point destination){
 	    }
 	}
 
-	Command movement;
-	movement.direcao = movements.direcao;
-	movement.pwm1 = movements.pwm1;
-	movement.pwm2 = movements.pwm2;
-
-	return movement;
+	return movements;
 }
 
 void Movimentation::setPwm(Point destination, char direction){

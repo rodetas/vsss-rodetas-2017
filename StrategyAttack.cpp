@@ -18,18 +18,18 @@ void StrategyAttack::apply(){
 
 	Command movement(movimentation.movePlayers(destination));
 
-	cornerStrategy();
+//	cornerStrategy();
 }
 
 Point StrategyAttack::setTarget(){
     Point target;
 
-	target.x = ballProjection.x;
+/*	target.x = ballProjection.x;
 	target.y = ballProjection.y;
-
+*/
 	target.x = ball.x;
 	target.y = ball.y;
-
+/*
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
 		target.y = ball.y;
@@ -62,7 +62,7 @@ Point StrategyAttack::setTarget(){
 	// verifies the limits of the destination
 	if (target.y < 0) target.y = 0;
 	if (target.y > imageSize.y) target.y = imageSize.y;
-
+*/
 
 	setVecTarget(robot.id, target);
 
