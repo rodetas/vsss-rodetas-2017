@@ -5,14 +5,21 @@ int Strategy::defenseNumber = 0;
 int Strategy::goalNumber = 0;
 
 Object Strategy::ballProjection;
+vector<rodetas::Object> Strategy::lastBallPositions;
+rodetas::Object Strategy::lastBallProjection;
 
 Object Strategy::ball;
+
+Point Strategy::imageSize = Point(0,0);
+Point Strategy::goalSize = Point(0,0);
+Point Strategy::goalArea = Point(0,0);
 
 vector<rodetas::Object> Strategy::objects;
 vector<Point> Strategy::targets;
 
 Strategy::Strategy(){
     robotState = PARADO;
+    initialize();
 }
 
 Strategy::Strategy(int n){
@@ -20,13 +27,18 @@ Strategy::Strategy(int n){
 }
 
 void Strategy::initialize(){
+	movimentation.setImage(imageSize);	
+}
+
+void Strategy::initStaticParameters(){
+    Manipulation manipulation;
     manipulation.loadCalibration();  
+
 	imageSize = manipulation.getImageSize();
 	goalSize = manipulation.getGoal();
-	
-//	movimentation.setImage(imageSize);	
+	goalArea = Point(imageSize.x*0.2, imageSize.y*0.6);
 
-	goalArea = {imageSize.x*0.2, imageSize.y*0.6};
+    targets.resize(3);
 }
 
 void Strategy::defineFunctions(){
@@ -64,7 +76,7 @@ void Strategy::cornerStrategy(){
 Point Strategy::applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination){
 
 	Point2i repulsion;
-	Point2i factorRepulsion = { 5000, 20000 };
+	Point2i factorRepulsion = Point2i(5000,20000);//{ 5000, 20000 };
 
 	float sin_repulsion_destination = sin((calcAngle(toDestination, toRepulsion))/RADIAN_TO_DEGREE);
 	float cos_repulsion_destination = cos((calcAngle(toDestination, toRepulsion))/RADIAN_TO_DEGREE);
@@ -110,6 +122,29 @@ void Strategy::setVecTarget(int id, Point target){
 	targets[id] = target;
 }
 
+void Strategy::calcBallProjection(){
+	if(lastBallPositions.size() < 9){
+		lastBallPositions.push_back(ball);
+	} else {
+		lastBallPositions.pop_back();
+		lastBallPositions.insert(lastBallPositions.begin(), ball);
+		ballProjection.x = ball.x + (lastBallPositions[0].x - lastBallPositions[8].x);
+		ballProjection.y = ball.y + (lastBallPositions[0].y - lastBallPositions[8].y);
+
+		if(ballProjection.x > imageSize.x || ballProjection.x < 0 || ballProjection.y > imageSize.y || ballProjection.y < 0){
+			ballProjection = lastBallProjection;
+		}
+
+		lastBallProjection = ballProjection;
+	}
+}
+
 void Strategy::setObjects(const vector<rodetas::Object>& v){
     objects = v;
+    ball = objects[GRAPHICBALL];
+    Strategy::calcBallProjection();
 }
+
+Command Strategy::getCommand(){
+    return movimentation.getMovement();
+}   

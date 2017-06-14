@@ -130,6 +130,10 @@ void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, 
 	cos_robot_ball = calcCos(ball, robot);
 }
 
+void Movimentation::setRobot(rodetas::Object obj){
+	robot = obj;
+}
+
 Command Movimentation::getMovement(){
 	return movements;
 }

@@ -9,19 +9,36 @@ Control::Control(){
 void Control::handle(){
 
     vision.initialize();
-  //  strategy.initialize();
+
+	Strategy::initStaticParameters(); // precisa ser primeiro
+
+	strategies.push_back(new StrategyAttack());
+
+	for(auto s: strategies){
+		s->initialize();
+	}
+
 
     while(getProgramState() == GAME){
 		timer.startTime();		
 		vision.computerVision();
 	
-//		strategy.setObjects(vision.getPositions());
-//		strategy.handleStrategies();
+		Strategy::setObjects(vision.getPositions());
+		Strategy::defineFunctions();
 
-		if (play){
-		//	transmission.setMovements(strategy.getMovements());
-			transmission.send();
+		for(int i=0 ; i<strategies.size() ; i++){
+			strategies[i]->apply();
+
+			if(play){
+				transmission.send(i, strategies[i]->getCommand());
+			}
 		}
+
+		/*if (play){
+			for(int i=0 ; i<3 ; i++){
+				transmission.send(i, strategies[i]->getCommand());
+			}
+		}*/
 	
 		timer.framesPerSecond();
 

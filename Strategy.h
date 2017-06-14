@@ -17,7 +17,7 @@ public:
     /**
      * Default constructor
      */
-     Strategy();
+    Strategy();
 
     /**
      * Constructor
@@ -26,9 +26,14 @@ public:
     Strategy(int n);
 
     /**
-     * Method to initialize some strategy's parameters
+     * Method to initialize strategy's parameters
      */
     void initialize();
+
+    /**
+     *
+     */
+    static void initStaticParameters();
 
     /**
      *    Static method to define positions for each robot
@@ -76,7 +81,17 @@ public:
      */
     void updateCalculus();
 
-    void setObjects(const vector<rodetas::Object>&);
+    /**
+     *
+     */
+    static void calcBallProjection();
+
+    static void setObjects(const vector<rodetas::Object>&);
+
+    /**
+     *
+     */
+    Command getCommand();
 
 protected:
 
@@ -85,15 +100,20 @@ protected:
     static int goalNumber;
 
     static Object ball;
-    static Object ballProjection;
     static vector<rodetas::Object> objects; ///< vector of all objects containing its positions
     static vector<Point> targets;
 
+    static Object ballProjection;
+    //@TODO: imeplementar uma melhor projecao da bola
+    static vector<rodetas::Object> lastBallPositions;
+    static rodetas::Object lastBallProjection;
+
+    static Point imageSize;
+    static Point goalSize;
+    static Point goalArea;
+
     int robotState;
 
-    Point imageSize;
-    Point goalSize;
-    Point goalArea;
     Point destination;
 
     Object robot;
@@ -111,7 +131,6 @@ protected:
 
 private:
 
-    Manipulation manipulation;
     int nRobots; ///< number of robots strategy will deal 
 
 };
