@@ -3,8 +3,7 @@
 
 #include "Header.h"
 #include "Vision.h"
-#include "Strategy.h"
-#include "StrategyAttack.h"
+#include "Strategies/Strategies.h"
 #include "utils/Timer.h"
 #include "Transmission/Connected.h"
 #include "GUI/Cairo/DrawAreaControl.h"
