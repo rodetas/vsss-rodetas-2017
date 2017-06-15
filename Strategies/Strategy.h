@@ -86,7 +86,7 @@ public:
      */
     static void calcBallProjection();
 
-    static void setObjects(const vector<rodetas::Object>&);
+    static void setObjects(const vector<rodetas::Object>&, const vector<rodetas::Object>&, rodetas::Object);
 
     /**
      *
@@ -100,6 +100,8 @@ protected:
     static int goalNumber;
 
     static Object ball;
+    static vector<rodetas::Object> team;
+    static vector<rodetas::Object> opponent;
     static vector<rodetas::Object> objects; ///< vector of all objects containing its positions
     static vector<Point> targets;
 
@@ -131,7 +133,7 @@ protected:
 
 private:
 
-    int nRobots; ///< number of robots strategy will deal 
+    static int nStrategies; ///< number of robots strategy will deal 
 
 };
 

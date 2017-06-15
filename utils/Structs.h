@@ -152,6 +152,16 @@ struct Object{
 		id = -1;
 	};
 
+	Object(int _x, int _y){
+		x = _x;
+		y = _y;
+	}
+
+	Object(Point2i p){
+		x = p.x;
+		y = p.y;
+	}
+
 	void print(){
 		cout << " X: " << x;
 		cout << " Y: " << y;

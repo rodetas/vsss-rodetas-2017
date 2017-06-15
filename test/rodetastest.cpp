@@ -1,4 +1,4 @@
-/*#include <iostream>
+#include <iostream>
 #include <assert.h>
 
 #include "../Transmission/Transmission.h"
@@ -12,4 +12,4 @@ int main(int argc, char** argv){
 
 
     return 0;
-}*/
+}

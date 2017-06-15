@@ -3,6 +3,7 @@
 int Strategy::attackNumber = 0;
 int Strategy::defenseNumber = 0;
 int Strategy::goalNumber = 0;
+int Strategy::nStrategies = 0;
 
 Object Strategy::ballProjection;
 vector<rodetas::Object> Strategy::lastBallPositions;
@@ -15,15 +16,18 @@ Point Strategy::goalSize = Point(0,0);
 Point Strategy::goalArea = Point(0,0);
 
 vector<rodetas::Object> Strategy::objects;
+vector<rodetas::Object> Strategy::team;
+vector<rodetas::Object> Strategy::opponent;
 vector<Point> Strategy::targets;
 
 Strategy::Strategy(){
     robotState = PARADO;
+	nStrategies++;
     initialize();
 }
 
 Strategy::Strategy(int n){
-    nRobots = n;
+    nStrategies = n;
 }
 
 void Strategy::initialize(){
@@ -43,16 +47,30 @@ void Strategy::initStaticParameters(){
 
 void Strategy::defineFunctions(){
 
-    if (distance(objects[GRAPHICPLAYER1], ball) < distance(objects[GRAPHICPLAYER0], ball)){
-		attackNumber = GRAPHICPLAYER1;
-		defenseNumber = GRAPHICPLAYER0;
-	} else {
-		attackNumber = GRAPHICPLAYER0;
-		defenseNumber = GRAPHICPLAYER1;
-	}	
+	if(nStrategies == 1){
+		
+		attackNumber = 0;
+		defenseNumber = 0;
+		goalNumber = 0;
 
-	goalNumber = GRAPHICPLAYER2;
-	ball = objects[GRAPHICBALL];
+	} else if(nStrategies == 2){
+
+		attackNumber = 0;
+		goalNumber = 1;
+
+	} else if(nStrategies == 3){
+
+		if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
+			attackNumber = GRAPHICPLAYER1;
+			defenseNumber = GRAPHICPLAYER0;
+		} else {
+			attackNumber = GRAPHICPLAYER0;
+			defenseNumber = GRAPHICPLAYER1;
+		}	
+
+		goalNumber = GRAPHICPLAYER2;
+
+	}
 
 }
 
@@ -139,11 +157,17 @@ void Strategy::calcBallProjection(){
 	}
 }
 
-void Strategy::setObjects(const vector<rodetas::Object>& v){
+void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas::Object>& op, rodetas::Object b){
+	team = t;
+	opponent = op;
+	ball = b;
+}
+
+/*void Strategy::setObjects(const vector<rodetas::Object>& v){
     objects = v;
     ball = objects[GRAPHICBALL];
     Strategy::calcBallProjection();
-}
+}*/
 
 Command Strategy::getCommand(){
     return movimentation.getMovement();

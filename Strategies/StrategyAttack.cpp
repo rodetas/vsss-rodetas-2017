@@ -6,7 +6,7 @@ StrategyAttack::StrategyAttack() : Strategy(){
 
 void StrategyAttack::apply(){
 
-    robot = objects[attackNumber];
+    robot = team[attackNumber];
     robot.id = attackNumber;
 
     movimentation.setRobot(robot); // seta na classe de movimentacao o robo atual

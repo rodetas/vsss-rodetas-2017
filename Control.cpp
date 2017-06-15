@@ -23,12 +23,12 @@ void Control::handle(){
 		timer.startTime();		
 		vision.computerVision();
 	
-		Strategy::setObjects(vision.getPositions());
+		Strategy::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
 		Strategy::defineFunctions();
 
 		for(int i=0 ; i<strategies.size() ; i++){
 			strategies[i]->apply();
-
+			// @TODO: VERIFICAR SE E MELHOR ENVIAR COMANDO DESTA FORMA OU NAO
 			if(play){
 				transmission.send(i, strategies[i]->getCommand());
 			}
@@ -47,6 +47,10 @@ void Control::handle(){
     }
 	
 	vision.cameraRelease();
+
+	for(auto s: strategies){
+		delete s;
+	}
 }
 
 void Control::setThreadVariables(){
