@@ -5,7 +5,6 @@ StrategyAttack::StrategyAttack() : Strategy(){
 }
 
 void StrategyAttack::apply(){
-
     robot = team[attackNumber];
     robot.id = attackNumber;
 

@@ -16,6 +16,7 @@
 #define robot2FinalCharacter '}'
 #define robot0InitialCharacter '['
 #define robot0FinalCharacter ']'
+
 #define FORWARD_MOVE 'F'
 #define BACK_MOVE 'B'
 #define RIGHT_MOVE 'R'

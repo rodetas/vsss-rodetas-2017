@@ -5,6 +5,8 @@ int Strategy::defenseNumber = 0;
 int Strategy::goalNumber = 0;
 int Strategy::nStrategies = 0;
 
+bool Strategy::definedId = false;
+
 Object Strategy::ballProjection;
 vector<rodetas::Object> Strategy::lastBallPositions;
 rodetas::Object Strategy::lastBallProjection;
@@ -27,7 +29,8 @@ Strategy::Strategy(){
 }
 
 Strategy::Strategy(int n){
-    nStrategies = n;
+    definedId = true;
+	robotId = n;
 }
 
 void Strategy::initialize(){
@@ -47,31 +50,35 @@ void Strategy::initStaticParameters(){
 
 void Strategy::defineFunctions(){
 
-	if(nStrategies == 1){
-		
-		attackNumber = 0;
-		defenseNumber = 0;
-		goalNumber = 0;
+	// COLOCAR O NUMERO DO ROBO NAS VARIAVEIS
 
-	} else if(nStrategies == 2){
+	if(!definedId){
 
-		attackNumber = 0;
-		goalNumber = 1;
+		if(team.size() == 1){
+			
+			attackNumber = 0;
+			defenseNumber = 0;
+			goalNumber = 0;
 
-	} else if(nStrategies == 3){
+		} else if(team.size() == 2){
 
-		if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
-			attackNumber = GRAPHICPLAYER1;
-			defenseNumber = GRAPHICPLAYER0;
-		} else {
-			attackNumber = GRAPHICPLAYER0;
-			defenseNumber = GRAPHICPLAYER1;
-		}	
+			defenseNumber = 0;
+			goalNumber = 1;
 
-		goalNumber = GRAPHICPLAYER2;
+		} else if(team.size() == 3){
 
+			if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
+				attackNumber = GRAPHICPLAYER1;
+				defenseNumber = GRAPHICPLAYER0;
+			} else {
+				attackNumber = GRAPHICPLAYER0;
+				defenseNumber = GRAPHICPLAYER1;
+			}	
+
+			goalNumber = GRAPHICPLAYER2;
+
+		}
 	}
-
 }
 
 void Strategy::cornerStrategy(){
@@ -161,6 +168,8 @@ void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas
 	team = t;
 	opponent = op;
 	ball = b;
+
+	Strategy::calcBallProjection();
 }
 
 /*void Strategy::setObjects(const vector<rodetas::Object>& v){
@@ -172,3 +181,7 @@ void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas
 Command Strategy::getCommand(){
     return movimentation.getMovement();
 }   
+
+int Strategy::getRobotId(){
+	return robotId;
+}

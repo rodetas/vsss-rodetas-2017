@@ -13,6 +13,8 @@ void Control::handle(){
 	Strategy::initStaticParameters(); // precisa ser primeiro
 
 	strategies.push_back(new StrategyAttack());
+	strategies.push_back(new StrategyDefense());
+	strategies.push_back(new StrategyGoal());
 
 	for(auto s: strategies){
 		s->initialize();
@@ -30,7 +32,7 @@ void Control::handle(){
 			strategies[i]->apply();
 			// @TODO: VERIFICAR SE E MELHOR ENVIAR COMANDO DESTA FORMA OU NAO
 			if(play){
-				transmission.send(i, strategies[i]->getCommand());
+				transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
 			}
 		}
 

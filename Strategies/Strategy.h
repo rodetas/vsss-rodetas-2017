@@ -20,8 +20,8 @@ public:
     Strategy();
 
     /**
-     * Constructor
-     * n: number of robots
+     * Constructor - if uses this constructor once, should use this for all
+     * n: robot id for use
      */
     Strategy(int n);
 
@@ -93,6 +93,8 @@ public:
      */
     Command getCommand();
 
+    int getRobotId();
+
 protected:
 
     static int attackNumber;
@@ -115,6 +117,7 @@ protected:
     static Point goalArea;
 
     int robotState;
+    int robotId;
 
     Point destination;
 
@@ -134,6 +137,7 @@ protected:
 private:
 
     static int nStrategies; ///< number of robots strategy will deal 
+    static bool definedId;
 
 };
 
