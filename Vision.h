@@ -6,6 +6,7 @@
 #include "utils/Timer.h"
 #include "CRUD/Manipulation.h"
 #include <thread>
+#include <mutex>
 
 
 class Vision : public OpenCV {
@@ -26,6 +27,9 @@ private:
 
 	CameraConfiguration camera_config;	
 	cv::Mat opencv_image_BGR;
+
+	std::mutex mutex;
+
 	int angle_image;
 	int camera_number;
 	bool camera_on;
@@ -33,6 +37,7 @@ private:
 	bool camera_initialize;
 	Point goal;
 	PointCut point_cut;
+
 
 public:
 	Vision();

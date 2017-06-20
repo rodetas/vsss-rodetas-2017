@@ -22,7 +22,9 @@ void Control::handle(){
 
 
     while(getProgramState() == GAME){
-		timer.startTime();		
+
+    timer.startTime();		
+      
 		vision.computerVision();
 	
 		Strategy::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
@@ -44,7 +46,6 @@ void Control::handle(){
 	
 		timer.framesPerSecond();
 
-		setThreadVariables();
 		timer.waitTimeStarted(33);
     }
 	
@@ -55,14 +56,6 @@ void Control::handle(){
 	}
 }
 
-void Control::setThreadVariables(){
-	{
-		std::lock_guard<std::mutex> lock(mutex);
-		thread_position = vision.getPositions();
-		thread_fps = timer.getFps();
-		thread_transmission_status = transmission.getConnectionStatus();
-	}
-}
 
 int Control::GUI() {
 
@@ -175,32 +168,32 @@ void Control::onButtonPlay(){
 		button_play->set_label("Paused");
 	}
 
-    play = !play;
+	setPlay(!getPlay());
 	transmission.stopRobot();
 }
 
 void Control::onButtonTime(){
 
-	if(change_time == false){
+	if(getChangeTime() == false){
 		button_side->set_label("1º time");
 	} else {
 		button_side->set_label("2º time");
 	}
 
-	change_time = !change_time;
+	setChangeTime(!getChangeTime());
 }
 
 bool Control::setInformations50MilliSec(){
 	
-	draw_robot.setPosition(thread_position);
+	draw_robot.setPosition(vision.getPositions());
 
-	if(thread_transmission_status == false){
+	if(transmission.getConnectionStatus() == false){
 		label_transmission->set_visible(true);
 	} else {
 		label_transmission->set_visible(false);
 	}
 	
-	label_fps->set_label("Fps: " + to_string(thread_fps));
+	label_fps->set_label("Fps: " + to_string(timer.getFps()));
 	
 	return true;
 }
@@ -230,3 +223,26 @@ int Control::getProgramState(){
     std::lock_guard<std::mutex> lock(mutex);        
     return program_state;
 }
+
+void Control::setChangeTime(bool b){
+	std::lock_guard<std::mutex> lock(mutex); 
+	change_time = b;
+}
+
+bool Control::getChangeTime(){
+	std::lock_guard<std::mutex> lock(mutex); 
+	return change_time;
+}
+
+void Control::setPlay(bool b){
+	std::lock_guard<std::mutex> lock(mutex); 
+	play = b;
+}
+
+bool Control::getPlay(){
+	std::lock_guard<std::mutex> lock(mutex); 
+	return play;
+}
+
+
+

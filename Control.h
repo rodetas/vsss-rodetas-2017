@@ -39,14 +39,8 @@ private:
 	Gtk::SeparatorMenuItem *separator = nullptr;
 	Gtk::Box *box = nullptr;
 
-	bool change_time;
-	bool play;
 	std::mutex mutex;
-	int thread_fps;
-	bool thread_transmission_status;
-	vector<rodetas::Object> thread_position;
 	
-
 	void onButtonPlay();
 	void onPotencyChanged();
 	void onCurveChanged();
@@ -54,7 +48,6 @@ private:
 	
 	bool onKeyboard(GdkEventKey*);
 	bool setInformations50MilliSec();
-	void setThreadVariables();
 
 	void onMenuCalibration();
 	void onMenuSimulator();
@@ -64,6 +57,14 @@ private:
 	int program_state;
 	void setProgramState(int);
 	int getProgramState();
+
+	bool change_time;
+	void setChangeTime(bool);
+	bool getChangeTime();
+
+	bool play;
+	void setPlay(bool);
+	bool getPlay();
 
 public:
 	Control();
