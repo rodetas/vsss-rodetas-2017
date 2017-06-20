@@ -5,6 +5,9 @@ int Strategy::defenseNumber = 0;
 int Strategy::goalNumber = 0;
 int Strategy::nStrategies = 0;
 
+float Strategy::curve_factor;
+float Strategy::potency_factor;
+
 bool Strategy::definedId = false;
 
 Object Strategy::ballProjection;
@@ -172,16 +175,18 @@ void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas
 	Strategy::calcBallProjection();
 }
 
-/*void Strategy::setObjects(const vector<rodetas::Object>& v){
-    objects = v;
-    ball = objects[GRAPHICBALL];
-    Strategy::calcBallProjection();
-}*/
-
 Command Strategy::getCommand(){
     return movimentation.getMovement();
 }   
 
 int Strategy::getRobotId(){
 	return robot.id;
+}
+
+void Strategy::setPotencyFactor(float f){
+	Strategy::potency_factor = f;
+}
+
+void Strategy::setCurveFactor(float f){
+	Strategy::curve_factor = f;
 }

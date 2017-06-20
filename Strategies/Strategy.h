@@ -86,6 +86,9 @@ public:
      */
     static void calcBallProjection();
 
+    /**
+     *
+     */
     static void setObjects(const vector<rodetas::Object>&, const vector<rodetas::Object>&, rodetas::Object);
 
     /**
@@ -93,7 +96,21 @@ public:
      */
     Command getCommand();
 
+    /**
+     *
+     */
     int getRobotId();
+
+    /**
+     *
+     */
+    static void setPotencyFactor(float f);
+
+    /**
+     *
+     */
+    static void setCurveFactor(float f);
+    
 
 protected:
 
@@ -115,6 +132,9 @@ protected:
     static Point imageSize;
     static Point goalSize;
     static Point goalArea;
+
+    static float curve_factor;
+    static float potency_factor;
 
     int robotState;
     int robotId;
