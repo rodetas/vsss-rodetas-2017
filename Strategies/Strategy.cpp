@@ -54,18 +54,18 @@ void Strategy::defineFunctions(){
 
 	if(!definedId){
 
-		if(team.size() == 1){
+		if(nStrategies == 1){
 			
 			attackNumber = 0;
 			defenseNumber = 0;
 			goalNumber = 0;
 
-		} else if(team.size() == 2){
+		} else if(nStrategies == 2){
 
 			defenseNumber = 0;
 			goalNumber = 1;
 
-		} else if(team.size() == 3){
+		} else if(nStrategies == 3){
 
 			if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
 				attackNumber = GRAPHICPLAYER1;
@@ -183,5 +183,5 @@ Command Strategy::getCommand(){
 }   
 
 int Strategy::getRobotId(){
-	return robotId;
+	return robot.id;
 }

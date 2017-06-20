@@ -4,7 +4,7 @@
  * Constructor of the class
  */
 Vision::Vision(){
-//    robotTeam.resize(number_robots);
+    robotTeam.resize(number_robots);
 }
 
 /*
@@ -51,7 +51,7 @@ void Vision::computerVision(){
 void Vision::teamThread(){
     team_position = position(full_image_cut, team_position, colorsHSV[TEAM], 3);
 
-    vector<rodetas::Object> robot;
+    vector<rodetas::Object> robot(3);
 
     // cropped image around the color team
     for (int i = 0; i < team_position.center.size(); i++){
@@ -77,7 +77,7 @@ void Vision::teamThread(){
 
                     find_position.center[0].x += cutPoint.first.x;
                     find_position.center[0].y += cutPoint.first.y;
-                    robot.push_back(robotPosition(find_position, i));
+                    robot[j] = (robotPosition(find_position, i));
                     
                     biggest_radius = find_position.radius[0];
                 }
@@ -161,7 +161,13 @@ vector<rodetas::Object> Vision::getOpponent(){
 }
 
 rodetas::Object Vision::getBall(){
-    return Object(ball_position.center[0]);
+    Object o;
+    if(ball_position.center.size() != 0){
+        return Object(ball_position.center[0]);
+    }
+
+    return o;
+    
 }
 
 vector<rodetas::Object> Vision::getPositions(){
