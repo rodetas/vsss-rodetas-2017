@@ -13,8 +13,8 @@ void Control::handle(){
 	Strategy::initStaticParameters(); // precisa ser primeiro
 
 	strategies.push_back(new StrategyAttack());
-	strategies.push_back(new StrategyDefense());
-	strategies.push_back(new StrategyGoal());
+//	strategies.push_back(new StrategyDefense());
+//	strategies.push_back(new StrategyGoal());/
 
 	for(auto s: strategies){
 		s->initialize();
@@ -23,7 +23,7 @@ void Control::handle(){
 
     while(getProgramState() == GAME){
 
-    timer.startTime();		
+    	timer.startTime();		
       
 		vision.computerVision();
 	
