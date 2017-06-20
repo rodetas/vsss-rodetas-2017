@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <cstring>
 #include <bitset>
+#include <mutex>
 
 using namespace std;
 using namespace rodetas;
@@ -27,6 +28,8 @@ private:
 
     string robot_speed;
     bool receiving;
+
+    std::mutex mutex;
     
 protected:
     vector<Command> movements;

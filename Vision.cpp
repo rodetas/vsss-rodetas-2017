@@ -92,7 +92,7 @@ void Vision::opponentThread(){
     ContoursPosition opponent_position_aux;
     ContoursPosition last_opponent_position = opponent_position;
     opponent_position = position(full_image_cut, opponent_position, colorsHSV[OPPONENT], 3);
-    /*
+    
     int position;
 
     for(int i=0; i<last_opponent_position.center.size();i++){
@@ -114,7 +114,7 @@ void Vision::opponentThread(){
     if(last_opponent_position.center.size()!=0){
         opponent_position = opponent_position_aux;
     }
-    */
+    
 }
 
 void Vision::ballThread(){
@@ -145,6 +145,7 @@ void Vision::ballThread(){
  * Getters
  */
 vector<rodetas::Object> Vision::getPositions(){
+    std::lock_guard<std::mutex> lock(mutex);
     
     vector<rodetas::Object> objects(7);
 

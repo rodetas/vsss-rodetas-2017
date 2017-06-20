@@ -132,45 +132,56 @@ void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, 
 }
 
 Command Movimentation::getMovement(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return movements;
 }
 
 void Movimentation::setPower(float power){
+	std::lock_guard<std::mutex> lock(mutex);   
 	this->powerFactor = power;
 }
 
 void Movimentation::setPowerCurve(float curve){
+	std::lock_guard<std::mutex> lock(mutex);   
 	this->curveFactor = curve;
 }
 
 void Movimentation::setImage(Point p){
+	std::lock_guard<std::mutex> lock(mutex);   
 	this->image = p;
 }
 
 float Movimentation::getDistanceRobotBall(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return distance_robot_ball;
 }
     
 float Movimentation::getDistanceRobotDestination(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return distance_ball_destination;
 }
 
 float Movimentation::getAngleRobotDestination(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return angle_robot_destination;
 }
 
 float Movimentation::getDistanceBallDestination(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return distance_ball_destination;
 }
 
 float Movimentation::getSinAngleRobotDestination(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return angle_robot_destination;
 }
 
 float Movimentation::getCosAngleRobotDestination(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return cosAngle_robot_destination;
 }
 
 float Movimentation::getCosRobotBall(){
+	std::lock_guard<std::mutex> lock(mutex);   
 	return cos_robot_ball;
 }

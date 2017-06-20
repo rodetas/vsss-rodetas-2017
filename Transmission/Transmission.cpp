@@ -155,9 +155,11 @@ void Transmission::transmitting(string comand){
 }
 
 bool Transmission::getConnectionStatus(){
+    std::lock_guard<std::mutex> lock(mutex);
     return status && openStatus;
 }
 
 void Transmission::setMovements(vector<Command> mov){
+    std::lock_guard<std::mutex> lock(mutex);
     swap(movements, mov); // movements = mov;
 }

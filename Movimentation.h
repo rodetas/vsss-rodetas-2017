@@ -3,6 +3,7 @@
 
 #include "Header.h"
 #include "utils/Structs.h"
+#include <mutex>
 
 using namespace rodetas;
 
@@ -14,6 +15,8 @@ private:
 
     Point image;
     Command movements;
+
+	std::mutex mutex;
 
     int velocity;
 	float maxPwm;
