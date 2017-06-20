@@ -45,6 +45,11 @@ public:
 	void ballThread();
 
 	rodetas::Object robotPosition(ContoursPosition, int);
+
+	vector<rodetas::Object> getTeam();
+	vector<rodetas::Object> getOpponent();
+	rodetas::Object getBall();
+
 	vector<rodetas::Object> getPositions();
 };
 #endif

@@ -2,7 +2,7 @@ COMPILER = g++ -std=c++11 -Wall -g
 EXEC_PROG = Rodetas
 BINARIES = $(EXEC_PROG)
 
-SOURCES := $(shell find -name '*.cpp')
+SOURCES := $(shell find -name '*.cpp' -not -path "./test/*")
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

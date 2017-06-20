@@ -143,13 +143,13 @@ void Transmission::transmitting(string comand){
     } else {
         for(int i=0, cont=0 ; i<comand.size() ; i++){
             stringstream parcial;
+            parcial << comand[i];
             i++;
-            cout << comand[i] << " ";
             parcial << comand[i];
             send_bytes[cont] = stoi(parcial.str().c_str(), 0, 16);
             cont++;
         }
-
+//        cout << send_bytes << endl;
         write(usb, send_bytes, sizeof(send_bytes));
     }
 }

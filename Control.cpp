@@ -9,19 +9,38 @@ Control::Control(){
 void Control::handle(){
 
     vision.initialize();
-    strategy.initialize();
+
+	Strategy::initStaticParameters(); // precisa ser primeiro
+
+	strategies.push_back(new StrategyAttack());
+	strategies.push_back(new StrategyDefense());
+	strategies.push_back(new StrategyGoal());
+
+	for(auto s: strategies){
+		s->initialize();
+	}
+
 
     while(getProgramState() == GAME){
-		
+		timer.startTime();		
 		vision.computerVision();
 	
-		strategy.setObjects(vision.getPositions());
-		strategy.handleStrategies();
+		Strategy::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
+		Strategy::defineFunctions();
 
-		if (play){
-			transmission.setMovements(strategy.getMovements());
-			transmission.send();
+		for(int i=0 ; i<strategies.size() ; i++){
+			strategies[i]->apply();
+			// @TODO: VERIFICAR SE E MELHOR ENVIAR COMANDO DESTA FORMA OU NAO
+			if(play){
+				transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
+			}
 		}
+
+		/*if (play){
+			for(int i=0 ; i<3 ; i++){
+				transmission.send(i, strategies[i]->getCommand());
+			}
+		}*/
 	
 		timer.framesPerSecond();
 
@@ -30,6 +49,10 @@ void Control::handle(){
     }
 	
 	vision.cameraRelease();
+
+	for(auto s: strategies){
+		delete s;
+	}
 }
 
 void Control::setThreadVariables(){
@@ -137,11 +160,11 @@ bool Control::onKeyboard(GdkEventKey* event){
 }
 
 void Control::onPotencyChanged(){
-	strategy.setPowerPotency(spin_potency->get_value());
+//	strategy.setPowerPotency(spin_potency->get_value());
 }
 
 void Control::onCurveChanged(){
-	strategy.setPowerCurve(spin_curve->get_value());
+	//strategy.setPowerCurve(spin_curve->get_value());
 }
 
 void Control::onButtonPlay(){
