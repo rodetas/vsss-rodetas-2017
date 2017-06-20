@@ -12,7 +12,6 @@ Movimentation::Movimentation(){
 /*
  * calculates the basic movimentation
  */
-
 Command Movimentation::movePlayers(Point destination){
 
 	/* movement along the field */
@@ -30,12 +29,7 @@ Command Movimentation::movePlayers(Point destination){
 	    }
 	}
 
-	Command movement;
-	movement.direcao = movements.direcao;
-	movement.pwm1 = movements.pwm1;
-	movement.pwm2 = movements.pwm2;
-
-	return movement;
+	return movements;
 }
 
 void Movimentation::setPwm(Point destination, char direction){
@@ -129,6 +123,10 @@ void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, 
     cosAngle_robot_destination = calcCos(destination, robot);
 
 	cos_robot_ball = calcCos(ball, robot);
+}
+
+void Movimentation::setRobot(rodetas::Object obj){
+	robot = obj;
 }
 
 Command Movimentation::getMovement(){

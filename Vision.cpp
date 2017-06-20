@@ -4,7 +4,7 @@
  * Constructor of the class
  */
 Vision::Vision(){
-    robotTeam.resize(number_robots);
+//    robotTeam.resize(number_robots);
 }
 
 /*
@@ -51,7 +51,7 @@ void Vision::computerVision(){
 void Vision::teamThread(){
     team_position = position(full_image_cut, team_position, colorsHSV[TEAM], 3);
 
-    vector<rodetas::Object> robot(number_robots);
+    vector<rodetas::Object> robot;
 
     // cropped image around the color team
     for (int i = 0; i < team_position.center.size(); i++){
@@ -77,7 +77,7 @@ void Vision::teamThread(){
 
                     find_position.center[0].x += cutPoint.first.x;
                     find_position.center[0].y += cutPoint.first.y;
-                    robot[j] = robotPosition(find_position, i);
+                    robot.push_back(robotPosition(find_position, i));
                     
                     biggest_radius = find_position.radius[0];
                 }
@@ -144,6 +144,26 @@ void Vision::ballThread(){
 /*
  * Getters
  */
+
+vector<rodetas::Object> Vision::getTeam(){
+    return robotTeam;
+}
+
+vector<rodetas::Object> Vision::getOpponent(){
+    vector<rodetas::Object> objects;
+
+    // ALEXANDRE, FAZER UMA REVISAO AQUI
+    for (int i = 0; i < opponent_position.center.size(); i++){
+        objects.push_back(Object(opponent_position.center[i]));
+    }
+
+    return objects;
+}
+
+rodetas::Object Vision::getBall(){
+    return Object(ball_position.center[0]);
+}
+
 vector<rodetas::Object> Vision::getPositions(){
     std::lock_guard<std::mutex> lock(mutex);
     

@@ -50,9 +50,16 @@ struct Command{
 
 	string to_string(){
 		stringstream ss;
-		ss << direcao << pwm1 << pwm2;
+		ss << direcao;
+		ss << setfill('0') << setw(3) << pwm1;
+		ss << setfill('0') << setw(3) << pwm2;
 		return ss.str();
 	}
+
+	friend std::ostream& operator<< (std::ostream& stream, const Command& c) {
+		stream << c.direcao << " " << c.pwm1 << " " << c.pwm2;
+		return stream;
+    }
 
 	vector<int> to_hex(){
 		string cmd = this->to_string();
@@ -145,6 +152,16 @@ struct Object{
 		id = -1;
 	};
 
+	Object(int _x, int _y){
+		x = _x;
+		y = _y;
+	}
+
+	Object(Point2i p){
+		x = p.x;
+		y = p.y;
+	}
+
 	void print(){
 		cout << " X: " << x;
 		cout << " Y: " << y;
@@ -158,6 +175,11 @@ struct Object{
 	bool isNull(){
 		return (x == 0 && y == 0);
 	};
+
+	friend std::ostream& operator<< (std::ostream& stream, const Object& o) {
+		stream << "ID: " << o.id << " X:" << o.x << " Y:" << o.y << " ANGLE:" << o.angle;
+		return stream;
+    }
 };
 
 struct ContoursPosition {

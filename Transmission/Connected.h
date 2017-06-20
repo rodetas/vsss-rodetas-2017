@@ -11,7 +11,7 @@ class Connected : public Transmission{
     public:
         Connected();
         virtual ~Connected();
-        void send();
+        void send(int i, Command c);
 
         void stopRobot();
         void movementRobot(Command);

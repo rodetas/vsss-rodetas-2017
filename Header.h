@@ -16,11 +16,12 @@
 #define robot2FinalCharacter '}'
 #define robot0InitialCharacter '['
 #define robot0FinalCharacter ']'
-#define FORWARD_MOVE 'A'
-#define BACK_MOVE 'V'
-#define RIGHT_MOVE 'D'
-#define LEFT_MOVE 'E'
-#define STOPPED_MOVE 'P'
+
+#define FORWARD_MOVE 'F'
+#define BACK_MOVE 'B'
+#define RIGHT_MOVE 'R'
+#define LEFT_MOVE 'L'
+#define STOPPED_MOVE 'S'
 
 #define imagePath "files/images/1280 x 720.png"
 #define instancePath "files/instances/fileCalibration.txt"

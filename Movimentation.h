@@ -1,5 +1,5 @@
-#ifndef MOVIMENTATION
-#define MOVIMENTATION
+#ifndef MOVIMENTATION_H_
+#define MOVIMENTATION_H_
 
 #include "Header.h"
 #include "utils/Structs.h"
@@ -32,12 +32,30 @@ private:
 	float cos_robot_ball;
 
 public:
+
+	/**
+	 *
+	 */
 	Movimentation();
 
+	/**
+	 *
+	 */
 	Command movePlayers(Point);
+
+	/**
+	 *
+	 */
 	Pwm PWMCorrection(Point);
 
+	/**
+	 *
+	 */
 	float calculateSpeed();
+
+	/**
+	 *
+	 */
 	void updateCalculus(rodetas::Object, rodetas::Object, Point);
 
 	void stop();
@@ -49,6 +67,8 @@ public:
 	void setImage(Point);
 	void setPwm(Point, char);
 
+	void setRobot(rodetas::Object);
+
 	Command getMovement();
 
 	float getDistanceRobotBall();
@@ -58,5 +78,6 @@ public:
     float getSinAngleRobotDestination();
     float getCosAngleRobotDestination();
 	float getCosRobotBall();
+
 };
 #endif

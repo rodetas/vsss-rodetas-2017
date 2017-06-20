@@ -9,14 +9,11 @@ Connected::~Connected(){
     Transmission::closeConnection();
 }
 
-void Connected::send(){    
+void Connected::send(int i, Command c){    
     string comand = "";
-    
-    for(int i=0; i<3 ; i++){
-        comand = Transmission::generateMessage(i, movements[i]);
-        Transmission::transmitting(comand);
-    }
 
+    comand = Transmission::generateMessage(i, c);
+    Transmission::transmitting(comand);
 }
 
 void Connected::movementRobot(Command c){

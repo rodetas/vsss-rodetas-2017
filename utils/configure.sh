@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -u
+
 WHITE=$(tput setaf 15)
 RED=$(tput setaf 9)
 YELLOW=$(tput setaf 11)
