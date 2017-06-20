@@ -20,32 +20,24 @@ void Control::handle(){
 		s->initialize();
 	}
 
-
     while(getProgramState() == GAME){
 
     	timer.startTime();		
       
-		vision.computerVision();
-	
-		Strategy::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
-		Strategy::defineFunctions();
+			vision.computerVision();
+		
+			Strategy::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
+			Strategy::defineFunctions();
 
-		for(int i=0 ; i<strategies.size() ; i++){
-			strategies[i]->apply();
-			// @TODO: VERIFICAR SE E MELHOR ENVIAR COMANDO DESTA FORMA OU NAO
-			if(play){
-				transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
+			for(int i=0 ; i<strategies.size() ; i++){
+				strategies[i]->apply();
+				// @TODO: VERIFICAR SE E MELHOR ENVIAR COMANDO DESTA FORMA OU NAO
+				if(getPlay()){
+					transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
+				}
 			}
-		}
-
-		/*if (play){
-			for(int i=0 ; i<3 ; i++){
-				transmission.send(i, strategies[i]->getCommand());
-			}
-		}*/
-	
+			
 		timer.framesPerSecond();
-
 		timer.waitTimeStarted(33);
     }
 	
