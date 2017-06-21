@@ -12,11 +12,14 @@ Transmission::Transmission() {
     robot_speed = "";
 
     last_time = 0;
-    status = false;
+    transmittingStatus = false;
     openStatus = false;
+
+    openConection();
 }
 
 Transmission::~Transmission(){
+//    stopAllRobots(3);
     closeConnection();
 }
 
@@ -26,10 +29,9 @@ void Transmission::closeConnection(){
 
 bool Transmission::openConection(){   
 
-    //usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
     usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
 
-    if (usb == -1 ) {
+    if (usb == -1 ){
         openStatus = false;
 
     } else {
@@ -74,6 +76,12 @@ bool Transmission::openConection(){
     }
 }
 
+void Transmission::send(int i, Command c){    
+    string comand = "";
+    comand = generateMessage(i, c);
+    serialTransmit(comand);
+}
+
 // recebe um comando e retorna a string equivalente para ser enviada
 string Transmission::generateMessage(int robot, Command comand){
 
@@ -82,26 +90,12 @@ string Transmission::generateMessage(int robot, Command comand){
     short int frame_id = 0x01;
     short int option = 0x00;
 
-    short int address = robot; // ALTERAR PARA ROBOT
+    short int address = robot; 
     int lenght = 0xC;
 
     vector<int> hex_message = comand.to_hex();
 
-    int checksum = [&](){
-        char check = frame_type + frame_id + address + option;
-        unsigned char sum = 0;
-
-        for(int i=0 ; i<hex_message.size() ; i++){
-            sum = sum + (hex_message[i]);
-        }
-
-        int checksum = check+sum;
-        std::string binary = std::bitset<8>(checksum).to_string();	// Pega os 8 primeiros bits do valor
-	    unsigned long decimal = std::bitset<8>(binary).to_ulong();	// Volta para decimal
-        checksum = 0xFF-decimal;
-
-        return checksum;
-    }();
+    int checksum = generateCheckSum(frame_type, frame_id, address, option, hex_message);
 
     // agrupa os parametros formando a mensagem pronta para ser enviada
     stringstream ss;
@@ -117,26 +111,41 @@ string Transmission::generateMessage(int robot, Command comand){
     }
     ss << std::hex << checksum;
 
-// retorna a string pronta para ser enviada
-//    cout << ss.str() << endl;
     return ss.str();
 }
 
+int Transmission::generateCheckSum(int frame_type, int frame_id, int address, int option, vector<int> hex_message){
+
+    char check = frame_type + frame_id + address + option;
+    unsigned char sum = 0;
+
+    for(int i=0 ; i<hex_message.size() ; i++){
+        sum = sum + (hex_message[i]);
+    }
+
+    int checksum = check+sum;
+    std::string binary = std::bitset<8>(checksum).to_string();	// Pega os 8 primeiros bits do valor
+    unsigned long decimal = std::bitset<8>(binary).to_ulong();	// Volta para decimal
+    checksum = 0xFF-decimal;
+
+    return checksum;
+}
+
 // recebe uma string para enviar
-void Transmission::transmitting(string comand){
+void Transmission::serialTransmit(string comand){
     const int size = comand.size();
     unsigned char send_bytes[size/2];
 
     if(timer.getTime() - last_time > 2000){
         string out = executeCommand("ls /dev/ttyUSB0 2> /dev/null");
 
-        if(out.compare("") == 0) status = false;
-        else status = true;
+        if(out.compare("") == 0) transmittingStatus = false;
+        else transmittingStatus = true;
 
         last_time = timer.getTime();
     } 
 
-    if(status == false || openStatus == false){
+    if(!getConnectionStatus()){
         closeConnection();
         openConection();
 
@@ -154,12 +163,11 @@ void Transmission::transmitting(string comand){
     }
 }
 
-bool Transmission::getConnectionStatus(){
-    std::lock_guard<std::mutex> lock(mutex);
-    return status && openStatus;
+void Transmission::stopAllRobots(int n){
+    for(int i=0 ; i<n ; i++) send(n, Command(STOPPED_MOVE,0,0));
 }
 
-void Transmission::setMovements(vector<Command> mov){
+bool Transmission::getConnectionStatus(){
     std::lock_guard<std::mutex> lock(mutex);
-    swap(movements, mov); // movements = mov;
+    return transmittingStatus && openStatus;
 }
