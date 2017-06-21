@@ -150,7 +150,7 @@ void Strategy::setVecTarget(int id, Point target){
 	targets[id] = target;
 }
 
-void Strategy::calcBallProjection(){
+Object Strategy::calculateBallProjection(){
 	if(lastBallPositions.size() < 9){
 		lastBallPositions.push_back(ball);
 	} else {
@@ -165,6 +165,8 @@ void Strategy::calcBallProjection(){
 
 		lastBallProjection = ballProjection;
 	}
+
+	return ballProjection;
 }
 
 void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas::Object>& op, rodetas::Object b){
@@ -172,7 +174,7 @@ void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas
 	opponent = op;
 	ball = b;
 
-	Strategy::calcBallProjection();
+	Strategy::calculateBallProjection();
 }
 
 Command Strategy::getCommand(){
