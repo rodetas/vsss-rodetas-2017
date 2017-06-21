@@ -23,11 +23,6 @@ private:
     int last_time;
     bool transmittingStatus;
     bool openStatus;
-    char initialCaracter[3];
-    char finalCaracter[3];
-
-    string robot_speed;
-    bool receiving;
 
     std::mutex mutex;
 

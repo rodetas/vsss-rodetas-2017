@@ -1,15 +1,6 @@
 #include "Transmission.h"
 
 Transmission::Transmission() {
-    initialCaracter[0] = robot0InitialCharacter;
-    initialCaracter[1] = robot1InitialCharacter;
-    initialCaracter[2] = robot2InitialCharacter;
-    finalCaracter[0] = robot0FinalCharacter;
-    finalCaracter[1] = robot1FinalCharacter;
-    finalCaracter[2] = robot2FinalCharacter;
-
-    receiving = false;
-    robot_speed = "";
 
     last_time = 0;
     transmittingStatus = false;
