@@ -64,7 +64,7 @@ private:
 
 	bool play;
 	void setPlay(bool);
-	bool getPlay();
+	bool isPlaying();
 
 public:
 	Control();

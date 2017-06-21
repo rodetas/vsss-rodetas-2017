@@ -21,7 +21,7 @@ public:
 
     /**
      * Constructor - if uses this constructor once, should use this for all
-     * n: robot id for use
+     * \param n: robot id for use
      */
     Strategy(int n);
 
@@ -31,17 +31,17 @@ public:
     void initialize();
 
     /**
-     *
+     * Static Method to initialize all the static parameters
      */
     static void initStaticParameters();
 
     /**
-     *    Static method to define positions for each robot
+     * Static method to define positions for each robot
      */
     static void defineFunctions();
 
     /**
-     *   Pure virtual function to apply the strategy
+     * Pure virtual function to apply the strategy
      */
     virtual void apply() = 0;
 
@@ -51,28 +51,31 @@ public:
     virtual Point setTarget() = 0;
 
     /**
-     * 
+     * Apply the robot strategy when it's on the corner
      */
     virtual void cornerStrategy();
 
     /**
      * Returns if a rodetas::object is near the board
+     * \param the object you want to know if is near the board
+     * \return true if is near
      */
     bool isBoard(rodetas::Object);
 
     /**
      * Apply the potencial field
-     * target: 
-     * toRepulsion:
-     * toDestination:
+     * \param target: 
+     * \param toRepulsion:
+     * \param toDestination:
+     * \return 
      */
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
     virtual Point applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination);
 
     /**
      * Saves all the targets in a vector for drawing purposes
-     * id: the robot id
-     * target: the robot target
+     * \param id: the robot id
+     * \param target: the robot target
      */
     static void setVecTarget(int id, Point target);
 
@@ -82,33 +85,57 @@ public:
     void updateCalculus();
 
     /**
-     *
+     * Calculates the ball projection
+     * \return the ball projection
      */
-    static void calcBallProjection();
+    static Object calculateBallProjection();
 
+    /**
+     * Sets the objects for strategy's use
+     * \param team: receives a vector<Object> containing all the team positions
+     * \param opponent: receives a vector<Object> containing the opponent's positions
+     * \param ball: receive a Object containg the ball's position
+     */
     static void setObjects(const vector<rodetas::Object>&, const vector<rodetas::Object>&, rodetas::Object);
 
     /**
-     *
+     * Method to get the command generate by strategy for a specific robot
+     * \return the respectively command
      */
     Command getCommand();
 
+    /**
+     * Get the robot id whose the strategy is using
+     * \return the robot id
+     */
     int getRobotId();
+
+    /**
+     * Sets the potency factor value
+     * \param f: the potency
+     */
+    static void setPotencyFactor(float f);
+
+    /**
+     * Sets the curve factor
+     * \param f: the curve factor
+     */
+    static void setCurveFactor(float f);
+    
 
 protected:
 
-    static int attackNumber;
-    static int defenseNumber;
-    static int goalNumber;
+    static int attackNumber; ///< index of the attacker robot in the team vector
+    static int defenseNumber;///< index of the defenser robot in the team vector
+    static int goalNumber;   ///< index of the goalkeeper robot in the team vector
 
-    static Object ball;
-    static vector<rodetas::Object> team;
+    static Object ball; ///< contain the ball coordinates
+    static vector<rodetas::Object> team; ///< vector containing the team's positions
     static vector<rodetas::Object> opponent;
     static vector<rodetas::Object> objects; ///< vector of all objects containing its positions
     static vector<Point> targets;
 
     static Object ballProjection;
-    //@TODO: imeplementar uma melhor projecao da bola
     static vector<rodetas::Object> lastBallPositions;
     static rodetas::Object lastBallProjection;
 
@@ -116,7 +143,10 @@ protected:
     static Point goalSize;
     static Point goalArea;
 
-    int robotState;
+    static float curve_factor;
+    static float potency_factor;
+
+    int robotState; ///< for represent the atual robot state (PARADO, DEFENDENDO, ATACANDO)
     int robotId;
 
     Point destination;

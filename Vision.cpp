@@ -141,10 +141,6 @@ void Vision::ballThread(){
     return robot;
 }
 
-/*
- * Getters
- */
-
 vector<rodetas::Object> Vision::getTeam(){
     return robotTeam;
 }
@@ -153,6 +149,7 @@ vector<rodetas::Object> Vision::getOpponent(){
     vector<rodetas::Object> objects;
 
     // ALEXANDRE, FAZER UMA REVISAO AQUI
+    // COMPARA COM A FORMA QUE ERA FEITA NO getPositions()
     for (int i = 0; i < opponent_position.center.size(); i++){
         objects.push_back(Object(opponent_position.center[i]));
     }
@@ -161,12 +158,12 @@ vector<rodetas::Object> Vision::getOpponent(){
 }
 
 rodetas::Object Vision::getBall(){
-    Object o;
+
     if(ball_position.center.size() != 0){
         return Object(ball_position.center[0]);
     }
 
-    return o;
+    return Object();
     
 }
 

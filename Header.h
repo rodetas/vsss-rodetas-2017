@@ -24,7 +24,7 @@
 #define STOPPED_MOVE 'S'
 
 #define imagePath "files/images/1280 x 720.png"
-#define instancePath "files/instances/fileCalibration.txt"
+// #define instancePath "files/instances/fileCalibration.txt"
 
 #include <iostream>
 #include <vector>

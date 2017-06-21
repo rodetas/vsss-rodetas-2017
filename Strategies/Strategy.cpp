@@ -5,6 +5,9 @@ int Strategy::defenseNumber = 0;
 int Strategy::goalNumber = 0;
 int Strategy::nStrategies = 0;
 
+float Strategy::curve_factor;
+float Strategy::potency_factor;
+
 bool Strategy::definedId = false;
 
 Object Strategy::ballProjection;
@@ -147,7 +150,7 @@ void Strategy::setVecTarget(int id, Point target){
 	targets[id] = target;
 }
 
-void Strategy::calcBallProjection(){
+Object Strategy::calculateBallProjection(){
 	if(lastBallPositions.size() < 9){
 		lastBallPositions.push_back(ball);
 	} else {
@@ -162,6 +165,8 @@ void Strategy::calcBallProjection(){
 
 		lastBallProjection = ballProjection;
 	}
+
+	return ballProjection;
 }
 
 void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas::Object>& op, rodetas::Object b){
@@ -169,14 +174,8 @@ void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas
 	opponent = op;
 	ball = b;
 
-	Strategy::calcBallProjection();
+	Strategy::calculateBallProjection();
 }
-
-/*void Strategy::setObjects(const vector<rodetas::Object>& v){
-    objects = v;
-    ball = objects[GRAPHICBALL];
-    Strategy::calcBallProjection();
-}*/
 
 Command Strategy::getCommand(){
     return movimentation.getMovement();
@@ -184,4 +183,12 @@ Command Strategy::getCommand(){
 
 int Strategy::getRobotId(){
 	return robot.id;
+}
+
+void Strategy::setPotencyFactor(float f){
+	Strategy::potency_factor = f;
+}
+
+void Strategy::setCurveFactor(float f){
+	Strategy::curve_factor = f;
 }

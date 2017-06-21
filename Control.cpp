@@ -31,11 +31,14 @@ void Control::handle(){
 
 			for(int i=0 ; i<strategies.size() ; i++){
 				strategies[i]->apply();
-				// @TODO: VERIFICAR SE E MELHOR ENVIAR COMANDO DESTA FORMA OU NAO
-				if(getPlay()){
+			}
+
+			if(isPlaying()){
+				for(int i=0 ; i<strategies.size() ; i++){
 					transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
 				}
 			}
+
 			
 		timer.framesPerSecond();
 		timer.waitTimeStarted(33);
@@ -160,7 +163,7 @@ void Control::onButtonPlay(){
 		button_play->set_label("Paused");
 	}
 
-	setPlay(!getPlay());
+	setPlay(!isPlaying());
 	transmission.stopRobot();
 }
 
@@ -231,7 +234,7 @@ void Control::setPlay(bool b){
 	play = b;
 }
 
-bool Control::getPlay(){
+bool Control::isPlaying(){
 	std::lock_guard<std::mutex> lock(mutex); 
 	return play;
 }
