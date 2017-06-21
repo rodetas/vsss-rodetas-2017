@@ -16,8 +16,7 @@
 #define LEFT_MOVE 'L'
 #define STOPPED_MOVE 'S'
 
-#define imagePath "files/images/1280 x 720.png"
-// #define instancePath "files/instances/fileCalibration.txt"
+#define imagePath "files/images/1280x720.png"
 
 #include <iostream>
 #include <vector>
