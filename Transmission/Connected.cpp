@@ -11,7 +11,6 @@ Connected::~Connected(){
 
 void Connected::send(int i, Command c){    
     string comand = "";
-    cout << i << " " << c.to_string() << endl;
     comand = Transmission::generateMessage(i, c);
     Transmission::transmitting(comand);
 }
