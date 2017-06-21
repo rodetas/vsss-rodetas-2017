@@ -4,8 +4,6 @@ Manipulation::Manipulation(){
 	colorsHSV.resize(6);
 	colorsRGB.resize(6);
 
-    created = false;
-
 	loadCalibration();
 }
 
@@ -16,10 +14,10 @@ void Manipulation::saveCalibration(vector<Hsv> &colorsHSV, vector<Rgb> &colorsRG
 		Point point_cut_field_2, Point goal, int angle_image_rotation, bool cameraOn){
 
     ofstream output;
-    output.open(instancePath);
+    output.open(instance_path);
 
     if(!output.is_open()){
-        cout << "FALHA ARQUIVO" << endl;
+        cout << "Arquivo nao existente. Criando novo..." << endl;
     } else {
 
         for(int i=0 ; i<6 ; i++){
@@ -90,7 +88,6 @@ CameraConfiguration Manipulation::loadCameraConfig(){
     arquivo.close();
 
     return cam;
-
 }
 
 /*
@@ -102,50 +99,50 @@ pair<vector<Hsv>, vector<Rgb>> Manipulation::loadCalibration(){
     int numeros[12];
     ifstream input;
 
-    input.open(instancePath);
+    input.open(instance_path);
 
     if(!input.is_open()){
-        cout << "FALHA ARQUIVO" << endl;
-    } else {
-
-        for(int i=0 ; i<6 ; i++){
-            input >> colorsHSV[i].h[0];
-            input >> colorsHSV[i].h[1];
-            input >> colorsHSV[i].h[2];
-            input >> colorsHSV[i].s[0];
-            input >> colorsHSV[i].s[1];
-            input >> colorsHSV[i].s[2];
-            input >> colorsHSV[i].v[0];
-            input >> colorsHSV[i].v[1];
-            input >> colorsHSV[i].v[2];
-            input >> colorsRGB[i].b;
-            input >> colorsRGB[i].g;
-            input >> colorsRGB[i].r;
-            input >> colorsHSV[i].variationH_MAX;
-            input >> colorsHSV[i].variationS_MAX;
-            input >> colorsHSV[i].variationV_MAX;
-            input >> colorsHSV[i].variationH_MIN;
-            input >> colorsHSV[i].variationS_MIN;
-            input >> colorsHSV[i].variationV_MIN;
-        }
-
-        input >> point_cut_field_1.x;
-        input >> point_cut_field_1.y;
-        input >> point_cut_field_2.x;
-        input >> point_cut_field_2.y;
-        input >> goal.y;
-        input >> goal.x;
-        input >> angle_image_rotation;
-        input >> cameraOn;
-
+        cout << "Arquivo nao existente. Utilizando padrao..." << endl;
+        input.close();
+        input.open(standart_instance);
     }
+
+    for(int i=0 ; i<6 ; i++){
+        input >> colorsHSV[i].h[0];
+        input >> colorsHSV[i].h[1];
+        input >> colorsHSV[i].h[2];
+        input >> colorsHSV[i].s[0];
+        input >> colorsHSV[i].s[1];
+        input >> colorsHSV[i].s[2];
+        input >> colorsHSV[i].v[0];
+        input >> colorsHSV[i].v[1];
+        input >> colorsHSV[i].v[2];
+        input >> colorsRGB[i].b;
+        input >> colorsRGB[i].g;
+        input >> colorsRGB[i].r;
+        input >> colorsHSV[i].variationH_MAX;
+        input >> colorsHSV[i].variationS_MAX;
+        input >> colorsHSV[i].variationV_MAX;
+        input >> colorsHSV[i].variationH_MIN;
+        input >> colorsHSV[i].variationS_MIN;
+        input >> colorsHSV[i].variationV_MIN;
+    }
+
+    input >> point_cut_field_1.x;
+    input >> point_cut_field_1.y;
+    input >> point_cut_field_2.x;
+    input >> point_cut_field_2.y;
+    input >> goal.y;
+    input >> goal.x;
+    input >> angle_image_rotation;
+    input >> cameraOn;
 
     input.close();
 
     return make_pair(colorsHSV, colorsRGB);
 }
 
-void Manipulation::showCalibration(){
+void Manipulation::printCalibration(){
     for(int i=0 ; i<colorsHSV.size() ; i++){
         colorsHSV[i].print();
     }
