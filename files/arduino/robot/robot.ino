@@ -5,8 +5,6 @@ XBee xbee = XBee();
 Tx16Request tx;
 Rx16Response rx = Rx16Response();
 
-const byte LEFT_ENCODER = 2;
-const byte RIGHT_ENCODER = 3;
 const byte PWM_MOTOR1 = 5;
 const byte AIN2 = 6;
 const byte AIN1 = 7;
@@ -31,9 +29,7 @@ void setup() {
   pinMode(BIN2, OUTPUT);
   pinMode(PWM_MOTOR2, OUTPUT);
 
-  pinMode(LEFT_ENCODER, INPUT_PULLUP);
   attachInterrupt(0, encoderLeft, RISING);
-  pinMode(RIGHT_ENCODER, INPUT_PULLUP);
   attachInterrupt(1, encoderRight, RISING);
 
   Serial.begin(9600);
@@ -83,12 +79,10 @@ void receivingSerial() {
 
 void encoderLeft() {
   left_cont++;
-  Serial.println(left_cont);
 }
 
 void encoderRight() {
   right_cont++;
-  Serial.println(right_cont);
 }
 
 void forward() {
