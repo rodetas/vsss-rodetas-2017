@@ -121,7 +121,7 @@ int Control::GUI() {
 bool Control::onKeyboard(GdkEventKey* event){
 
 	if(event->type == GDK_KEY_RELEASE){
-		transmission.stopAllRobots(3);
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(STOPPED_MOVE, 0, 0));
 	} else if (event->keyval == GDK_KEY_Left) {
 		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(LEFT_MOVE, 150, 150));
 

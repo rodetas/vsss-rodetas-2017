@@ -17,6 +17,7 @@ private:
 	
 	int program_state;
 
+	bool onKeyboard(GdkEventKey*);
 	void onButtonPlay();
 	void onButtonCalibration();
 	void onButtonSimulator();
