@@ -42,7 +42,8 @@ void unitTest_TransmissionGenerateCheckSum(){
 
 
 int main(int argc, char** argv){
-
+    
+    // Transmissao
     unitTest_TransmissionGenerateMessage();
     unitTest_TransmissionGenerateCheckSum();
 
