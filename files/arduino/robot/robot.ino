@@ -1,6 +1,15 @@
 #include <XBee.h>
 #include <string.h>
 
+void encoderRight();
+void encoderLeft();
+void receivingSerial();
+void forward();
+void back();
+void turnRight();
+void turnLeft();
+void stopped();
+
 XBee xbee = XBee();
 Tx16Request tx;
 Rx16Response rx = Rx16Response();
@@ -21,6 +30,7 @@ int left_cont = 0;
 int right_cont = 0;
 
 void setup() {
+
   pinMode(PWM_MOTOR1, OUTPUT);
   pinMode(AIN2, OUTPUT);
   pinMode(AIN1, OUTPUT);

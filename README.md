@@ -6,6 +6,6 @@
 
 ## How to install Rodetas Software
 
-You can install all the Rodetas dependencies using our script. Just run: 
+You can install all the Rodetas dependencies using our script. Just run in the project root directory: 
 
 ```sudo utils/configure -y```
