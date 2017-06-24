@@ -265,12 +265,18 @@ INSTALL_XCTU () {
 	fi
 }
 
+INSTALL_XBEE_H () {
+	git clone https://github.com/andrewrapp/xbee-arduino.git
+	mv xbee-arduino/ /usr/share/arduino/libraries/xbee
+}
+
 CREATE_WORKSPACE
 SUDO_UPDATE
 
 GET_INFORMATION
 
 INSTALL_COMMONS_DEPEND
+INSTALL_XBEE_H
 INSTALL_GUV
 INSTALL_OPENCV
 INSTALL_GTKMM
