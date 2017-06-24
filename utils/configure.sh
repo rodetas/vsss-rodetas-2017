@@ -30,6 +30,7 @@ SUDO_UPDATE () {
 	sudo apt-get update
 }
 
+# INSTALL A PROGRAM; $1: program detail $2: program name
 INSTALL () {
 
 	# get number of parameters
@@ -94,6 +95,7 @@ GET_INFORMATION () {
 	sleep 1
 }
 
+# INSTALL GENERAL DEPENDENCIES
 INSTALL_COMMONS_DEPEND () {
 
 	ok=1
