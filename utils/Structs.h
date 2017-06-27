@@ -5,6 +5,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include <iomanip>
 #include <stdio.h>
+#include <iterator>
 
 namespace rodetas{
 
@@ -20,6 +21,23 @@ enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOP
 
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
+
+/*
+struct SafeVariable {
+	template <class T>
+	T value;
+	
+	T get(){
+		//std::lock_guard<std::mutex> lock(mutex);
+		return value;
+	}
+
+	void set(T v){
+		//std::lock_guard<std::mutex> lock(mutex);
+		value = v;
+	}
+};
+*/
 
 struct PointCut {
 	Point2i first;
@@ -277,12 +295,8 @@ float calcCos(const T a, const U b){
 	return cos((calcAngle(b,a) - b.angle)/RADIAN_TO_DEGREE);
 }
 
-int getCameraNumberScript();
 string executeCommand(string cmd);
 Point changeCordinates(Point, Point, Point);
-void updateCameraValuesScript(CameraConfiguration, int);
-void defaultCameraScript(int);
-
 }
 
 #endif

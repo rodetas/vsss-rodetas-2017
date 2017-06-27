@@ -3,6 +3,7 @@
 
 #include "Header.h"
 #include "utils/OpenCV.h"
+#include "utils/Camera.h"
 #include "utils/Timer.h"
 #include "CRUD/Manipulation.h"
 #include <thread>

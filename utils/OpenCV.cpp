@@ -166,12 +166,12 @@ cv::Mat OpenCV::imageInitialize(){
 /*
  * Method to initialize camera
  */
-cv::Mat OpenCV::cameraInitialize(CameraConfiguration camera_config, int camera_number){
+cv::Mat OpenCV::cameraInitialize(CameraConfiguration camera_config){
     cv::Mat image;
 
     do {
-        updateCameraValuesScript(camera_config, camera_number);
-        cam = cv::VideoCapture(camera_number);
+        camera.updateCameraValuesScript(camera_config);
+        cam = cv::VideoCapture(camera.getNumber());
         timer.wait(500000); //time to camera answer
 
         if(cam.isOpened()){

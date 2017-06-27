@@ -22,7 +22,7 @@ void Vision::initialize(){
     image_initialize    = !manipulation.getCameraOn();
 
     if (camera_on) {
-        opencv_image_BGR = cameraInitialize(camera_config, getCameraNumberScript());
+        opencv_image_BGR = cameraInitialize(camera_config);
     } else {
         opencv_image_BGR = imageInitialize();
     }

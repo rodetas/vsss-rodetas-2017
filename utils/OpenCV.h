@@ -4,6 +4,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "Structs.h"
 #include "Timer.h"
+#include "Camera.h"
 
 using namespace rodetas;
 
@@ -11,6 +12,7 @@ class OpenCV {
 
 private:
 	Timer timer;
+	Camera camera;
 	int frames = 0;
 	float percent_cut;
 
@@ -24,7 +26,7 @@ public:
 	cv::Mat rotateImage(cv::Mat, int);
 	cv::Mat updateCameraImage();
 	cv::Mat imageInitialize();
-	cv::Mat cameraInitialize(CameraConfiguration, int);
+	cv::Mat cameraInitialize(CameraConfiguration);
 	void imageValidation(cv::Mat, PointCut);
 	void cameraRelease();
 
