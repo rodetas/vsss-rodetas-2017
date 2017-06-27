@@ -175,6 +175,15 @@ void Control::onButtonTime(){
 		button_side->set_label("2º time");
 	}
 
+	/*
+	Quando inverter:
+	p2.x = size.x - p2.x
+	p2.y = size.y - p2.y
+
+	p1.x = size.x - p1.x
+	p1.y = size.y - p1.y
+*/
+
 	setChangeTime(!getChangeTime());
 }
 
