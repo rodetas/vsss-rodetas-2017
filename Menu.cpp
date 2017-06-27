@@ -15,6 +15,7 @@ int Menu::GUI(){
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Menu.glade");
 	
 	builder->get_widget("Window Menu", window);
+	window->signal_key_press_event().connect(sigc::mem_fun(this, &Menu::onKeyboard), false);
 	
 	builder->get_widget("Button Play", button_play);
 	button_play->signal_clicked().connect( sigc::mem_fun(this, &Menu::onButtonPlay) );
@@ -34,7 +35,19 @@ int Menu::GUI(){
 	app->run(*window);
 
 	return program_state;
-} 
+}
+
+bool Menu::onKeyboard(GdkEventKey* event){
+	if(event->keyval == GDK_KEY_space) {
+		program_state = GAME;
+		window->close();
+	} else if(event->keyval == GDK_KEY_Return) {
+		program_state = GAME;
+		window->close();
+	} else if(event->keyval == GDK_KEY_Escape) {
+		window->close();
+	}
+}
 
 void Menu::onButtonPlay(){ 
 	program_state = GAME; 

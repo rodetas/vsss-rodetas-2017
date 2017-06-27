@@ -146,5 +146,5 @@ void Arduino::setCombos(){
     for(int i=0 ; i<baudrate_names.size() ; i++){
 	    comboBaudRate->append(baudrate_names[i]);
     }
-    comboBaudRate->set_active_text(baudrate_names[1]);
+    comboBaudRate->set_active_text(baudrate_names[0]); // active 9600
 }

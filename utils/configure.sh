@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -u
+set -u # not allow use undeclared variables
+set -e # exit when a command fails
 
 WHITE=$(tput setaf 15)
 RED=$(tput setaf 9)
@@ -26,122 +27,123 @@ ASK_INSTALL=1
 INSTALL_ESPECIFIC=0
 
 SUDO_UPDATE () {
-	sudo apt-get update;
+	sudo apt-get update
 }
 
+# INSTALL A PROGRAM; $1: program detail $2: program name
 INSTALL () {
 
 	# get number of parameters
 	if [ "$#" -eq 2 ]; then
-		echo "${BOLD}${BLUE}Installing $1... ${NORMAL}";
-		CMD="sudo apt-get -y install $2";
+		echo "${BOLD}${BLUE}Installing $1... ${NORMAL}"
+		CMD="sudo apt-get -y install $2"
 
 		if ${CMD}; then
-			echo "${BOLD}${GREEN}[OK...]${NORMAL}";
+			echo "${BOLD}${GREEN}[OK...]${NORMAL}"
 		else
-			echo "${ERROR}[ERROR...]${WHITE}";
-			ERROR_OCURRED=1;
+			echo "${ERROR}[ERROR...]${WHITE}"
+			ERROR_OCURRED=1
 		fi
 	else
-		echo "${ERROR}INCORRECT NUMBER OF PARAMETERS ${NORMAL}";
-		ERROR_OCURRED=1;
+		echo "${ERROR}INCORRECT NUMBER OF PARAMETERS ${NORMAL}"
+		ERROR_OCURRED=1
 	fi
 
 }
 
+# CREATES TEMP DIRECTORY
 CREATE_WORKSPACE () {
-	mkdir installation;
-	cd installation;
+	DIR=`pwd`
+	WORK_DIR=`mktemp -d -p ${DIR}`
+	cd ${WORD_DIR}
 }
 
+EXIT () {
+	cd ..
+	rm -rf "$WORK_DIR"
+}
+
+# VERIFY IF ITS RUNNING AS ROOT
 if [ "$EUID" -ne 0 ]; then 
-		echo "Please run as root"
-		exit
+	echo "Please run as root"
+	exit
 fi
 
+# PARSE PARAMETERS
 while getopts :y OPCAO; do
 	case "${OPCAO}" in
-    	y)	
+    y)	
 	    ASK_INSTALL=0 
 	;;
 		
 	\?)
-	    echo "INVALID PARAMETER";
+	    echo "INVALID PARAMETER"
 	    exit
-	;;
-
-     	e) 
-	    INSTALL_ESPECIFIC="${TARGET}" 
 	;;
  	esac
 done
 
+# GET INFORMATIONS FROM THE SYSTEM
 GET_INFORMATION () {
 	echo "${BOLD}${BLUE}Checking system information...";
-	sleep 1;
-	if [[ $DISTRO == "Ubuntu" || $DISTRO == "Debian"  || $DISTRO == "neon" ]]; then
-		echo "${GREEN}SYSTEM DETECTED: ${WHITE}${DISTRO} ${VERSION}";
+	sleep 1
+	if [[ "${DISTRO}" = "Ubuntu" || "$DISTRO" = "Debian" ]]; then
+		echo "${GREEN}SYSTEM DETECTED: ${WHITE}${DISTRO} ${VERSION}"
 	else
-		echo "${ERROR}ERROR. There is no support to your distro.";
+		echo "${ERROR}ERROR. There's no support to your distro."
 	fi
-	sleep 1;
+	sleep 1
 }
 
-CLONE_PROJECT () {
-	echo "${GREEN}${BOLD}CLONING RODETAS SOURCE CODE${NORMAL}";
-	git clone https://github.com/rodetas/rodetas.git;
-}
-
+# INSTALL GENERAL DEPENDENCIES
 INSTALL_COMMONS_DEPEND () {
 
-	ok=1;
+	ok=1
 
-	if [ ${ASK_INSTALL}  -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL DEPENDENCIES ? (Y\n) ${NORMAL}";
-		read answer;
-		if [ "${answer}" == "n" ]; then
-			ok=0;
+	if [ ${ASK_INSTALL} -eq 1 ]; then
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL DEPENDENCIES ? (Y\n) ${NORMAL}"
+		read answer
+		if [ "${answer}" = "n" ]; then
+			ok=0
 		fi
 	fi
 
 	if [ ${ok} -eq 1 ]; then
 
-		INSTALL Git git;
-		INSTALL g++ g++;
-		INSTALL webcam-control uvcdynctrl;
+		INSTALL Git git
+		INSTALL g++ g++
 		INSTALL webcam-control v4l-utils
-		INSTALL cmake cmake;
-		INSTALL qt5 qt5-default;
-		INSTALL libxvidcore libxvidcore-dev;
-		INSTALL libv4l libv4l-dev;
-		INSTALL libv4l libv4l-conf;
-		INSTALL libxine2 libxine2-dev;
-		INSTALL arduino arduino-mk;
-		INSTALL arduino arduino;
-		INSTALL glut freeglut3-dev;
-		INSTALL zip zip;
+		INSTALL cmake cmake
+		INSTALL qt5 qt5-default
+		INSTALL libxvidcore libxvidcore-dev
+		INSTALL libv4l libv4l-dev
+		INSTALL libxine2 libxine2-dev
+		INSTALL arduino arduino-mk
+		INSTALL arduino arduino
+		INSTALL glut freeglut3-dev
+		INSTALL zip zip
 
 		if [ ${ERROR_OCURRED} -eq "1" ]; then
-			echo "${ERROR}SOME ERROR OCURRED. FIX THEM AND EXECUTE AGAIN! ${WHITE}";
-			exit 1;
+			echo "${ERROR}SOME ERROR OCURRED INSTALLING COMMONS DEPENDENCIES. FIX THEM AND EXECUTE AGAIN! ${WHITE}"
+			EXIT
 		else
-			echo "${BOLD}${GREEN}COMMONS DEPENDENCIES INSTALLED ${WHITE}";
+			echo "${BOLD}${GREEN}COMMONS DEPENDENCIES INSTALLED SUCCESFULLY${WHITE}"
 		fi
 
-		sleep 3;
-
+		sleep 3
 	fi
 }
 
+# INSTALL GUV 
 INSTALL_GUV () {
 
-	ok=1;
+	ok=1
 
 	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL GUV ? (Y\n) ${NORMAL}";
-		read answer;
-		if [ "${answer}" == "n" ]; then
-			ok=0;
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL GUV ? (Y\n) ${NORMAL}"
+		read answer
+		if [ "${answer}" = "n" ]; then
+			ok=0
 		fi
 	fi
 
@@ -149,166 +151,110 @@ INSTALL_GUV () {
 
 		#UBUNTU
 		if [[ ${DISTRO} == "Ubuntu" || $DISTRO == "neon" ]]; then
-			echo "${GREEN}${BOLD}INSTALLING GUV VIEW FOR UBUNTU${NORMAL}";
-			sudo add-apt-repository -y ppa:pj-assis/testing;
-			SUDO_UPDATE;
-			INSTALL guv-view guvcview;
+			echo "${GREEN}${BOLD}INSTALLING GUV VIEW FOR UBUNTU${NORMAL}"
+			sudo add-apt-repository -y ppa:pj-assis/testing
+			SUDO_UPDATE
+			INSTALL guvcview guvcview
 
 		#DEBIAN 64 bits
 		elif [[ ${DISTRO} == "Debian" && ${ARCH} == "x86_64" ]]; then
-			echo "${GREEN}${BOLD}INSTALLING GUV VIEW FOR DEBIAN${NORMAL}";
-			wget http://nbtelecom.dl.sourceforge.net/project/guvcview/debian-bin/guvcview_2.0.2%2Bubuntu1_ppa1_amd64.deb -O guvcview.deb;
-			wget http://nbtelecom.dl.sourceforge.net/project/guvcview/debian-bin/libguvcview-1.1-0_2.0.2%2Bubuntu1_ppa1_amd64.deb -O libguvcview.deb;
+			echo "${GREEN}${BOLD}INSTALLING GUV VIEW FOR DEBIAN${NORMAL}"
+			wget http://nbtelecom.dl.sourceforge.net/project/guvcview/debian-bin/guvcview_2.0.2%2Bubuntu1_ppa1_amd64.deb -O guvcview.deb
+			wget http://nbtelecom.dl.sourceforge.net/project/guvcview/debian-bin/libguvcview-1.1-0_2.0.2%2Bubuntu1_ppa1_amd64.deb -O libguvcview.deb
 			if sudo dpkg -i libguvcview.deb; then
-				sudo apt-get install -f;
+				sudo apt-get install -f
 				if sudo dpkg -i guvcview.deb; then
-					echo "${GREEN}${BOLD}GUVCVIEW WAS INSTALLED ${NORMAL}";
+					echo "${GREEN}${BOLD}GUVCVIEW WAS INSTALLED ${NORMAL}"
 				else
-					echo "${ERROR}ERROR INSTALLING GUVCVIEW${NORMAL}";
-					ERROR_OCURRED=1;
+					echo "${ERROR}ERROR INSTALLING GUVCVIEW${NORMAL}"
+					ERROR_OCURRED=1
 				fi
 			else
-				echo "${ERROR}ERROR INSTALLING LIBGUVCVIEW${NORMAL}";
-				ERROR_OCURRED=1;
+				echo "${ERROR}ERROR INSTALLING LIBGUVCVIEW${NORMAL}"
+				ERROR_OCURRED=1
 			fi
 		else
-			echo "${ERROR}THERE IS NO SUPPORT TO YOUR DISTRO${NORMAL}";
-			ERROR_OCURRED=1;
+			echo "${ERROR}THERE IS NO SUPPORT TO YOUR DISTRO${NORMAL}"
+			ERROR_OCURRED=1
 		fi
 
 		if [ ${ERROR_OCURRED} -eq 1 ]; then
-			echo "${ERROR}SOME ERROR OCURRED. FIX AND EXECUTE AGAIN!${NORMAL}";
+			echo "${ERROR}SOME ERROR OCURRED. FIX AND EXECUTE AGAIN!${NORMAL}"
 		fi
 	fi
 }
 
 INSTALL_OPENCV () {
 
-	ok=1;
+	ok=1
 
 	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL OPENCV ? (Y\n) ${NORMAL}";
-		read answer;
-		if [ "${answer}" == "n" ]; then
-			ok=0;
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL OPENCV ? (Y\n) ${NORMAL}"
+		read answer
+		if [ "${answer}" = "n" ]; then
+			ok=0
 		fi
 	fi
 
 	if [ ${ok} -eq 1 ]; then
 
-		echo "${GREEN}${BOLD}INSTALLING OPENCV 3.0${NORMAL}";
+		echo "${GREEN}${BOLD}INSTALLING OPENCV 3.0${NORMAL}"
 
 		EXIST=`find -maxdepth 1 -type d -name 'opencv-3.0.0'`
 		if [ -z "${EXIST}" ]; then
-			echo "${GREEN}${BOLD}DOWNLOADING OPENCV 3.0${NORMAL}";
-			wget https://codeload.github.com/opencv/opencv/zip/3.0.0 -O opencv.zip;
-			unzip opencv.zip;
+			echo "${GREEN}${BOLD}DOWNLOADING OPENCV 3.0${NORMAL}"
+			wget https://codeload.github.com/opencv/opencv/zip/3.0.0 -O opencv.zip
+			unzip opencv.zip
 		fi
 
-		cd opencv-3.0.0/;
-		mkdir build && cd build;
-		cmake -DENABLE_PRECOMPILED_HEADERS=OFF -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON DBUILD_EXAMPLES=ON -D WITH_IPP=OFF ..;
-		make -j${CORES};
-		sudo make install;
-		sudo ldconfig;
-		cd ../../;
-		echo "${BOLD}${GREEN}OPENCV IS NOW INSTALLED ${NORMAL}";
+		cd opencv-3.0.0/
+		mkdir build && cd build
+		cmake -DENABLE_PRECOMPILED_HEADERS=OFF -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON DBUILD_EXAMPLES=ON -D WITH_IPP=OFF ..
+		make -j${CORES}
+		sudo make install
+		sudo ldconfig
+		cd ../../
+		echo "${BOLD}${GREEN}OPENCV IS NOW INSTALLED ${NORMAL}"
 
-	fi
-}
-
-INSTALL_SFML () {
-
-	ok=1;
-
-	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL SFML ? (Y\n) ${NORMAL}";
-		read answer;
-		if [ "${answer}" == "n" ]; then
-			ok=0;
-		fi
-	fi
-
-	if [ ${ok} -eq 1 ]; then
-
-		if [[ ${DISTRO} == "Ubuntu" || ${DISTRO} == "neon" ]]; then
-			echo "${GREEN}${BOLD}INSTALLING SFML FOR UBUNTU${NORMAL}";
-			INSTALL SFML libsfml-dev;
-
-		elif [ ${DISTRO} == "Debian" ]; then
-			echo "${GREEN}${BOLD}INSTALLING SFML FOR DEBIAN${NORMAL}";
-			INSTALL sfml-dependencies libpthread-stubs0-dev;
-			INSTALL sfml-dependencies libgl1-mesa-dev;
-			INSTALL sfml-dependencies libx11-dev;
-			INSTALL sfml-dependencies libxrandr-dev;
-			INSTALL sfml-dependencies libfreetype6-dev;
-			INSTALL sfml-dependencies libglew1.5-dev;
-			INSTALL sfml-dependencies libsndfile1-dev;
-			INSTALL sfml-dependencies libopenal-dev;
-			INSTALL sfml-dependencies libxcb-image0;
-			INSTALL sfml-dependencies libudev-dev;
-			INSTALL sfml-dependencies libgudev-1.0-0;
-			INSTALL sfml-dependencies libxcb-image0-dev;
-			INSTALL sfml-dependencies libjpeg-dev;
-
-			EXIST=`find -maxdepth 1 -name 'sfml'`;
-
-			# file were not downloaded
-			if [ -z "${EXIST}" ]; then
-				echo "${BOLD}{$GREEN}DOWNLOADING SFML...${NORMAL}";
-				wget http://mirror3.sfml-dev.org/files/SFML-2.4.0-sources.zip -O sfml.zip;
-				unzip sfml;
-			fi
-
-			sudo ldconfig;
-			cd SFML-2.4.0;
-			cmake .;
-			make -j${CORES};
-			sudo make install;
-			sudo ldconfig;
-			cd ..
-
-		fi
 	fi
 }
 
 INSTALL_GTKMM () {
-	ok=1;
+	ok=1
 
 	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL GTKMM ? (Y\n) ${NORMAL}";
-		read answer;
-		if [ "${answer}" == "n" ]; then
-			ok=0;
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL GTKMM ? (Y\n) ${NORMAL}"
+		read answer
+		if [ "${answer}" = "n" ]; then
+			ok=0
 		fi
 	fi
 
 	if [ ${ok} -eq 1 ]; then
 
-		if [[ ${DISTRO} == "Ubuntu" || ${DISTRO} == "neon" ]]; then
+		if [[ ${DISTRO} = "Ubuntu" ]]; then
 			echo "${GREEN}${BOLD}INSTALLING GTKMM FOR UBUNTU...${NORMAL}"
-			INSTALL gtkmm libgtkmm-3.0-dev;
-			INSTALL gtkmm libgstreamermm-1.0-dev;
-			INSTALL gtkmm libgtkmm-3.0-doc;
-			INSTALL gtkmm libgstreamermm-1.0-doc;
-			INSTALL gtkmm devhelp;
+			INSTALL gtkmm libgtkmm-3.0-dev
+			INSTALL gtkmm libgstreamermm-1.0-dev
+			INSTALL gtkmm libgtkmm-3.0-doc
+			INSTALL gtkmm libgstreamermm-1.0-doc
+			INSTALL gtkmm devhelp
 
 		else
-			echo "${ERROR}NAO EXISTE SUPORTE PARA SUA DISTRO${NORMAL}"
-			ERROR_OCURRED=1;
+			echo "${ERROR}THERE'S NO SUPPORT TO YOUR DISTRO${NORMAL}"
+			ERROR_OCURRED=1
 		fi
-
 	fi
 }
 
 INSTALL_XCTU () {
-	ok=1;
+	ok=1
 
 	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL XCTU ? (Y\n) ${NORMAL}";
-		read answer;
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL XCTU ? (Y\n) ${NORMAL}"
+		read answer
 		if [ "${answer}" == "n" ]; then
-			ok=0;
+			ok=0
 		fi
 	fi
 
@@ -318,28 +264,28 @@ INSTALL_XCTU () {
 		./xctu
 		echo "sudo /opt/Digi/XCTU-NG/app" >> /usr/bin/xctu
 		chmod +x /usr/bin/xctu
-
 	fi
 }
 
-CREATE_WORKSPACE;
-SUDO_UPDATE;
+INSTALL_XBEE_H () {
+	git clone https://github.com/andrewrapp/xbee-arduino.git
+	mv xbee-arduino/ /usr/share/arduino/libraries/xbee
+}
 
-GET_INFORMATION;
+CREATE_WORKSPACE
+SUDO_UPDATE
 
-INSTALL_COMMONS_DEPEND;
-INSTALL_GUV;
-INSTALL_OPENCV;
-INSTALL_SFML;
-INSTALL_GTKMM;
-INSTALL_XCTU;
+GET_INFORMATION
+
+INSTALL_COMMONS_DEPEND
+INSTALL_XBEE_H
+INSTALL_GUV
+INSTALL_OPENCV
+INSTALL_GTKMM
+INSTALL_XCTU
 
 if [ $ERROR_OCURRED -eq 1 ]; then
-	echo "${RED}${BOLD}SOME ERRORS OCURRED${NORMAL}";
-
-else
-	cd ..
-	sudo rm -rf installation
+	echo "${RED}${BOLD}SOME ERRORS OCURRED${NORMAL}"
 fi
 
-#CLONE_PROJECT;
+EXIT

@@ -15,7 +15,7 @@ all: $(EXEC_PROG)
 
 %.o: %.cpp
 	$(COMPILER) -c $(LIBS) -o $@ $< -w
-
+	
 $(EXEC_PROG): $(OBJECTS)
 	$(COMPILER) -o $(EXEC_PROG) $(OBJECTS) $(LIBS)
 
