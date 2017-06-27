@@ -117,7 +117,6 @@
                     <child>
                       <object class="GtkMenuItem" id="Menu Save Calibration">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Save Calibration</property>
                         <property name="use_underline">True</property>
@@ -126,7 +125,6 @@
                     <child>
                       <object class="GtkMenuItem" id="Menu Cut Image">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Cut Image</property>
                         <property name="use_underline">True</property>
