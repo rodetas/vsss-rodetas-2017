@@ -2,7 +2,7 @@
 #define TRANSMISSION_H_
 
 #include "../Header.h"
-#include "../utils/Structs.h"
+#include "../utils/Commons.h"
 #include "../utils/Timer.h"
 
 #include <termios.h>

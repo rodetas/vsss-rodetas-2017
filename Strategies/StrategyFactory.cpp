@@ -1,46 +1,46 @@
-#include "Strategy.h"
+#include "StrategyFactory.h"
 
-int Strategy::attackNumber = 0;
-int Strategy::defenseNumber = 0;
-int Strategy::goalNumber = 0;
-int Strategy::nStrategies = 0;
+int StrategyFactory::attackNumber = 0;
+int StrategyFactory::defenseNumber = 0;
+int StrategyFactory::goalNumber = 0;
+int StrategyFactory::nStrategies = 0;
 
-float Strategy::curve_factor;
-float Strategy::potency_factor;
+float StrategyFactory::curve_factor;
+float StrategyFactory::potency_factor;
 
-bool Strategy::definedId = false;
+bool StrategyFactory::definedId = false;
 
-Object Strategy::ballProjection;
-vector<rodetas::Object> Strategy::lastBallPositions;
-rodetas::Object Strategy::lastBallProjection;
+Object StrategyFactory::ballProjection;
+vector<rodetas::Object> StrategyFactory::lastBallPositions;
+rodetas::Object StrategyFactory::lastBallProjection;
 
-Object Strategy::ball;
+Object StrategyFactory::ball;
 
-Point Strategy::imageSize = Point(0,0);
-Point Strategy::goalSize = Point(0,0);
-Point Strategy::goalArea = Point(0,0);
+Point StrategyFactory::imageSize = Point(0,0);
+Point StrategyFactory::goalSize = Point(0,0);
+Point StrategyFactory::goalArea = Point(0,0);
 
-vector<rodetas::Object> Strategy::objects;
-vector<rodetas::Object> Strategy::team;
-vector<rodetas::Object> Strategy::opponent;
-vector<Point> Strategy::targets;
+vector<rodetas::Object> StrategyFactory::objects;
+vector<rodetas::Object> StrategyFactory::team;
+vector<rodetas::Object> StrategyFactory::opponent;
+vector<Point> StrategyFactory::targets;
 
-Strategy::Strategy(){
+StrategyFactory::StrategyFactory(){
     robotState = PARADO;
 	nStrategies++;
     initialize();
 }
 
-Strategy::Strategy(int n){
+StrategyFactory::StrategyFactory(int n){
     definedId = true;
 	robotId = n;
 }
 
-void Strategy::initialize(){
+void StrategyFactory::initialize(){
 	movimentation.setImage(imageSize);	
 }
 
-void Strategy::initStaticParameters(){
+void StrategyFactory::initStaticParameters(){
     Manipulation manipulation;
     manipulation.loadCalibration();  
 
@@ -51,7 +51,7 @@ void Strategy::initStaticParameters(){
     targets.resize(3);
 }
 
-void Strategy::defineFunctions(){
+void StrategyFactory::defineFunctions(){
 
 	// COLOCAR O NUMERO DO ROBO NAS VARIAVEIS
 
@@ -84,7 +84,7 @@ void Strategy::defineFunctions(){
 	}
 }
 
-void Strategy::cornerStrategy(){
+void StrategyFactory::cornerStrategy(){
 	
 	/* movement along the corners */
 	if (isBoard(robot)) {
@@ -101,7 +101,7 @@ void Strategy::cornerStrategy(){
 }
 
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO
-Point Strategy::applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination){
+Point StrategyFactory::applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination){
 
 	Point2i repulsion;
 	Point2i factorRepulsion = Point2i(5000,20000);//{ 5000, 20000 };
@@ -125,7 +125,7 @@ Point Strategy::applyPotencialField(Point target, rodetas::Object toRepulsion, r
 	return target;
 }
 
-void Strategy::updateCalculus(){
+void StrategyFactory::updateCalculus(){
 
     distance_robot_destination = distance(robot, destination);
     distance_ball_destination = distance(ball, destination);
@@ -140,17 +140,17 @@ void Strategy::updateCalculus(){
 
 }
 
-bool Strategy::isBoard(rodetas::Object object){
+bool StrategyFactory::isBoard(rodetas::Object object){
 	int halfGoal1 = imageSize.y/2 + (goalSize.y/2)*1.2;
 	int halfGoal2 = imageSize.y/2 - (goalSize.y/2)*1.2;
 	return (object.y > (imageSize.y*0.9) || object.y < (imageSize.y*0.10) || ((object.x > (imageSize.x*0.90) || object.x < (imageSize.x*0.10)) && (object.y > halfGoal1 || object.y < halfGoal2)));
 }
 
-void Strategy::setVecTarget(int id, Point target){
+void StrategyFactory::setVecTarget(int id, Point target){
 	targets[id] = target;
 }
 
-Object Strategy::calculateBallProjection(){
+Object StrategyFactory::calculateBallProjection(){
 	if(lastBallPositions.size() < 9){
 		lastBallPositions.push_back(ball);
 	} else {
@@ -169,26 +169,26 @@ Object Strategy::calculateBallProjection(){
 	return ballProjection;
 }
 
-void Strategy::setObjects(const vector<rodetas::Object>& t, const vector<rodetas::Object>& op, rodetas::Object b){
+void StrategyFactory::setObjects(const vector<rodetas::Object>& t, const vector<rodetas::Object>& op, rodetas::Object b){
 	team = t;
 	opponent = op;
 	ball = b;
 
-	Strategy::calculateBallProjection();
+	StrategyFactory::calculateBallProjection();
 }
 
-Command Strategy::getCommand(){
+Command StrategyFactory::getCommand(){
     return movimentation.getMovement();
 }   
 
-int Strategy::getRobotId(){
+int StrategyFactory::getRobotId(){
 	return robot.id;
 }
 
-void Strategy::setPotencyFactor(float f){
-	Strategy::potency_factor = f;
+void StrategyFactory::setPotencyFactor(float f){
+	StrategyFactory::potency_factor = f;
 }
 
-void Strategy::setCurveFactor(float f){
-	Strategy::curve_factor = f;
+void StrategyFactory::setCurveFactor(float f){
+	StrategyFactory::curve_factor = f;
 }

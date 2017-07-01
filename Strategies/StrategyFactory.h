@@ -2,7 +2,7 @@
 #define STRATEGY_HPP_
 
 #include "../Header.h"
-#include "../utils/Structs.h"
+#include "../utils/Commons.h"
 #include "../Movimentation.h"
 #include "../CRUD/Manipulation.h"
 
@@ -10,20 +10,20 @@ using namespace rodetas;
 
 enum {PARADO, DEFENDENDO, ATACANDO};
 
-class Strategy {
+class StrategyFactory {
 
 public:
 
     /**
      * Default constructor
      */
-    Strategy();
+    StrategyFactory();
 
     /**
      * Constructor - if uses this constructor once, should use this for all
      * \param n: robot id for use
      */
-    Strategy(int n);
+    StrategyFactory(int n);
 
     /**
      * Method to initialize strategy's parameters

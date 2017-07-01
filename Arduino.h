@@ -2,7 +2,7 @@
 #define ARDUINO_H_
 
 #include "Header.h"
-#include "utils/Structs.h"
+#include "utils/Commons.h"
 #include <gtkmm.h>
 
 class Arduino {

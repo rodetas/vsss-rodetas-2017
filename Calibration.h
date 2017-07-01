@@ -2,7 +2,7 @@
 #define CALIBRATION_H_
 
 #include "Header.h"
-#include "utils/Structs.h"
+#include "utils/Commons.h"
 #include "utils/OpenCV.h"
 #include "utils/Timer.h"
 #include "CRUD/Manipulation.h"

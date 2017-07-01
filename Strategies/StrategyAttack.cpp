@@ -1,6 +1,6 @@
 #include "StrategyAttack.h"
 
-StrategyAttack::StrategyAttack() : Strategy(){
+StrategyAttack::StrategyAttack() : StrategyFactory(){
 
 }
 

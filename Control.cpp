@@ -10,7 +10,7 @@ void Control::handle(){
 
     vision.initialize();
 
-	Strategy::initStaticParameters(); // precisa ser primeiro
+	StrategyFactory::initStaticParameters(); // precisa ser primeiro
 
 	strategies.push_back(new StrategyAttack());
 //	strategies.push_back(new StrategyDefense());
@@ -26,8 +26,8 @@ void Control::handle(){
       
 			vision.computerVision();
 		
-			Strategy::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
-			Strategy::defineFunctions();
+			StrategyFactory::setObjects(vision.getTeam(), vision.getOpponent(), vision.getBall());
+			StrategyFactory::defineFunctions();
 
 			for(int i=0 ; i<strategies.size() ; i++){
 				strategies[i]->apply();
@@ -148,11 +148,11 @@ bool Control::onKeyboard(GdkEventKey* event){
 }
 
 void Control::onPotencyChanged(){
-//	strategy.setPowerPotency(spin_potency->get_value());
+	StrategyFactory::setPotencyFactor(spin_potency->get_value());
 }
 
 void Control::onCurveChanged(){
-	//strategy.setPowerCurve(spin_curve->get_value());
+	StrategyFactory::setCurveFactor(spin_curve->get_value());
 }
 
 void Control::onButtonPlay(){
