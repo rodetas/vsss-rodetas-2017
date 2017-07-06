@@ -88,6 +88,10 @@ private:
 	void onChoosePlayer();
 	void onRadioButtonImage();
 	void onRadioButtonCamera();
+	void onSaveCalibration();
+	void onCutImage();
+	void onResetValues();
+
 
 	void setCairoBinaryImage(bool);
 	bool getCairoBinaryImage();

@@ -45,7 +45,7 @@ void Control::handle(){
     }
 	
 	vision.cameraRelease();
-
+	transmission.stopAllRobots(3);
 	for(auto s: strategies){
 		delete s;
 	}
@@ -121,18 +121,18 @@ int Control::GUI() {
 bool Control::onKeyboard(GdkEventKey* event){
 
 	if(event->type == GDK_KEY_RELEASE){
-		transmission.movementRobot(Command('P', 0, 0));
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(STOPPED_MOVE, 0, 0));
 	} else if (event->keyval == GDK_KEY_Left) {
-		transmission.movementRobot(Command('E', 150, 150));
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(LEFT_MOVE, 150, 150));
 
     } else if (event->keyval == GDK_KEY_Right) {
-		transmission.movementRobot(Command('D', 150, 150));
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(RIGHT_MOVE, 150, 150));
 	
 	} else if (event->keyval == GDK_KEY_Up) {
-		transmission.movementRobot(Command('A', 150, 150));
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(FORWARD_MOVE, 150, 150));
 
 	} else if (event->keyval == GDK_KEY_Down) {
-		transmission.movementRobot(Command('V', 150, 150));
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(BACK_MOVE, 150, 150));
 
 	} else if(event->keyval == GDK_KEY_space) {
 		button_play->set_active(!button_play->get_active());
@@ -141,7 +141,7 @@ bool Control::onKeyboard(GdkEventKey* event){
 		onMenuQuit();
 	
 	} else {
-		transmission.movementRobot(Command('P', 0, 0));
+		for(int i=0 ; i<3 ; i++) transmission.send(i, Command(STOPPED_MOVE, 0, 0));
 	}
 
     return true;
@@ -164,7 +164,7 @@ void Control::onButtonPlay(){
 	}
 
 	setPlay(!isPlaying());
-	transmission.stopRobot();
+//	transmission.stopRobot();
 }
 
 void Control::onButtonTime(){
@@ -174,6 +174,15 @@ void Control::onButtonTime(){
 	} else {
 		button_side->set_label("2º time");
 	}
+
+	/*
+	Quando inverter:
+	p2.x = size.x - p2.x
+	p2.y = size.y - p2.y
+
+	p1.x = size.x - p1.x
+	p1.y = size.y - p1.y
+*/
 
 	setChangeTime(!getChangeTime());
 }

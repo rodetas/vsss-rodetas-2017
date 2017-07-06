@@ -1,6 +1,15 @@
 #include <XBee.h>
 #include <string.h>
 
+void encoderRight();
+void encoderLeft();
+void receivingSerial();
+void forward();
+void back();
+void turnRight();
+void turnLeft();
+void stopped();
+
 XBee xbee = XBee();
 Tx16Request tx;
 Rx16Response rx = Rx16Response();
@@ -17,7 +26,11 @@ int direction;
 int pwm1;
 int pwm2;
 
+int left_cont = 0;
+int right_cont = 0;
+
 void setup() {
+
   pinMode(PWM_MOTOR1, OUTPUT);
   pinMode(AIN2, OUTPUT);
   pinMode(AIN1, OUTPUT);
@@ -25,6 +38,9 @@ void setup() {
   pinMode(BIN1, OUTPUT);
   pinMode(BIN2, OUTPUT);
   pinMode(PWM_MOTOR2, OUTPUT);
+
+  attachInterrupt(0, encoderLeft, RISING);
+  attachInterrupt(1, encoderRight, RISING);
 
   Serial.begin(9600);
   xbee.setSerial(Serial);
@@ -69,6 +85,14 @@ void receivingSerial() {
       pwm2 = (rx.getData(4) - '0') * 100 + (rx.getData(5) - '0') * 10 + (rx.getData(6) - '0');
     }
   }
+}
+
+void encoderLeft() {
+  left_cont++;
+}
+
+void encoderRight() {
+  right_cont++;
 }
 
 void forward() {

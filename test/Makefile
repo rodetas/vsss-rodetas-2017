@@ -2,7 +2,7 @@ COMPILER = g++ -std=c++11 -Wall -g
 EXEC_PROG = Rodetas-test
 BINARIES = $(EXEC_PROG)
 
-SOURCES := $(shell find -name '*.cpp')
+SOURCES := $(shell find ../ -name '*.cpp' -not -wholename "../Main.cpp")
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -15,7 +15,7 @@ all: $(EXEC_PROG)
 
 %.o: %.cpp
 	$(COMPILER) -c $(LIBS) -o $@ $< -w
-
+	
 $(EXEC_PROG): $(OBJECTS)
 	$(COMPILER) -o $(EXEC_PROG) $(OBJECTS) $(LIBS)
 

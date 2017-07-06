@@ -5,7 +5,7 @@
 #include "Vision.h"
 #include "Strategies/Strategies.h"
 #include "utils/Timer.h"
-#include "Transmission/Connected.h"
+#include "Transmission/Transmission.h"
 #include "GUI/Cairo/DrawAreaControl.h"
 
 #include <thread>
@@ -15,7 +15,7 @@
 class Control {
 
 private:
-	Connected transmission;
+	Transmission transmission;
 	vector<Strategy*> strategies;
 	Vision vision;
 	Timer timer;

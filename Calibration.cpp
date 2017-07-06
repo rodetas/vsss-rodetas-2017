@@ -108,10 +108,10 @@ int Calibration::GUI(){
     menu_quit->signal_activate().connect(sigc::mem_fun(this, &Calibration::onMenuQuit));
 
     builder->get_widget("Menu Save Calibration", menu_save_calibration);
-    //menu_save_calibration->signal_activate().connect(sigc::mem_fun(this, ));
+    menu_save_calibration->signal_activate().connect(sigc::mem_fun(this, &Calibration::onSaveCalibration));
 
     builder->get_widget("Menu Cut Image", menu_cut_image);
-    //menu_cut_image->signal_activate().connect(sigc::mem_fun(this, ));
+    menu_cut_image->signal_activate().connect(sigc::mem_fun(this, &Calibration::onCutImage));
 
     builder->get_widget("Menu Reset Values", menu_reset_values);
     //menu_reset_values->signal_activate().connect(sigc::mem_fun(this, ));
@@ -209,11 +209,23 @@ int Calibration::GUI(){
     calibration_thread.join();
     cameraRelease();
 
-    manipulation.saveCalibration(colorsHSV, colorsRGB, getPointCut().first, getPointCut().second, getGoal(), getAngleImage(), getCameraOn());
+    onSaveCalibration();
     manipulation.saveCameraConfig(getCameraConfig());
     
     return program_state;
 }
+void Calibration::onSaveCalibration(){
+    manipulation.saveCalibration(colorsHSV, colorsRGB, getPointCut().first, getPointCut().second, getGoal(), getAngleImage(), getCameraOn());
+
+}
+
+void Calibration::onCutImage(){
+    setPointCutFirst(changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size()));
+    setPointCutSecond(changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size()));
+    draw_area.setRectangleInvisible();
+}
+
+void Calibration::onResetValues(){}
 
 void Calibration::updateDevices(){
     string device;
@@ -260,9 +272,7 @@ bool Calibration::onKeyboard(GdkEventKey* event){
         cairo_binary_image = !cairo_binary_image;
     }
     if (event->keyval == GDK_KEY_C || event->keyval == GDK_KEY_c) {
-        setPointCutFirst(changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size()));
-        setPointCutSecond(changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size()));
-        draw_area.setRectangleInvisible();
+       onCutImage();
     }
     if (event->keyval == GDK_KEY_G || event->keyval == GDK_KEY_g) {
         Point p1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
