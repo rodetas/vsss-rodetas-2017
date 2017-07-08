@@ -1,10 +1,10 @@
 #ifndef STRATEGY_HPP_
 #define STRATEGY_HPP_
 
-#include "../Header.h"
-#include "../utils/Commons.h"
+#include "../../Header.h"
+#include "../../utils/Commons.h"
 #include "../Movimentation.h"
-#include "../CRUD/Manipulation.h"
+#include "../../utils/Manipulation.h"
 
 using namespace rodetas;
 
