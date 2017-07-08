@@ -12,7 +12,7 @@ int Menu::GUI(){
 			
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Menu.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("src/menu/Menu.glade");
 	
 	builder->get_widget("Window Menu", window);
 	window->signal_key_press_event().connect(sigc::mem_fun(this, &Menu::onKeyboard), false);

@@ -89,7 +89,7 @@ int Calibration::GUI(){
 			
     app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Calibration.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("src/calibration/Calibration.glade");
 	
 	builder->get_widget("Window Calibration", window);
     window->signal_key_press_event().connect(sigc::mem_fun(this, &Calibration::onKeyboard));

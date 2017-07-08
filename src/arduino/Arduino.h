@@ -1,8 +1,8 @@
 #ifndef ARDUINO_H_
 #define ARDUINO_H_
 
-#include "Header.h"
-#include "utils/Commons.h"
+#include "../Header.h"
+#include "../utils/Commons.h"
 #include <gtkmm.h>
 
 class Arduino {
