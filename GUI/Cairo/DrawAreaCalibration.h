@@ -2,7 +2,7 @@
 #define DRAW_AREA_CALIBRATION_H_
 
 #include "../../Header.h"
-#include "../../utils/Structs.h"
+#include "../../utils/Commons.h"
 #include "../../utils/OpenCV.h"
 #include <gtkmm.h>
 

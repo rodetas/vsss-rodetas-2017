@@ -1,9 +1,9 @@
 #ifndef STRATEGY_GOAL_H_
 #define STRATEGY_GOAL_H_
 
-#include "Strategy.h"
+#include "StrategyFactory.h"
 
-class StrategyGoal : public Strategy {
+class StrategyGoal : public StrategyFactory {
 
 public:
     StrategyGoal();

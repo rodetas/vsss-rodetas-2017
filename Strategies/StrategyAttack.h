@@ -1,10 +1,10 @@
 #ifndef ATTACK_STRATEGY_H_
 #define ATTACK_STRATEGY_H_
 
-#include "Strategy.h"
-#include "../utils/Structs.h"
+#include "StrategyFactory.h"
+#include "../utils/Commons.h"
 
-class StrategyAttack : public Strategy {
+class StrategyAttack : public StrategyFactory {
 
 public:
 

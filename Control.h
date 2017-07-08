@@ -16,7 +16,7 @@ class Control {
 
 private:
 	Transmission transmission;
-	vector<Strategy*> strategies;
+	vector<StrategyFactory*> strategies;
 	Vision vision;
 	Timer timer;
 

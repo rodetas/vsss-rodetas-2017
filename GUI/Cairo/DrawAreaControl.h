@@ -2,7 +2,7 @@
 #define DRAW_AREA_CONTROL_H_
 
 #include "../../Header.h"
-#include "../../utils/Structs.h"
+#include "../../utils/Commons.h"
 #include "../../CRUD/Manipulation.h"
 
 #include <gtkmm.h>

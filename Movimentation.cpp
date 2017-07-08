@@ -86,7 +86,6 @@ void Movimentation::turnLeft(int pwm1, int pwm2){
 	movements.direcao = LEFT_MOVE;
 	movements.pwm1 = pwm1;
 	movements.pwm2 = pwm2;
-	//************************ tudo que tem id não é mais vector agora é variável
 }
 
 void Movimentation::turnRight(int pwm1, int pwm2){
@@ -134,12 +133,12 @@ Command Movimentation::getMovement(){
 	return movements;
 }
 
-void Movimentation::setPower(float power){
+void Movimentation::setPotencyFactor(float power){
 	std::lock_guard<std::mutex> lock(mutex);   
 	this->powerFactor = power;
 }
 
-void Movimentation::setPowerCurve(float curve){
+void Movimentation::setCurveFactor(float curve){
 	std::lock_guard<std::mutex> lock(mutex);   
 	this->curveFactor = curve;
 }

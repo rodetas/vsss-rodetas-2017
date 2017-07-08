@@ -1,9 +1,9 @@
 #ifndef STRATEGY_DEFENSE_H_
 #define STRATEGY_DEFENSE_H_
 
-#include "Strategy.h"
+#include "StrategyFactory.h"
 
-class StrategyDefense : public Strategy {
+class StrategyDefense : public StrategyFactory {
 
 public:
     StrategyDefense();
