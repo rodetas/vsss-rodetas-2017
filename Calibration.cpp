@@ -12,7 +12,6 @@ Calibration::Calibration(){
 
     getCalibration();
 
-    setCameraNumber(getCameraNumberScript());
     setImageInitialize(!getCameraOn());
     setCameraInitialize(getCameraOn());
 }
@@ -32,7 +31,7 @@ void Calibration::thread(){
 
 void Calibration::updateImage(){
     if (getCameraInitialize()) {
-        setOpenCVImageBGR( cameraInitialize(getCameraConfig(), getCameraNumber()));
+        setOpenCVImageBGR( cameraInitialize(getCameraConfig()));
         setCameraInitialize(false);
         imageValidation(getOpencvImageBGR(), getPointCut());
     }
@@ -306,7 +305,7 @@ void Calibration::onRadioButtonCamera(){
 }
 
 void Calibration::onMenuRefresh(){
-    defaultCameraScript(getCameraNumberScript());
+    camera.defaultCameraScript();
     setPopoverCamValues();
 }
 
@@ -398,42 +397,42 @@ void Calibration::onScaleRotate(){
 void Calibration::onScaleCAMBrightness(){
     CameraConfiguration c = getCameraConfig();
     c.brightness = scale_brightness->get_value();
-    rodetas::updateCameraValuesScript(c, getCameraNumber());
+    camera.updateCameraValuesScript(c);
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMContrast(){
     CameraConfiguration c = getCameraConfig();
     c.contrast = scale_contrast->get_value();
-    rodetas::updateCameraValuesScript(c, getCameraNumber());
+    camera.updateCameraValuesScript(c);
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMSaturation(){
     CameraConfiguration c = getCameraConfig();
     c.saturation = scale_saturation->get_value();
-    rodetas::updateCameraValuesScript(c, getCameraNumber());
+    camera.updateCameraValuesScript(c);
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMGain(){
     CameraConfiguration c = getCameraConfig();
     c.gain = scale_gain->get_value();
-    rodetas::updateCameraValuesScript(c, getCameraNumber());
+    camera.updateCameraValuesScript(c);
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMSharpness(){
     CameraConfiguration c = getCameraConfig();
     c.sharpness = scale_sharpness->get_value();
-    rodetas::updateCameraValuesScript(c, getCameraNumber());
+    camera.updateCameraValuesScript(c);
     setCameraConfig(c);
 }
 
 void Calibration::onScaleCAMExposure(){
     CameraConfiguration c = getCameraConfig();
     c.exposure = scale_exposure->get_value();
-    rodetas::updateCameraValuesScript(c, getCameraNumber());
+    camera.updateCameraValuesScript(c);
     setCameraConfig(c);
 }
 
@@ -545,17 +544,6 @@ bool Calibration::getCameraOn(){
     std::lock_guard<std::mutex> lock(mutex);        
     return camera_on;
 }
-
-void Calibration::setCameraNumber(int n){
-    std::lock_guard<std::mutex> lock(mutex);        
-    camera_number = n;
-}
-
-int Calibration::getCameraNumber(){
-    std::lock_guard<std::mutex> lock(mutex);        
-    return camera_number;
-}
-
 
 void Calibration::setFps(float f){
     std::lock_guard<std::mutex> lock(mutex);        

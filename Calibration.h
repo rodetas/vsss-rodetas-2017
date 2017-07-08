@@ -2,6 +2,7 @@
 #define CALIBRATION_H_
 
 #include "Header.h"
+#include "utils/Camera.h"
 #include "utils/Commons.h"
 #include "utils/OpenCV.h"
 #include "utils/Timer.h"
@@ -19,6 +20,7 @@ class Calibration : public OpenCV {
 private:
 
 	Manipulation manipulation;
+	Camera camera;
 	Timer timer;
 	int program_state;
 	std::mutex mutex;
@@ -127,11 +129,7 @@ private:
 	void setCameraOn(bool);
 	bool getCameraOn();
 	bool camera_on;
-
-	void setCameraNumber(int);
-	int getCameraNumber();
-	int camera_number;
-
+	
 	void setFps(float);
 	int getFps();
 	float fps;
