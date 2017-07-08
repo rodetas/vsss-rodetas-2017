@@ -1,7 +1,7 @@
 #ifndef TEST_H_
 #define TEST_H_
 
-#include "Header.h"
+#include "../Header.h"
 #include <gtkmm.h>
 
 class Test {

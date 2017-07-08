@@ -1,11 +1,12 @@
 #ifndef VISION_H_
 #define VISION_H_
 
-#include "Header.h"
-#include "utils/OpenCV.h"
-#include "utils/Camera.h"
-#include "utils/Timer.h"
-#include "CRUD/Manipulation.h"
+#include "../Header.h"
+#include "../utils/OpenCV.h"
+#include "../utils/Camera.h"
+#include "../utils/Timer.h"
+#include "../utils/Manipulation.h"
+
 #include <thread>
 #include <mutex>
 

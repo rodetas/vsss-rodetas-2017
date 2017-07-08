@@ -1,9 +1,8 @@
-#include "Control.h"
-#include "Calibration.h"
-#include "Test.h"
-#include "Menu.h"
-#include "Arduino.h"
-#include "Transmission/Transmission.h"
+#include "game/Control.h"
+#include "calibration/Calibration.h"
+#include "simulator/Test.h"
+#include "menu/Menu.h"
+#include "arduino/Arduino.h"
 
 int main(int argc, char *argv[]) {
 
