@@ -2,7 +2,7 @@
 #define MOVIMENTATION_H_
 
 #include "Header.h"
-#include "utils/Structs.h"
+#include "utils/Commons.h"
 #include <mutex>
 
 using namespace rodetas;
@@ -62,8 +62,8 @@ public:
 	void turnLeft(int, int);
 	void turnRight(int, int);
 
-	void setPower(float);
-	void setPowerCurve(float);
+	void setPotencyFactor(float);
+	void setCurveFactor(float);
 	void setImage(Point);
 	void setPwm(Point, char);
 

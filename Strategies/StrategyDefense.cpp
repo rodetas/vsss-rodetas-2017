@@ -1,6 +1,6 @@
 #include "StrategyDefense.h"
 
-StrategyDefense::StrategyDefense(){
+StrategyDefense::StrategyDefense() : StrategyFactory()	{
 
 }
 

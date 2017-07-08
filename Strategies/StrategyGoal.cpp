@@ -1,6 +1,6 @@
 #include "StrategyGoal.h"
 
-StrategyGoal::StrategyGoal() : Strategy() {
+StrategyGoal::StrategyGoal() : StrategyFactory() {
 
 }
 

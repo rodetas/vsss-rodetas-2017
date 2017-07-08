@@ -2,7 +2,7 @@
 #define OPENCV_H_
 
 #include "opencv2/imgproc/imgproc.hpp"
-#include "Structs.h"
+#include "Commons.h"
 #include "Timer.h"
 #include "Camera.h"
 
