@@ -12,7 +12,7 @@ int Test::GUI(){
 			
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("src/simulator/Test.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("simulator/Test.glade");
 	
 	builder->get_widget("Window Test", window);
 	window->signal_key_press_event().connect(sigc::mem_fun(this, &Test::onKeyboard), false);
