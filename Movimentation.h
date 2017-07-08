@@ -62,8 +62,8 @@ public:
 	void turnLeft(int, int);
 	void turnRight(int, int);
 
-	void setPower(float);
-	void setPowerCurve(float);
+	void setPotencyFactor(float);
+	void setCurveFactor(float);
 	void setImage(Point);
 	void setPwm(Point, char);
 

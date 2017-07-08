@@ -133,12 +133,12 @@ Command Movimentation::getMovement(){
 	return movements;
 }
 
-void Movimentation::setPower(float power){
+void Movimentation::setPotencyFactor(float power){
 	std::lock_guard<std::mutex> lock(mutex);   
 	this->powerFactor = power;
 }
 
-void Movimentation::setPowerCurve(float curve){
+void Movimentation::setCurveFactor(float curve){
 	std::lock_guard<std::mutex> lock(mutex);   
 	this->curveFactor = curve;
 }
