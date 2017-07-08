@@ -2,7 +2,7 @@
 #define CAMERA_H_
 
 #include "../Header.h"
-#include "Structs.h"
+#include "Commons.h"
 
 
 class Camera {
