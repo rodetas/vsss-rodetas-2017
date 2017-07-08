@@ -2,7 +2,7 @@
 #define MANIPULATION
 
 #include "../Header.h"
-#include "../utils/Commons.h"
+#include "Commons.h"
 #include <fstream>
 #include <ctime>
 #include <iomanip>

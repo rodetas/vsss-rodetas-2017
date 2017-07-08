@@ -2,7 +2,7 @@
 #define ATTACK_STRATEGY_H_
 
 #include "StrategyFactory.h"
-#include "../utils/Commons.h"
+#include "../../utils/Commons.h"
 
 class StrategyAttack : public StrategyFactory {
 
