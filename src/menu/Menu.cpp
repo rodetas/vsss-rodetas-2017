@@ -12,7 +12,28 @@ int Menu::GUI(){
 			
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Menu.glade");
+	//Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("Menu");
+
+	auto builder = Gtk::Builder::create();
+	try
+	{
+		builder->add_from_file("menu/Menu.glade");
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+		return 1;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+		return 1;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " << ex.what() << std::endl;
+		return 1;
+	}
 	
 	builder->get_widget("Window Menu", window);
 	window->signal_key_press_event().connect(sigc::mem_fun(this, &Menu::onKeyboard), false);

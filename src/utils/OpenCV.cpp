@@ -154,7 +154,7 @@ cv::Mat OpenCV::imageInitialize(){
     cameraRelease();
 
     do {
-        image = cv::imread(imagePath);        
+        image = cv::imread("../files/images/1280x720.png");        
         if (image.empty()){
             cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl; 
         }

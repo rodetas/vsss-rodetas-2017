@@ -56,7 +56,7 @@ int Control::GUI() {
 
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Control.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("game/Control.glade");
 
 	builder->get_widget("Window Control", window);
    	window->signal_key_press_event().connect(sigc::mem_fun(this, &Control::onKeyboard), false);
