@@ -55,7 +55,7 @@ void Manipulation::saveCoordinates(vector<rodetas::Object>& positions){
 
 void Manipulation::saveCameraConfig(CameraConfiguration cam_config){
 
-    ofstream arquivo("files/instances/cameraConfig.txt", std::ofstream::trunc);
+    ofstream arquivo("../../files/instances/cameraConfig.txt", std::ofstream::trunc);
 
     arquivo << cam_config.brightness;
     arquivo << " ";
@@ -76,7 +76,7 @@ CameraConfiguration Manipulation::loadCameraConfig(){
 
     CameraConfiguration cam;
 
-    ifstream arquivo("files/instances/cameraConfig.txt", std::ifstream::in);
+    ifstream arquivo("../../files/instances/cameraConfig.txt", std::ifstream::in);
 
     arquivo >> cam.brightness;
     arquivo >> cam.contrast;
@@ -214,5 +214,5 @@ void Manipulation::setFileName(string name){
     strftime(buffer,80,"%d-%m-%Y_%I:%M",timeinfo);
     string str(buffer);
 
-    this->filename = "files/instances/" + name + "-" + str + ".txt";
+    this->filename = "../../files/instances/" + name + "-" + str + ".txt";
 }
