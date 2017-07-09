@@ -2,7 +2,7 @@
 #include "calibration/Calibration.h"
 #include "simulator/Test.h"
 #include "menu/Menu.h"
-#include "arduino/Arduino.h"
+#include "arduino/controller/ArduinoControl.h"
 
 int main(int argc, char *argv[]) {
 
@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
 			} break;
 
 			case ARDUINO:{
-				Arduino arduino;
-				program_state = arduino.GUI();
+				ArduinoControl arduino;
+				//program_state = arduino.GUI();
 			} break;
 
 			case SIMULATOR:{

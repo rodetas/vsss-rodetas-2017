@@ -1,25 +1,25 @@
-#ifndef ARDUINO_H_
-#define ARDUINO_H_
+#ifndef V_ARDUINO_H_
+#define V_ARDUINO_H_
 
-#include "../Header.h"
-#include "../utils/Commons.h"
+#include "../../Header.h"
+#include "../../utils/Commons.h"
+#include "../model/ArduinoModel.h"
 #include <gtkmm.h>
+#include <thread>
 
-class Arduino {
+class ArduinoView {
 
 public:
-	Arduino();
-	~Arduino();
+	ArduinoView();
+	~ArduinoView();
 
 	int GUI();
-	void getFiles();
-	void getPorts();
-	void getBaudRates();
-	void loadInformations();
-	void deleteCompiled();
-	void setCombos();
+
+	//void setModel(ArduinoModel*);
 
 private:
+
+	//ArduinoModel* model;
 
 	Glib::RefPtr<Gtk::Application> app;
 	Gtk::Window* window = nullptr;
@@ -30,13 +30,18 @@ private:
 	Gtk::ComboBoxText* comboPort = nullptr;
 	Gtk::ComboBoxText* comboBaudRate = nullptr;
 
+	std::thread* model_thread = nullptr;
+
 	vector<string> file_names;
 	vector<string> port_names;
 	vector<string> baudrate_names;
 
-	void onButtonUpload();
-	void onButtonMonitor();
-	void onButtonUpdate();
+
+	void getData(string&, string&, string&);
+
+	//void onButtonUpload();
+	//void onButtonMonitor();
+	//void onButtonUpdate();
 };
 
 #endif
