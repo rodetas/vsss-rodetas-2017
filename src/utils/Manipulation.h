@@ -23,8 +23,8 @@ private:
 
 	string filename;
 
-	const string instance_path = "files/instances/fileCalibration.txt";
-	const string standart_instance = "files/instances/standartInstance.txt";
+	const string instance_path = "../files/instances/fileCalibration.txt";
+	const string standart_instance = "../files/instances/standartInstance.txt";
 
 public:
 

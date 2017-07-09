@@ -10,7 +10,7 @@ int Arduino::GUI(){
 
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("GUI/Glade/Arduino.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("arduino/Arduino.glade");
 	
 	builder->get_widget("Window Arduino", window);
 	

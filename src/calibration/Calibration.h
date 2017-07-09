@@ -1,13 +1,13 @@
 #ifndef CALIBRATION_H_
 #define CALIBRATION_H_
 
-#include "Header.h"
-#include "utils/Camera.h"
-#include "utils/Commons.h"
-#include "utils/OpenCV.h"
-#include "utils/Timer.h"
-#include "CRUD/Manipulation.h"
-#include "GUI/Cairo/DrawAreaCalibration.h"
+#include "../Header.h"
+#include "../utils/Camera.h"
+#include "../utils/Commons.h"
+#include "../utils/OpenCV.h"
+#include "../utils/Timer.h"
+#include "../utils/Manipulation.h"
+#include "DrawAreaCalibration.h"
 
 #include <gtkmm.h>
 #include <thread>
