@@ -66,14 +66,3 @@ void ArduinoModel::loadInformations(){
 	getBaudRates();
 }
 */
-
-/*
-void ArduinoView::setModel(ArduinoModel* m){
-	model = m;
-}
-*/
-void ArduinoView::getData(string& filename, string& portname, string& baudrate){
-	filename = file_names[comboFile->get_active_row_number()];
-	portname = port_names[comboPort->get_active_row_number()];
-	baudrate = baudrate_names[comboBaudRate->get_active_row_number()];
-}

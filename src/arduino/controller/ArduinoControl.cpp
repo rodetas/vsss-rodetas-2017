@@ -13,14 +13,22 @@ void ArduinoControl::control(){
     ArduinoView view;
     ArduinoModel model;
 
-    //view.setModel(&model);
-
-    std::thread* model_thread = new std::thread([&]{
-        
+    std::thread view_thread(&ArduinoControl::threadView, this);
+    std::thread model_thread(&ArduinoControl::threadModel, this);
     
-    });
-
-    std::thread view_thread(&ArduinoView::GUI, view);
     view_thread.join();
+    model_thread.join();
+    
+}
+
+void ArduinoControl::threadView(){
+
+}
+
+void ArduinoControl::threadModel(){
+    
+}
+
+void notifyFromView(){
     
 }
