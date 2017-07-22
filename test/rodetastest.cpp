@@ -1,7 +1,7 @@
 #include <iostream>
 #include <assert.h>
 
-#include "../Transmission/Transmission.h"
+#include "../src/game/Transmission.h"
 
 using namespace std;
 
