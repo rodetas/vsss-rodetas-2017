@@ -14,6 +14,8 @@ public:
 
 private:
 
+void threadView();
+void threadModel();
 };
 
 #endif

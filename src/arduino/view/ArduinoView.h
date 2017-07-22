@@ -3,7 +3,6 @@
 
 #include "../../Header.h"
 #include "../../utils/Commons.h"
-#include "../model/ArduinoModel.h"
 #include <gtkmm.h>
 #include <thread>
 
@@ -15,12 +14,7 @@ public:
 
 	int GUI();
 
-	//void setModel(ArduinoModel*);
-
 private:
-
-	//ArduinoModel* model;
-
 	Glib::RefPtr<Gtk::Application> app;
 	Gtk::Window* window = nullptr;
 	Gtk::Button* btnUpload = nullptr;
@@ -30,14 +24,9 @@ private:
 	Gtk::ComboBoxText* comboPort = nullptr;
 	Gtk::ComboBoxText* comboBaudRate = nullptr;
 
-	std::thread* model_thread = nullptr;
-
 	vector<string> file_names;
 	vector<string> port_names;
 	vector<string> baudrate_names;
-
-
-	void getData(string&, string&, string&);
 
 	//void onButtonUpload();
 	//void onButtonMonitor();

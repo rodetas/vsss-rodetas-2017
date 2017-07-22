@@ -3,7 +3,6 @@
 
 #include "../../Header.h"
 #include "../../utils/Commons.h"
-#include "../view/ArduinoView.h"
 #include <gtkmm.h>
 
 class ArduinoModel {
@@ -12,7 +11,6 @@ public:
 	ArduinoModel();
 	~ArduinoModel();
 
-	//void notify(ArduinoView*);
 	void notify();
 	void upload(string, string, string);
 

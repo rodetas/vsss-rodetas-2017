@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
 			} break;
 
 			case ARDUINO:{
-				ArduinoControl arduino;
-				//program_state = arduino.GUI();
+				//ArduinoControl arduino;
+				//program_state = arduino.control();
 			} break;
 
 			case SIMULATOR:{
