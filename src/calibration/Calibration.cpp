@@ -12,8 +12,8 @@ Calibration::Calibration(){
 
     getCalibration();
 
-    setImageInitialize(!getCameraOn());
-    setCameraInitialize(getCameraOn());
+    setOpenCVImageBGR( frameInitialize(getCameraOn()) );
+    frameValidation(getOpencvImageBGR(), getPointCut());
 }
 
 void Calibration::thread(){
@@ -30,20 +30,8 @@ void Calibration::thread(){
 }
 
 void Calibration::updateImage(){
-    if (getCameraInitialize()) {
-        setOpenCVImageBGR( cameraInitialize(getCameraConfig()));
-        setCameraInitialize(false);
-        imageValidation(getOpencvImageBGR(), getPointCut());
-    }
-
-    if (getImageInitialize()) {
-        setOpenCVImageBGR( imageInitialize());
-        setImageInitialize(false);
-        imageValidation(getOpencvImageBGR(), getPointCut());
-    }
-
     if (getCameraOn()) {
-        setOpenCVImageBGR(updateCameraImage());
+        setOpenCVImageBGR(cameraUpdate());
     }
 }
 
@@ -292,7 +280,7 @@ void Calibration::onRadioButtonImage(){
     if (!radio_button_image->get_active()){
         button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);
         setCameraOn(false);
-        setImageInitialize(true);
+        frameInitialize(getCameraOn());        
     }
 }
 
@@ -300,7 +288,7 @@ void Calibration::onRadioButtonCamera(){
     if (!radio_button_camera->get_active()){    
         button_cam_popover->set_state(Gtk::StateType::STATE_NORMAL);
         setCameraOn(true);
-        setCameraInitialize(true);
+        frameInitialize(getCameraOn());
     }
 }
 
@@ -613,26 +601,6 @@ void Calibration::setOpenCVImageBinary(cv::Mat i){
 cv::Mat Calibration::getOpencvImageBinary(){
     std::lock_guard<std::mutex> lock(mutex);    
     return opencv_image_binary;
-}
-
-void Calibration::setCameraInitialize(bool b){
-    std::lock_guard<std::mutex> lock(mutex);    
-    camera_initialize = b;
-}
-
-bool Calibration::getCameraInitialize(){
-    std::lock_guard<std::mutex> lock(mutex);    
-    return camera_initialize;
-}
-
-void Calibration::setImageInitialize(bool b){
-    std::lock_guard<std::mutex> lock(mutex);    
-    image_initialize = b;
-}
-
-bool Calibration::getImageInitialize(){
-    std::lock_guard<std::mutex> lock(mutex);    
-    return image_initialize;
 }
 
 void Calibration::setCameraConfig(CameraConfiguration c){

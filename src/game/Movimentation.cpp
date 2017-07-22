@@ -5,7 +5,7 @@ Movimentation::Movimentation(){
 	
 	maxPwm = 0;
 	velocity = 0;
-	powerFactor = 1.6;
+	powerFactor = 1.2;
 	curveFactor = 1.1;
 }
 

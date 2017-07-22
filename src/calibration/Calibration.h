@@ -2,7 +2,6 @@
 #define CALIBRATION_H_
 
 #include "../Header.h"
-#include "../utils/Camera.h"
 #include "../utils/Commons.h"
 #include "../utils/OpenCV.h"
 #include "../utils/Timer.h"
@@ -20,7 +19,6 @@ class Calibration : public OpenCV {
 private:
 
 	Manipulation manipulation;
-	Camera camera;
 	Timer timer;
 	int program_state;
 	std::mutex mutex;
@@ -158,17 +156,8 @@ private:
 	cv::Mat getOpencvImageBinary();
     cv::Mat opencv_image_binary;
 
-	void setCameraInitialize(bool);
-	bool getCameraInitialize();
-	bool camera_initialize;
-
-	void setImageInitialize(bool);
-	bool getImageInitialize();
-	bool image_initialize;
-
 	void setCameraConfig(CameraConfiguration);
 	CameraConfiguration getCameraConfig();
-	CameraConfiguration camera_config;
 
 	void setColorsRGB(Rgb, int);
 	vector<Rgb> getColorsRGB();

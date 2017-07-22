@@ -82,7 +82,7 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 
     ContoursPosition atual_position, find_position;
 
-    percent_cut = 30;
+    float percent_cut = 30;
     
     if (!last_position.review_all_image && last_position.cutPointDefined()) {
 
@@ -135,15 +135,24 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 }
 
 /*
- * Method that receives image from webcam
+ * Method to verify the image integrity
  */
-cv::Mat OpenCV::updateCameraImage(){
-    cv::Mat image;
+void OpenCV::frameValidation(cv::Mat image, PointCut point){
+    do {
+        if (image.empty()){
+            cout << "EMPTY IMAGE" << endl;
 
-    if(cam.isOpened())
-        cam >> image;
+        } else if ( point.first.x > image.cols || point.first.y > image.rows ||
+                    point.second.x > image.cols || point.second.y > image.rows) {
+            point.first = {0,0};
+            point.second = image.size();
+            cout << "POINT TO CUT IMAGE IS INVALID" << endl;
 
-    return image;
+        } else {
+            cout << "IMAGE IS VALID" << endl;
+            break;
+        }
+    } while(true);
 }
 
 /*
@@ -166,47 +175,39 @@ cv::Mat OpenCV::imageInitialize(){
 /*
  * Method to initialize camera
  */
-cv::Mat OpenCV::cameraInitialize(CameraConfiguration camera_config){
+cv::Mat OpenCV::cameraInitialize(){
     cv::Mat image;
 
-    do {
+    //do {
+        cout << "AQUI" << endl;
         camera.updateCameraValuesScript(camera_config);
+        cout << "AQUI2" << endl;
+        
         cam = cv::VideoCapture(camera.getNumber());
         timer.wait(500000); //time to camera answer
 
         if(cam.isOpened()){
             cam.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
             cam.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
-            //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> image;
         } else {
             cout << "CONECTION WITH CAMERA FAILED" << endl;
         }
-    } while(!cam.isOpened());
+    //} while(!cam.isOpened());
 
     return image;
 }
 
 /*
- * Method to verify the image integrity
+ * Method that receives image from webcam
  */
-void OpenCV::imageValidation(cv::Mat image, PointCut point){
-    do {
-        if (image.empty()){
-            cout << "EMPTY IMAGE" << endl;
+cv::Mat OpenCV::cameraUpdate(){
+    cv::Mat image;
 
-        } else if ( point.first.x > image.cols || point.first.y > image.rows ||
-                    point.second.x > image.cols || point.second.y > image.rows) {
-            point.first = {0,0};
-            point.second = image.size();
-            cout << "POINT TO CUT IMAGE IS INVALID" << endl;
+    if(cam.isOpened())
+        cam >> image;
 
-        } else {
-            cout << "IMAGE IS VALID" << endl;
-            break;
-        }
-    } while(true);
+    return image;
 }
 
 /*
@@ -216,4 +217,15 @@ void OpenCV::cameraRelease(){
     if(cam.isOpened()){
         cam.release();
     }
+}
+
+cv::Mat OpenCV::frameInitialize(bool camera_on){
+    cv::Mat image;
+    if (camera_on) {
+        image = cameraInitialize();
+    } else {
+        image = imageInitialize();
+    }
+
+    return image;
 }

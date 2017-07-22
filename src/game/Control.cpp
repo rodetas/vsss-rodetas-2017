@@ -34,9 +34,9 @@ void Control::handle(){
 			}
 
 			if(isPlaying()){
-				for(int i=0 ; i<strategies.size() ; i++){
-					transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
-				}
+				//for(int i=0 ; i<strategies.size() ; i++){
+					transmission.send(1, strategies[0]->getCommand());
+				//}
 			}
 
 			

@@ -11,12 +11,12 @@ using namespace rodetas;
 class OpenCV {
 
 private:
+	cv::VideoCapture cam;
 	Timer timer;
-	Camera camera;
-	int frames = 0;
-	float percent_cut;
 
-	cv::VideoCapture cam;	
+protected:
+	Camera camera;
+	CameraConfiguration camera_config;
 		
 public:
 	OpenCV();
@@ -24,11 +24,12 @@ public:
 	cv::Mat changeColorSpace(cv::Mat, int);
 	cv::Mat cutImage(cv::Mat, PointCut);
 	cv::Mat rotateImage(cv::Mat, int);
-	cv::Mat updateCameraImage();
 	cv::Mat imageInitialize();
-	cv::Mat cameraInitialize(CameraConfiguration);
-	void imageValidation(cv::Mat, PointCut);
+	cv::Mat cameraInitialize();
+	cv::Mat cameraUpdate();
 	void cameraRelease();
+	void frameValidation(cv::Mat, PointCut);
+	cv::Mat frameInitialize(bool);
 
 	ContoursPosition position(cv::Mat, ContoursPosition, Hsv, int);
 	ContoursPosition binarizedColorPosition(cv::Mat, int n_contours);

@@ -37,7 +37,7 @@ void Camera::updateCameraValuesScript(rodetas::CameraConfiguration camera_config
             rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " --set-ctrl backlight_compensation=0");
         }
         else {
-            cout << camera_comand[i] << endl;
+            //  cout << "COMAND NOT FOUND: " << camera_comand[i] << endl;
         }
     }
 }
@@ -55,12 +55,15 @@ void Camera::defaultCameraScript(){
 }
 
 vector<string> Camera::getComandCameraScript(){
+    vector<string> v;
     string all_comands = rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " -list | awk '{ if(NR!=1) {print $1} }'");
-    std::stringstream ss(all_comands);
-    std::istream_iterator<std::string> begin(ss);
-    std::istream_iterator<std::string> end;
-    std::vector<std::string> v(begin, end);
-    std::copy(v.begin(), v.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+
+    std::stringstream stream(all_comands);
+    std::string line;
+    while (std::getline(stream, line)) {
+        v.push_back(line);
+    }   
+
     return v;
 }
 
