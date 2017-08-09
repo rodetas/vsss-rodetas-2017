@@ -6,7 +6,6 @@
 #include "../../utils/OpenCV.h"
 #include "../../utils/Commons.h"
 #include "../../utils/Manipulation.h"
-#include <mutex>
 
 class CalibrationView;
 class CalibrationModel : public OpenCV {
@@ -25,7 +24,6 @@ public:
 	cv::Mat getScreenBinaryImage();
 
 private:
-	mutable std::mutex mutex;
 
 	Timer timer;
 	Manipulation manipulation;

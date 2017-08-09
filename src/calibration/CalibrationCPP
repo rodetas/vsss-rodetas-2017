@@ -28,28 +28,6 @@ void Calibration::updateDevices(){
     }
 }
 
-
-bool Calibration::onKeyboard(GdkEventKey* event){
-    if (event->keyval == GDK_KEY_F1) {
-        cairo_binary_image = !cairo_binary_image;
-    }
-    if (event->keyval == GDK_KEY_C || event->keyval == GDK_KEY_c) {
-       onCutImage();
-    }
-    if (event->keyval == GDK_KEY_G || event->keyval == GDK_KEY_g) {
-        Point p1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
-        Point p2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
-        setGoal({abs(p1.x - p2.x), abs(p1.y - p2.y)});
-        draw_area.setRectangleInvisible();
-    }
-    if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
-        setPointCutFirst({0,0});
-        setPointCutSecond(getOpencvImageBGR().size());
-    }
-    return true;
-}
-
-
 void Calibration::onRadioButtonImage(){
     if (!radio_button_image->get_active()){
         button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);

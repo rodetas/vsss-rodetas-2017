@@ -7,6 +7,7 @@ CalibrationView::CalibrationView(){
 }
 
 CalibrationView::~CalibrationView(){
+    update_image_connection.disconnect();    
 }
 
 int CalibrationView::GUI(){
@@ -16,7 +17,7 @@ int CalibrationView::GUI(){
 	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("calibration/Calibration.glade");
 	
 	builder->get_widget("Window Calibration", window);
-    //window->signal_key_press_event().connect(sigc::mem_fun(this, &Calibration::onKeyboard));
+    window->signal_key_press_event().connect(sigc::mem_fun(this, &CalibrationView::onKeyboard));
 	window->maximize();
     
     builder->get_widget("Menu Play", menu_play);
@@ -117,19 +118,14 @@ int CalibrationView::GUI(){
     builder->get_widget("Box Global", box_global);
     box_global->pack_start(draw_area);
 
-    //draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &Calibration::onMouseClick) );
+    draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &CalibrationView::onMouseClick) );
 
     window->show_all();
-
     
-    screen_connection.connect(sigc::mem_fun(this, &CalibrationView::updateScreen));
-    hsv_default_connection.connect(sigc::mem_fun(*this, &CalibrationView::setPopoverHSVDefault));
-
-    sigc::connection update_image_connection = Glib::signal_timeout().connect(sigc::mem_fun(calibration_model, &CalibrationModel::updateFrame), 33); 
+    update_image_connection = Glib::signal_timeout().connect(sigc::mem_fun(calibration_model, &CalibrationModel::updateFrame), 33, Glib::PRIORITY_DEFAULT_IDLE); 
 
 	app->run(*window);
 
-    update_image_connection.disconnect();
     
     /*
     cameraRelease();
@@ -138,17 +134,6 @@ int CalibrationView::GUI(){
     */
 
     return program_state;
-}
-
-void CalibrationView::updateScreen(){
-    if (cairo_binary_image){
-        draw_area.setImage(calibration_model.getScreenBinaryImage());
-    } else {
-        draw_area.setImage(calibration_model.getScreenImage());
-    }
-    
-    string s = "Fps: " + to_string(calibration_model.getFps());
-	label_fps->set_label(s);
 }
 
 void CalibrationView::onMenuGame(){
@@ -175,13 +160,30 @@ bool CalibrationView::onMouseClick(GdkEventButton* event){
     if(event->button == GDK_BUTTON_PRIMARY) {
         calibration_model.updateColorPixel({event->x, event->y}, draw_area.getCairoImageSize());
     }
-    if(event->button == GDK_BUTTON_SECONDARY) {
-        draw_area.setRectanglePoint({event->x, event->y});
-    } 
     return true;
 }
 
-void CalibrationView::setPopoverHSVDefault(){
+bool CalibrationView::onKeyboard(GdkEventKey* event){
+    if (event->keyval == GDK_KEY_F1) {
+        cairo_binary_image = !cairo_binary_image;
+    }
+    if (event->keyval == GDK_KEY_C || event->keyval == GDK_KEY_c) {
+        //onCutImage();
+    }
+    if (event->keyval == GDK_KEY_G || event->keyval == GDK_KEY_g) {
+        //Point p1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
+        //Point p2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
+        //setGoal({abs(p1.x - p2.x), abs(p1.y - p2.y)});
+        //draw_area.setRectangleInvisible();
+    }
+    if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
+        //setPointCutFirst({0,0});
+        //setPointCutSecond(getOpencvImageBGR().size());
+    }
+    return true;
+}
+
+void CalibrationView::defaultHSVPopover(){
     scale_hmax->set_value(50);
 	scale_hmin->set_value(50);
 	scale_smax->set_value(50);
@@ -190,11 +192,21 @@ void CalibrationView::setPopoverHSVDefault(){
 	scale_vmin->set_value(50);
 }
 
-void CalibrationView::notify(string s){
-    if (s == "setPopoverHSVDefault")
-        hsv_default_connection.emit();
-
-    if (s == "updateScreen"){
-        screen_connection.emit();
+void CalibrationView::updateScreen(){
+    if (cairo_binary_image){
+        draw_area.setImage(calibration_model.getScreenBinaryImage());
+    } else {
+        draw_area.setImage(calibration_model.getScreenImage());
     }
+    
+    string s = "Fps: " + to_string(calibration_model.getFps());
+	label_fps->set_label(s);
+}
+
+void CalibrationView::notify(string s){
+    if (s == "defaultHSVPopover")
+        defaultHSVPopover();
+
+    if (s == "updateScreen")
+        updateScreen();
 }

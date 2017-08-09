@@ -5,7 +5,6 @@
 #include "../model/CalibrationModel.h"
 #include "../DrawAreaCalibration.h"
 #include <gtkmm.h>
-#include <thread>
 
 
 class CalibrationView {
@@ -18,11 +17,9 @@ public:
     void notify(string);
 
 private:
-	Glib::Dispatcher screen_connection;
-	Glib::Dispatcher hsv_default_connection;
+	sigc::connection update_image_connection;
 
     CalibrationModel calibration_model;
-    std::thread m_thread;
     int program_state;
 	bool cairo_binary_image;
 
@@ -69,9 +66,12 @@ private:
 	void onMenuArduino();
 	void onMenuQuit();
     void onSaveCalibration();
-    void setPopoverHSVDefault();
+    void defaultHSVPopover();
     
+
+	bool onKeyboard(GdkEventKey*);
     bool onMouseClick(GdkEventButton*);
+
 };
 
 #endif

@@ -29,85 +29,64 @@ CalibrationModel::~CalibrationModel(){
 }
 
 bool CalibrationModel::updateFrame(){
-    {
-    std::lock_guard<std::mutex> lock(mutex);
-
-        if (camera_on) {
-            opencv_image_BGR = cameraUpdate();
-        }
-        
-        if (!opencv_image_BGR.empty()) {
-            opencv_image_BGR_rotated = rotateImage( opencv_image_BGR, angle_image);
-            opencv_image_BGR_cuted   = cutImage( opencv_image_BGR_rotated, point_cut);
-            opencv_image_HSV         = changeColorSpace( opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
-            opencv_image_cairo       = changeColorSpace( opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
-            opencv_image_binary      = changeColorSpace( binarize(opencv_image_HSV, colorsHSV[selected_player]), cv::COLOR_GRAY2RGB);
-            
-            caller->notify("updateScreen");
-
-        } else {
-            cout << "Empty Image" << endl;
-        }
-
-        fps = timer.framesPerSecond();
+    if (camera_on) {
+        opencv_image_BGR = cameraUpdate();
     }
+    
+    if (!opencv_image_BGR.empty()) {
+        opencv_image_BGR_rotated = rotateImage( opencv_image_BGR, angle_image);
+        opencv_image_BGR_cuted   = cutImage( opencv_image_BGR_rotated, point_cut);
+        opencv_image_HSV         = changeColorSpace( opencv_image_BGR_cuted, cv::COLOR_BGR2HSV_FULL);
+        opencv_image_cairo       = changeColorSpace( opencv_image_BGR_cuted, cv::COLOR_BGR2RGB);
+        opencv_image_binary      = changeColorSpace( binarize(opencv_image_HSV, colorsHSV[selected_player]), cv::COLOR_GRAY2RGB);
+        
+        caller->notify("updateScreen");
+
+    } else {
+        cout << "Empty Image" << endl;
+    }
+
+    fps = timer.framesPerSecond();
+    
     return true;
 }
 
 void CalibrationModel::saveParameters(){
-    {
-    std::lock_guard<std::mutex> lock(mutex);
-        manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut.first, point_cut.second, goal, angle_image, camera_on);
-    }
+    manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut.first, point_cut.second, goal, angle_image, camera_on);
 }
 
 void CalibrationModel::updateColorPixel(Point event_point, Point size_cairo_image){
-    {
-    std::lock_guard<std::mutex> lock(mutex);    
-        Point pixel_point = changeCordinates({event_point.x, event_point.y}, size_cairo_image, opencv_image_BGR_cuted.size());
+    Point pixel_point = changeCordinates({event_point.x, event_point.y}, size_cairo_image, opencv_image_BGR_cuted.size());
 
-        hsv_point = opencv_image_HSV.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
-        Hsv hsv = colorsHSV[selected_player];
-            hsv.setS(hsv_point[S]);
-            hsv.setH(hsv_point[H]);
-            hsv.setV(hsv_point[V]);
-        colorsHSV[selected_player] = hsv;
+    hsv_point = opencv_image_HSV.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
+    Hsv hsv = colorsHSV[selected_player];
+        hsv.setS(hsv_point[S]);
+        hsv.setH(hsv_point[H]);
+        hsv.setV(hsv_point[V]);
+    colorsHSV[selected_player] = hsv;
 
-        rgb_point = opencv_image_BGR_cuted.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
-        Rgb rgb = colorsRGB[selected_player];
-            rgb.r = rgb_point[2];
-            rgb.g = rgb_point[1];
-            rgb.b = rgb_point[0];
-        colorsRGB[selected_player] = rgb;
-    }
+    rgb_point = opencv_image_BGR_cuted.at<cv::Vec3b>(pixel_point.y, pixel_point.x);
+    Rgb rgb = colorsRGB[selected_player];
+        rgb.r = rgb_point[2];
+        rgb.g = rgb_point[1];
+        rgb.b = rgb_point[0];
+    colorsRGB[selected_player] = rgb;
     
-    caller->notify("setPopoverHSVDefault");
+    caller->notify("defaultHSVPopover");
 }
 
 void CalibrationModel::setCaller(CalibrationView* c){
-    {
-        std::lock_guard<std::mutex> lock(mutex);  
-        caller = c;
-    }
+    caller = c;
 }
 
 int CalibrationModel::getFps(){
-    {
-        std::lock_guard<std::mutex> lock(mutex);  
-        return fps;
-    }
+    return fps;
 }
 
 cv::Mat CalibrationModel::getScreenImage(){
-    {
-        std::lock_guard<std::mutex> lock(mutex);  
-        return opencv_image_cairo;
-    }
+    return opencv_image_cairo;
 }
 
 cv::Mat CalibrationModel::getScreenBinaryImage(){
-    {
-        std::lock_guard<std::mutex> lock(mutex);  
-        return opencv_image_binary;
-    }
+    return opencv_image_binary;
 }

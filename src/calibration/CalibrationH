@@ -17,13 +17,6 @@ using namespace rodetas;
 class Calibration : public OpenCV {
 
 private:
-
-	Manipulation manipulation;
-	Timer timer;
-	int program_state;
-	std::mutex mutex;
-
-	bool onKeyboard(GdkEventKey*);
 	
 	void onMenuRefresh();
 	void onButtonHSV();
