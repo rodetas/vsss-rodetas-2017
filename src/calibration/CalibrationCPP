@@ -1,0 +1,190 @@
+#include "Calibration.h"
+
+Calibration::Calibration(){
+}
+
+void Calibration::onCutImage(){
+    setPointCutFirst(changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size()));
+    setPointCutSecond(changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size()));
+    draw_area.setRectangleInvisible();
+}
+
+void Calibration::onResetValues(){}
+
+void Calibration::updateDevices(){
+    string device;
+    string name_device;
+
+    device = executeCommand("uvcdynctrl -l | grep video0");
+    if(device.size() != 0){
+        name_device = device.substr(device.find("video")+9);
+        menu_device0->set_label(name_device);
+    }
+
+    device = executeCommand("uvcdynctrl -l | grep video1");
+    if(device.size() != 0){
+        name_device = device.substr(device.find("video")+9);
+        menu_device1->set_label(name_device);
+    }
+}
+
+
+bool Calibration::onKeyboard(GdkEventKey* event){
+    if (event->keyval == GDK_KEY_F1) {
+        cairo_binary_image = !cairo_binary_image;
+    }
+    if (event->keyval == GDK_KEY_C || event->keyval == GDK_KEY_c) {
+       onCutImage();
+    }
+    if (event->keyval == GDK_KEY_G || event->keyval == GDK_KEY_g) {
+        Point p1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
+        Point p2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
+        setGoal({abs(p1.x - p2.x), abs(p1.y - p2.y)});
+        draw_area.setRectangleInvisible();
+    }
+    if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
+        setPointCutFirst({0,0});
+        setPointCutSecond(getOpencvImageBGR().size());
+    }
+    return true;
+}
+
+
+void Calibration::onRadioButtonImage(){
+    if (!radio_button_image->get_active()){
+        button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);
+        setCameraOn(false);
+        frameInitialize(getCameraOn());        
+    }
+}
+
+void Calibration::onRadioButtonCamera(){
+    if (!radio_button_camera->get_active()){    
+        button_cam_popover->set_state(Gtk::StateType::STATE_NORMAL);
+        setCameraOn(true);
+        frameInitialize(getCameraOn());
+    }
+}
+
+void Calibration::onMenuRefresh(){
+    camera.defaultCameraScript();
+    setPopoverCamValues();
+}
+
+void Calibration::setPopoverCamValues(){
+    scale_brightness->set_value(getCameraConfig().brightness);
+    scale_contrast->set_value(getCameraConfig().contrast);
+    scale_saturation->set_value(getCameraConfig().saturation);
+    scale_gain->set_value(getCameraConfig().gain); 
+    scale_sharpness->set_value(getCameraConfig().sharpness);
+    scale_exposure->set_value(getCameraConfig().exposure);
+}
+
+void Calibration::onChoosePlayer(){
+    setSelectedPlayer(combo_choose_player->get_active_row_number());
+    scale_hmax->set_value(getColorsHSV()[getSelectedPlayer()].variationH_MAX);
+    scale_hmin->set_value(getColorsHSV()[getSelectedPlayer()].variationH_MIN);
+    scale_smax->set_value(getColorsHSV()[getSelectedPlayer()].variationS_MAX);
+    scale_smin->set_value(getColorsHSV()[getSelectedPlayer()].variationS_MIN);
+    scale_vmax->set_value(getColorsHSV()[getSelectedPlayer()].variationV_MAX);
+    scale_vmin->set_value(getColorsHSV()[getSelectedPlayer()].variationV_MIN);
+}
+
+void Calibration::onButtonHSV() {
+    popover_hsv->show_all();
+    popover_hsv->set_visible(button_hsv_popover->get_focus_on_click());
+}
+
+void Calibration::onButtonCAM() {
+    popover_cam->show_all();
+    popover_cam->set_visible(button_cam_popover->get_focus_on_click());
+}
+
+void Calibration::onScaleHMax(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];
+    h.variationH_MAX = scale_hmax->get_value();
+    h.setH(getColorsHSV()[getSelectedPlayer()].h[MID]);
+    setColorsHSV(h, getSelectedPlayer());
+}
+
+void Calibration::onScaleHMin(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationH_MIN = scale_hmin->get_value();   
+    h.setH(getColorsHSV()[getSelectedPlayer()].h[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
+}
+
+void Calibration::onScaleSMax(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationS_MAX = scale_smax->get_value();
+    h.setS(getColorsHSV()[getSelectedPlayer()].s[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
+}
+
+void Calibration::onScaleSMin(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationS_MIN = scale_smin->get_value();
+    h.setS(getColorsHSV()[getSelectedPlayer()].s[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
+}
+
+void Calibration::onScaleVMax(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationV_MAX = scale_vmax->get_value();
+    h.setV(getColorsHSV()[getSelectedPlayer()].v[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
+}
+
+void Calibration::onScaleVMin(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    h.variationV_MIN = scale_vmin->get_value();
+    h.setV(getColorsHSV()[getSelectedPlayer()].v[MID]);
+    setColorsHSV(h, getSelectedPlayer());    
+}
+
+void Calibration::onScaleRotate(){
+    Hsv h = getColorsHSV()[getSelectedPlayer()];    
+    setAngleImage(scale_rotate->get_value());
+}
+
+void Calibration::onScaleCAMBrightness(){
+    CameraConfiguration c = getCameraConfig();
+    c.brightness = scale_brightness->get_value();
+    camera.updateCameraValuesScript(c);
+    setCameraConfig(c);
+}
+
+void Calibration::onScaleCAMContrast(){
+    CameraConfiguration c = getCameraConfig();
+    c.contrast = scale_contrast->get_value();
+    camera.updateCameraValuesScript(c);
+    setCameraConfig(c);
+}
+
+void Calibration::onScaleCAMSaturation(){
+    CameraConfiguration c = getCameraConfig();
+    c.saturation = scale_saturation->get_value();
+    camera.updateCameraValuesScript(c);
+    setCameraConfig(c);
+}
+
+void Calibration::onScaleCAMGain(){
+    CameraConfiguration c = getCameraConfig();
+    c.gain = scale_gain->get_value();
+    camera.updateCameraValuesScript(c);
+    setCameraConfig(c);
+}
+
+void Calibration::onScaleCAMSharpness(){
+    CameraConfiguration c = getCameraConfig();
+    c.sharpness = scale_sharpness->get_value();
+    camera.updateCameraValuesScript(c);
+    setCameraConfig(c);
+}
+
+void Calibration::onScaleCAMExposure(){
+    CameraConfiguration c = getCameraConfig();
+    c.exposure = scale_exposure->get_value();
+    camera.updateCameraValuesScript(c);
+    setCameraConfig(c);
+}
