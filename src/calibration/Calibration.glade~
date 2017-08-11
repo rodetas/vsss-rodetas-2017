@@ -156,6 +156,7 @@
                     <child>
                       <object class="GtkMenuItem" id="Menu Device 0">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Device not found</property>
                         <property name="use_underline">True</property>
@@ -164,6 +165,7 @@
                     <child>
                       <object class="GtkMenuItem" id="Menu Device 1">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Device not found</property>
                         <property name="use_underline">True</property>

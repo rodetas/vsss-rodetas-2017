@@ -10,7 +10,7 @@ DrawAreaCalibration::DrawAreaCalibration(){
 
     opencv_image = cv::Mat::zeros(1, 1, CV_64F);
 
-    cut_mode = false;
+    cut_mode = true;
     move_first_cut = false;
     move_adjust_cut = false;
 }

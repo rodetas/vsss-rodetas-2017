@@ -35,7 +35,7 @@ private:
 	Gtk::MenuItem* menu_device0 = nullptr;
     Gtk::MenuItem* menu_device1 = nullptr;
 	Gtk::MenuItem* menu_load_camera_config = nullptr;
-	Gtk::MenuItem* menu_refresh = nullptr;
+	Gtk::MenuItem* menu_default = nullptr;
 	Gtk::RadioButton* radio_button_image = nullptr;
     Gtk::RadioButton* radio_button_camera = nullptr;
 	Gtk::ComboBoxText* combo_choose_player = nullptr;
@@ -61,17 +61,34 @@ private:
 	DrawAreaCalibration draw_area;
 
     void updateScreen();
+	void updateMenuDevice();
+    void defaultHSVPopover();
+	void setScaleValueHSV();
+
     void onMenuGame();
 	void onMenuSimulator();
 	void onMenuArduino();
 	void onMenuQuit();
+	void onMenuDefault();
     void onSaveCalibration();
-    void defaultHSVPopover();
-    
-
+	void onCutImage();
+	void onScaleHMax();
+	void onScaleHMin();
+	void onScaleSMax();
+	void onScaleSMin();
+	void onScaleVMax();
+	void onScaleVMin();
+	void onScaleCAMBrightness();
+	void onScaleCAMContrast();
+	void onScaleCAMSaturation();
+	void onScaleCAMGain();
+	void onScaleCAMSharpness();
+	void onScaleCAMExposure();
+	void onRadioButtonImage();
+	void onRadioButtonCamera();
+	void onChoosePlayer();
 	bool onKeyboard(GdkEventKey*);
     bool onMouseClick(GdkEventButton*);
-
 };
 
 #endif

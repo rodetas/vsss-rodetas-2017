@@ -178,10 +178,8 @@ cv::Mat OpenCV::imageInitialize(){
 cv::Mat OpenCV::cameraInitialize(){
     cv::Mat image;
 
-    //do {
-        cout << "AQUI" << endl;
-        camera.updateCameraValuesScript(camera_config);
-        cout << "AQUI2" << endl;
+    do {
+        camera.setCameraValuesScript(camera_config);
         
         cam = cv::VideoCapture(camera.getNumber());
         timer.wait(500000); //time to camera answer
@@ -193,7 +191,7 @@ cv::Mat OpenCV::cameraInitialize(){
         } else {
             cout << "CONECTION WITH CAMERA FAILED" << endl;
         }
-    //} while(!cam.isOpened());
+    } while(!cam.isOpened());
 
     return image;
 }

@@ -14,17 +14,27 @@ public:
 	CalibrationModel();
 	~CalibrationModel();
 	
-	void saveParameters();
 	void updateColorPixel(Point, Point);
 	bool updateFrame();
+	void updateDevice();
+
+	void saveParameters();
 	void setCaller(CalibrationView*);
+	void setCutPoint(PointCut, Point);
+	void setScaleHSV(string, double);
+	void setScaleCam(string, double);
+	void setCameraOn(bool);
+	void setSelectedPlayer(int);
 
 	int getFps();
+	Hsv getColorHsv();
+	bool getCameraOn();
+	string getDeviceName(int);
 	cv::Mat getScreenImage();
 	cv::Mat getScreenBinaryImage();
+	CameraConfiguration getDefaultCameraValues();
 
 private:
-
 	Timer timer;
 	Manipulation manipulation;
 	CameraConfiguration camera_config;
@@ -41,6 +51,8 @@ private:
 	int selected_player;
 	bool camera_on;
 	bool cairo_binary_image;
+	string name_device0;
+	string name_device1;
 	
 	cv::Mat opencv_image_BGR;
 	cv::Mat opencv_image_HSV;
