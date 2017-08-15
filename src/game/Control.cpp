@@ -247,6 +247,3 @@ bool Control::isPlaying(){
 	std::lock_guard<std::mutex> lock(mutex); 
 	return play;
 }
-
-
-

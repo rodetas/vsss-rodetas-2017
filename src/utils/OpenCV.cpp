@@ -82,7 +82,7 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 
     ContoursPosition atual_position, find_position;
 
-    percent_cut = 30;
+    float percent_cut = 30;
     
     if (!last_position.review_all_image && last_position.cutPointDefined()) {
 
@@ -135,63 +135,9 @@ ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position,
 }
 
 /*
- * Method that receives image from webcam
- */
-cv::Mat OpenCV::updateCameraImage(){
-    cv::Mat image;
-
-    if(cam.isOpened())
-        cam >> image;
-
-    return image;
-}
-
-/*
- * Method for initialize image
- */
-cv::Mat OpenCV::imageInitialize(){
-    cv::Mat image;
-    cameraRelease();
-
-    do {
-        image = cv::imread("../files/images/1280x720.png");        
-        if (image.empty()){
-            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl; 
-        }
-    } while(image.empty());
-    
-    return image;
-}
-
-/*
- * Method to initialize camera
- */
-cv::Mat OpenCV::cameraInitialize(CameraConfiguration camera_config){
-    cv::Mat image;
-
-    do {
-        camera.updateCameraValuesScript(camera_config);
-        cam = cv::VideoCapture(camera.getNumber());
-        timer.wait(500000); //time to camera answer
-
-        if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
-            //cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
-            //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-            cam >> image;
-        } else {
-            cout << "CONECTION WITH CAMERA FAILED" << endl;
-        }
-    } while(!cam.isOpened());
-
-    return image;
-}
-
-/*
  * Method to verify the image integrity
  */
-void OpenCV::imageValidation(cv::Mat image, PointCut point){
+void OpenCV::frameValidation(cv::Mat image, PointCut point){
     do {
         if (image.empty()){
             cout << "EMPTY IMAGE" << endl;
@@ -210,10 +156,72 @@ void OpenCV::imageValidation(cv::Mat image, PointCut point){
 }
 
 /*
+ * Method for initialize image
+ */
+cv::Mat OpenCV::imageInitialize(){
+    cv::Mat image;
+    cameraRelease();
+
+    do {
+        image = cv::imread("../files/images/1280x720.png");        
+        if (image.empty()){
+            cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl; 
+        }
+    } while(image.empty());
+
+    return image;
+}
+
+/*
+ * Method to initialize camera
+ */
+cv::Mat OpenCV::cameraInitialize(){
+    cv::Mat image;
+
+    do {        
+        cam = cv::VideoCapture(camera.getNumber());
+        timer.wait(500000); //time to camera answer
+
+        if(cam.isOpened()){
+            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
+            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+            cam >> image;
+        } else {
+            cout << "CONECTION WITH CAMERA FAILED" << endl;
+        }
+    } while(!cam.isOpened());
+
+    return image;
+}
+
+/*
+ * Method that receives image from webcam
+ */
+cv::Mat OpenCV::cameraUpdate(){
+    cv::Mat image;
+
+    if(cam.isOpened())
+        cam >> image;
+
+    return image;
+}
+
+/*
  * Method to disconnect camera
  */
 void OpenCV::cameraRelease(){
     if(cam.isOpened()){
         cam.release();
     }
+}
+
+cv::Mat OpenCV::frameInitialize(bool camera_on){
+    cv::Mat image;
+    if (camera_on) {
+        image = cameraInitialize();
+    } else {
+        image = imageInitialize();
+    }
+
+    return image;
 }

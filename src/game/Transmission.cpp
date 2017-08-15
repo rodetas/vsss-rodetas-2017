@@ -149,7 +149,7 @@ void Transmission::serialTransmit(string comand){
             send_bytes[cont] = stoi(parcial.str().c_str(), 0, 16);
             cont++;
         }
-//        cout << send_bytes << endl;
+//z        cout << send_bytes << endl;
         write(usb, send_bytes, sizeof(send_bytes));
     }
 }

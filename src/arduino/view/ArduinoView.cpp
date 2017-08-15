@@ -1,7 +1,7 @@
 #include "ArduinoView.h"
 
 ArduinoView::ArduinoView(){
-
+	arduino_model.init(this);
 }
 
 ArduinoView::~ArduinoView(){
@@ -16,53 +16,72 @@ int ArduinoView::GUI(){
 	
 	builder->get_widget("Window Arduino", window);
 	
-	builder->get_widget("Button Upload", btnUpload);
-	//btnUpload->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpload) );
+	builder->get_widget("Button Upload", buttonUpload);
+	buttonUpload->signal_clicked().connect( sigc::mem_fun(*this, &ArduinoView::onButtonUpload) );
 	
-	builder->get_widget("Button Monitor", btnMonitor);
-	//btnMonitor->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonMonitor) );
+	//builder->get_widget("Button Monitor", buttonMonitor);
+	//buttonMonitor->signal_clicked().connect( sigc::mem_fun(this, &ArduinoView::onButtonMonitor) );
 	
-	builder->get_widget("Button Update", btnUpdate);
-	//btnUpdate->signal_clicked().connect( sigc::mem_fun(this, &Arduino::onButtonUpdate) );
+	builder->get_widget("Button Update", buttonUpdate);
+	buttonUpdate->signal_clicked().connect( sigc::mem_fun(this, &ArduinoView::onButtonUpdate) );
 	
 	builder->get_widget("ComboBoxText File", comboFile);
 	builder->get_widget("ComboBoxText Port", comboPort);
 	builder->get_widget("ComboBoxText BaudRate", comboBaudRate);
 
-	//loadInformations();
-	//setCombos();
+	m_dispatcher.connect(sigc::mem_fun(*this, &ArduinoView::onNotify));
 
 	app->run(*window);
 
 	return MENU;
 }
 
-/*
+void ArduinoView::onButtonUpdate(){
+	arduino_model.init(this);
+}
+
 void ArduinoView::onButtonUpload(){
-	if (model_thread){
-    	std::cout << "Can't start a worker thread while another one is running." << std::endl;
-  	} else {
-		// Start a new worker thread.
-		model_thread = new std::thread([&]{
-			model->upload(file_names[comboFile->get_active_row_number()], 
-							port_names[comboPort->get_active_row_number()],
-							baudrate_names[comboBaudRate->get_active_row_number()]);
-		});
-  	}
+	// Nesse caso a thread não é necessária, a linha abaixo é o suficiente
+	//arduino_model.upload(comboFile->get_active_row_number(), comboPort->get_active_row_number(), comboBaudRate->get_active_row_number()); 
+	
+	buttonUpload->set_sensitive(false);
+	m_thread = std::thread([this] {
+		arduino_model.upload(comboFile->get_active_row_number(), comboPort->get_active_row_number(), comboBaudRate->get_active_row_number()); 
+		buttonUpload->set_sensitive(true);			
+	});
+	m_thread.detach();
 }
-*/
 
-/*
-void ArduinoModel::onButtonUpdate(){
-	loadInformations();
-	setCombos();
-}
-*/
+void ArduinoView::updateWidgets(){
+	vector<string> file_names;
+	vector<string> port_names;
+	vector<string> baudrate_names;
 
-/*
-void ArduinoModel::loadInformations(){
-	getFiles();
-	getPorts();
-	getBaudRates();
+	arduino_model.getData(&file_names, &port_names, &baudrate_names);
+	
+	comboFile->remove_all();
+	for(int i=0 ; i<file_names.size() ; i++){
+	    comboFile->append(file_names[i]);
+    }
+    comboFile->set_active_text(file_names[0]);
+
+    comboPort->remove_all();
+    for(int i=0 ; i<port_names.size() ; i++){
+	    comboPort->append(port_names[i]);
+    }
+    comboPort->set_active_text(port_names[0]);
+
+    comboBaudRate->remove_all();
+    for(int i=0 ; i<baudrate_names.size() ; i++){
+	    comboBaudRate->append(baudrate_names[i]);
+    }
+    comboBaudRate->set_active_text(baudrate_names[0]); // active 9600
 }
-*/
+
+void ArduinoView::notify(){
+	m_dispatcher.emit();
+}
+
+void ArduinoView::onNotify(){
+	updateWidgets();
+}

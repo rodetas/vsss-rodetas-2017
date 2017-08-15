@@ -82,6 +82,7 @@ void StrategyFactory::defineFunctions(){
 
 		}
 	}
+	attackNumber = 1;
 }
 
 void StrategyFactory::cornerStrategy(){

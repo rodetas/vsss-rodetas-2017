@@ -4,26 +4,29 @@
 #include "../../Header.h"
 #include "../../utils/Commons.h"
 #include <gtkmm.h>
+#include <mutex>
 
+class ArduinoView;
 class ArduinoModel {
 
 public:
 	ArduinoModel();
 	~ArduinoModel();
-
-	void notify();
-	void upload(string, string, string);
-
-	//void getFiles();
-	//void getPorts();
-	//void getBaudRates();
+	
+	void init(ArduinoView*);
+	void upload(int, int, int);
+	void getFiles(ArduinoView*);
+	void getPorts(ArduinoView*);
+	void getBaudRates(ArduinoView*);
+	void getData(vector<string>*, vector<string>*, vector<string>*) const;	
 	//void deleteCompiled();
-	//void setCombos();
 
 private:
-	string active_file_name;
-	string active_port;
-	string active_baud_rate;
+	mutable std::mutex mutex;
+
+	vector<string> file_names;
+	vector<string> port_names;
+	vector<string> baudrate_names;
 };
 
 #endif

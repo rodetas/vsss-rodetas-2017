@@ -34,6 +34,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkAdjustment" id="rotate">
     <property name="upper">360</property>
     <property name="value">180</property>
@@ -157,7 +162,7 @@
                       <object class="GtkMenuItem" id="Menu Device 0">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">None Device</property>
+                        <property name="label" translatable="yes">Device not found</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
@@ -165,7 +170,7 @@
                       <object class="GtkMenuItem" id="Menu Device 1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">None Device</property>
+                        <property name="label" translatable="yes">Device not found</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
@@ -359,6 +364,23 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="Button Cut">
+                    <property name="label" translatable="yes">Cut Mode</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="image_position">top</property>
+                    <property name="always_show_image">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </object>

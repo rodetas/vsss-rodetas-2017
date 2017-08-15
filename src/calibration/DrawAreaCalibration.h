@@ -15,26 +15,28 @@ private:
     Point cairo_image_size;
     Point opencv_image_size;
     Point pixel_color;
-    Point rectangle_point1;
-    Point rectangle_point2;
-    Point rectangle_size;
+    PointCut cut_point;
+
+    bool cut_mode;
+    bool move_first_cut;
+    bool move_adjust_cut;
 
     void drawRectangle(Point, Point);
 
 protected:
     virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &c);
+    virtual bool on_button_press_event (GdkEventButton* event);
     virtual bool on_button_release_event (GdkEventButton* event);
     virtual bool on_motion_notify_event (GdkEventMotion* event);
 
 
 public:
 	DrawAreaCalibration();
+    void setCutMode(bool);
     void setImage(cv::Mat);
-    void setRectanglePoint(Point r);
     void setRectangleInvisible();
     Point getCairoImageSize();
-    Point getPointCut1();
-    Point getPointCut2();
+    PointCut getCutPoint();
 };
 
 #endif

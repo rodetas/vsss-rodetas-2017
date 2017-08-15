@@ -21,8 +21,10 @@ void Vision::initialize(){
     camera_initialize   = manipulation.getCameraOn();
     image_initialize    = !manipulation.getCameraOn();
 
+    camera.setCameraValuesScript(camera_config);
+
     if (camera_on) {
-        opencv_image_BGR = cameraInitialize(camera_config);
+        opencv_image_BGR = cameraInitialize();
     } else {
         opencv_image_BGR = imageInitialize();
     }
@@ -34,7 +36,7 @@ void Vision::initialize(){
 void Vision::computerVision(){
 
     if (camera_on)
-        opencv_image_BGR = updateCameraImage();
+        opencv_image_BGR = cameraUpdate();
 
     full_image_cut = rotateImage(opencv_image_BGR, angle_image);
     full_image_cut = cutImage(full_image_cut, point_cut);
