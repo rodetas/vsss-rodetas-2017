@@ -10,7 +10,7 @@ DrawAreaCalibration::DrawAreaCalibration(){
 
     opencv_image = cv::Mat::zeros(1, 1, CV_64F);
 
-    cut_mode = true;
+    cut_mode = false;
     move_first_cut = false;
     move_adjust_cut = false;
 }
@@ -119,26 +119,4 @@ Point DrawAreaCalibration::getCairoImageSize(){
 
 PointCut DrawAreaCalibration::getCutPoint(){
     return cut_point;
-}
-
-
-
-
-
-
-
-
-
-
-
-Point DrawAreaCalibration::getPointCut1(){
-    return cut_point.first;
-}
-
-Point DrawAreaCalibration::getPointCut2(){
-    return cut_point.second;
-}
-
-void DrawAreaCalibration::setRectanglePoint(Point r){
-     cut_point.first = r;
 }

@@ -7,12 +7,9 @@ CalibrationView::CalibrationView(){
 }
 
 CalibrationView::~CalibrationView(){
+    calibration_model.saveParameters();
+    calibration_model.cameraRelease();
     update_image_connection.disconnect();   
-    /*
-    cameraRelease();
-    onSaveCalibration();
-    manipulation.saveCameraConfig(getCameraConfig());
-    */ 
 }
 
 int CalibrationView::GUI(){
@@ -63,10 +60,13 @@ int CalibrationView::GUI(){
     radio_button_camera->signal_pressed().connect(sigc::mem_fun(this, &CalibrationView::onRadioButtonCamera));
     radio_button_camera->set_active(calibration_model.getCameraOn());
 
+    builder->get_widget("Button Cut", button_cut_mode);
+    button_cut_mode->signal_clicked().connect( sigc::mem_fun(this, &CalibrationView::onButtonCutMode) );
+
     builder->get_widget("Popover HSV", popover_hsv);
 
     builder->get_widget("Button HSV", button_hsv_popover);
-    //button_hsv_popover->signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonHSV) );
+    button_hsv_popover->signal_clicked().connect( sigc::mem_fun(this, &CalibrationView::onButtonHSV) );
     
     builder->get_widget("Scale H max", scale_hmax);
     scale_hmax->signal_value_changed().connect( sigc::mem_fun(this, &CalibrationView::onScaleHMax) );
@@ -92,8 +92,7 @@ int CalibrationView::GUI(){
     builder->get_widget("Popover CAM", popover_cam);
 
     builder->get_widget("Button CAM", button_cam_popover);
-    //button_cam_popover->signal_clicked().connect( sigc::mem_fun(this, &Calibration::onButtonCAM) );
-    //if (!getCameraOn()) button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);    
+    button_cam_popover->signal_clicked().connect( sigc::mem_fun(this, &CalibrationView::onButtonCAM) );
     
     builder->get_widget("Scale Brightness", scale_brightness);
     scale_brightness->signal_value_changed().connect( sigc::mem_fun(this, &CalibrationView::onScaleCAMBrightness) );
@@ -112,34 +111,31 @@ int CalibrationView::GUI(){
 
     builder->get_widget("Scale Exposure", scale_exposure);
     scale_exposure->signal_value_changed().connect( sigc::mem_fun(this, &CalibrationView::onScaleCAMExposure) );
-    //setPopoverCamValues();
     
     builder->get_widget("Scale Rotate", scale_rotate);
-    //scale_rotate->signal_value_changed().connect( sigc::mem_fun(this, &Calibration::onScaleRotate) );
+    scale_rotate->signal_value_changed().connect( sigc::mem_fun(this, &CalibrationView::onScaleRotate) );
     
     builder->get_widget("Label Fps", label_fps);
 
     builder->get_widget("Box Global", box_global);
     box_global->pack_start(draw_area);
 
-    draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &CalibrationView::onMouseClick) );
-
     window->show_all();
     
+    draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &CalibrationView::onMouseClick) );
     update_image_connection = Glib::signal_timeout().connect(sigc::mem_fun(calibration_model, &CalibrationModel::updateFrame), 33, Glib::PRIORITY_DEFAULT_IDLE); 
 
+    /* Interface Initialize - Sliders and Buttons */
+        setScaleValueHSV(calibration_model.getColorHsv());
+
+        if (!calibration_model.getCameraOn()){
+            button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);
+        }
+    /* ------------------------------------------ */
+    
 	app->run(*window);
 
     return program_state;
-}
-
-void CalibrationView::defaultHSVPopover(){
-    scale_hmax->set_value(50);
-	scale_hmin->set_value(50);
-	scale_smax->set_value(50);
-	scale_smin->set_value(50);
-	scale_vmax->set_value(50);
-	scale_vmin->set_value(50);
 }
 
 void CalibrationView::updateScreen(){
@@ -159,14 +155,19 @@ void CalibrationView::updateMenuDevice(){
 }
 
 void CalibrationView::notify(string s){
-    if (s == "defaultHSVPopover")
-        defaultHSVPopover();
+    if (s == "setScaleValueHSV") {
+        Hsv c = calibration_model.getColorHsv();        
+        setScaleValueHSV(c);
+    }
 
-    if (s == "updateScreen")
+    if (s == "setScaleValueHSVDefault"){
+        Hsv c; c.defaultValue();
+        setScaleValueHSV(c);
+    }
+
+    if (s == "updateScreen") {
         updateScreen();
-
-    if (s == "setScaleValueHSV")
-        setScaleValueHSV();
+    }
 }
 
 bool CalibrationView::onKeyboard(GdkEventKey* event){
@@ -177,16 +178,15 @@ bool CalibrationView::onKeyboard(GdkEventKey* event){
         onCutImage();
     }
     if (event->keyval == GDK_KEY_G || event->keyval == GDK_KEY_g) {
-        //Point p1 = changeCordinates(draw_area.getPointCut1(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
-        //Point p2 = changeCordinates(draw_area.getPointCut2(), draw_area.getCairoImageSize(), getOpencvImageBGR().size());
-        //setGoal({abs(p1.x - p2.x), abs(p1.y - p2.y)});
-        //draw_area.setRectangleInvisible();
+        onCutGoal();        
     }
     if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
-        //setPointCutFirst({0,0});
-        //setPointCutSecond(getOpencvImageBGR().size());
+        PointCut cut;
+            cut.first = {0,0};
+            cut.second = draw_area.getCairoImageSize();
+        calibration_model.setCutPoint(cut, draw_area.getCairoImageSize());
     }
-    return true;
+    return true;    
 }
 
 bool CalibrationView::onMouseClick(GdkEventButton* event){
@@ -196,8 +196,17 @@ bool CalibrationView::onMouseClick(GdkEventButton* event){
     return true;
 }
 
+void CalibrationView::onButtonCutMode(){
+    draw_area.setCutMode(button_cut_mode->get_active());
+}
+
 void CalibrationView::onCutImage(){
     calibration_model.setCutPoint(draw_area.getCutPoint(), draw_area.getCairoImageSize());
+    draw_area.setRectangleInvisible();
+}
+
+void CalibrationView::onCutGoal(){
+    calibration_model.setCutGoal(draw_area.getCutPoint(), draw_area.getCairoImageSize());
     draw_area.setRectangleInvisible();
 }
 
@@ -249,6 +258,16 @@ void CalibrationView::onScaleCAMExposure(){
     calibration_model.setScaleCam("exposure", scale_exposure->get_value());
 }
 
+void CalibrationView::onButtonHSV() {
+    popover_hsv->show_all();
+    popover_hsv->set_visible(button_hsv_popover->get_focus_on_click());
+}
+
+void CalibrationView::onButtonCAM() {
+    popover_cam->show_all();
+    popover_cam->set_visible(button_cam_popover->get_focus_on_click());
+}
+
 void CalibrationView::onRadioButtonImage(){
     if (!radio_button_image->get_active()){
         button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);
@@ -263,6 +282,14 @@ void CalibrationView::onRadioButtonCamera(){
     }
 }
 
+void CalibrationView::onChoosePlayer(){
+    calibration_model.setSelectedPlayer(combo_choose_player->get_active_row_number());
+}
+
+void CalibrationView::onScaleRotate(){
+    calibration_model.setAngleImage(scale_rotate->get_value());
+}
+
 void CalibrationView::onMenuDefault(){    
     CameraConfiguration c = calibration_model.getDefaultCameraValues();
 
@@ -274,12 +301,7 @@ void CalibrationView::onMenuDefault(){
     scale_exposure->set_value(c.exposure);
 }
 
-void CalibrationView::onChoosePlayer(){
-    calibration_model.setSelectedPlayer(combo_choose_player->get_active_row_number());
-}
-
-void CalibrationView::setScaleValueHSV(){
-    Hsv c = calibration_model.getColorHsv();
+void CalibrationView::setScaleValueHSV(Hsv c){
     scale_hmax->set_value(c.variationH_MAX);
     scale_hmin->set_value(c.variationH_MIN);
     scale_smax->set_value(c.variationS_MAX);

@@ -41,6 +41,7 @@ private:
 	Gtk::ComboBoxText* combo_choose_player = nullptr;
 	Gtk::Button* button_hsv_popover = nullptr;
 	Gtk::Button* button_cam_popover = nullptr;
+	Gtk::ToggleButton* button_cut_mode = nullptr;
 	Gtk::Popover* popover_hsv = nullptr;
 	Gtk::Popover* popover_cam = nullptr;
 	Gtk::Scale* scale_hmax = nullptr;
@@ -62,8 +63,7 @@ private:
 
     void updateScreen();
 	void updateMenuDevice();
-    void defaultHSVPopover();
-	void setScaleValueHSV();
+	void setScaleValueHSV(Hsv);
 
     void onMenuGame();
 	void onMenuSimulator();
@@ -72,6 +72,7 @@ private:
 	void onMenuDefault();
     void onSaveCalibration();
 	void onCutImage();
+	void onCutGoal();
 	void onScaleHMax();
 	void onScaleHMin();
 	void onScaleSMax();
@@ -87,6 +88,10 @@ private:
 	void onRadioButtonImage();
 	void onRadioButtonCamera();
 	void onChoosePlayer();
+	void onButtonHSV();
+	void onButtonCAM();
+	void onButtonCutMode();
+	void onScaleRotate(); 
 	bool onKeyboard(GdkEventKey*);
     bool onMouseClick(GdkEventButton*);
 };

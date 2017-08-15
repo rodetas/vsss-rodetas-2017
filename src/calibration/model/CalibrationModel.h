@@ -21,10 +21,12 @@ public:
 	void saveParameters();
 	void setCaller(CalibrationView*);
 	void setCutPoint(PointCut, Point);
+	void setCutGoal(PointCut, Point);
 	void setScaleHSV(string, double);
 	void setScaleCam(string, double);
 	void setCameraOn(bool);
 	void setSelectedPlayer(int);
+	void setAngleImage(double);
 
 	int getFps();
 	Hsv getColorHsv();
@@ -40,7 +42,7 @@ private:
 	CameraConfiguration camera_config;
 	CalibrationView* caller;
 	
-	Point goal;
+	Point point_goal;
 	PointCut point_cut;
 	
 	vector<Rgb> colorsRGB;

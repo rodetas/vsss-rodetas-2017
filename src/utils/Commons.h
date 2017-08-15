@@ -133,6 +133,15 @@ struct Hsv{
 		if (v[MAX] > 255) v[MAX] = 255;
 	}
 
+	void defaultValue(){
+		variationH_MAX = 50;
+		variationS_MAX = 50;
+		variationV_MAX = 50;
+		variationH_MIN = 50;
+		variationS_MIN = 50;
+		variationV_MIN = 50;
+	}
+
 	void print(){
 		cout << "H: " << h[0] << "\t" << h[1] << "\t" << h[2] << endl;
 		cout << "S: " << s[0] << "\t" << s[1] << "\t" << s[2] << endl;

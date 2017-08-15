@@ -8,7 +8,7 @@ CalibrationModel::CalibrationModel(){
     selected_player = 0;
 
     manipulation.loadCalibration();
-    goal             = manipulation.getGoal();
+    point_goal       = manipulation.getGoal();
     camera_on        = manipulation.getCameraOn();
     colorsHSV        = manipulation.getColorsHsv();
     colorsRGB        = manipulation.getColorsRgb();
@@ -70,7 +70,7 @@ void CalibrationModel::updateColorPixel(Point event_point, Point size_cairo_imag
         rgb.b = rgb_point[0];
     colorsRGB[selected_player] = rgb;
     
-    caller->notify("defaultHSVPopover");
+    caller->notify("setScaleValueHSVDefault");
 }
 
 void CalibrationModel::updateDevice(){
@@ -94,7 +94,8 @@ void CalibrationModel::updateDevice(){
 }
 
 void CalibrationModel::saveParameters(){
-    manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut.first, point_cut.second, goal, angle_image, camera_on);
+    manipulation.saveCalibration(colorsHSV, colorsRGB, point_cut.first, point_cut.second, point_goal, angle_image, camera_on);
+    manipulation.saveCameraConfig(camera_config);
 }
 
 void CalibrationModel::setCaller(CalibrationView* c){
@@ -106,9 +107,19 @@ void CalibrationModel::setCutPoint(PointCut cut, Point cairo_size){
     point_cut.second = changeCordinates(cut.second, cairo_size, opencv_image_BGR.size());
 }
 
+void CalibrationModel::setCutGoal(PointCut cut, Point cairo_size){
+    Point p1 = changeCordinates(cut.first, cairo_size, opencv_image_BGR.size());
+    Point p2 = changeCordinates(cut.second, cairo_size, opencv_image_BGR.size());
+    point_goal = {abs(p1.x - p2.x), abs(p1.y - p2.y)};
+}
+
+void CalibrationModel::setAngleImage(double d){
+    angle_image = d;
+}
+
 void CalibrationModel::setCameraOn(bool b){
     camera_on = b;
-    frameInitialize(camera_on); 
+    opencv_image_BGR = frameInitialize(camera_on);
 }
 
 void CalibrationModel::setSelectedPlayer(int i){

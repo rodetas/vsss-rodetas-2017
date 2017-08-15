@@ -168,7 +168,7 @@ cv::Mat OpenCV::imageInitialize(){
             cout << "PROBLEM TO LOAD IMAGE FROM COMPUTER" << endl; 
         }
     } while(image.empty());
-    
+
     return image;
 }
 

@@ -37,13 +37,6 @@ public:
     void setRectangleInvisible();
     Point getCairoImageSize();
     PointCut getCutPoint();
-
-
-
-
-    void setRectanglePoint(Point r);
-    Point getPointCut1();
-    Point getPointCut2();
 };
 
 #endif
