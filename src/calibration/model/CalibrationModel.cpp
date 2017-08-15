@@ -22,6 +22,7 @@ CalibrationModel::CalibrationModel(){
     hsv_point[2] = colorsHSV[selected_player].v[2];
 
     updateDevice();
+    camera.setCameraValuesScript(camera_config);
 
     opencv_image_BGR = frameInitialize(camera_on);
     frameValidation(opencv_image_BGR, point_cut);

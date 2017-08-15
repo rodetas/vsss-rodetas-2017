@@ -21,6 +21,8 @@ void Vision::initialize(){
     camera_initialize   = manipulation.getCameraOn();
     image_initialize    = !manipulation.getCameraOn();
 
+    camera.setCameraValuesScript(camera_config);
+
     if (camera_on) {
         opencv_image_BGR = cameraInitialize();
     } else {

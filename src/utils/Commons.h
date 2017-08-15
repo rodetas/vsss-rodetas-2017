@@ -269,6 +269,15 @@ struct CameraConfiguration {
 		brightness = contrast = saturation = -1;
 		gain = sharpness = exposure = -1;
 	}
+
+	void print(){
+		cout << "brightness = " << brightness << endl;
+		cout << "contrast = " << contrast << endl;
+		cout << "saturation = " << saturation << endl;
+		cout << "gain = " << gain << endl;
+		cout << "sharpness = " << sharpness << endl;
+		cout << "exposure = " << exposure << endl;
+	};
 };
 
 template <typename T>

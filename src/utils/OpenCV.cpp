@@ -178,9 +178,7 @@ cv::Mat OpenCV::imageInitialize(){
 cv::Mat OpenCV::cameraInitialize(){
     cv::Mat image;
 
-    do {
-        camera.setCameraValuesScript(camera_config);
-        
+    do {        
         cam = cv::VideoCapture(camera.getNumber());
         timer.wait(500000); //time to camera answer
 
