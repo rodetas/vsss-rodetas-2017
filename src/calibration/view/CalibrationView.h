@@ -64,13 +64,14 @@ private:
     void updateScreen();
 	void updateMenuDevice();
 	void setScaleValueHSV(Hsv);
+	void setScaleValueCam(CameraConfiguration);
 
     void onMenuGame();
 	void onMenuSimulator();
 	void onMenuArduino();
 	void onMenuQuit();
-	void onMenuDefault();
     void onSaveCalibration();
+	void onDefaultCamera();
 	void onCutImage();
 	void onCutGoal();
 	void onScaleHMax();

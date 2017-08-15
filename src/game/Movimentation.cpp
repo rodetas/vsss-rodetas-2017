@@ -76,8 +76,8 @@ Pwm Movimentation::PWMCorrection(Point destination){
 
 	int basePower = standardPower * powerFactor;
 	int correctionPower = (standardPower/3) * sinAngle_robot_destination * curveFactor;
-	int pwmMotor1 = (basePower + correctionPower);
-	int pwmMotor2 = (basePower - correctionPower);
+	int pwmMotor1 = (basePower - correctionPower);
+	int pwmMotor2 = (basePower + correctionPower);
 
 	return make_pair(pwmMotor1, pwmMotor2);
 }

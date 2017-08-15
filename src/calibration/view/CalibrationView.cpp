@@ -45,20 +45,18 @@ int CalibrationView::GUI(){
 
     builder->get_widget("Menu Device 0", menu_device0);
     builder->get_widget("Menu Device 1", menu_device1);
-    updateMenuDevice();
 
     builder->get_widget("Menu Load Camera Configuration", menu_load_camera_config);
     //menu_load_camera_config->signal_activate().connect(sigc::mem_fun(this, ));
 
     builder->get_widget("Menu Default Configuration", menu_default);
-    menu_default->signal_activate().connect(sigc::mem_fun(this, &CalibrationView::onMenuDefault));
+    menu_default->signal_activate().connect(sigc::mem_fun(this, &CalibrationView::onDefaultCamera));
 
     builder->get_widget("Radio Button Image", radio_button_image);    
     radio_button_image->signal_pressed().connect(sigc::mem_fun(this, &CalibrationView::onRadioButtonImage));
     
     builder->get_widget("Radio Button Camera", radio_button_camera);    
     radio_button_camera->signal_pressed().connect(sigc::mem_fun(this, &CalibrationView::onRadioButtonCamera));
-    radio_button_camera->set_active(calibration_model.getCameraOn());
 
     builder->get_widget("Button Cut", button_cut_mode);
     button_cut_mode->signal_clicked().connect( sigc::mem_fun(this, &CalibrationView::onButtonCutMode) );
@@ -126,8 +124,10 @@ int CalibrationView::GUI(){
     update_image_connection = Glib::signal_timeout().connect(sigc::mem_fun(calibration_model, &CalibrationModel::updateFrame), 33, Glib::PRIORITY_DEFAULT_IDLE); 
 
     /* Interface Initialize - Sliders and Buttons */
+        updateMenuDevice();
+        radio_button_camera->set_active(calibration_model.getCameraOn());
         setScaleValueHSV(calibration_model.getColorHsv());
-
+        setScaleValueCam(calibration_model.getCameraConfiguration());
         if (!calibration_model.getCameraOn()){
             button_cam_popover->set_state(Gtk::StateType::STATE_INSENSITIVE);
         }
@@ -290,8 +290,7 @@ void CalibrationView::onScaleRotate(){
     calibration_model.setAngleImage(scale_rotate->get_value());
 }
 
-void CalibrationView::onMenuDefault(){    
-    CameraConfiguration c = calibration_model.getDefaultCameraValues();
+void CalibrationView::setScaleValueCam(CameraConfiguration c){
 
     scale_brightness->set_value(c.brightness);
     scale_contrast->set_value(c.contrast);
@@ -299,6 +298,10 @@ void CalibrationView::onMenuDefault(){
     scale_gain->set_value(c.gain); 
     scale_sharpness->set_value(c.sharpness);
     scale_exposure->set_value(c.exposure);
+}
+
+void CalibrationView::onDefaultCamera(){
+    setScaleValueCam(calibration_model.getDefaultCameraValues());
 }
 
 void CalibrationView::setScaleValueHSV(Hsv c){

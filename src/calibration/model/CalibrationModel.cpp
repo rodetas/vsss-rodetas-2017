@@ -211,3 +211,7 @@ CameraConfiguration CalibrationModel::getDefaultCameraValues(){
     camera_config = camera.getCameraValuesScript();
     return camera_config;
 }
+
+CameraConfiguration CalibrationModel::getCameraConfiguration(){
+    return camera_config;
+}

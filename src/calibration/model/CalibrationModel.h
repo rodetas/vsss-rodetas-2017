@@ -35,6 +35,7 @@ public:
 	cv::Mat getScreenImage();
 	cv::Mat getScreenBinaryImage();
 	CameraConfiguration getDefaultCameraValues();
+	CameraConfiguration getCameraConfiguration();
 
 private:
 	Timer timer;
