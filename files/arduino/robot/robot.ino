@@ -15,30 +15,26 @@ Tx16Request tx;
 Rx16Response rx = Rx16Response();
 
 const byte AIN2 = 4;
-const byte AIN1 = 5;
+const byte AIN1 = 5;  
 const byte STBY = 6;
 const byte BIN1 = 7;
 const byte BIN2 = 8;
 const byte PWM_MOTORB = 9;
 const byte PWM_MOTORA = 10;
 
-const float frequency = 10; // Hz
-const float speed_calc = (2 * PI * 1.6) / 750 ; // radius (1.6), encoder readings (375)
-
-float left_speed = 0;
-float right_speed = 0;
+const float frequency = 250; // Hz
+const float dt = 1 / frequency; // seconds
 
 int left_cont = 0;
 int right_cont = 0;
 
 int direction;
-int pwm1 = 200;
-int pwm2 = 200;
+int pwm1 = 0;
+int pwm2 = 0;
 
 unsigned long last_millis = 0;
 
 void setup() {
-  //void setPwmFrequency();
 
   pinMode(AIN2, OUTPUT);
   pinMode(AIN1, OUTPUT);
@@ -51,27 +47,17 @@ void setup() {
   attachInterrupt(0, encoderLeft, CHANGE);
   attachInterrupt(1, encoderRight, CHANGE);
 
-  void configTimerControler();
-
   Serial.begin(9600);
   xbee.setSerial(Serial);
+  
+  configTimerControler();
 }
 
 void loop() {
   receivingSerial();
 
-  forward();
   analogWrite(PWM_MOTORA, pwm1);
   analogWrite(PWM_MOTORB, pwm2);
-
-  if (millis() - last_millis > 4) {
-    Serial.print("LEFT: ");
-    Serial.println(left_speed);
-    Serial.print("RIGHT: ");
-    Serial.println(right_speed);
-    Serial.println("");
-    last_millis = millis();
-  }
 
   switch (direction) {
     case 'F': {
@@ -92,9 +78,8 @@ void loop() {
   }
 }
 
-ISR(TIMER2_COMPA_vect) {
-  left_speed = left_cont;
-  right_speed = right_cont;
+ISR(TIMER1_COMPA_vect) {
+  
 }
 
 void receivingSerial() {
@@ -158,22 +143,18 @@ void stopped() {
 }
 
 void configTimerControler() {
-  TCCR2A = 0;// set entire TCCR2A register to 0
-  TCCR2B = 0;// same for TCCR2B
-  TCNT2  = 0;//initialize counter value to 0
-  // set compare match register for 8khz increments
-  OCR2A = 249;// = (16*10^6) / (8000*8) - 1 (must be <256)
+    // TIMER 1 for interrupt frequency 200 Hz:
+  cli(); // stop interrupts
+  TCCR1A = 0; // set entire TCCR1A register to 0
+  TCCR1B = 0; // same for TCCR1B
+  TCNT1  = 0; // initialize counter value to 0
+  // set compare match register for 200 Hz increments
+  OCR1A = 16000000 / (8 * frequency) - 1 ;//(must be <65536)
   // turn on CTC mode
-  TCCR2A |= (1 << WGM21);
-  // Set CS21 bit for 8 prescaler
-  TCCR2B |= (1 << CS21);
+  TCCR1B |= (1 << WGM12);
+  // Set CS12, CS11 and CS10 bits for 8 prescaler
+  TCCR1B |= (0 << CS12) | (1 << CS11) | (0 << CS10);
   // enable timer compare interrupt
-  TIMSK2 |= (1 << OCIE2A);
-}
-
-// Set pin 9 and 10 PWM frequency to 31250 Hz (31250/1 = 31250)
-void setPwmFrequency() {
-  byte mode = 0x01;
-  TCCR1B = TCCR1B & 0b11111000 | mode;
-  TCCR2B = TCCR2B & 0b11111000 | mode;
+  TIMSK1 |= (1 << OCIE1A);
+  sei(); // allow interrupts
 }

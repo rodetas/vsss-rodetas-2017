@@ -17,7 +17,8 @@ private:
 public:
 	Camera();
     void defaultCameraScript();
-    void updateCameraValuesScript(rodetas::CameraConfiguration camera_config);
+    void setCameraValuesScript(rodetas::CameraConfiguration camera_config);
+    rodetas::CameraConfiguration getCameraValuesScript();
     int getNumber();
 
 };

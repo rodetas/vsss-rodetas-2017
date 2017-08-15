@@ -1,8 +1,8 @@
 #include "game/Control.h"
-#include "calibration/Calibration.h"
+#include "calibration/view/CalibrationView.h"
 #include "simulator/Test.h"
 #include "menu/Menu.h"
-#include "arduino/controller/ArduinoControl.h"
+#include "arduino/view/ArduinoView.h"
 
 int main(int argc, char *argv[]) {
 
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 			} break;
 			
 			case CALIBRATION:{
-				Calibration calibration;
+				CalibrationView calibration;
 				program_state = calibration.GUI();
 			} break;
 			
@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
 			} break;
 
 			case ARDUINO:{
-				ArduinoControl arduino;
-				//program_state = arduino.GUI();
+				ArduinoView arduino;
+				program_state = arduino.GUI();
 			} break;
 
 			case SIMULATOR:{

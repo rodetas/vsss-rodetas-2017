@@ -5,7 +5,7 @@ Camera::Camera(){
     camera_comand = getComandCameraScript();
 }
 
-void Camera::updateCameraValuesScript(rodetas::CameraConfiguration camera_config){
+void Camera::setCameraValuesScript(rodetas::CameraConfiguration camera_config){
     
     for (int i = 0; i < camera_comand.size(); i++){
         
@@ -37,30 +37,85 @@ void Camera::updateCameraValuesScript(rodetas::CameraConfiguration camera_config
             rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " --set-ctrl backlight_compensation=0");
         }
         else {
-            cout << camera_comand[i] << endl;
+            //  cout << "COMAND NOT FOUND: " << camera_comand[i] << endl;
         }
     }
 }
 
-void Camera::defaultCameraScript(){
+rodetas::CameraConfiguration Camera::getCameraValuesScript(){
 
-    string all_comands = rodetas::executeCommand("v4l2-ctl -list | awk ''{ if(NR!=1) {print $1} }'' | grep default | sed 's/default//g'");
-    std::stringstream ss(all_comands);
+    rodetas::CameraConfiguration camera_config;
     
-    while(ss.good()) {
-        std::string comand;
-        getline(ss, comand, '\n');
-        rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + "--set-ctrl " + comand);
+    vector<string> values;
+    string all_comands = rodetas::executeCommand("v4l2-ctl -list | sed 's/.*value=//' | awk '{ if(NR!=1) {print $1} }'");
+
+    std::stringstream stream(all_comands);
+    std::string line;    
+    while (std::getline(stream, line)) {
+        values.push_back(line);
+    }
+
+    for (int i = 0; i < camera_comand.size(); i++){
+
+        if (camera_comand[i] == "brightness") {
+            camera_config.brightness = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "contrast") {
+            camera_config.contrast = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "saturation") {
+            camera_config.saturation = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "gain") {
+            camera_config.gain = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "sharpness") {
+            camera_config.sharpness = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "exposure_absolute") {
+            camera_config.exposure = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "focus_auto") {
+            //camera_config.focus_auto = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "exposure_auto") {
+            //camera_config.exposure_auto = std::stoi(values[i]);
+        }
+        else if (camera_comand[i] == "backlight_compensation") {
+            //camera_config.backlight_compensation = std::stoi(values[i]);
+        }
+        else {
+            //  cout << "COMAND NOT FOUND: " << camera_comand[i] << endl;
+        }
+    }
+    return camera_config;    
+}
+
+void Camera::defaultCameraScript(){
+    vector<string> values_default;
+    string all_comands = rodetas::executeCommand("v4l2-ctl -list | sed 's/.*default=//' | awk '{ if(NR!=1) {print $1} }'");
+
+    std::stringstream stream(all_comands);
+    std::string line;    
+    while (std::getline(stream, line)) {
+        values_default.push_back(line);
+    }
+    
+    for (int i = 0; i < values_default.size(); i++){
+        rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " --set-ctrl " + camera_comand[i] + "=" + values_default[i]);
     }
 }
 
 vector<string> Camera::getComandCameraScript(){
+    vector<string> v;
     string all_comands = rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " -list | awk '{ if(NR!=1) {print $1} }'");
-    std::stringstream ss(all_comands);
-    std::istream_iterator<std::string> begin(ss);
-    std::istream_iterator<std::string> end;
-    std::vector<std::string> v(begin, end);
-    std::copy(v.begin(), v.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+
+    std::stringstream stream(all_comands);
+    std::string line;
+    while (std::getline(stream, line)) {
+        v.push_back(line);
+    }   
+
     return v;
 }
 
