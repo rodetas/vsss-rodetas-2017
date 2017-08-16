@@ -16,7 +16,7 @@ int CalibrationView::GUI(){
 			
     app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("calibration/Calibration.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("calibration/view/Calibration.glade");
 	
 	builder->get_widget("Window Calibration", window);
     window->signal_key_press_event().connect(sigc::mem_fun(this, &CalibrationView::onKeyboard));
@@ -186,6 +186,10 @@ bool CalibrationView::onKeyboard(GdkEventKey* event){
             cut.second = draw_area.getCairoImageSize();
         calibration_model.setCutPoint(cut, draw_area.getCairoImageSize());
     }
+    if(event->keyval == GDK_KEY_Escape){
+        onMenuQuit();
+    }
+
     return true;    
 }
 

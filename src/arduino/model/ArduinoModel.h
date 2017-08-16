@@ -29,4 +29,6 @@ private:
 	vector<string> baudrate_names;
 };
 
+#include "../view/ArduinoView.h"
+
 #endif

@@ -3,9 +3,8 @@
 
 #include "../../Header.h"
 #include "../model/CalibrationModel.h"
-#include "../DrawAreaCalibration.h"
+#include "DrawAreaCalibration.h"
 #include <gtkmm.h>
-
 
 class CalibrationView {
 

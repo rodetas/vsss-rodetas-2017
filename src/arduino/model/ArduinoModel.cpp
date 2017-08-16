@@ -1,5 +1,4 @@
 #include "ArduinoModel.h"
-#include "../view/ArduinoView.h"
 
 ArduinoModel::ArduinoModel(){
 }

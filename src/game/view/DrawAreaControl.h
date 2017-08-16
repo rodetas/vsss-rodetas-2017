@@ -1,9 +1,9 @@
 #ifndef DRAW_AREA_CONTROL_H_
 #define DRAW_AREA_CONTROL_H_
 
-#include "../Header.h"
-#include "../utils/Commons.h"
-#include "../utils/Manipulation.h"
+#include "../../Header.h"
+#include "../../utils/Commons.h"
+#include "../../utils/Manipulation.h"
 
 #include <gtkmm.h>
 

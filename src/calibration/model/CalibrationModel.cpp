@@ -1,5 +1,4 @@
 #include "CalibrationModel.h"
-#include "../view/CalibrationView.h"
 
 CalibrationModel::CalibrationModel(){
     colorsHSV.resize(6);

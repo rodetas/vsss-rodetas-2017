@@ -12,9 +12,11 @@ int ArduinoView::GUI(){
 
 	app = Gtk::Application::create();
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("arduino/Arduino.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("arduino/view/Arduino.glade");
 	
 	builder->get_widget("Window Arduino", window);
+	window->signal_key_press_event().connect(sigc::mem_fun(this, &ArduinoView::onKeyboard));
+	
 	
 	builder->get_widget("Button Upload", buttonUpload);
 	buttonUpload->signal_clicked().connect( sigc::mem_fun(*this, &ArduinoView::onButtonUpload) );
@@ -34,6 +36,15 @@ int ArduinoView::GUI(){
 	app->run(*window);
 
 	return MENU;
+}
+
+bool ArduinoView::onKeyboard(GdkEventKey* event){
+
+    if(event->keyval == GDK_KEY_Escape){
+        //program_state = MENU; window->close();
+    }
+
+    return true;    
 }
 
 void ArduinoView::onButtonUpdate(){
