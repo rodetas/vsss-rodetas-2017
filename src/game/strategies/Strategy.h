@@ -3,6 +3,8 @@
 
 #include "../../utils/Commons.h"
 
+using namespace rodetas;
+
 class Strategy{
 
 public:
