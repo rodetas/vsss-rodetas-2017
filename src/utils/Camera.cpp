@@ -120,7 +120,7 @@ vector<string> Camera::getComandCameraScript(){
 }
 
 int Camera::getNumberCameraScript(){
-    int number = system("utils/./cameraConfig.sh get_camera");
+    int number = system("utils/./shell/cameraConfig.sh get_camera");
     number = WEXITSTATUS(number);
     return number;
 }

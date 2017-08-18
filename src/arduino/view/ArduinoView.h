@@ -35,6 +35,8 @@ private:
 	void onButtonUpload();
 	void onButtonUpdate();
 	//void onButtonMonitor();
+
+	bool onKeyboard(GdkEventKey*);
 };
 
 #endif

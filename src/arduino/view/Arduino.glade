@@ -8,7 +8,7 @@
     <property name="window_position">center</property>
     <property name="default_width">400</property>
     <property name="default_height">250</property>
-    <property name="icon">../../files/images/logo-rodetas.png</property>
+    <property name="icon">../../../files/images/logo-rodetas.png</property>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>

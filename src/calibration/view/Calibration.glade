@@ -53,7 +53,7 @@
     <property name="window_position">center</property>
     <property name="default_width">-1</property>
     <property name="default_height">-1</property>
-    <property name="icon">../../files/images/logo-rodetas.png</property>
+    <property name="icon">../../../files/images/logo-rodetas.png</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>

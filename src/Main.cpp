@@ -1,4 +1,4 @@
-#include "game/Control.h"
+#include "game/view/GameView.h"
 #include "calibration/view/CalibrationView.h"
 #include "simulator/Test.h"
 #include "menu/Menu.h"
@@ -13,8 +13,8 @@ int main(int argc, char *argv[]) {
 		switch(program_state){
 
 			case GAME:{
-				Control control;
-				program_state = control.GUI();
+				GameView game;
+				program_state = game.GUI();
 			} break;
 			
 			case CALIBRATION:{

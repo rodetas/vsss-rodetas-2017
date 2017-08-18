@@ -67,4 +67,6 @@ private:
 	cv::Vec3b rgb_point;
 };
 
+#include "../view/CalibrationView.h"
+
 #endif
