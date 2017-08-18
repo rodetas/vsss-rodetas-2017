@@ -1,3 +1,3 @@
-#include "strategies/StrategyAttack.h"
+/* #include "strategies/StrategyAttack.h"
 #include "strategies/StrategyDefense.h"
-#include "strategies/StrategyGoal.h"
+#include "strategies/StrategyGoal.h" */

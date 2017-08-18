@@ -5,27 +5,14 @@ int StrategyFactory::defenseNumber = 0;
 int StrategyFactory::goalNumber = 0;
 int StrategyFactory::nStrategies = 0;
 
-float StrategyFactory::curve_factor;
-float StrategyFactory::potency_factor;
-
 bool StrategyFactory::definedId = false;
-
-Object StrategyFactory::ballProjection;
-vector<rodetas::Object> StrategyFactory::lastBallPositions;
-rodetas::Object StrategyFactory::lastBallProjection;
-
-Object StrategyFactory::ball;
 
 Point StrategyFactory::imageSize = Point(0,0);
 Point StrategyFactory::goalSize = Point(0,0);
 Point StrategyFactory::goalArea = Point(0,0);
 
-vector<rodetas::Object> StrategyFactory::objects;
-vector<rodetas::Object> StrategyFactory::team;
-vector<rodetas::Object> StrategyFactory::opponent;
-vector<Point> StrategyFactory::targets;
-
 StrategyFactory::StrategyFactory(){
+	data = Strategy::getInstance();
     robotState = PARADO;
 	nStrategies++;
     initialize();
@@ -48,7 +35,6 @@ void StrategyFactory::initStaticParameters(){
 	goalSize = manipulation.getGoal();
 	goalArea = Point(imageSize.x*0.2, imageSize.y*0.6);
 
-    targets.resize(3);
 }
 
 void StrategyFactory::defineFunctions(){
@@ -70,13 +56,13 @@ void StrategyFactory::defineFunctions(){
 
 		} else if(nStrategies == 3){
 
-			if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
+	/* 		if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
 				attackNumber = GRAPHICPLAYER1;
 				defenseNumber = GRAPHICPLAYER0;
 			} else {
 				attackNumber = GRAPHICPLAYER0;
 				defenseNumber = GRAPHICPLAYER1;
-			}	
+			 }	*/
 
 			goalNumber = GRAPHICPLAYER2;
 
@@ -128,6 +114,8 @@ Point StrategyFactory::applyPotencialField(Point target, rodetas::Object toRepul
 
 void StrategyFactory::updateCalculus(){
 
+	Object ball = data->getBall();
+
     distance_robot_destination = distance(robot, destination);
     distance_ball_destination = distance(ball, destination);
     distance_robot_ball = distance(robot, ball);
@@ -147,12 +135,8 @@ bool StrategyFactory::isBoard(rodetas::Object object){
 	return (object.y > (imageSize.y*0.9) || object.y < (imageSize.y*0.10) || ((object.x > (imageSize.x*0.90) || object.x < (imageSize.x*0.10)) && (object.y > halfGoal1 || object.y < halfGoal2)));
 }
 
-void StrategyFactory::setVecTarget(int id, Point target){
-	targets[id] = target;
-}
-
 Object StrategyFactory::calculateBallProjection(){
-	if(lastBallPositions.size() < 9){
+	/* if(lastBallPositions.size() < 9){
 		lastBallPositions.push_back(ball);
 	} else {
 		lastBallPositions.pop_back();
@@ -167,15 +151,7 @@ Object StrategyFactory::calculateBallProjection(){
 		lastBallProjection = ballProjection;
 	}
 
-	return ballProjection;
-}
-
-void StrategyFactory::setObjects(const vector<rodetas::Object>& t, const vector<rodetas::Object>& op, rodetas::Object b){
-	team = t;
-	opponent = op;
-	ball = b;
-
-	StrategyFactory::calculateBallProjection();
+	return ballProjection; */
 }
 
 Command StrategyFactory::getCommand(){
@@ -184,12 +160,4 @@ Command StrategyFactory::getCommand(){
 
 int StrategyFactory::getRobotId(){
 	return robot.id;
-}
-
-void StrategyFactory::setPotencyFactor(float f){
-	StrategyFactory::potency_factor = f;
-}
-
-void StrategyFactory::setCurveFactor(float f){
-	StrategyFactory::curve_factor = f;
 }

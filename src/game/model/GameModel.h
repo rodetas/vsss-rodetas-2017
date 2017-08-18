@@ -6,6 +6,8 @@
 #include "../Transmission.h"
 #include "../../utils/Timer.h"
 #include "../../utils/Commons.h"
+#include "../strategies/Strategy.h"
+
 
 class GameView;
 class GameModel {
@@ -27,8 +29,8 @@ public:
 
 private:
     GameView* caller;
-    vector<StrategyFactory*> strategies;
-
+    Strategy* strategy;
+    
     Timer timer;
     Vision vision;
     Transmission transmission;
