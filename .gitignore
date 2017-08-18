@@ -1,5 +1,6 @@
 *.o
 *.txt
+*.json
 files/instances/fileCalibration.txt
 Rodetas
 Rodetas-test

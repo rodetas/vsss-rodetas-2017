@@ -10,6 +10,8 @@ using namespace rodetas;
 
 enum {PARADO, DEFENDENDO, ATACANDO};
 
+class Strategy;
+
 class StrategyFactory {
 
 public:
@@ -73,13 +75,6 @@ public:
     virtual Point applyPotencialField(Point target, rodetas::Object toRepulsion, rodetas::Object toDestination);
 
     /**
-     * Saves all the targets in a vector for drawing purposes
-     * \param id: the robot id
-     * \param target: the robot target
-     */
-    static void setVecTarget(int id, Point target);
-
-    /**
      * Updates the calculus between robot, ball and target
      */
     void updateCalculus();
@@ -89,14 +84,6 @@ public:
      * \return the ball projection
      */
     static Object calculateBallProjection();
-
-    /**
-     * Sets the objects for strategy's use
-     * \param team: receives a vector<Object> containing all the team positions
-     * \param opponent: receives a vector<Object> containing the opponent's positions
-     * \param ball: receive a Object containg the ball's position
-     */
-    static void setObjects(const vector<rodetas::Object>&, const vector<rodetas::Object>&, rodetas::Object);
 
     /**
      * Method to get the command generate by strategy for a specific robot
@@ -109,35 +96,14 @@ public:
      * \return the robot id
      */
     int getRobotId();
-
-    /**
-     * Sets the potency factor value
-     * \param f: the potency
-     */
-    static void setPotencyFactor(float f);
-
-    /**
-     * Sets the curve factor
-     * \param f: the curve factor
-     */
-    static void setCurveFactor(float f);
     
-
 protected:
+
+    Strategy* data;
 
     static int attackNumber; ///< index of the attacker robot in the team vector
     static int defenseNumber;///< index of the defenser robot in the team vector
     static int goalNumber;   ///< index of the goalkeeper robot in the team vector
-
-    static Object ball; ///< contain the ball coordinates
-    static vector<rodetas::Object> team; ///< vector containing the team's positions
-    static vector<rodetas::Object> opponent;
-    static vector<rodetas::Object> objects; ///< vector of all objects containing its positions
-    static vector<Point> targets;
-
-    static Object ballProjection;
-    static vector<rodetas::Object> lastBallPositions;
-    static rodetas::Object lastBallProjection;
 
     static Point imageSize;
     static Point goalSize;
@@ -171,6 +137,6 @@ private:
 
 };
 
-
+#include "Strategy.h"
     
 #endif
