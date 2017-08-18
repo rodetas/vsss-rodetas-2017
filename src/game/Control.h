@@ -3,7 +3,7 @@
 
 #include "../Header.h"
 #include "Vision.h"
-#include "Strategies.h"
+#include "strategies/Strategy.h"
 #include "../utils/Timer.h"
 #include "Transmission.h"
 #include "DrawAreaControl.h"
@@ -16,7 +16,7 @@ class Control {
 
 private:
 	Transmission transmission;
-	vector<StrategyFactory*> strategies;
+	Strategy* strategy;
 	Vision vision;
 	Timer timer;
 
