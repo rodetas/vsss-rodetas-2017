@@ -2,7 +2,6 @@
 #define STRATEGY_H_
 
 #include "../../utils/Commons.h"
-#include "StrategyFactory.h"
 #include "../Strategies.h"
 
 using namespace rodetas;
@@ -14,10 +13,39 @@ public:
     // Singleton Implementation
     static Strategy* getInstance();
 
-    void apply(vector<Object>& team, vector<Object>& opponent, Object& ball); // analisar a necessidade de retornar vector de command
+    void initializeStrategies();
+
+    void apply(vector<Object>& team, vector<Object> opponent, Object ball); // analisar a necessidade de retornar vector de command
+
+    /**
+     * Calculates the ball projection
+     * \return the ball projection
+     */
+    Object& calculateBallProjection();
 
     int getNumStrategies();
+
+    Object& getBallProjection();
+
     Object& getBall();
+
+    vector<Object>& getTeam();
+
+    vector<Object>& getOpponent();
+
+    Object& getRobot(int);
+
+    Object& getAttackRobot();
+
+    Object& getDefenseRobot();
+
+    Object& getGoalRobot();
+
+    Point& getImageSize();
+
+    Point& getGoalSize();
+
+    Point& getGoalArea();
 
     /**
      * Saves all the targets in a vector for drawing purposes
@@ -41,6 +69,8 @@ public:
 private:
     Strategy(); ///< private constructor for singleton
 
+    void defineFunctionsForEachRobot();
+
     static Strategy* instance; ///< holds the class instance
 
     Object ball; ///< contain the ball coordinates
@@ -53,10 +83,16 @@ private:
     vector<Object> lastBallPositions;
     Object lastBallProjection;
 
-    vector<StrategyFactory*> strategies;
+    StrategyFactory* strategyAttack;
+    StrategyFactory* strategyDefense;
+    StrategyFactory* strategyGoal;
 
     float curve_factor;
     float potency_factor;
+
+    Point imageSize;
+    Point goalSize;
+    Point goalArea;
 
 };
 

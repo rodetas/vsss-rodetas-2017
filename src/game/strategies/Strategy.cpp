@@ -3,36 +3,119 @@
 Strategy* Strategy::instance = NULL;
 
 Strategy::Strategy(){
-	/* strategies.push_back(new StrategyAttack());
-	strategies.push_back(new StrategyDefense());
-	strategies.push_back(new StrategyGoal()); */
+    Manipulation manipulation;
+    manipulation.loadCalibration();  
+
+	imageSize = manipulation.getImageSize();
+	goalSize = manipulation.getGoal();
+	goalArea = Point(imageSize.x*0.2, imageSize.y*0.6);
+
+    targets.resize(3);
+
+    /* team.resize(3);
+    opponent.resize(3); */
+}
+
+void Strategy::initializeStrategies(){
+    strategyAttack = new StrategyAttack();
+    strategyDefense = new StrategyDefense();
+    strategyGoal = new StrategyGoal();
 }
 
 Strategy* Strategy::getInstance(){
 
     if(instance == NULL){
         instance = new Strategy();
+        instance->initializeStrategies();
     }
 
     return instance;
 }
 
-void Strategy::apply(vector<Object>& team, vector<Object>& opponent, Object& ball){
+void Strategy::apply(vector<Object>& _team, vector<Object> _opponent, Object _ball){
+    team.swap(_team);
+    opponent.swap(_opponent); 
+    ball = _ball;
 
-    StrategyFactory::defineFunctions();
+    calculateBallProjection();
+    // fazer if em relacao a quantidade do vetor team
+    if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
+        strategyAttack->apply(1);
+        strategyDefense->apply(0);
+    } else {
+        strategyAttack->apply(0);
+        strategyDefense->apply(1);
+    }	
 
-    for(int i=0 ; i<strategies.size() ; i++){
-        strategies[i]->apply();
-    }
+    strategyGoal->apply(2);
+}
 
+Object& Strategy::calculateBallProjection(){
+	
+	if(lastBallPositions.size() < 9){
+		lastBallPositions.push_back(ball);
+	} else {
+		lastBallPositions.pop_back();
+		lastBallPositions.insert(lastBallPositions.begin(), ball);
+		ballProjection.x = ball.x + (lastBallPositions[0].x - lastBallPositions[8].x);
+		ballProjection.y = ball.y + (lastBallPositions[0].y - lastBallPositions[8].y);
+
+		if(ballProjection.x > imageSize.x || ballProjection.x < 0 || ballProjection.y > imageSize.y || ballProjection.y < 0){
+			ballProjection = lastBallProjection;
+		}
+
+		lastBallProjection = ballProjection;
+	}
+
+	return ballProjection;
 }
 
 int Strategy::getNumStrategies(){
-    return strategies.size();
+    return StrategyFactory::getNumStrategies();
 }
 
 Object& Strategy::getBall(){
     return ball;
+}
+
+Object& Strategy::getBallProjection(){
+    return ballProjection;
+}
+
+vector<Object>& Strategy::getTeam(){
+    return team;
+}
+
+vector<Object>& Strategy::getOpponent(){
+    return opponent;
+}
+
+Object& Strategy::getRobot(int id){
+    return team[id];
+}
+
+Object& Strategy::getAttackRobot(){
+    return strategyAttack->getRobot();
+}
+
+Object& Strategy::getDefenseRobot(){
+    return strategyDefense->getRobot();
+}
+
+Object& Strategy::getGoalRobot(){
+    return strategyGoal->getRobot();
+}
+
+Point& Strategy::getImageSize(){
+    return imageSize;
+}
+
+Point& Strategy::getGoalSize(){
+    return goalSize;
+}
+
+Point& Strategy::getGoalArea(){
+    return goalArea;
 }
 
 void Strategy::setTargetOf(int id, Point target){

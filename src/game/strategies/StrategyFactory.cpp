@@ -1,21 +1,20 @@
 #include "StrategyFactory.h"
 
-int StrategyFactory::attackNumber = 0;
-int StrategyFactory::defenseNumber = 0;
-int StrategyFactory::goalNumber = 0;
 int StrategyFactory::nStrategies = 0;
 
 bool StrategyFactory::definedId = false;
 
-Point StrategyFactory::imageSize = Point(0,0);
-Point StrategyFactory::goalSize = Point(0,0);
-Point StrategyFactory::goalArea = Point(0,0);
-
 StrategyFactory::StrategyFactory(){
-	data = Strategy::getInstance();
     robotState = PARADO;
 	nStrategies++;
-    initialize();
+
+	data = Strategy::getInstance();
+	imageSize = data->getImageSize();
+    goalSize = data->getGoalSize();
+    goalArea = data->getGoalArea();
+	movimentation.setImage(imageSize);	
+
+//    initialize();
 }
 
 StrategyFactory::StrategyFactory(int n){
@@ -24,61 +23,18 @@ StrategyFactory::StrategyFactory(int n){
 }
 
 void StrategyFactory::initialize(){
-	movimentation.setImage(imageSize);	
-}
-
-void StrategyFactory::initStaticParameters(){
-    Manipulation manipulation;
-    manipulation.loadCalibration();  
-
-	imageSize = manipulation.getImageSize();
-	goalSize = manipulation.getGoal();
-	goalArea = Point(imageSize.x*0.2, imageSize.y*0.6);
-
-}
-
-void StrategyFactory::defineFunctions(){
-
-	// COLOCAR O NUMERO DO ROBO NAS VARIAVEIS
-
-	if(!definedId){
-
-		if(nStrategies == 1){
-			
-			attackNumber = 0;
-			defenseNumber = 0;
-			goalNumber = 0;
-
-		} else if(nStrategies == 2){
-
-			defenseNumber = 0;
-			goalNumber = 1;
-
-		} else if(nStrategies == 3){
-
-	/* 		if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
-				attackNumber = GRAPHICPLAYER1;
-				defenseNumber = GRAPHICPLAYER0;
-			} else {
-				attackNumber = GRAPHICPLAYER0;
-				defenseNumber = GRAPHICPLAYER1;
-			 }	*/
-
-			goalNumber = GRAPHICPLAYER2;
-
-		}
-	}
-	attackNumber = 1;
+	// ANALISAR A NECESSIDADE DE COLOCAR STRATEGY NO MOVIMENTATION
+	
 }
 
 void StrategyFactory::cornerStrategy(){
 	
 	/* movement along the corners */
-	if (isBoard(robot)) {
+	if (isBoard(robot)){
 		
 		if (distance_robot_ball < 55){		
 
-			if (robot.y > (imageSize.y/2)) {
+			if (robot.y > (data->getImageSize().y/2)){
 				movimentation.turnLeft(120, 120);	
 		    } else {
 				movimentation.turnRight(120, 120);
@@ -135,29 +91,18 @@ bool StrategyFactory::isBoard(rodetas::Object object){
 	return (object.y > (imageSize.y*0.9) || object.y < (imageSize.y*0.10) || ((object.x > (imageSize.x*0.90) || object.x < (imageSize.x*0.10)) && (object.y > halfGoal1 || object.y < halfGoal2)));
 }
 
-Object StrategyFactory::calculateBallProjection(){
-	/* if(lastBallPositions.size() < 9){
-		lastBallPositions.push_back(ball);
-	} else {
-		lastBallPositions.pop_back();
-		lastBallPositions.insert(lastBallPositions.begin(), ball);
-		ballProjection.x = ball.x + (lastBallPositions[0].x - lastBallPositions[8].x);
-		ballProjection.y = ball.y + (lastBallPositions[0].y - lastBallPositions[8].y);
-
-		if(ballProjection.x > imageSize.x || ballProjection.x < 0 || ballProjection.y > imageSize.y || ballProjection.y < 0){
-			ballProjection = lastBallProjection;
-		}
-
-		lastBallProjection = ballProjection;
-	}
-
-	return ballProjection; */
-}
-
 Command StrategyFactory::getCommand(){
     return movimentation.getMovement();
 }   
 
 int StrategyFactory::getRobotId(){
 	return robot.id;
+}
+
+Object& StrategyFactory::getRobot(){
+	return robot;
+}
+
+int StrategyFactory::getNumStrategies(){
+	return nStrategies;
 }

@@ -3,8 +3,8 @@
 GameModel::GameModel(){
     play = false;
    	side = false;
-
-    vision.initialize();    
+    
+    vision.initialize();
     strategy = Strategy::getInstance(); // init singleton
 }
 
@@ -16,12 +16,12 @@ GameModel::~GameModel(){
 bool GameModel::control(){
 
     vision.computerVision();
-
-    strategy->apply(vision.getTeam(), vision.getOpponent(), vision.getBall());
+    
+     strategy->apply(vision.getTeam(), vision.getOpponent(), vision.getBall());
    
     if(play){
         for(int i=0 ; i<strategy->getNumStrategies() ; i++){
-//		    transmission.send(strategies[i]->getRobotId(), strategies[i]->getCommand());
+//		    transmission.send(strategy->getRobotId(), strategy->getCommand());
         }
     }
             
