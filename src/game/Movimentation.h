@@ -16,8 +16,6 @@ private:
     Point image;
     Command movements;
 
-	std::mutex mutex;
-
     int velocity;
 	float maxPwm;
 	float powerFactor;
@@ -64,20 +62,11 @@ public:
 
 	void setPotencyFactor(float);
 	void setCurveFactor(float);
-	void setImage(Point);
 	void setPwm(Point, char);
 
 	void setRobot(rodetas::Object);
 
 	Command getMovement();
-
-	float getDistanceRobotBall();
-    float getDistanceRobotDestination();
-    float getAngleRobotDestination();
-    float getDistanceBallDestination();
-    float getSinAngleRobotDestination();
-    float getCosAngleRobotDestination();
-	float getCosRobotBall();
 
 };
 #endif
