@@ -39,8 +39,8 @@ bool Transmission::openConection(){
         }
 
         /* Set Baud Rate */
-        cfsetospeed(&options, (speed_t)B19200);
-        cfsetispeed(&options, (speed_t)B19200);
+        cfsetospeed(&options, (speed_t)B38400);
+        cfsetispeed(&options, (speed_t)B38400);
 
         /* Setting other Port Stuff */
         options.c_cflag     &=  ~PARENB;            // Make 8n1

@@ -47,7 +47,8 @@ rodetas::CameraConfiguration Camera::getCameraValuesScript(){
     rodetas::CameraConfiguration camera_config;
     
     vector<string> values;
-    string all_comands = rodetas::executeCommand("v4l2-ctl -list | sed 's/.*value=//' | awk '{ if(NR!=1) {print $1} }'");
+    string all_comands = rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " -list | sed 's/.*value=//' | awk '{ if(NR!=1) {print $1} }'");
+    
 
     std::stringstream stream(all_comands);
     std::string line;    
@@ -55,7 +56,7 @@ rodetas::CameraConfiguration Camera::getCameraValuesScript(){
         values.push_back(line);
     }
 
-    for (int i = 0; i < camera_comand.size(); i++){
+    for (int i = 0; i < values.size(); i++){
 
         if (camera_comand[i] == "brightness") {
             camera_config.brightness = std::stoi(values[i]);
@@ -88,12 +89,13 @@ rodetas::CameraConfiguration Camera::getCameraValuesScript(){
             //  cout << "COMAND NOT FOUND: " << camera_comand[i] << endl;
         }
     }
+
     return camera_config;    
 }
 
 void Camera::defaultCameraScript(){
     vector<string> values_default;
-    string all_comands = rodetas::executeCommand("v4l2-ctl -list | sed 's/.*default=//' | awk '{ if(NR!=1) {print $1} }'");
+    string all_comands = rodetas::executeCommand("v4l2-ctl -d /dev/video" + to_string(camera_number) + " -list | sed 's/.*default=//' | awk '{ if(NR!=1) {print $1} }'");
 
     std::stringstream stream(all_comands);
     std::string line;    
