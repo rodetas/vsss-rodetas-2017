@@ -33,19 +33,10 @@ public:
     void initialize();
 
     /**
-     * Static Method to initialize all the static parameters
-     */
-    static void initStaticParameters();
-
-    /**
-     * Static method to define positions for each robot
-     */
-    static void defineFunctions();
-
-    /**
      * Pure virtual function to apply the strategy
+     * \param the robot id
      */
-    virtual void apply() = 0;
+    virtual void apply(int id) = 0;
 
     /**
      * Pure virtual function to define where goes the robot
@@ -80,12 +71,6 @@ public:
     void updateCalculus();
 
     /**
-     * Calculates the ball projection
-     * \return the ball projection
-     */
-    static Object calculateBallProjection();
-
-    /**
      * Method to get the command generate by strategy for a specific robot
      * \return the respectively command
      */
@@ -96,18 +81,14 @@ public:
      * \return the robot id
      */
     int getRobotId();
+
+    Object& getRobot();
+
+    static int getNumStrategies();
     
 protected:
 
     Strategy* data;
-
-    static int attackNumber; ///< index of the attacker robot in the team vector
-    static int defenseNumber;///< index of the defenser robot in the team vector
-    static int goalNumber;   ///< index of the goalkeeper robot in the team vector
-
-    static Point imageSize;
-    static Point goalSize;
-    static Point goalArea;
 
     static float curve_factor;
     static float potency_factor;
@@ -127,6 +108,10 @@ protected:
     float cos_robot_destination;
     float cos_robot_ball;
     float convertRadiansToDegrees;
+
+    Point imageSize;
+    Point goalSize;
+    Point goalArea;
 
     Movimentation movimentation;
 

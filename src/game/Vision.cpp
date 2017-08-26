@@ -147,8 +147,9 @@ vector<rodetas::Object>& Vision::getTeam(){
     return robotTeam;
 }
 
-vector<rodetas::Object>& Vision::getOpponent(){
+vector<rodetas::Object> Vision::getOpponent(){
     vector<rodetas::Object> objects;
+    objects.resize(0);
 
     // ALEXANDRE, FAZER UMA REVISAO AQUI
     // COMPARA COM A FORMA QUE ERA FEITA NO getPositions()
@@ -159,7 +160,7 @@ vector<rodetas::Object>& Vision::getOpponent(){
     return objects;
 }
 
-rodetas::Object& Vision::getBall(){
+rodetas::Object Vision::getBall(){
     Object o;
     
     if(ball_position.center.size() != 0){
