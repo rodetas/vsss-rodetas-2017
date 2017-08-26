@@ -129,3 +129,15 @@ void Strategy::setPotencyFactor(float p){
 void Strategy::setCurveFactor(float p){
     curve_factor = p;
 }
+
+pair<int, Command> Strategy::getAttackCommand(){
+    return make_pair(strategyAttack->getRobotId(), strategyAttack->getCommand());
+}
+
+pair<int, Command> Strategy::getDefenseCommand(){
+    return make_pair(strategyDefense->getRobotId(), strategyDefense->getCommand());
+}
+
+pair<int, Command> Strategy::getGoalCommand(){
+    return make_pair(strategyGoal->getRobotId(), strategyGoal->getCommand());
+}

@@ -66,6 +66,10 @@ public:
      */
     void setCurveFactor(float);
 
+    pair<int, Command> getAttackCommand();
+    pair<int, Command> getDefenseCommand();
+    pair<int, Command> getGoalCommand();
+
 private:
     Strategy(); ///< private constructor for singleton
 
