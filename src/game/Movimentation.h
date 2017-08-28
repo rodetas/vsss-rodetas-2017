@@ -3,20 +3,18 @@
 
 #include "../Header.h"
 #include "../utils/Commons.h"
-#include <mutex>
+#include "../utils/Robot.h"
 
 using namespace rodetas;
 
 class Movimentation {
 
 private:
-	rodetas::Object robot;
-	vector<rodetas::Object> velocityPast;
+	Robot robot;
 
     Point image;
     Command movements;
 
-    int velocity;
 	float maxPwm;
 	float powerFactor;
     float curveFactor;
@@ -49,11 +47,6 @@ public:
 	/**
 	 *
 	 */
-	float calculateSpeed();
-
-	/**
-	 *
-	 */
 	void updateCalculus(rodetas::Object, rodetas::Object, Point);
 
 	void stop();
@@ -64,7 +57,7 @@ public:
 	void setCurveFactor(float);
 	void setPwm(Point, char);
 
-	void setRobot(rodetas::Object);
+	void setRobot(Robot);
 
 	Command getMovement();
 

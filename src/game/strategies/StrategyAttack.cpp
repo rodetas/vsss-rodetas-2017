@@ -1,32 +1,28 @@
 #include "StrategyAttack.h"
 
-StrategyAttack::StrategyAttack() : StrategyFactory(){
+StrategyAttack::StrategyAttack() : StrategyBase(){
 
 }
 
-void StrategyAttack::apply(int id){
-    robot = data->getRobot(id);
-    robot.id = id;
+void StrategyAttack::apply(){
     movimentation.setRobot(robot); // seta na classe de movimentacao o robo atual
-	
-    float velocity = movimentation.calculateSpeed(); // calcula sua velocidade
     
-	StrategyFactory::updateCalculus(); // update calculus (sin, cos, angle)
-	destination = setTarget();
+//	StrategyBase::updateCalculus(); // update calculus (sin, cos, angle)
+	robot.setTarget(defineTarget());
 
-	Command movement(movimentation.movePlayers(destination));
+	Command movement(movimentation.movePlayers(robot.getTarget()));
 
 //	cornerStrategy();
 }
 
-Point StrategyAttack::setTarget(){
+Point StrategyAttack::defineTarget(){
     Point target;
 
 /*	target.x = ballProjection.x;
 	target.y = ballProjection.y;
 */
-	target.x = data->getBall().x;
-	target.y = data->getBall().y;
+	target.x = data->getBall().x();
+	target.y = data->getBall().y();
 /*
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
@@ -61,7 +57,8 @@ Point StrategyAttack::setTarget(){
 	if (target.y < 0) target.y = 0;
 	if (target.y > imageSize.y) target.y = imageSize.y;
 */
-	data->setTargetOf(robot.id, target);
+
+//	data->setTargetOf(robot.id, target);
 
 	return target;
 }

@@ -17,13 +17,13 @@ bool GameModel::control(){
 
     vision.computerVision();
     
-     strategy->apply(vision.getTeam(), vision.getOpponent(), vision.getBall());
+    //strategy->apply(vision.getTeam(), vision.getOpponent(), vision.getBall());
    
     if(play){
 
-        transmission.send(strategy->getAttackCommand().first, strategy->getAttackCommand().second);
-        transmission.send(strategy->getDefenseCommand().first, strategy->getDefenseCommand().second);
-        transmission.send(strategy->getGoalCommand().first, strategy->getGoalCommand().second);
+        //transmission.send(strategy->getAttackCommand().first, strategy->getAttackCommand().second);
+        //transmission.send(strategy->getDefenseCommand().first, strategy->getDefenseCommand().second);
+        //transmission.send(strategy->getGoalCommand().first, strategy->getGoalCommand().second);
 /* 
         for(int i=0 ; i<strategy->getNumStrategies() ; i++){
             transmission.send(strategy[i].getRobotId(), strategy[i].getCommand());

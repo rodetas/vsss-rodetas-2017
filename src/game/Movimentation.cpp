@@ -1,10 +1,7 @@
 #include "Movimentation.h"
 
 Movimentation::Movimentation(){
-	velocityPast.resize(3);
-	
 	maxPwm = 0;
-	velocity = 0;
 	powerFactor = 1;
 	curveFactor = 1.2;
 }
@@ -83,18 +80,6 @@ void Movimentation::stop(){
 	movements.pwm2 = 0;
 }
 
-float Movimentation::calculateSpeed(){
-	if (robot.x != 0 && robot.y != 0) {
-		velocityPast[2] = velocityPast[1];
-		velocityPast[1] = velocityPast[0];
-		velocityPast[0] = robot;
-	}
-
-	velocity = distance(velocityPast[0], velocityPast[2]);
-
-	return velocity;
-}
-
 void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, Point destination){
 	distance_robot_destination = distance(robot, destination);
     distance_ball_destination = distance(ball, destination);
@@ -107,8 +92,8 @@ void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, 
 	cos_robot_ball = calcCos(ball, robot);
 }
 
-void Movimentation::setRobot(rodetas::Object obj){
-	robot = obj;
+void Movimentation::setRobot(Robot r){
+	robot = r;
 }
 
 Command Movimentation::getMovement(){
