@@ -22,22 +22,9 @@ enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOP
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
 
-/*
-struct SafeVariable {
-	template <class T>
-	T value;
-	
-	T get(){
-		//std::lock_guard<std::mutex> lock(mutex);
-		return value;
-	}
-
-	void set(T v){
-		//std::lock_guard<std::mutex> lock(mutex);
-		value = v;
-	}
-};
-*/
+static Point imageSize = Point();
+static Point goalSize = Point();
+static Point goalArea = Point();
 
 struct PointCut {
 	Point2i first;
