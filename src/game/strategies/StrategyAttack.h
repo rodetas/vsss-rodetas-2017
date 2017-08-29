@@ -1,17 +1,17 @@
 #ifndef ATTACK_STRATEGY_H_
 #define ATTACK_STRATEGY_H_
 
-#include "StrategyFactory.h"
+#include "StrategyBase.h"
 #include "../../utils/Commons.h"
 
-class StrategyAttack : public StrategyFactory {
+class StrategyAttack : public StrategyBase {
 
 public:
 
     StrategyAttack();
 
-    virtual void apply(int id);
-    virtual Point setTarget();
+    virtual void apply();
+    virtual Point defineTarget();
     
 };
 
