@@ -44,9 +44,9 @@ cv::Mat OpenCV::rotateImage(cv::Mat image, int angle){
 /*
  * Method for find contours in binarized image
  */
-ContoursPosition OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 1){
+Position OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 1){
 
-    ContoursPosition position;
+    Position position;
  
     vector< vector<cv::Point> > contours;
     vector<cv::Vec4i>           hierarchy;
@@ -61,13 +61,11 @@ ContoursPosition OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 
     if (contours.size() < n_contours)
         n_contours = contours.size();
     
-    vector<float>              radius (n_contours);
-    vector<cv::Point2f>        center (n_contours);    
-    vector<vector<cv::Point> > contours_poly (n_contours);
+    vector<float>       radius (n_contours);
+    vector<cv::Point2f> center (n_contours);    
 
     for (int i = 0; i < n_contours; i++){
-        cv::approxPolyDP( cv::Mat(contours[contours.size() - i - 1]), contours_poly[i], 3, true );
-        cv::minEnclosingCircle(contours_poly[i], center[i], radius[i] );
+        cv::minEnclosingCircle(contours[i], center[i], radius[i] );
 
         position.center.push_back(center[i]);
         position.radius.push_back(radius[i]);
@@ -76,62 +74,27 @@ ContoursPosition OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 
     return position;
 }
 
+Position OpenCV::position(cv::Mat image, Hsv color_hsv, int n_contours) {
+    cv::Mat binary_image = changeColorSpace(image, cv::COLOR_BGR2HSV_FULL);
+            binary_image = binarize(binary_image, color_hsv);
 
-// cv::imshow("T", image_cut);   cv::waitKey();
-ContoursPosition OpenCV::position(cv::Mat image, ContoursPosition last_position, Hsv color_hsv, int n_contours){
-
-    ContoursPosition atual_position, find_position;
-
-    float percent_cut = 30;
+    Position find_position = binarizedColorPosition(binary_image, n_contours);
     
-    if (!last_position.review_all_image && last_position.cutPointDefined()) {
+    return find_position;
+}
 
-        for(int j = 0; j < last_position.center.size(); j++) {
+Position OpenCV::position(cv::Mat image, Hsv color_hsv, int n_contours, PointCut point){
+    cv::Mat image_cut = cutImage(image, point);
+            image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
+            image_cut = binarize(image_cut, color_hsv);
 
-            cv::Mat image_cut = cutImage(image, last_position.cutPoint[j]);
-                    image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
-                    image_cut = binarize(image_cut, color_hsv);
+    Position find_position = binarizedColorPosition(image_cut, n_contours);
 
-            find_position = binarizedColorPosition(image_cut);
-
-            for(int i = 0; i < find_position.center.size(); i++){
-                PointCut cutPoint;
-                cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut) + last_position.cutPoint[j].first.x, find_position.center[i].y - (percent_cut) + last_position.cutPoint[j].first.y);
-                cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut) + last_position.cutPoint[j].first.x, find_position.center[i].y + (percent_cut) + last_position.cutPoint[j].first.y);
-
-                Point2i center_position = cv::Point( find_position.center[i].x + last_position.cutPoint[j].first.x, find_position.center[i].y + last_position.cutPoint[j].first.y);
-
-                atual_position.center.push_back(center_position);
-                atual_position.radius.push_back(find_position.radius[i]);
-                atual_position.cutPoint.push_back(cutPoint);
-
-                atual_position.verifyLimits(image.cols, image.rows);
-            }
-        }
-        
-    } else if (last_position.review_all_image) {
-
-        cv::Mat binary_image   = changeColorSpace(image, cv::COLOR_BGR2HSV_FULL);
-                binary_image   = binarize(binary_image, color_hsv);    
-
-        find_position = binarizedColorPosition(binary_image, n_contours);
-
-        for(int i = 0; i < find_position.center.size(); i++){
-            PointCut cutPoint;            
-            cutPoint.first = cv::Point( find_position.center[i].x - (percent_cut), find_position.center[i].y - (percent_cut));
-            cutPoint.second = cv::Point( find_position.center[i].x + (percent_cut), find_position.center[i].y + (percent_cut));
-
-            atual_position.center.push_back(find_position.center[i]);
-            atual_position.radius.push_back(find_position.radius[i]);
-            atual_position.cutPoint.push_back(cutPoint);
-            
-            atual_position.verifyLimits(image.cols, image.rows);
-        }
+    for(int i = 0; i < find_position.size(); i++){
+        find_position.changeCoordinateToGlobal(i, point);
     }
-    
-    atual_position.reviewAllImage(last_position.frames);
 
-    return atual_position;
+    return find_position;
 }
 
 /*

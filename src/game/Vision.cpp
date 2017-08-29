@@ -49,17 +49,17 @@ void Vision::computerVision(){
     ball_thread.join();
     opponent_thread.join();
 }
+//    int percent_to_cut = image.cols * 0.05;
 
 void Vision::teamThread(){
-    team_position = position(full_image_cut, team_position, colorsHSV[TEAM], 3);
+    team_position = position(full_image_cut, colorsHSV[TEAM], 3);
 
     vector<rodetas::Object> robot(3);
 
     // cropped image around the color team
-    for (int i = 0; i < team_position.center.size(); i++){
+    for (int i = 0; i < team_position.size(); i++){
 
         PointCut cutPoint;
-
         cutPoint.first = cv::Point( team_position.center[i].x - team_position.radius[i] , team_position.center[i].y - team_position.radius[i] );
         cutPoint.second = cv::Point( team_position.center[i].x + team_position.radius[i] , team_position.center[i].y + team_position.radius[i] );
 
@@ -70,18 +70,20 @@ void Vision::teamThread(){
 
         // search player's color on a cropped image
         for (int j = 0; j < number_robots; j++){
-            cv::Mat image_binary = binarize(image_cut, colorsHSV[j]);
-            ContoursPosition find_position = binarizedColorPosition(image_binary, 1);
+            Position find_position = position(image_cut, colorsHSV[j], 1);
             
             // check if finds the specified color in image
-            if (find_position.center.size() != 0){
+            if (find_position.size() != 0){
                 if (find_position.radius[0] > biggest_radius){
-
-                    find_position.center[0].x += cutPoint.first.x;
-                    find_position.center[0].y += cutPoint.first.y;
-                    robot[j] = (robotPosition(find_position, i));
-                    
+                    find_position.changeCoordinateToGlobal(0, cutPoint);
                     biggest_radius = find_position.radius[0];
+                    
+                    rodetas::Object r;
+                        r.x = team_position.center[i].x;
+                        r.y = team_position.center[i].y;
+                        r.angle = atan2 ((find_position.center[0].y - team_position.center[i].y), (find_position.center[0].x - team_position.center[i].x)) * (180 / CV_PI) + 180 + 45;
+                    
+                    robot[j] = r;
                 }
             }
         }
@@ -91,8 +93,9 @@ void Vision::teamThread(){
 }
 
 void Vision::opponentThread(){
-    ContoursPosition opponent_position_aux;
-    ContoursPosition last_opponent_position = opponent_position;
+    /*
+    Position opponent_position_aux;
+    Position last_opponent_position = opponent_position;
     opponent_position = position(full_image_cut, opponent_position, colorsHSV[OPPONENT], 3);
     
     int position;
@@ -116,31 +119,12 @@ void Vision::opponentThread(){
     if(last_opponent_position.center.size()!=0){
         opponent_position = opponent_position_aux;
     }
+    */
     
 }
 
 void Vision::ballThread(){
-    ball_position = position(full_image_cut, ball_position, colorsHSV[BALL], 1);
-}
-
-/*
- * method to join team color with the player to create a robot
- */
- rodetas::Object Vision::robotPosition(ContoursPosition color_player_position, int number_team){
-
-    rodetas::Object robot;
-
-        if (rodetas::insideCircle(color_player_position.center[0], team_position.center[number_team], team_position.radius[number_team] * 1.1 )){
-            robot.x = team_position.center[number_team].x;
-            robot.y = team_position.center[number_team].y;
-            robot.angle = atan2 ((color_player_position.center[0].y - team_position.center[number_team].y),
-                                 (color_player_position.center[0].x - team_position.center[number_team].x)) * (180 / CV_PI) + 180 + 45;
-        } else {
-            cout << "COLOR IS NOT INSIDE CIRCLE - RADIUS: " <<  team_position.radius[number_team] * 1.1;
-            cout << " Distance: " << rodetas::distance(color_player_position.center[0], team_position.center[number_team]) << endl;
-        }
-
-    return robot;
+    //ball_position = position(full_image_cut, ball_position, colorsHSV[BALL], 1);
 }
 
 vector<rodetas::Object>& Vision::getTeam(){

@@ -12,7 +12,6 @@ StrategyFactory::StrategyFactory(){
 	imageSize = data->getImageSize();
     goalSize = data->getGoalSize();
     goalArea = data->getGoalArea();
-	movimentation.setImage(imageSize);	
 
 //    initialize();
 }

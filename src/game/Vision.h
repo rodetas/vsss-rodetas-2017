@@ -21,9 +21,9 @@ private:
     vector<Hsv> colorsHSV;
 	vector<rodetas::Object> robotTeam;
 	
-	ContoursPosition ball_position;
-	ContoursPosition team_position;
-	ContoursPosition opponent_position;
+	Position ball_position;
+	Position team_position;
+	Position opponent_position;
 
 	cv::Mat full_image_cut;
 
@@ -45,13 +45,11 @@ public:
 	Vision();
 	void initialize();	
 	void computerVision();
-	void colorPositionPlayer(cv::Mat, ContoursPosition);
+	void colorPositionPlayer(cv::Mat, Position);
 
 	void teamThread();
 	void opponentThread();
 	void ballThread();
-
-	rodetas::Object robotPosition(ContoursPosition, int);
 
 	vector<rodetas::Object>& getTeam();
 	vector<rodetas::Object> getOpponent();
