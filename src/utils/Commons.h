@@ -28,6 +28,14 @@ static Point goalArea = Point();
 struct PointCut {
 	Point2i first;
 	Point2i second;
+
+	PointCut (){}
+
+	// initialize making a square area to cut
+	PointCut (Point2i point, int side_size){
+		first  = cv::Point( point.x - side_size , point.y - side_size );
+        second = cv::Point( point.x + side_size , point.y + side_size );
+	}
 };
 
 struct Command{
@@ -195,51 +203,22 @@ struct Object{
     }
 };
 
-struct ContoursPosition {
-	vector<Point2i>	center;
-    vector<PointCut> cutPoint;
-    vector<float>	radius;
+struct Position {
+    vector<float>	 radius;
+	vector<Point2i>	 center;
 	
-	int frames = 0;
-	bool review_all_image = true;
+	int size(){
+		return center.size();
+	};
 
-	bool cutPointDefined(){
-		return (cutPoint.size() > 0);
-	}
-
-	void reviewAllImage(int last_frames){
-		if (last_frames >= 10){
-			review_all_image = true;
-			frames = 0;
-		} else {
-			review_all_image = false;
-			frames = last_frames + 1;
-		}	
-	}
-
-	void verifyLimits(int cols, int rows){
-		for (int i = 0; i < center.size(); i++){
-			if (cutPoint[i].first.x < 0) cutPoint[i].first.x = 0;
-			if (cutPoint[i].first.y < 0) cutPoint[i].first.y = 0;
-			if (cutPoint[i].first.x > cols) cutPoint[i].first.x = cols;
-			if (cutPoint[i].first.y > rows) cutPoint[i].first.y = rows;
-
-			if (cutPoint[i].second.x < 0) cutPoint[i].second.x = 0;
-			if (cutPoint[i].second.y < 0) cutPoint[i].second.y = 0;
-			if (cutPoint[i].second.x > cols) cutPoint[i].second.x = cols;
-			if (cutPoint[i].second.y > rows) cutPoint[i].second.y = rows;
-
-			if (center[i].x < 0) center[i].x = 0;
-			if (center[i].y < 0) center[i].y = 0;
-			if (center[i].x > cols) center[i].x = cols;
-			if (center[i].y > rows) center[i].y = rows;
-		}
-	}
+	void changeCoordinateToGlobal(int i, PointCut point){
+		center[i].x += point.first.x;
+        center[i].y += point.first.y;
+	};
 
     void print(int i){
 		cout << "CENTER   [" << i << "]: " << center[i] << endl;
 		cout << "RADIUS   [" << i << "]: " << radius[i] << endl;
-		cout << "CUTPOINT [" << i << "]: " << cutPoint[i].first << cutPoint[i].second << endl << endl;
 	};
 };
 
