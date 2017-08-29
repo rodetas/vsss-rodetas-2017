@@ -32,22 +32,25 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
 
     team["goal"] = robots[2];
 
-//    strategies["attack"]->setRobot();
+//   strategies["attack"]->setRobot();
 //   strategies["defense"]->setRobot(team[1]);
 //   strategies["goal"]->setRobot(team[2]);
 }
 
 void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
-    // team.assign(_team.begin(), _team.end());
     opponent.swap(_opponent);
     ball = _ball; 
 
     defineFunctionsForEachRobot(_team);
 
-    cout << "APLICAR ESTRATEGIA" << endl;
     for(auto it = strategies.begin() ; it != strategies.end() ; it++){
         string function = it->first;
         (it)->second->apply(team[function]);
+    }
+
+    robots.clear();
+    for(auto it=team.begin() ; it!=team.end() ; it++){
+        robots.push_back(it->second);
     }
 }
 
@@ -56,13 +59,13 @@ Ball& Strategy::getBall(){
 }
 
 Robot Strategy::getRobot(string func){
-    return strategies[func]->getRobot();
+    return team[func];
 }
 
-map<string, Robot>::iterator Strategy::getRobotsBegin(){
-    return team.begin();
+vector<Robot>::iterator Strategy::getRobotsBegin(){
+    return robots.begin();
 }
 
-map<string, Robot>::iterator Strategy::getRobotsEnd(){
-    return team.end();
+vector<Robot>::iterator Strategy::getRobotsEnd(){
+    return robots.end();
 }

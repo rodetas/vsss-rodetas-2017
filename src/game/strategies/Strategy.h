@@ -37,8 +37,8 @@ public:
 
     Robot getRobot(string);
 
-    map<string, Robot>::iterator getRobotsBegin();
-    map<string, Robot>::iterator getRobotsEnd();
+    vector<Robot>::iterator getRobotsBegin();
+    vector<Robot>::iterator getRobotsEnd();
 
 private:
 
@@ -52,6 +52,7 @@ private:
 
     Ball ball; ///< contain the ball coordinates
     map<string, Robot> team; ///< vector containing the team's positions
+    vector<Robot> robots;
     vector<Robot> opponent;
 
     float curve_factor;

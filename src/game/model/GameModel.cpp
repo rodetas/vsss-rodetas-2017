@@ -30,14 +30,10 @@ bool GameModel::control(){
         auto itEnd = strategy->getRobotsEnd();
 
         for(;it != itEnd ; it++){
-            cout << "COMANDO ITERATOR: " << it->second.getCommand() << endl;
-            transmission.send(it->second.getRobotId(), it->second.getCommand());
+            cout << "COMANDO ITERATOR: " << it->getCommand() << endl;
+            transmission.send(it->getRobotId(), it->getCommand());
         }
         cout << endl;
-/*      
-        for(int i=0 ; i<strategy->getNumStrategies() ; i++){
-            transmission.send(strategy[i].getRobotId(), strategy[i].getCommand());
-        } */
     }
             
     fps = timer.framesPerSecond();
