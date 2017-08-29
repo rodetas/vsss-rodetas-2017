@@ -52,6 +52,10 @@ int Robot::x() const{
     return position.x;
 }
 
+bool Robot::null(){
+    return (position.x <= 0 && position.y <= 0);
+}
+
 float Robot::getVelocity(){
     return velocity;
 }
