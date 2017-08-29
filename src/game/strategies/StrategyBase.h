@@ -21,7 +21,7 @@ public:
      */
      StrategyBase();
 
-     virtual void apply();
+     virtual void apply(Robot&);
      
      /**
       * Pure virtual function to apply the strategy
@@ -48,7 +48,7 @@ public:
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
     virtual Point applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const;
 
-    void setRobot(Robot);
+    void setRobot(Robot&);
 
     Robot getRobot();
 
@@ -63,7 +63,7 @@ protected:
 
     int robotState; ///< for represent the atual robot state (PARADO, DEFENDENDO, ATACANDO)
 
-    Robot* robot;
+    Robot robot;
 
     Movimentation movimentation;
 

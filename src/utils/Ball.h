@@ -13,6 +13,10 @@ public:
 
     }
 
+    Ball(int x, int y){
+        position = Point(x,y);
+    }
+
     int x(){
         return position.x;
     }

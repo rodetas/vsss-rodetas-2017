@@ -12,13 +12,20 @@ public:
     Robot();
     Robot(int);
 
-    Robot& operator=(const Robot& other)
-    {
-        // check for self-assignment
-        if(&other == this)
-            return *this;
+    Robot(int _id, int _x, int _y);
 
+    Robot& operator=(const Robot& r) {
         
+        if (this != &r){
+            id = r.id;
+            position = r.position;
+            target = r.target;
+            velocity = r.velocity;
+            angle = r.angle;
+            command = r.command;
+            lastPositions = (r.lastPositions);
+        }
+
         return *this;
     }
 
@@ -42,6 +49,9 @@ public:
 
     void setPosition(Point);
     Point getPosition() const;
+
+    void setAngle(float);
+    float getAngle() const;
 
     void setCommand(Command);
     Command getCommand();

@@ -52,13 +52,24 @@ struct Command{
 		direcao = m.direcao;
 		pwm1 = m.pwm1;
 		pwm2 = m.pwm2;
-	}	
+	}
 
-	Command(char d, int p1, int p2){
+	Command(int p1, int p2, char d){
 		direcao = d;
 		pwm1 = p1;
 		pwm2 = p2;
 	}
+
+	Command& operator=(const Command& c) {
+        
+        if (this != &c){
+			direcao = c.direcao;
+			pwm1 = c.pwm1;
+			pwm2 = c.pwm2;
+        }
+
+        return *this;
+    }
 
 	string to_string(){
 		stringstream ss;

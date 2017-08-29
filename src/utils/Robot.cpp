@@ -10,6 +10,14 @@ Robot::Robot(int _id){
     initialize();
 }
 
+Robot::Robot(int _id, int _x, int _y){
+    id = _id;
+    position = Point(_x, _y);
+    angle = 30;
+    velocity = 0;
+    command = Command(BACK_MOVE, 0, 0);
+}
+
 void Robot::initialize(){
     velocity = 0;
     angle = 0;
@@ -61,8 +69,16 @@ void Robot::setPosition(Point _pos){
     calculateSpeed();
 }
 
-Point Robot::getPosition() const{
+Point Robot::getPosition() const {
     return position;
+}
+
+void Robot::setAngle(float _angle){
+    angle = _angle;
+}
+
+float Robot::getAngle() const{
+    return angle;
 }
 
 void Robot::setCommand(Command _command){
@@ -77,7 +93,7 @@ void Robot::setTarget(Point _target){
     target = _target;
 }
 
-Point Robot::getTarget() const{
+Point Robot::getTarget() const {
     return target;
 }
 

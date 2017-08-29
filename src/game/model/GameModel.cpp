@@ -17,15 +17,23 @@ bool GameModel::control(){
 
     vision.computerVision();
     
-    //strategy->apply(vision.getTeam(), vision.getOpponent(), vision.getBall());
+    vector<Robot> team = {Robot(0, 200, 300), Robot(1, 400, 100), Robot(2, 150, 500)};
+    vector<Robot> adv(0);
+    Ball ball(300,300);
+
+    strategy->apply(team, adv, ball);
+
+//    strategy->apply(vision.getTeam(), vision.getOpponent(), vision.getBall());
    
     if(play){
         auto it = strategy->getRobotsBegin();
         auto itEnd = strategy->getRobotsEnd();
 
         for(;it != itEnd ; it++){
-            transmission.send(it->getRobotId(), it->getCommand());
+            cout << "COMANDO ITERATOR: " << it->second.getCommand() << endl;
+            transmission.send(it->second.getRobotId(), it->second.getCommand());
         }
+        cout << endl;
 /*      
         for(int i=0 ; i<strategy->getNumStrategies() ; i++){
             transmission.send(strategy[i].getRobotId(), strategy[i].getCommand());

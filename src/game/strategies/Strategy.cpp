@@ -6,8 +6,8 @@ Strategy::Strategy(){}
 
 void Strategy::initializeStrategies(){
     strategies["attack"] = new StrategyAttack();
-    strategies["defense"] = new StrategyDefense();
-    strategies["goal"] = new StrategyGoal(); 
+//    strategies["defense"] = new StrategyDefense();
+//    strategies["goal"] = new StrategyGoal(); 
 }
 
 Strategy* Strategy::getInstance(){
@@ -20,28 +20,34 @@ Strategy* Strategy::getInstance(){
     return instance;
 }
 
-void Strategy::defineFunctionsForEachRobot(){
-    // fazer if em relacao a quantidade do vetor team
-    if(team[1].distanceFrom(ball) < team[0].distanceFrom(ball)){
-        strategies["attack"]->setRobot(team[1]);
-        strategies["defense"]->setRobot(team[0]);
+void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
+     // fazer if em relacao a quantidade do vetor team
+    if(robots[1].distanceFrom(ball) < robots[0].distanceFrom(ball)){
+        team["attack"] = (robots[1]);
+        team["defense"] = (robots[0]);
     } else {
-        strategies["attack"]->setRobot(team[0]);
-        strategies["defense"]->setRobot(team[1]);
-    } 
+        team["attack"] = (robots[0]);
+        team["defense"] = (robots[1]);
+    }  
 
-    strategies["goal"]->setRobot(team[2]);
+    team["goal"] = robots[2];
+
+//    strategies["attack"]->setRobot();
+//   strategies["defense"]->setRobot(team[1]);
+//   strategies["goal"]->setRobot(team[2]);
 }
 
 void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
-    team.swap(_team);
+    // team.assign(_team.begin(), _team.end());
     opponent.swap(_opponent);
-    ball = _ball;
+    ball = _ball; 
 
-    defineFunctionsForEachRobot();
+    defineFunctionsForEachRobot(_team);
 
+    cout << "APLICAR ESTRATEGIA" << endl;
     for(auto it = strategies.begin() ; it != strategies.end() ; it++){
-        (it)->second->apply();
+        string function = it->first;
+        (it)->second->apply(team[function]);
     }
 }
 
@@ -49,22 +55,14 @@ Ball& Strategy::getBall(){
     return ball;
 }
 
-vector<Robot>& Strategy::getTeam(){
-    return team;
-}
-
-vector<Robot>& Strategy::getOpponent(){
-    return opponent;
-}
-
 Robot Strategy::getRobot(string func){
     return strategies[func]->getRobot();
 }
 
-vector<Robot>::iterator Strategy::getRobotsBegin(){
+map<string, Robot>::iterator Strategy::getRobotsBegin(){
     return team.begin();
 }
 
-vector<Robot>::iterator Strategy::getRobotsEnd(){
+map<string, Robot>::iterator Strategy::getRobotsEnd(){
     return team.end();
 }

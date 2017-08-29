@@ -34,28 +34,24 @@ public:
     void setCurveFactor(float);
 
     Ball& getBall();
-    
-    vector<Robot>& getTeam();
-
-    vector<Robot>& getOpponent();
 
     Robot getRobot(string);
 
-    vector<Robot>::iterator getRobotsBegin();
-    vector<Robot>::iterator getRobotsEnd();
+    map<string, Robot>::iterator getRobotsBegin();
+    map<string, Robot>::iterator getRobotsEnd();
 
 private:
 
     Strategy(); ///< private constructor for singleton
     
-    void defineFunctionsForEachRobot();
+    void defineFunctionsForEachRobot(vector<Robot>&);
 
     static Strategy* instance; ///< holds the class instance
 
     map<string, StrategyBase*> strategies;
 
     Ball ball; ///< contain the ball coordinates
-    vector<Robot> team; ///< vector containing the team's positions
+    map<string, Robot> team; ///< vector containing the team's positions
     vector<Robot> opponent;
 
     float curve_factor;
