@@ -50,15 +50,16 @@ public:
     Point getTarget();
 
     void setLastPositions(vector<Point>);
-    vector<Point> getLastPositions();
+    vector<Point>::iterator getLastPositionsBegin();
+    vector<Point>::iterator getLastPositionsEnd();
 
-    float getCosFrom(Robot);
-    float getCosFrom(Object);
-    float getCosFrom(Point);
+    float cosFrom(Robot);
+    float cosFrom(Object);
+    float cosFrom(Point);
 
-    float getSinFrom(Robot);
-    float getSinFrom(Object);
-    float getSinFrom(Point);
+    float sinFrom(Robot);
+    float sinFrom(Object);
+    float sinFrom(Point);
 
     float distanceFrom(Robot);
     float distanceFrom(Ball);

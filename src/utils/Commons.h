@@ -11,7 +11,6 @@ namespace rodetas{
 
 typedef cv::Point Point;
 typedef cv::Point2i Point2i;
-typedef pair<int, int> Pwm;
 
 enum{H, S, V};
 enum{MIN, MAX, MID};
@@ -287,7 +286,6 @@ bool insideCircle(const T a, const U b, const X r){
 template <typename T, typename U>
 float calcAngle(const T a, const U b){
 	return atan2(a.y - b.y, a.x - b.x)*RADIAN_TO_DEGREE;
-	//atan2(attackDestination.y - robot.y, attackDestination.x - robot.x)*RADIAN_TO_DEGREE 
 }
 
 template <typename T, typename U>

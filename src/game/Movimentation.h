@@ -10,7 +10,6 @@ using namespace rodetas;
 class Movimentation {
 
 private:
-	Robot robot;
 
     Point image;
     Command movements;
@@ -18,14 +17,6 @@ private:
 	float maxPwm;
 	float powerFactor;
     float curveFactor;
-
-	float distance_robot_ball;
-    float distance_robot_destination;
-    float angle_robot_destination;
-    float distance_ball_destination;
-    float sinAngle_robot_destination;
-    float cosAngle_robot_destination;
-	float cos_robot_ball;
 
 public:
 
@@ -37,27 +28,20 @@ public:
 	/**
 	 *
 	 */
-	Command movePlayers(Point);
+	Command movePlayers(Robot);
 
 	/**
 	 *
 	 */
-	Pwm PWMCorrection(Point);
+	Command definePwm(Robot&, char);
 
-	/**
-	 *
-	 */
-	void updateCalculus(rodetas::Object, rodetas::Object, Point);
-
-	void stop();
-	void turnLeft(int, int);
-	void turnRight(int, int);
+	Command stop();
+	Command turnLeft(int, int);
+	Command turnRight(int, int);
 
 	void setPotencyFactor(float);
 	void setCurveFactor(float);
-	void setPwm(Point, char);
-
-	void setRobot(Robot);
+	Command checkPwm(const Command&);
 
 	Command getMovement();
 

@@ -85,34 +85,38 @@ void Robot::setLastPositions(vector<Point> _vec){
     lastPositions = _vec;
 }
 
-vector<Point> Robot::getLastPositions(){
-    return lastPositions;
+vector<Point>::iterator Robot::getLastPositionsBegin(){
+    return lastPositions.begin();
 }
 
-/* float Robot::getCosFrom(Robot _r){
-    return calcCos(_r.getPosition(), position);
+vector<Point>::iterator Robot::getLastPositionsEnd(){
+    return lastPositions.end();
 }
 
-float Robot::getCosFrom(Object _o){
-    
+ float Robot::cosFrom(Robot _r){
+    return cos((calcAngle(position, _r.getPosition()) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::getCosFrom(Point _p){
-
-}
- 
-float Robot::getSinFrom(Robot _r){
-    return calcSen(_r.getPosition(), position);
+float Robot::cosFrom(Object _o){
+    return cos((calcAngle(position, _o) - angle)/RADIAN_TO_DEGREE);  
 }
 
-float Robot::getSinFrom(Object _o){
-    return calcSen(_o, position);
+float Robot::cosFrom(Point _p){
+    return cos((calcAngle(position,_p) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::getSinFrom(Point _p){
-    return calcSen(_p, position);
+float Robot::sinFrom(Robot _r){
+    return sin((calcAngle(position,_r.getPosition()) - angle)/RADIAN_TO_DEGREE);
 }
-*/
+
+float Robot::sinFrom(Object _o){
+    return sin((calcAngle(position, _o) - angle)/RADIAN_TO_DEGREE);
+}
+
+float Robot::sinFrom(Point _p){
+    return sin((calcAngle(position,_p) - angle)/RADIAN_TO_DEGREE);
+}
+
 float Robot::distanceFrom(Robot _r){
     return distance(position, _r.getPosition());
 }

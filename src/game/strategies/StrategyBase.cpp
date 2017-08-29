@@ -9,6 +9,12 @@ StrategyBase::StrategyBase(){
 	data = Strategy::getInstance();
 }
 
+void StrategyBase::apply(){
+    Point target = defineTarget();
+    robot.setCommand(movimentation.movePlayers(robot));
+    
+}
+
 void StrategyBase::cornerStrategy(){
 	
 	/* movement along the corners */

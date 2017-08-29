@@ -21,13 +21,14 @@ public:
      */
      StrategyBase();
 
-    /**
-     * Pure virtual function to apply the strategy
-     * \param the robot id
-     */
-    virtual void apply() = 0;
+     virtual void apply();
+     
+     /**
+      * Pure virtual function to apply the strategy
+      */
+    virtual void strategy() = 0;
 
-      /**
+    /**
      * Pure virtual function to define where goes the robot
      */
     virtual Point defineTarget() = 0;

@@ -49,6 +49,10 @@ public:
         return ballProjection;
     }
 
+    float distanceFrom(){
+        
+    }
+
 private:
 
     Point position;

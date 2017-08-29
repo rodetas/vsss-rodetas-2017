@@ -10,7 +10,7 @@ public:
 
     StrategyAttack();
 
-    virtual void apply();
+    virtual Command strategy(Robot, Command);
     virtual Point defineTarget();
     
 };
