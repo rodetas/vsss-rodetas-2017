@@ -10,8 +10,8 @@ Vision::Vision(){
     robot_opponent.resize(n_robots);
 
     for (int i = 0; i < n_robots; i++){
-        robot_team[i].setId(i);
-        robot_opponent[i].setId(i);
+        robot_team[i].setRobotId(i);
+        robot_opponent[i].setRobotId(i);
     }
 }
 
@@ -70,9 +70,9 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
             if (find_position.size() > 0 && find_position.radius[0] > biggest_radius){
                        
                 robot_team[i].setPosition(team_position.center[i]);
-                //robot_team[i].setAngle( atan2 ( (find_position.center[0].y - team_position.center[i].y), 
-                //                                (find_position.center[0].x - team_position.center[i].x) ) 
-                //                                * (180 / CV_PI) + 180 + 45;
+                robot_team[i].setAngle( atan2 ( (find_position.center[0].y - team_position.center[i].y), 
+                                                (find_position.center[0].x - team_position.center[i].x)) 
+                                                * (180 / CV_PI) + 180 + 45 );
             
                 biggest_radius = find_position.radius[0];
             }
@@ -81,6 +81,9 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
 }
 
 void Vision::opponentPosition(Position opponent_position){
+    for (int i = 0; i < robot_opponent.size(); i++){
+        robot_opponent[i].setPosition(opponent_position.center[i]);
+    }
 /*  REFAZER ESTA PARTE COM A CLASSE ROBOT
     Position opponent_position_aux;
         Position last_opponent_position = opponent_position;

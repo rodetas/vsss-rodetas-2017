@@ -43,7 +43,7 @@ protected:
 public:
 
 	DrawAreaControl();
-    void setPosition(vector<rodetas::Object> o);
+    void setPosition(vector<Robot>, vector<Robot>, Ball);
 };
 
 #endif

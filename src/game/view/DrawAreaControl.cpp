@@ -106,57 +106,69 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
         c->stroke ();
 
     //draw robots
-        c->set_line_width(2);        
-        for (int i = 0; i < robot_team.size(); i++) {
+        c->set_line_width(2);
         
-            Point r = { changeCoordinate(robot_team[i].getPosition()).x, changeCoordinate(robot_team[i].getPosition()).y };
-            // team colors rectangle        
-            c->save();
-                c->translate(r.x + color_team_size/2, r.y + color_team_size/2);
-                c->rotate_degrees(robot_team[i].getAngle() - 90);
-                c->translate(-r.x - color_team_size/2, -r.y - color_team_size/2);
-                c->rectangle(r.x, r.y, color_team_size, color_team_size);
-                c->set_source_rgb(colors_rgb[TEAM].r, colors_rgb[TEAM].g, colors_rgb[TEAM].b);
-                c->fill_preserve();
-            c->restore();
-            c->stroke ();
+    /*** TEAM ***/
+        for (int i = 0; i < robot_team.size(); i++) {
             
-            // player colors rectangle            
-            c->save();
-                c->translate(r.x + color_team_size/2, r.y + color_team_size/2);
-                c->rotate_degrees(robot_team[i].getAngle() - 90);
-                c->translate(-r.x - color_team_size/2, -r.y - color_team_size/2);
-                c->rectangle(r.x, r.y, color_player_size, color_player_size);    
-                c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
-                c->fill_preserve();
+            if (!robot_team[i].null()) {
+
+                Point r = { changeCoordinate(robot_team[i].getPosition()).x, changeCoordinate(robot_team[i].getPosition()).y };
+                // team colors rectangle        
+                c->save();
+                    c->translate(r.x + color_team_size/2, r.y + color_team_size/2);
+                    c->rotate_degrees(robot_team[i].getAngle() - 90);
+                    c->translate(-r.x - color_team_size/2, -r.y - color_team_size/2);
+                    c->rectangle(r.x, r.y, color_team_size, color_team_size);
+                    c->set_source_rgb(colors_rgb[TEAM].r, colors_rgb[TEAM].g, colors_rgb[TEAM].b);
+                    c->fill_preserve();
+                c->restore();
+                c->stroke ();
                 
-            c->restore();
-            c->stroke ();
-            
+                // player colors rectangle            
+                c->save();
+                    c->translate(r.x + color_team_size/2, r.y + color_team_size/2);
+                    c->rotate_degrees(robot_team[i].getAngle() - 90);
+                    c->translate(-r.x - color_team_size/2, -r.y - color_team_size/2);
+                    c->rectangle(r.x, r.y, color_player_size, color_player_size);    
+                    c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
+                    c->fill_preserve();
+                    
+                c->restore();
+                c->stroke ();
+            }
+        }
+    
+    /*** OPPONENT ***/
+        for (int i = 0; i < robot_opponent.size(); i++) {
+
+            if (!robot_opponent[i].null()) {
+
+                Point r = { changeCoordinate(robot_opponent[i].getPosition()).x, changeCoordinate(robot_opponent[i].getPosition()).y };
+                    
+                // opponent colors rectangle        
+                c->save();
+                    c->rectangle(r.x, r.y, color_team_size, color_team_size);
+                    c->set_source_rgb(colors_rgb[OPPONENT].r, colors_rgb[OPPONENT].g, colors_rgb[OPPONENT].b);
+                    c->fill_preserve();
+                c->restore();
+                c->stroke ();
+            }
         }
 
-         for (int i = 0; i < robot_opponent.size(); i++) {
+    /*** BALL ***/
+        if (!ball.null()) {    
 
-            Point r = { changeCoordinate(robot_opponent[i].getPosition()).x, changeCoordinate(robot_opponent[i].getPosition()).y };
-                
-            // opponent colors rectangle        
+            Point r = { changeCoordinate(ball.getPosition()).x, changeCoordinate(ball.getPosition()).y };
+
+            // ball
             c->save();
-                c->rectangle(r.x, r.y, color_team_size, color_team_size);
-                c->set_source_rgb(colors_rgb[OPPONENT].r, colors_rgb[OPPONENT].g, colors_rgb[OPPONENT].b);
+                c->arc(r.x, r.y, ball_size, 0, 2*CV_PI);
+                c->set_source_rgb(colors_rgb[BALL].r, colors_rgb[BALL].g, colors_rgb[BALL].b);
                 c->fill_preserve();
             c->restore();
             c->stroke ();
         }
-
-        Point r = { changeCoordinate(ball.getPosition()).x, changeCoordinate(ball.getPosition()).y };
-
-        // ball
-        c->save();
-            c->arc(r.x, r.y, ball_size, 0, 2*CV_PI);
-            c->set_source_rgb(colors_rgb[BALL].r, colors_rgb[BALL].g, colors_rgb[BALL].b);
-            c->fill_preserve();
-        c->restore();
-        c->stroke ();
     
         return true;
     }
