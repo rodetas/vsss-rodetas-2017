@@ -22,8 +22,8 @@ public:
         return *this;
     }
 
-    int y();
-    int x();
+    int y() const;
+    int x() const;
 
     float calculateSpeed();
     void initialize();
@@ -37,34 +37,34 @@ public:
 
     float getVelocity();
 
-    void setId(int);
-    int getId();
+    void setRobotId(int);
+    int getRobotId();
 
     void setPosition(Point);
-    Point getPosition();
+    Point getPosition() const;
 
     void setCommand(Command);
     Command getCommand();
 
     void setTarget(Point);
-    Point getTarget();
+    Point getTarget() const;
 
     void setLastPositions(vector<Point>);
     vector<Point>::iterator getLastPositionsBegin();
     vector<Point>::iterator getLastPositionsEnd();
 
-    float cosFrom(Robot);
-    float cosFrom(Object);
-    float cosFrom(Point);
+    float cosFrom(Robot) const;
+    float cosFrom(Object) const;
+    float cosFrom(Point) const;
 
-    float sinFrom(Robot);
-    float sinFrom(Object);
-    float sinFrom(Point);
+    float sinFrom(Robot) const;
+    float sinFrom(Object) const;
+    float sinFrom(Point) const;
 
-    float distanceFrom(Robot);
-    float distanceFrom(Ball);
-    float distanceFrom(Object);
-    float distanceFrom(Point);
+    float distanceFrom(Robot) const;
+    float distanceFrom(Ball) const;
+    float distanceFrom(Object) const;
+    float distanceFrom(Point) const;
 
 private:
 

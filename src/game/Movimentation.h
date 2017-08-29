@@ -28,12 +28,12 @@ public:
 	/**
 	 *
 	 */
-	Command movePlayers(Robot);
+	Command movePlayers(const Robot&);
 
 	/**
 	 *
 	 */
-	Command definePwm(Robot&, char);
+	Command definePwm(const Robot&, char);
 
 	Command stop();
 	Command turnLeft(int, int);

@@ -4,12 +4,12 @@ StrategyDefense::StrategyDefense() : StrategyBase()	{
 
 }
 
-Command StrategyDefense::strategy(Robot robot, Command command){
+Command StrategyDefense::strategy(const Robot& robot, Command command){
 
 	return command;
 }
 
-Point StrategyDefense::defineTarget(Robot robot){
+Point StrategyDefense::defineTarget(const Robot& robot){
 
     Ball ball = data->getBall();
     Point defenseTarget = Point(0,0);

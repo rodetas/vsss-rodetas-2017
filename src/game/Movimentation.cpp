@@ -9,7 +9,7 @@ Movimentation::Movimentation(){
 /*
  * calculates the basic movimentation
  */
-Command Movimentation::movePlayers(Robot robot){
+Command Movimentation::movePlayers(const Robot& robot){
 
 	Point destination = robot.getTarget();
 	Command command;
@@ -47,7 +47,7 @@ Command Movimentation::checkPwm(const Command& pwm){
 /*
  * Correct robot pwm to follow the destination
  */
-Command Movimentation::definePwm(Robot& robot, char direction){
+Command Movimentation::definePwm(const Robot& robot, char direction){
 
 	int standardPower = 160;
 

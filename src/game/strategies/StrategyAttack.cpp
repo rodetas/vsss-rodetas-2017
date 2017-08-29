@@ -4,7 +4,7 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 
 }
 
-Command StrategyAttack::strategy(Robot robot, Command command){
+Command StrategyAttack::strategy(const Robot& robot, Command command){
    
 
 	//	cornerStrategy();
@@ -12,7 +12,7 @@ Command StrategyAttack::strategy(Robot robot, Command command){
 	return command;
 }
 
-Point StrategyAttack::defineTarget(Robot robot){
+Point StrategyAttack::defineTarget(const Robot& robot){
     Point target;
 
 /*	target.x = ballProjection.x;

@@ -36,11 +36,11 @@ bool Robot::isBoard(){
 	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.90) || x() < (rodetas::imageSize.x*0.10)) && (y() > halfGoal1 || y() < halfGoal2)));
 }
 
-int Robot::y(){
+int Robot::y() const{
     return position.y;
 }
 
-int Robot::x(){
+int Robot::x() const{
     return position.x;
 }
 
@@ -48,11 +48,11 @@ float Robot::getVelocity(){
     return velocity;
 }
 
-void Robot::setId(int _id){
+void Robot::setRobotId(int _id){
     id = _id;
 }
 
-int Robot::getId(){
+int Robot::getRobotId(){
     return id;
 }
 
@@ -61,7 +61,7 @@ void Robot::setPosition(Point _pos){
     calculateSpeed();
 }
 
-Point Robot::getPosition(){
+Point Robot::getPosition() const{
     return position;
 }
 
@@ -77,7 +77,7 @@ void Robot::setTarget(Point _target){
     target = _target;
 }
 
-Point Robot::getTarget(){
+Point Robot::getTarget() const{
     return target;
 }
 
@@ -93,42 +93,42 @@ vector<Point>::iterator Robot::getLastPositionsEnd(){
     return lastPositions.end();
 }
 
- float Robot::cosFrom(Robot _r){
+ float Robot::cosFrom(Robot _r) const{
     return cos((calcAngle(position, _r.getPosition()) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::cosFrom(Object _o){
+float Robot::cosFrom(Object _o) const{
     return cos((calcAngle(position, _o) - angle)/RADIAN_TO_DEGREE);  
 }
 
-float Robot::cosFrom(Point _p){
+float Robot::cosFrom(Point _p) const{
     return cos((calcAngle(position,_p) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::sinFrom(Robot _r){
+float Robot::sinFrom(Robot _r) const{
     return sin((calcAngle(position,_r.getPosition()) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::sinFrom(Object _o){
+float Robot::sinFrom(Object _o) const{
     return sin((calcAngle(position, _o) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::sinFrom(Point _p){
+float Robot::sinFrom(Point _p) const{
     return sin((calcAngle(position,_p) - angle)/RADIAN_TO_DEGREE);
 }
 
-float Robot::distanceFrom(Robot _r){
+float Robot::distanceFrom(Robot _r) const{
     return distance(position, _r.getPosition());
 }
 
-float Robot::distanceFrom(Ball _b){
+float Robot::distanceFrom(Ball _b) const{
     return distance(position, _b.getPosition());
 }
 
-float Robot::distanceFrom(Object _o){
+float Robot::distanceFrom(Object _o) const{
     return distance(position, _o);
 }
 
-float Robot::distanceFrom(Point _p){
+float Robot::distanceFrom(Point _p) const{
     return distance(position, _p);
 }

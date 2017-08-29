@@ -1,12 +1,12 @@
-#ifndef STRATEGY_DEFENSE_H_
-#define STRATEGY_DEFENSE_H_
+#ifndef STRATEGY_GOAL_H_
+#define STRATEGY_GOAL_H_
 
 #include "StrategyBase.h"
 
-class StrategyDefense : public StrategyBase {
+class StrategyGoal : public StrategyBase {
 
 public:
-    StrategyDefense();
+    StrategyGoal();
 
     virtual Command strategy(const Robot&, Command);
     virtual Point defineTarget(const Robot&);
