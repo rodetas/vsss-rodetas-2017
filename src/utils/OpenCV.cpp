@@ -52,20 +52,22 @@ Position OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 1){
     vector<cv::Vec4i>           hierarchy;
 
     cv::findContours(image, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-    
+
+    // sort in crescent order the contours vector by found area
     sort(contours.begin(), contours.end(), 
         [](const vector<Point> c1, const vector<Point> c2){
             return cv::contourArea(c1, false) < cv::contourArea(c2, false);
-        }); 
+        });
     
     if (contours.size() < n_contours)
-        n_contours = contours.size();
+        n_contours = contours.size();       
     
     vector<float>       radius (n_contours);
-    vector<cv::Point2f> center (n_contours);    
-
+    vector<cv::Point2f> center (n_contours);
+    
+    // to take the biggest contours (contours.size() - 1)
     for (int i = 0; i < n_contours; i++){
-        cv::minEnclosingCircle(contours[i], center[i], radius[i] );
+        cv::minEnclosingCircle(contours[(contours.size() - 1) - i], center[i], radius[i] );
 
         position.center.push_back(center[i]);
         position.radius.push_back(radius[i]);

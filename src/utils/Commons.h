@@ -22,9 +22,21 @@ enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOP
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
 
+static Point imageSize = Point();
+static Point goalSize = Point();
+static Point goalArea = Point();
+
 struct PointCut {
 	Point2i first;
 	Point2i second;
+
+	PointCut (){}
+
+	// initialize making a square area to cut
+	PointCut (Point2i point, int side_size){
+		first  = cv::Point( point.x - side_size , point.y - side_size );
+        second = cv::Point( point.x + side_size , point.y + side_size );
+	}
 };
 
 struct Command{

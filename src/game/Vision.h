@@ -4,56 +4,36 @@
 #include "../Header.h"
 #include "../utils/OpenCV.h"
 #include "../utils/Camera.h"
-#include "../utils/Timer.h"
 #include "../utils/Manipulation.h"
-
-#include <thread>
-#include <mutex>
-
 
 class Vision : public OpenCV {
 private:
 
 	Manipulation manipulation;
+	CameraConfiguration camera_config;	
 
 	const int number_robots = 3;
 
     vector<Hsv> colorsHSV;
 	vector<rodetas::Object> robotTeam;
-	
-	Position ball_position;
-	Position team_position;
-	Position opponent_position;
-
-	cv::Mat full_image_cut;
-
-	CameraConfiguration camera_config;	
-	cv::Mat opencv_image_BGR;
-
-	std::mutex mutex;
 
 	int angle_image;
-	int camera_number;
 	bool camera_on;
-	bool image_initialize;
-	bool camera_initialize;
-	Point goal;
 	PointCut point_cut;
+	cv::Mat opencv_image_BGR;
 
+	Position color_team_position;
+    Position color_ball_position;
+    Position color_opponent_position;
 
 public:
 	Vision();
 	void initialize();	
 	void computerVision();
-	void colorPositionPlayer(cv::Mat, Position);
 
-	void teamThread();
-	void opponentThread();
-	void ballThread();
-
-	vector<rodetas::Object>& getTeam();
-	vector<rodetas::Object> getOpponent();
-	rodetas::Object getBall();
+	void teamPosition(Position, cv::Mat);
+    void ballPosition(Position);
+    void opponentPosition(Position);
 
 	vector<rodetas::Object> getPositions();
 };
