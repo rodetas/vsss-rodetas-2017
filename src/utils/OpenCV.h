@@ -31,7 +31,8 @@ public:
 	void frameValidation(cv::Mat, PointCut);
 	cv::Mat frameInitialize(bool);
 
-	ContoursPosition position(cv::Mat, ContoursPosition, Hsv, int);
-	ContoursPosition binarizedColorPosition(cv::Mat, int n_contours);
+	Position position(cv::Mat, Hsv, int);
+	Position position(cv::Mat, Hsv, int, PointCut);
+	Position binarizedColorPosition(cv::Mat, int n_contours);
 };
 #endif
