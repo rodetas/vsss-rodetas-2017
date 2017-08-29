@@ -144,6 +144,10 @@ pair<vector<Hsv>, vector<Rgb>> Manipulation::loadCalibration(){
 
     input.close();
 
+    rodetas::imageSize = Point( abs(point_cut_field_2.x - point_cut_field_1.x), abs(point_cut_field_2.y - point_cut_field_1.y));
+    rodetas::goalSize = goal;
+    rodetas::goalArea = Point(rodetas::imageSize.x*0.2, rodetas::imageSize.y*0.6);
+
     return make_pair(colorsHSV, colorsRGB);
 }
 

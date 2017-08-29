@@ -9,25 +9,36 @@ StrategyBase::StrategyBase(){
 	data = Strategy::getInstance();
 }
 
-void StrategyBase::cornerStrategy(){
-	
-	/* movement along the corners */
-	if (robot.isBoard()){
-		
-		if (robot.distanceFrom(data->getBall()) < 55){		
+void StrategyBase::apply(Robot& robot){
+    Point target = defineTarget(robot);
+    robot.setTarget(target);
 
-			if (robot.y() > (rodetas::imageSize.y/2)){
+    Command movimentationCommand = movimentation.movePlayers(robot);
+    Command strategyCommand = strategy(robot, movimentationCommand);
+
+    robot.setCommand(strategyCommand);
+    cout << "NOVO PWM: " << robot.getCommand() << endl;
+} 
+
+ void StrategyBase::cornerStrategy(){
+	/*
+	// movement along the corners 
+	if (robot->isBoard()){
+		
+		if (robot->distanceFrom(data->getBall()) < 55){		
+
+			if (robot->y() > (rodetas::imageSize.y/2)){
 				movimentation.turnLeft(120, 120);	
 		    } else {
 				movimentation.turnRight(120, 120);
 			}
 		}
-	}	
+	}	*/
 }
 
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO
-Point StrategyBase::applyPotencialField(Point target, Point toRepulsion, Point toDestination){
-    
+Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const {
+    /*
     Point2i repulsion;
     Point2i factorRepulsion = Point2i(5000,20000);//{ 5000, 20000 };
 
@@ -44,13 +55,16 @@ Point StrategyBase::applyPotencialField(Point target, Point toRepulsion, Point t
     repulsion.x = (cos_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.x;
     repulsion.y = (sin_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.y;
 
-    robot.setTarget(Point(repulsion.x, repulsion.y));
+    return Point(repulsion.x, repulsion.y);
+    */
+} 
 
-    return robot.getTarget();
+void StrategyBase::setRobot(Robot& _robot){
+    robot = _robot;
 }
 
-void StrategyBase::setRobot(Robot _robot){
-    robot = _robot;
+Robot StrategyBase::getRobot(){
+    return robot;
 }
 
 int StrategyBase::getNumStrategies(){

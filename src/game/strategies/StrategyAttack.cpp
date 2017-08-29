@@ -4,20 +4,16 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 
 }
 
-void StrategyAttack::apply(){
-    movimentation.setRobot(robot); // seta na classe de movimentacao o robo atual
-    
-//	StrategyBase::updateCalculus(); // update calculus (sin, cos, angle)
-	robot.setTarget(defineTarget());
+Command StrategyAttack::strategy(const Robot& robot, Command command){
 
-	Command movement(movimentation.movePlayers(robot.getTarget()));
+	//	cornerStrategy();
 
-//	cornerStrategy();
+	return command;
 }
 
-Point StrategyAttack::defineTarget(){
+Point StrategyAttack::defineTarget(const Robot& robot){
     Point target;
-
+	
 /*	target.x = ballProjection.x;
 	target.y = ballProjection.y;
 */

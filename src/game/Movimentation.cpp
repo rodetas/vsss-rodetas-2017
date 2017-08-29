@@ -9,91 +9,71 @@ Movimentation::Movimentation(){
 /*
  * calculates the basic movimentation
  */
-Command Movimentation::movePlayers(Point destination){
+Command Movimentation::movePlayers(const Robot& robot){
+
+	Point destination = robot.getTarget();
+	Command command;
 
 	/* movement along the field */
-	if (cosAngle_robot_destination < -0.3) {
-		setPwm(destination, BACK_MOVE);
+	if (robot.cosFrom(destination) < -0.3) {
+		command = definePwm(robot, BACK_MOVE);
 	
-	} else if (cosAngle_robot_destination > 0.3){ 
-		setPwm(destination, FORWARD_MOVE);	
+	} else if (robot.cosFrom(destination) > 0.3){ 
+		command = definePwm(robot, FORWARD_MOVE);	
 
 	} else {
-		if (sinAngle_robot_destination > 0) {
-			turnRight(60, 60);
+		if (robot.sinFrom(destination) > 0) {
+			command = turnRight(60, 60);
 	    } else {
-			turnLeft(60, 60);
+			command = turnLeft(60, 60);
 	    }
 	}
 
-	return movements;
+	return command;
 }
 
-void Movimentation::setPwm(Point destination, char direction){
+Command Movimentation::checkPwm(const Command& pwm){
+	Command command(pwm);
 
-	Pwm pwms = PWMCorrection(destination);
-
-	int pwm1 = pwms.first;
-	int pwm2 = pwms.second;
-
-	if (pwm1 > 255) pwm1 = 255;
-	if (pwm2 > 255) pwm2 = 255;
+	if(pwm.pwm1 > 255) command.pwm1 = 255;
+	if(pwm.pwm2 > 255) command.pwm2 = 255;
 	
-	if(pwm1 < 0) pwm1 = 0;
-	if(pwm2 < 0) pwm2 = 0;
+	if(pwm.pwm1 < 0) command.pwm1 = 0;
+	if(pwm.pwm2 < 0) command.pwm2 = 0;
 
-	movements.direcao = direction;
-	movements.pwm1 = pwm1;
-	movements.pwm2 = pwm2;
+	return command;
 }
 
 /*
  * Correct robot pwm to follow the destination
  */
-Pwm Movimentation::PWMCorrection(Point destination){
+Command Movimentation::definePwm(const Robot& robot, char direction){
 
 	int standardPower = 160;
 
 	int basePower = standardPower * powerFactor;
-	int correctionPower = (standardPower/4) * sinAngle_robot_destination * curveFactor;
+	int correctionPower = (standardPower/4) * robot.sinFrom(robot.getTarget()) * curveFactor;
 	int pwmMotor1 = (basePower + correctionPower);
 	int pwmMotor2 = (basePower - correctionPower);
 
-	return make_pair(pwmMotor1, pwmMotor2);
+	Command verifiedPwm = checkPwm(Command(pwmMotor1, pwmMotor2, direction));
+
+	return verifiedPwm;
 }
 
-void Movimentation::turnLeft(int pwm1, int pwm2){
-	movements.direcao = LEFT_MOVE;
-	movements.pwm1 = pwm1;
-	movements.pwm2 = pwm2;
+Command Movimentation::turnLeft(int pwm1, int pwm2){
+	Command command(pwm1, pwm2, LEFT_MOVE);
+	return command;
 }
 
-void Movimentation::turnRight(int pwm1, int pwm2){
-	movements.direcao = RIGHT_MOVE;
-	movements.pwm1 = pwm1;
-	movements.pwm2 = pwm2;
+Command Movimentation::turnRight(int pwm1, int pwm2){
+	Command command(pwm1, pwm2, RIGHT_MOVE);
+	return command;
 }
 
-void Movimentation::stop(){
-	movements.direcao = STOPPED_MOVE;
-	movements.pwm1 = 0;
-	movements.pwm2 = 0;
-}
-
-void Movimentation::updateCalculus(rodetas::Object robot, rodetas::Object ball, Point destination){
-	distance_robot_destination = distance(robot, destination);
-    distance_ball_destination = distance(ball, destination);
-    distance_robot_ball = distance(robot, ball);
-
-	angle_robot_destination = calcAngle(destination, robot);
-    sinAngle_robot_destination = calcSen(destination, robot);
-    cosAngle_robot_destination = calcCos(destination, robot);
-
-	cos_robot_ball = calcCos(ball, robot);
-}
-
-void Movimentation::setRobot(Robot r){
-	robot = r;
+Command Movimentation::stop(){
+	Command command(0, 0, STOPPED_MOVE);
+	return command;
 }
 
 Command Movimentation::getMovement(){
