@@ -13,6 +13,10 @@ public:
 
     }
 
+    Ball(int x, int y){
+        position = Point(x,y);
+    }
+
     int x(){
         return position.x;
     }
@@ -47,6 +51,10 @@ public:
 
     Point getBallProjection(){
         return ballProjection;
+    }
+
+    float distanceFrom(){
+        
     }
 
 private:

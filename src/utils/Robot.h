@@ -12,18 +12,25 @@ public:
     Robot();
     Robot(int);
 
-    Robot& operator=(const Robot& other)
-    {
-        // check for self-assignment
-        if(&other == this)
-            return *this;
+    Robot(int _id, int _x, int _y);
 
+    Robot& operator=(const Robot& r) {
         
+        if (this != &r){
+            id = r.id;
+            position = r.position;
+            target = r.target;
+            velocity = r.velocity;
+            angle = r.angle;
+            command = r.command;
+            lastPositions = (r.lastPositions);
+        }
+
         return *this;
     }
 
-    int y();
-    int x();
+    int y() const;
+    int x() const;
 
     float calculateSpeed();
     void initialize();
@@ -37,33 +44,37 @@ public:
 
     float getVelocity();
 
-    void setId(int);
-    int getId();
+    void setRobotId(int);
+    int getRobotId();
 
     void setPosition(Point);
-    Point getPosition();
+    Point getPosition() const;
+
+    void setAngle(float);
+    float getAngle() const;
 
     void setCommand(Command);
     Command getCommand();
 
     void setTarget(Point);
-    Point getTarget();
+    Point getTarget() const;
 
     void setLastPositions(vector<Point>);
-    vector<Point> getLastPositions();
+    vector<Point>::iterator getLastPositionsBegin();
+    vector<Point>::iterator getLastPositionsEnd();
 
-    float getCosFrom(Robot);
-    float getCosFrom(Object);
-    float getCosFrom(Point);
+    float cosFrom(Robot) const;
+    float cosFrom(Object) const;
+    float cosFrom(Point) const;
 
-    float getSinFrom(Robot);
-    float getSinFrom(Object);
-    float getSinFrom(Point);
+    float sinFrom(Robot) const;
+    float sinFrom(Object) const;
+    float sinFrom(Point) const;
 
-    float distanceFrom(Robot);
-    float distanceFrom(Ball);
-    float distanceFrom(Object);
-    float distanceFrom(Point);
+    float distanceFrom(Robot) const;
+    float distanceFrom(Ball) const;
+    float distanceFrom(Object) const;
+    float distanceFrom(Point) const;
 
 private:
 

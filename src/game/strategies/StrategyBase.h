@@ -21,23 +21,22 @@ public:
      */
      StrategyBase();
 
-    /**
-     * Pure virtual function to apply the strategy
-     * \param the robot id
-     */
-    virtual void apply() = 0;
+     virtual void apply(Robot&);
+     
+     /**
+      * Pure virtual function to apply the strategy
+      */
+    virtual Command strategy(const Robot&, Command) = 0;
 
-      /**
+    /**
      * Pure virtual function to define where goes the robot
      */
-    virtual Point defineTarget() = 0;
+    virtual Point defineTarget(const Robot&) = 0;
 
     /**
      * Apply the robot strategy when it's on the corner
      */
     virtual void cornerStrategy();
-
-    void setRobot(Robot);
 
      /**
      * Apply the potencial field
@@ -47,7 +46,11 @@ public:
      * \return 
      */
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
-    virtual Point applyPotencialField(Point target, Point toRepulsion, Point toDestination);
+    virtual Point applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const;
+
+    void setRobot(Robot&);
+
+    Robot getRobot();
 
     static int getNumStrategies();
 
