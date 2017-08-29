@@ -69,6 +69,14 @@ bool GameModel::getConnectionStatus(){
     return transmission.getConnectionStatus();
 }
 
-vector<rodetas::Object> GameModel::getPositions(){
-    return vision.getPositions();
+vector<Robot> GameModel::getTeam(){
+    return vision.getTeam();
+}
+
+vector<Robot> GameModel::getOpponent(){
+    return vision.getOpponent();
+}
+
+Ball GameModel::getBall(){
+    return vision.getBall();
 }

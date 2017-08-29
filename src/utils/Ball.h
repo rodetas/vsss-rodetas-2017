@@ -25,6 +25,14 @@ public:
         return position.y;
     }
 
+    bool null(){
+        return position.x <= 0 && position.y <= 0;
+    }
+
+    void setPosition(Point _pos){
+        position = _pos;
+    }
+
     Point getPosition(){
         return position;
     }

@@ -65,7 +65,7 @@ int GameView::GUI() {
 
 void GameView::updateScreen(){
 
-	draw_robot.setPosition(game_model.getPositions());
+	draw_robot.setPosition(game_model.getTeam(), game_model.getOpponent(), game_model.getBall() );
 
 	if(game_model.getConnectionStatus() == false){
 		label_transmission->set_visible(true);

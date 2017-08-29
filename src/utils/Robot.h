@@ -41,6 +41,8 @@ public:
      * \return true if is near
      */
     bool isBoard();
+    
+    bool null();
 
     float getVelocity();
 
