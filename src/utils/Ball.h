@@ -21,6 +21,10 @@ public:
         return position.y;
     }
 
+    void setPosition(Point _pos){
+        position = _pos;
+    }
+
     Point getPosition(){
         return position;
     }

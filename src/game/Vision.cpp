@@ -4,7 +4,15 @@
  * Constructor of the class
  */
 Vision::Vision(){
-    robotTeam.resize(number_robots);
+    n_robots = 3;
+
+    robot_team.resize(n_robots);
+    robot_opponent.resize(n_robots);
+
+    for (int i = 0; i < n_robots; i++){
+        robot_team[i].setId(i);
+        robot_opponent[i].setId(i);
+    }
 }
 
 /*
@@ -39,9 +47,9 @@ void Vision::computerVision(){
     cv::Mat full_image_cut = rotateImage(opencv_image_BGR, angle_image);
             full_image_cut = cutImage(full_image_cut, point_cut);
     
-    color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
-    color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);
-    color_opponent_position = position(full_image_cut, colorsHSV[OPPONENT], 3);
+    Position color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
+    Position color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);
+    Position color_opponent_position = position(full_image_cut, colorsHSV[OPPONENT], 3);
 
     teamPosition(color_team_position, full_image_cut);
     ballPosition(color_ball_position);
@@ -55,15 +63,16 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
         PointCut cutPoint(team_position.center[i], team_position.radius[i]);
         float biggest_radius = 0;
 
-        for (int j = 0; j < number_robots; j++){
+        for (int j = 0; j < n_robots; j++){
             // search player's color on a cutpoint area           
             Position find_position = position(image, colorsHSV[j], 1, cutPoint);
 
             if (find_position.size() > 0 && find_position.radius[0] > biggest_radius){
-            //  CRIAR ROBOT PARA RETORNAR             
-                robotTeam[i].x = team_position.center[i].x;
-                robotTeam[i].y = team_position.center[i].y;
-                robotTeam[i].angle = atan2 ((find_position.center[0].y - team_position.center[i].y), (find_position.center[0].x - team_position.center[i].x)) * (180 / CV_PI) + 180 + 45;
+                       
+                robot_team[i].setPosition(team_position.center[i]);
+                //robot_team[i].setAngle( atan2 ( (find_position.center[0].y - team_position.center[i].y), 
+                //                                (find_position.center[0].x - team_position.center[i].x) ) 
+                //                                * (180 / CV_PI) + 180 + 45;
             
                 biggest_radius = find_position.radius[0];
             }
@@ -101,26 +110,17 @@ void Vision::opponentPosition(Position opponent_position){
 }
 
 void Vision::ballPosition(Position ball_position){
-    
+    ball.setPosition(ball_position.center[0]);
 }
 
-vector<rodetas::Object> Vision::getPositions(){
-    
-    vector<rodetas::Object> objects(7);
+vector<Robot> Vision::getTeam(){
+    return robot_team;
+}
 
-    for(int i = 0 ; i < robotTeam.size() ; i++){
-        objects[i] = robotTeam[i];
-    }
+vector<Robot> Vision::getOpponent(){
+    return robot_opponent;
+}
 
-    for (int i = number_robots; i < color_opponent_position.center.size() + number_robots; i++){
-        objects[i].x = color_opponent_position.center[i-number_robots].x;
-        objects[i].y = color_opponent_position.center[i-number_robots].y;
-    }
-    
-    if (color_ball_position.center.size() > 0){
-        objects[6].x = color_ball_position.center[0].x;
-        objects[6].y = color_ball_position.center[0].y;
-    }
-
-    return objects;
+Ball Vision::getBall(){
+    return ball;
 }

@@ -25,7 +25,10 @@ public:
     
     int getFps();
     bool getConnectionStatus();
-    vector<rodetas::Object> getPositions();
+    
+    Ball getBall();
+	vector<Robot> getTeam();
+	vector<Robot> getOpponent();
 
 private:
     GameView* caller;

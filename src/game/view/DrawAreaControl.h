@@ -2,6 +2,8 @@
 #define DRAW_AREA_CONTROL_H_
 
 #include "../../Header.h"
+#include "../../utils/Ball.h"
+#include "../../utils/Robot.h"
 #include "../../utils/Commons.h"
 #include "../../utils/Manipulation.h"
 
@@ -16,7 +18,10 @@ private:
 
     Manipulation manipulation;
 
-    vector<rodetas::Object> robot;
+    Ball ball;
+	vector<Robot> robot_team;
+    vector<Robot> robot_opponent;
+    
     vector<rodetas::Rgb> colors_rgb;
 
     Point field_size;
