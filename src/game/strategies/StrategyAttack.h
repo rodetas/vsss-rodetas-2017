@@ -11,7 +11,7 @@ public:
     StrategyAttack();
 
     virtual Command strategy(Robot, Command);
-    virtual Point defineTarget();
+    virtual Point defineTarget(Robot);
     
 };
 

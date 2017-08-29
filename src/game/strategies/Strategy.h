@@ -39,6 +39,8 @@ public:
 
     vector<Robot>& getOpponent();
 
+    Robot getRobot(string);
+
 private:
 
     Strategy(); ///< private constructor for singleton
@@ -55,10 +57,6 @@ private:
 
     float curve_factor;
     float potency_factor;
-
-    Point imageSize;
-    Point goalSize;
-    Point goalArea;
 };
 
 #endif

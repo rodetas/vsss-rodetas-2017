@@ -2,23 +2,12 @@
 
 Strategy* Strategy::instance = NULL;
 
-Strategy::Strategy(){
-    Manipulation manipulation;
-    manipulation.loadCalibration();  
-
-	imageSize = manipulation.getImageSize();
-	goalSize = manipulation.getGoal();
-	goalArea = Point(imageSize.x*0.2, imageSize.y*0.6);
-
-    /* team.resize(3);
-    opponent.resize(3); */
-}
+Strategy::Strategy(){}
 
 void Strategy::initializeStrategies(){
     strategies["attack"] = new StrategyAttack();
-     /*
     strategies["defense"] = new StrategyDefense();
-    strategies["goal"] = new StrategyGoal(); */
+    //strategies["goal"] = new StrategyGoal(); 
 }
 
 Strategy* Strategy::getInstance(){
@@ -35,8 +24,6 @@ void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
     team.swap(_team);
     opponent.swap(_opponent);
     ball = _ball;
-
-//    calculateBallProjection();
 
     // fazer if em relacao a quantidade do vetor team
    /*  if (distance(team[GRAPHICPLAYER1], ball) < distance(team[GRAPHICPLAYER0], ball)){
@@ -60,4 +47,8 @@ vector<Robot>& Strategy::getTeam(){
 
 vector<Robot>& Strategy::getOpponent(){
     return opponent;
+}
+
+Robot Strategy::getRobot(string func){
+    return strategies[func]->getRobot();
 }

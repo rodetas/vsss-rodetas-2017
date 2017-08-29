@@ -6,12 +6,13 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 
 Command StrategyAttack::strategy(Robot robot, Command command){
    
-	
 
-//	cornerStrategy();
+	//	cornerStrategy();
+	
+	return command;
 }
 
-Point StrategyAttack::defineTarget(){
+Point StrategyAttack::defineTarget(Robot robot){
     Point target;
 
 /*	target.x = ballProjection.x;

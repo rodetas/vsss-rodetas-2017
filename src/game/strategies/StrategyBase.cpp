@@ -10,9 +10,13 @@ StrategyBase::StrategyBase(){
 }
 
 void StrategyBase::apply(){
-    Point target = defineTarget();
-    robot.setCommand(movimentation.movePlayers(robot));
+    Point target = defineTarget(robot);
+    robot.setTarget(target);
     
+    Command movimentationCommand = movimentation.movePlayers(robot);
+    Command strategyCommand = strategy(robot, movimentationCommand);
+
+    robot.setCommand(strategyCommand);
 }
 
 void StrategyBase::cornerStrategy(){
@@ -50,13 +54,15 @@ Point StrategyBase::applyPotencialField(Point target, Point toRepulsion, Point t
     repulsion.x = (cos_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.x;
     repulsion.y = (sin_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.y;
 
-    robot.setTarget(Point(repulsion.x, repulsion.y));
-
-    return robot.getTarget();
+    return Point(repulsion.x, repulsion.y);
 }
 
 void StrategyBase::setRobot(Robot _robot){
     robot = _robot;
+}
+
+Robot StrategyBase::getRobot(){
+    return robot;
 }
 
 int StrategyBase::getNumStrategies(){

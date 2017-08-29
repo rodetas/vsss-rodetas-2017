@@ -26,19 +26,17 @@ public:
      /**
       * Pure virtual function to apply the strategy
       */
-    virtual void strategy() = 0;
+    virtual Command strategy(Robot, Command) = 0;
 
     /**
      * Pure virtual function to define where goes the robot
      */
-    virtual Point defineTarget() = 0;
+    virtual Point defineTarget(Robot) = 0;
 
     /**
      * Apply the robot strategy when it's on the corner
      */
     virtual void cornerStrategy();
-
-    void setRobot(Robot);
 
      /**
      * Apply the potencial field
@@ -49,6 +47,10 @@ public:
      */
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
     virtual Point applyPotencialField(Point target, Point toRepulsion, Point toDestination);
+
+    void setRobot(Robot);
+
+    Robot getRobot();
 
     static int getNumStrategies();
 
