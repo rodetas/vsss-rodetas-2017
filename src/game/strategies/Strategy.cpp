@@ -6,8 +6,8 @@ Strategy::Strategy(){}
 
 void Strategy::initializeStrategies(){
     strategies["attack"] = new StrategyAttack();
-//    strategies["defense"] = new StrategyDefense();
-//    strategies["goal"] = new StrategyGoal(); 
+    strategies["defense"] = new StrategyDefense();
+    strategies["goal"] = new StrategyGoal(); 
 }
 
 Strategy* Strategy::getInstance(){
@@ -37,7 +37,7 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
 //   strategies["goal"]->setRobot(team[2]);
 }
 
-void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
+void Strategy::apply(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){
     opponent.swap(_opponent);
     ball = _ball; 
 

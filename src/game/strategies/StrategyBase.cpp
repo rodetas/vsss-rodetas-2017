@@ -17,7 +17,6 @@ void StrategyBase::apply(Robot& robot){
     Command strategyCommand = strategy(robot, movimentationCommand);
 
     robot.setCommand(strategyCommand);
-    cout << "NOVO PWM: " << robot.getCommand() << endl;
 } 
 
  void StrategyBase::cornerStrategy(){

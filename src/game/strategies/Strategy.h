@@ -19,7 +19,7 @@ public:
 
     void initializeStrategies();
 
-    void apply(vector<Robot>& team, vector<Robot> opponent, Ball ball); // analisar a necessidade de retornar vector de command
+    void apply(vector<Robot> team, vector<Robot> opponent, Ball ball); // analisar a necessidade de retornar vector de command
 
      /**
      * Sets the potency factor value
