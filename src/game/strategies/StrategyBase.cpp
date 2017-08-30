@@ -10,34 +10,38 @@ StrategyBase::StrategyBase(){
 }
 
 void StrategyBase::apply(Robot& robot){
-    Point target = defineTarget(robot);
-    robot.setTarget(target);
+    if(!robot.isNull()){
 
-    Command movimentationCommand = movimentation.movePlayers(robot);
-    Command strategyCommand = strategy(robot, movimentationCommand);
+        Point target = defineTarget(robot);
+        robot.setTarget(target);
 
-    robot.setCommand(strategyCommand);
+        Command movimentationCommand = movimentation.movePlayers(robot);
+        Command strategyCommand = strategy(robot, movimentationCommand);
+
+        robot.setCommand(strategyCommand);
+        
+    }
 } 
 
  void StrategyBase::cornerStrategy(){
-	/*
+	
 	// movement along the corners 
-	if (robot->isBoard()){
+	if (robot.isBoard()){
 		
-		if (robot->distanceFrom(data->getBall()) < 55){		
+		if (robot.distanceFrom(data->getBall()) < 55){		
 
-			if (robot->y() > (rodetas::imageSize.y/2)){
+			if (robot.y() > (rodetas::imageSize.y/2)){
 				movimentation.turnLeft(120, 120);	
 		    } else {
 				movimentation.turnRight(120, 120);
 			}
 		}
-	}	*/
+	}
 }
 
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO
 Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const {
-    /*
+    
     Point2i repulsion;
     Point2i factorRepulsion = Point2i(5000,20000);//{ 5000, 20000 };
 
@@ -55,7 +59,6 @@ Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepu
     repulsion.y = (sin_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.y;
 
     return Point(repulsion.x, repulsion.y);
-    */
 } 
 
 void StrategyBase::setRobot(Robot& _robot){

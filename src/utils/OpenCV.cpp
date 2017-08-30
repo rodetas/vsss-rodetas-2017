@@ -29,6 +29,16 @@ cv::Mat OpenCV::changeColorSpace(cv::Mat image, int code){
  * Method that cut image
  */
 cv::Mat OpenCV::cutImage(cv::Mat image, PointCut point){
+/*
+    cout << "size " << image.cols << " " << image.rows << endl;
+    cout << "point " << point.first << " " << point.second << endl << endl;*/
+
+    if(point.second.y > image.rows) point.second.y = image.rows;
+    if(point.second.y < 0) point.second.y = 0;
+    if(point.second.x > image.cols) point.second.x = image.cols;
+    if(point.first.x < 0) point.first.x = 0;
+    if(point.first.y < 0) point.first.y = 0;
+
     return image( cv::Rect(point.first, point.second) );
 }
 
@@ -79,7 +89,7 @@ Position OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 1){
 Position OpenCV::position(cv::Mat image, Hsv color_hsv, int n_contours) {
     cv::Mat binary_image = changeColorSpace(image, cv::COLOR_BGR2HSV_FULL);
             binary_image = binarize(binary_image, color_hsv);
-
+    
     Position find_position = binarizedColorPosition(binary_image, n_contours);
     
     return find_position;

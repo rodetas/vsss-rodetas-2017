@@ -62,8 +62,9 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
         // set the cutpoint around the color team
         PointCut cutPoint(team_position.center[i], team_position.radius[i]);
         float biggest_radius = 0;
-
+        
         for (int j = 0; j < n_robots; j++){
+            robot_team[j].setPosition(Point(0,0));
             // search player's color on a cutpoint area           
             Position find_position = position(image, colorsHSV[j], 1, cutPoint);
 
@@ -81,7 +82,7 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
 }
 
 void Vision::opponentPosition(Position opponent_position){
-    for (int i = 0; i < robot_opponent.size(); i++){
+    for (int i = 0; i < robot_opponent.size() && i<opponent_position.size(); i++){
         robot_opponent[i].setPosition(opponent_position.center[i]);
     }
 /*  REFAZER ESTA PARTE COM A CLASSE ROBOT

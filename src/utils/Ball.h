@@ -25,7 +25,7 @@ public:
         return position.y;
     }
 
-    bool null(){
+    bool isNull(){
         return position.x <= 0 && position.y <= 0;
     }
 

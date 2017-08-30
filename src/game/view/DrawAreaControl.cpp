@@ -111,7 +111,7 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
     /*** TEAM ***/
         for (int i = 0; i < robot_team.size(); i++) {
             
-            if (!robot_team[i].null()) {
+            if (!robot_team[i].isNull()) {
 
                 Point r = { changeCoordinate(robot_team[i].getPosition()).x, changeCoordinate(robot_team[i].getPosition()).y };
                 // team colors rectangle        
@@ -142,7 +142,7 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
     /*** OPPONENT ***/
         for (int i = 0; i < robot_opponent.size(); i++) {
 
-            if (!robot_opponent[i].null()) {
+            if (!robot_opponent[i].isNull()) {
 
                 Point r = { changeCoordinate(robot_opponent[i].getPosition()).x, changeCoordinate(robot_opponent[i].getPosition()).y };
                     
@@ -157,7 +157,7 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
         }
 
     /*** BALL ***/
-        if (!ball.null()) {    
+        if (!ball.isNull()) {    
 
             Point r = { changeCoordinate(ball.getPosition()).x, changeCoordinate(ball.getPosition()).y };
 

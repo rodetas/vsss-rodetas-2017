@@ -44,7 +44,7 @@ struct Command{
 	int pwm2;
 
 	Command(){
-		direcao = 'P';
+		direcao = FORWARD_MOVE;
 		pwm1 = pwm2 = 0;
 	}
 
