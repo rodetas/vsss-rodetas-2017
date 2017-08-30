@@ -127,6 +127,7 @@ void GameView::onButtonPlay(){
 		button_play->set_label("Playing");
 	} else {
 		button_play->set_label("Paused");
+        game_model.manualRobotControl(STOPPED_MOVE, 0, 0);
 	}
 
     game_model.setPlay(button_play->get_active());

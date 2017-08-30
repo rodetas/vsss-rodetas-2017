@@ -27,6 +27,3 @@ run:
 .PHONY : clean 
 clean:
 	rm -rf $(EXEC_PROG) $(OBJECTS)
-
-clean-instance:
-	find files/instances/ ! -name 'fileCalibration.txt' -type f -exec rm -f {} +;

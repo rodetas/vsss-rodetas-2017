@@ -114,7 +114,10 @@ void Vision::opponentPosition(Position opponent_position){
 }
 
 void Vision::ballPosition(Position ball_position){
-    ball.setPosition(ball_position.center[0]);
+    if(ball_position.size() > 0)
+        ball.setPosition(ball_position.center[0]);
+    else
+        ball.setPosition(Point(0,0));
 }
 
 vector<Robot> Vision::getTeam(){

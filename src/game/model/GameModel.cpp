@@ -37,7 +37,7 @@ bool GameModel::control(){
 
 void GameModel::manualRobotControl(char direction, int pwm1, int pwm2){
     for(int i = 0 ; i < 3 ; i++) {
-        transmission.send(i, Command(direction, pwm1, pwm2));
+        transmission.send(i, Command(pwm1, pwm2, direction));
     }
 }
 
