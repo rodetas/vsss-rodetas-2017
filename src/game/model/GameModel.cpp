@@ -53,6 +53,14 @@ void GameModel::setCaller(GameView* c){
     caller = c;
 }
 
+void GameModel::setPotencyFactor(float potency){
+    strategy->setPotencyFactor(potency);
+}
+
+void GameModel::setCurveFactor(float curve){
+    strategy->setCurveFactor(curve);
+}
+
 int GameModel::getFps(){
     return fps;
 }

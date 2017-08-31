@@ -2,7 +2,10 @@
 
 Strategy* Strategy::instance = NULL;
 
-Strategy::Strategy(){}
+Strategy::Strategy(){
+    potency_factor = 1.2;
+    curve_factor = 1.1;
+}
 
 void Strategy::initializeStrategies(){
     strategies["attack"] = new StrategyAttack();
@@ -68,4 +71,20 @@ vector<Robot>::iterator Strategy::getRobotsBegin(){
 
 vector<Robot>::iterator Strategy::getRobotsEnd(){
     return robots.end();
+}
+
+void Strategy::setPotencyFactor(float pFactor){
+    potency_factor = pFactor;
+}
+     
+void Strategy::setCurveFactor(float cFactor){
+    curve_factor = cFactor;
+}
+
+float Strategy::getPotencyFactor(){
+    return potency_factor;
+}
+    
+float Strategy::getCurveFactor(){
+    return curve_factor;
 }

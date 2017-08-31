@@ -33,6 +33,9 @@ public:
     */
     void setCurveFactor(float);
 
+    float getPotencyFactor();
+    float getCurveFactor();
+
     Ball& getBall();
 
     Robot getRobot(string);

@@ -200,7 +200,7 @@
                         <property name="can_focus">True</property>
                         <property name="adjustment">Curve</property>
                         <property name="digits">1</property>
-                        <property name="value">1.1000000000000001</property>
+                        <property name="value">1.1</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>

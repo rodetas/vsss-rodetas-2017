@@ -2,8 +2,9 @@
 
 Movimentation::Movimentation(){
 	maxPwm = 0;
-	powerFactor = 1;
-	curveFactor = 1.2;
+	// inicializacoes estao no data
+//	powerFactor = 1.0f;
+//	curveFactor = 1.2f;
 }
 
 /*

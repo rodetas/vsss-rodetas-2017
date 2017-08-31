@@ -115,11 +115,11 @@ bool GameView::onKeyboard(GdkEventKey* event){
 
 
 void GameView::onPotencyChanged(){
-	//strategy->setPotencyFactor(spin_potency->get_value());
+	game_model.setPotencyFactor(spin_potency->get_value());
 }
 
 void GameView::onCurveChanged(){
-	//strategy->setCurveFactor(spin_curve->get_value());
+	game_model.setCurveFactor(spin_curve->get_value());
 }
 
 void GameView::onButtonPlay(){

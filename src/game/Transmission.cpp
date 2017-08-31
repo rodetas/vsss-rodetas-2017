@@ -69,7 +69,6 @@ bool Transmission::openConection(){
 
 void Transmission::send(int i, Command c){    
     string comand = "";
-    cout << c << endl;
     comand = generateMessage(i, c);
     serialTransmit(comand);
 }

@@ -14,7 +14,10 @@ void StrategyBase::apply(Robot& robot){
 
         Point target = defineTarget(robot);
         robot.setTarget(target);
-
+        
+        movimentation.setPotencyFactor(data->getPotencyFactor());
+        movimentation.setCurveFactor(data->getCurveFactor());
+        
         Command movimentationCommand = movimentation.movePlayers(robot);
         Command strategyCommand = strategy(robot, movimentationCommand);
 
@@ -25,7 +28,7 @@ void StrategyBase::apply(Robot& robot){
 
  void StrategyBase::cornerStrategy(){
 	
-	// movement along the corners 
+	// movement along the corners
 	if (robot.isBoard()){
 		
 		if (robot.distanceFrom(data->getBall()) < 55){		
