@@ -7,9 +7,6 @@
 int main(int argc, char *argv[]) {
 
 	int program_state = MENU;
-	
-	//GameView game;
-	//program_state = game.GUI();
 
 	 while(program_state != EXIT){
 
