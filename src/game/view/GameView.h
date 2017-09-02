@@ -10,7 +10,7 @@ class GameView {
 
 public:
     GameView();
-    ~GameView();
+    virtual ~GameView();
 
     int GUI();
     void updateScreen();

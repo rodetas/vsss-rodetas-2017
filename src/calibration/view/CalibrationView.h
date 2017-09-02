@@ -10,7 +10,7 @@ class CalibrationView {
 
 public:
 	CalibrationView();
-	~CalibrationView();
+	virtual ~CalibrationView();
     
     int GUI();
     void notify(string);

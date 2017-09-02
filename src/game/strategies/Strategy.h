@@ -43,6 +43,8 @@ public:
     vector<Robot>::iterator getRobotsBegin();
     vector<Robot>::iterator getRobotsEnd();
 
+    vector<Point>::iterator getTargets();
+
 private:
 
     Strategy(); ///< private constructor for singleton

@@ -26,7 +26,7 @@ private:
 
 public:
 	Menu();
-	~Menu();
+	virtual ~Menu();
 	int GUI();    
 };
 

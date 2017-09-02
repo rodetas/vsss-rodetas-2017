@@ -1,8 +1,10 @@
 #include "GameView.h"
 
 GameView::GameView(){
+    cout << "ENTROU VIEW" << endl;
     game_model.setCaller(this);
     program_state = MENU;
+    cout << "SAIU VIEW" << endl;
 }
 
 GameView::~GameView(){

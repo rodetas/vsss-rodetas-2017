@@ -35,9 +35,6 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
 
     team["goal"] = robots[2];
 
-//   strategies["attack"]->setRobot();
-//   strategies["defense"]->setRobot(team[1]);
-//   strategies["goal"]->setRobot(team[2]);
 }
 
 void Strategy::apply(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){
@@ -87,4 +84,14 @@ float Strategy::getPotencyFactor(){
     
 float Strategy::getCurveFactor(){
     return curve_factor;
+}
+
+vector<Point>::iterator Strategy::getTargets(){
+    vector<Point> targets;
+
+    for(auto it=team.begin() ; it!=team.end() ; it++){
+        targets.push_back((it)->second.getTarget());
+    }
+
+    return targets.begin();
 }

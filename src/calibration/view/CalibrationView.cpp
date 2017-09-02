@@ -133,7 +133,7 @@ int CalibrationView::GUI(){
         }
     /* ------------------------------------------ */
     
-	app->run(*window);
+    app->run(*window);
 
     return program_state;
 }
