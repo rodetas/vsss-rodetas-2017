@@ -155,7 +155,7 @@ void Transmission::serialTransmit(string comand){
 }
 
 void Transmission::stopAllRobots(int n){
-    for(int i=0 ; i<n ; i++) send(n, Command(STOPPED_MOVE,0,0));
+    for(int i=0 ; i<n ; i++) send(i, Command(0,0,STOPPED_MOVE));
 }
 
 bool Transmission::getConnectionStatus(){

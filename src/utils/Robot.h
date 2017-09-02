@@ -42,7 +42,7 @@ public:
      */
     bool isBoard();
     
-    bool null();
+    bool isNull();
 
     float getVelocity();
 

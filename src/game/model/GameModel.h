@@ -22,6 +22,9 @@ public:
     void setCaller(GameView*);
     void setPlay(bool);
     void setSide(bool);
+
+    void setPotencyFactor(float);
+    void setCurveFactor(float);
     
     int getFps();
     bool getConnectionStatus();

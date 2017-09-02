@@ -15,7 +15,6 @@ Robot::Robot(int _id, int _x, int _y){
     position = Point(_x, _y);
     angle = 30;
     velocity = 0;
-    command = Command(BACK_MOVE, 0, 0);
 }
 
 void Robot::initialize(){
@@ -24,18 +23,18 @@ void Robot::initialize(){
 
     position = Point(0,0);
     target = Point(0,0);
+    command = Command(0,0,STOPPED_MOVE);
 }
 
 // IMPLEMENTAR TESTE
 float Robot::calculateSpeed(){
-
     lastPositions.insert(lastPositions.begin(), position);
 
     if(lastPositions.size() >= velocityPrecision){
         lastPositions.pop_back();
     }
 
-	return distance(*(lastPositions.begin()), *(lastPositions.end()));
+	return distance((lastPositions.front()), (lastPositions.back()));
 }
 
 bool Robot::isBoard(){
@@ -52,7 +51,7 @@ int Robot::x() const{
     return position.x;
 }
 
-bool Robot::null(){
+bool Robot::isNull(){
     return (position.x <= 0 && position.y <= 0);
 }
 

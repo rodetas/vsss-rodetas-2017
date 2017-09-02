@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
 
 	int program_state = MENU;
 
-	while(program_state != EXIT){
-		
+	 while(program_state != EXIT){
+
 		switch(program_state){
 
 			case GAME:{
@@ -42,6 +42,6 @@ int main(int argc, char *argv[]) {
 			} break;
 		}
 	}
-
+ 
 	return 0;
 }

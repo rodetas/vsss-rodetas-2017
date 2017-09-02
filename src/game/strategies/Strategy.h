@@ -19,7 +19,7 @@ public:
 
     void initializeStrategies();
 
-    void apply(vector<Robot>& team, vector<Robot> opponent, Ball ball); // analisar a necessidade de retornar vector de command
+    void apply(vector<Robot> team, vector<Robot> opponent, Ball ball); // analisar a necessidade de retornar vector de command
 
      /**
      * Sets the potency factor value
@@ -33,12 +33,17 @@ public:
     */
     void setCurveFactor(float);
 
+    float getPotencyFactor();
+    float getCurveFactor();
+
     Ball& getBall();
 
     Robot getRobot(string);
 
-    map<string, Robot>::iterator getRobotsBegin();
-    map<string, Robot>::iterator getRobotsEnd();
+    vector<Robot>::iterator getRobotsBegin();
+    vector<Robot>::iterator getRobotsEnd();
+
+    vector<Point>::iterator getTargets();
 
 private:
 
@@ -52,6 +57,7 @@ private:
 
     Ball ball; ///< contain the ball coordinates
     map<string, Robot> team; ///< vector containing the team's positions
+    vector<Robot> robots;
     vector<Robot> opponent;
 
     float curve_factor;

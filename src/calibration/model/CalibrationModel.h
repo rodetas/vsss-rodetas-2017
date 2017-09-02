@@ -12,7 +12,7 @@ class CalibrationModel : public OpenCV {
 
 public:
 	CalibrationModel();
-	~CalibrationModel();
+	virtual ~CalibrationModel();
 	
 	void updateColorPixel(Point, Point);
 	bool updateFrame();

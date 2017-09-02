@@ -25,12 +25,13 @@ public:
         return position.y;
     }
 
-    bool null(){
+    bool isNull(){
         return position.x <= 0 && position.y <= 0;
     }
 
     void setPosition(Point _pos){
         position = _pos;
+        calculateBallProjection();
     }
 
     Point getPosition(){
@@ -47,9 +48,9 @@ public:
             ballProjection.x = position.x + (lastBallPositions[0].x - lastBallPositions[8].x);
             ballProjection.y = position.y + (lastBallPositions[0].y - lastBallPositions[8].y);
     
-           /*  if(ballProjection.x > imageSize.x || ballProjection.x < 0 || ballProjection.y > imageSize.y || ballProjection.y < 0){
+            if(ballProjection.x > imageSize.x || ballProjection.x < 0 || ballProjection.y > imageSize.y || ballProjection.y < 0){
                 ballProjection = lastBallProjection;
-            }*/
+            }
                 
             lastBallProjection = ballProjection;
         }

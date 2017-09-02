@@ -29,6 +29,16 @@ cv::Mat OpenCV::changeColorSpace(cv::Mat image, int code){
  * Method that cut image
  */
 cv::Mat OpenCV::cutImage(cv::Mat image, PointCut point){
+
+    /*cout << "size " << image.cols << " " << image.rows << endl;
+    cout << "point " << point.first << " " << point.second << endl << endl;*/
+
+    if(point.second.y > image.rows) point.second.y = image.rows;
+    if(point.second.y < 0) point.second.y = 0;
+    if(point.second.x > image.cols) point.second.x = image.cols;
+    if(point.first.x < 0) point.first.x = 0;
+    if(point.first.y < 0) point.first.y = 0;
+
     return image( cv::Rect(point.first, point.second) );
 }
 
@@ -79,7 +89,7 @@ Position OpenCV::binarizedColorPosition(cv::Mat image, int n_contours = 1){
 Position OpenCV::position(cv::Mat image, Hsv color_hsv, int n_contours) {
     cv::Mat binary_image = changeColorSpace(image, cv::COLOR_BGR2HSV_FULL);
             binary_image = binarize(binary_image, color_hsv);
-
+    
     Position find_position = binarizedColorPosition(binary_image, n_contours);
     
     return find_position;
@@ -89,13 +99,13 @@ Position OpenCV::position(cv::Mat image, Hsv color_hsv, int n_contours, PointCut
     cv::Mat image_cut = cutImage(image, point);
             image_cut = changeColorSpace(image_cut, cv::COLOR_BGR2HSV_FULL);
             image_cut = binarize(image_cut, color_hsv);
-
+    
     Position find_position = binarizedColorPosition(image_cut, n_contours);
 
     for(int i = 0; i < find_position.size(); i++){
         find_position.changeCoordinateToGlobal(i, point);
     }
-
+    
     return find_position;
 }
 
@@ -148,8 +158,8 @@ cv::Mat OpenCV::cameraInitialize(){
         timer.wait(500000); //time to camera answer
 
         if(cam.isOpened()){
-            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+            cam.set(CV_CAP_PROP_FRAME_WIDTH, 1920);
+            cam.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
             cam >> image;
         } else {
             cout << "CONECTION WITH CAMERA FAILED" << endl;
