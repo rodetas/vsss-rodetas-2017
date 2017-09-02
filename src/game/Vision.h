@@ -36,7 +36,7 @@ public:
 	void computerVision();
 
 	Ball getBall();
-	vector<Robot> getTeam();
+	vector<Robot>& getTeam();
 	vector<Robot> getOpponent();
 	
 };

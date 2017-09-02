@@ -10,7 +10,7 @@ public:
 
     StrategyAttack();
 
-    virtual Command strategy(const Robot&, Command);
+    virtual Command strategy(Robot&, Command);
     virtual Point defineTarget(const Robot&);
     
 };

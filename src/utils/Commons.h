@@ -61,7 +61,6 @@ struct Command{
 	}
 
 	Command& operator=(const Command& c) {
-        
         if (this != &c){
 			direcao = c.direcao;
 			pwm1 = c.pwm1;

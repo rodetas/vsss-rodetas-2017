@@ -163,6 +163,7 @@
                         <property name="can_focus">True</property>
                         <property name="adjustment">Potency</property>
                         <property name="digits">1</property>
+                        <property name="value">0.6</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>

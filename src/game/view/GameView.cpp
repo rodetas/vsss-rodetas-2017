@@ -66,6 +66,7 @@ int GameView::GUI() {
 void GameView::updateScreen(){
 
 	draw_robot.setPosition(game_model.getTeam(), game_model.getOpponent(), game_model.getBall() );
+    draw_robot.setTargets(game_model.getTargets());
 
 	if(game_model.getConnectionStatus() == false){
 		label_transmission->set_visible(true);
@@ -109,6 +110,8 @@ bool GameView::onKeyboard(GdkEventKey* event){
     } else {
         game_model.manualRobotControl(STOPPED_MOVE, 0, 0);
     }
+
+    usleep(33000);
 
     return true;
 }

@@ -21,12 +21,12 @@ public:
      */
      StrategyBase();
 
-     virtual void apply(Robot&);
+     virtual void apply(Robot*);
      
      /**
       * Pure virtual function to apply the strategy
       */
-    virtual Command strategy(const Robot&, Command) = 0;
+    virtual Command strategy(Robot&, Command) = 0;
 
     /**
      * Pure virtual function to define where goes the robot
