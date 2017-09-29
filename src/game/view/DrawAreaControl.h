@@ -21,6 +21,7 @@ private:
     Ball ball;
 	vector<Robot> robot_team;
     vector<Robot> robot_opponent;
+    vector<Point> targets;
     
     vector<rodetas::Rgb> colors_rgb;
 
@@ -44,6 +45,7 @@ public:
 
 	DrawAreaControl();
     void setPosition(vector<Robot>, vector<Robot>, Ball);
+    void setTargets(vector<Point>);
 };
 
 #endif

@@ -18,11 +18,13 @@ public:
         
         if (this != &r){
             id = r.id;
+            radius = r.radius;
             position = r.position;
             target = r.target;
             velocity = r.velocity;
             angle = r.angle;
             command = r.command;
+            lastCommand = r.lastCommand;
             lastPositions = (r.lastPositions);
         }
 
@@ -55,8 +57,13 @@ public:
     void setAngle(float);
     float getAngle() const;
 
+    void setRadius(float);
+    float getRadius();
+
     void setCommand(Command);
     Command getCommand();
+
+    Command getLastCommand();
 
     void setTarget(Point);
     Point getTarget() const;
@@ -80,17 +87,19 @@ public:
 
 private:
 
-    const int velocityPrecision = 60;
+    const int velocityPrecision = 10;
 
     int id;
 
     float velocity;
     float angle;
+    float radius;
 
     Point position;
     Point target;
 
     Command command;
+    Command lastCommand;
 
     vector<Point> lastPositions;
 

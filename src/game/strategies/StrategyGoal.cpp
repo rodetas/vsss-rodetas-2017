@@ -4,7 +4,7 @@ StrategyGoal::StrategyGoal() : StrategyBase() {
 
 }
 
-Command StrategyGoal::strategy(const Robot& robot, Command command){
+Command StrategyGoal::strategy(Robot& robot, Command command){
 
 	return command;
 }

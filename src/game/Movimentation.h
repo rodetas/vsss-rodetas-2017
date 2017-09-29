@@ -35,6 +35,8 @@ public:
 	 */
 	Command definePwm(const Robot&, char);
 
+	Command progressiveAcell(Robot&, Command);
+
 	Command stop();
 	Command turnLeft(int, int);
 	Command turnRight(int, int);

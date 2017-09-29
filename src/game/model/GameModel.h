@@ -25,9 +25,11 @@ public:
 
     void setPotencyFactor(float);
     void setCurveFactor(float);
-    
+
     int getFps();
     bool getConnectionStatus();
+
+    vector<Point> getTargets();
     
     Ball getBall();
 	vector<Robot> getTeam();

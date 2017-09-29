@@ -61,6 +61,10 @@ void GameModel::setCurveFactor(float curve){
     strategy->setCurveFactor(curve);
 }
 
+vector<Point> GameModel::getTargets(){
+    return strategy->getTargets();
+}
+
 int GameModel::getFps(){
     return fps;
 }

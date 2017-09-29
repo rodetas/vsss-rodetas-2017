@@ -14,6 +14,11 @@ void DrawAreaControl::setPosition(vector<Robot> _team, vector<Robot> _opponent, 
     queue_draw();
 }
 
+void DrawAreaControl::setTargets(vector<Point> _targets){
+    targets = _targets;
+    queue_draw();
+}
+
 bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
         Gtk::Allocation allocation = get_allocation();
@@ -169,6 +174,20 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             c->restore();
             c->stroke ();
         }
-    
+
+        for(int i=0 ; i<targets.size() ; i++){
+            Point r = { changeCoordinate(targets[i]).x, changeCoordinate(targets[i]).y };
+            
+            //if(r.x != 0 && r.y != 0){
+                // targets
+                c->save();
+                    c->arc(r.x, r.y, ball_size/3, 0, 2*CV_PI);
+                    c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
+                    c->fill_preserve();
+                c->restore();
+                c->stroke ();
+           // }
+        }
+        
         return true;
     }
