@@ -9,17 +9,16 @@ CalibrationView::CalibrationView(){
 CalibrationView::~CalibrationView(){
     calibration_model.saveParameters();
     calibration_model.cameraRelease();
-    update_image_connection.disconnect();   
 }
 
 int CalibrationView::GUI(){
 			
-    app = Gtk::Application::create();
-
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("calibration/view/Calibration.glade");
+    auto app = Gtk::Application::create();
+	auto builder = Gtk::Builder::create_from_file("calibration/view/Calibration.glade");
 	
 	builder->get_widget("Window Calibration", window);
     window->signal_key_press_event().connect(sigc::mem_fun(this, &CalibrationView::onKeyboard));
+    window->signal_delete_event().connect(sigc::mem_fun(this, &CalibrationView::deleteConnection), false);
 	window->maximize();
     
     builder->get_widget("Menu Play", menu_play);
@@ -115,13 +114,21 @@ int CalibrationView::GUI(){
     
     builder->get_widget("Label Fps", label_fps);
 
+    CalibrationDraw draw_area;
+    draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &CalibrationView::onMouseClick) );
+    signal_draw_set_image.connect(sigc::mem_fun(draw_area, &CalibrationDraw::setImage));
+    signal_draw_set_cut_mode.connect(sigc::mem_fun(draw_area, &CalibrationDraw::setCutMode));
+    signal_draw_get_cut_point.connect(sigc::mem_fun(draw_area, &CalibrationDraw::getCutPoint));
+    signal_draw_get_cairo_image_size.connect(sigc::mem_fun(draw_area, &CalibrationDraw::getCairoImageSize));
+    signal_draw_set_rectangle_invisible.connect(sigc::mem_fun(draw_area, &CalibrationDraw::setRectangleInvisible));
+    
     builder->get_widget("Box Global", box_global);
-    box_global->pack_start(draw_area);
+    box_global->pack_start(draw_area); 
 
     window->show_all();
     
-    draw_area.signal_button_press_event().connect( sigc::mem_fun(this, &CalibrationView::onMouseClick) );
-    update_image_connection = Glib::signal_timeout().connect(sigc::mem_fun(calibration_model, &CalibrationModel::updateFrame), 33, Glib::PRIORITY_DEFAULT_IDLE); 
+    sigc::slot<bool> calibration_slot = sigc::mem_fun(calibration_model, &CalibrationModel::updateFrame);
+    update_image_connection = Glib::signal_timeout().connect(calibration_slot, 33, Glib::PRIORITY_DEFAULT_IDLE);     
 
     /* Interface Initialize - Sliders and Buttons */
         updateMenuDevice();
@@ -140,9 +147,9 @@ int CalibrationView::GUI(){
 
 void CalibrationView::updateScreen(){
     if (cairo_binary_image){
-        draw_area.setImage(calibration_model.getScreenBinaryImage());
+        signal_draw_set_image.emit(calibration_model.getScreenBinaryImage());
     } else {
-        draw_area.setImage(calibration_model.getScreenImage());
+        signal_draw_set_image.emit(calibration_model.getScreenImage());
     }
     
     string s = "Fps: " + to_string(calibration_model.getFps());
@@ -183,8 +190,8 @@ bool CalibrationView::onKeyboard(GdkEventKey* event){
     if (event->keyval == GDK_KEY_X || event->keyval == GDK_KEY_x) {
         PointCut cut;
             cut.first = {0,0};
-            cut.second = draw_area.getCairoImageSize();
-        calibration_model.setCutPoint(cut, draw_area.getCairoImageSize());
+            cut.second = signal_draw_get_cairo_image_size.emit();
+        calibration_model.setCutPoint(cut, signal_draw_get_cairo_image_size.emit());
     }
     if(event->keyval == GDK_KEY_Escape){
         onMenuQuit();
@@ -195,23 +202,23 @@ bool CalibrationView::onKeyboard(GdkEventKey* event){
 
 bool CalibrationView::onMouseClick(GdkEventButton* event){
     if(event->button == GDK_BUTTON_PRIMARY) {
-        calibration_model.updateColorPixel({event->x, event->y}, draw_area.getCairoImageSize());
+        calibration_model.updateColorPixel({event->x, event->y}, signal_draw_get_cairo_image_size.emit());
     }
     return true;
 }
 
 void CalibrationView::onButtonCutMode(){
-    draw_area.setCutMode(button_cut_mode->get_active());
+    signal_draw_set_cut_mode.emit(button_cut_mode->get_active());
 }
 
 void CalibrationView::onCutImage(){
-    calibration_model.setCutPoint(draw_area.getCutPoint(), draw_area.getCairoImageSize());
-    draw_area.setRectangleInvisible();
+    calibration_model.setCutPoint(signal_draw_get_cut_point.emit(), signal_draw_get_cairo_image_size.emit());
+    signal_draw_set_rectangle_invisible.emit();
 }
 
 void CalibrationView::onCutGoal(){
-    calibration_model.setCutGoal(draw_area.getCutPoint(), draw_area.getCairoImageSize());
-    draw_area.setRectangleInvisible();
+    calibration_model.setCutGoal(signal_draw_get_cut_point.emit(), signal_draw_get_cairo_image_size.emit());
+    signal_draw_set_rectangle_invisible.emit();
 }
 
 void CalibrationView::onScaleHMax(){
@@ -315,6 +322,11 @@ void CalibrationView::setScaleValueHSV(Hsv c){
     scale_smin->set_value(c.variationS_MIN);
     scale_vmax->set_value(c.variationV_MAX);
     scale_vmin->set_value(c.variationV_MIN);
+}
+
+bool CalibrationView::deleteConnection(GdkEventAny* event){
+    update_image_connection.disconnect();
+    return false;
 }
 
 void CalibrationView::onMenuGame(){
