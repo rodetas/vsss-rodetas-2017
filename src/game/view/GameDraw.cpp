@@ -1,12 +1,15 @@
-#include "DrawAreaControl.h"
+#include "GameDraw.h"
 
-DrawAreaControl::DrawAreaControl(){
+GameDraw::GameDraw(){
     colors_rgb = manipulation.getColorsRgbCairo();
     image_size = manipulation.getImageSize();
     goal_size  = manipulation.getGoal();
 }
 
-void DrawAreaControl::setPosition(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){
+GameDraw::~GameDraw(){
+}
+
+void GameDraw::setPosition(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){    
     robot_team = _team;
     robot_opponent = _opponent;
     ball = _ball;
@@ -14,8 +17,9 @@ void DrawAreaControl::setPosition(vector<Robot> _team, vector<Robot> _opponent, 
     queue_draw();
 }
 
-bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
+bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
+    try{
         Gtk::Allocation allocation = get_allocation();
             field_size.x = allocation.get_width();
             field_size.y = allocation.get_height();
@@ -169,6 +173,10 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             c->restore();
             c->stroke ();
         }
-    
-        return true;
+
+    } catch(const std::exception& ex) {
+        cout << "EXCEPTION: " << ex.what() << "in GameDraw:on_draw " << endl;
     }
+
+    return true;
+}

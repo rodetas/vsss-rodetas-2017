@@ -8,7 +8,7 @@
 
 using namespace rodetas;
 
-class DrawAreaCalibration : public Gtk::DrawingArea {
+class CalibrationDraw : public Gtk::DrawingArea {
 
 private:
     cv::Mat opencv_image;
@@ -31,7 +31,7 @@ protected:
 
 
 public:
-	DrawAreaCalibration();
+	CalibrationDraw();
     void setCutMode(bool);
     void setImage(cv::Mat);
     void setRectangleInvisible();

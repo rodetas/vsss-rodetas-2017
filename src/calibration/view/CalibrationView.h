@@ -3,7 +3,7 @@
 
 #include "../../Header.h"
 #include "../model/CalibrationModel.h"
-#include "DrawAreaCalibration.h"
+#include "CalibrationDraw.h"
 #include <gtkmm.h>
 
 class CalibrationView {
@@ -17,12 +17,18 @@ public:
 
 private:
 	sigc::connection update_image_connection;
+	
+	// criando sinal com parâmetros
+	sigc::signal <void, cv::Mat> signal_draw_set_image;
+	sigc::signal <void, bool> signal_draw_set_cut_mode;
+	sigc::signal <void> signal_draw_set_rectangle_invisible;
+	sigc::signal <Point> signal_draw_get_cairo_image_size;
+	sigc::signal <PointCut> signal_draw_get_cut_point;
 
     CalibrationModel calibration_model;
     int program_state;
 	bool cairo_binary_image;
 
-    Glib::RefPtr<Gtk::Application> 	app;
 	Gtk::Window* window = nullptr;
 	Gtk::MenuItem* menu_play = nullptr;
 	Gtk::MenuItem* menu_simulator = nullptr;
@@ -58,7 +64,6 @@ private:
     Gtk::Scale*	scale_rotate = nullptr;
 	Gtk::Label* label_fps = nullptr;
 	Gtk::Box* box_global = nullptr;
-	DrawAreaCalibration draw_area;
 
     void updateScreen();
 	void updateMenuDevice();
@@ -93,7 +98,9 @@ private:
 	void onButtonCutMode();
 	void onScaleRotate(); 
 	bool onKeyboard(GdkEventKey*);
-    bool onMouseClick(GdkEventButton*);
+	bool onMouseClick(GdkEventButton*);
+	bool deleteConnection(GdkEventAny*);
+	
 };
 
 #endif

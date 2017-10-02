@@ -9,7 +9,7 @@
 
 #include <gtkmm.h>
 
-class DrawAreaControl : public Gtk::DrawingArea {
+class GameDraw : public Gtk::DrawingArea {
 
 private:
     int color_team_size;
@@ -38,11 +38,12 @@ private:
 
 protected:
 
-    virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c);
+    bool on_draw (const Cairo::RefPtr<Cairo::Context> &c) override;
 
 public:
 
-	DrawAreaControl();
+    GameDraw();
+    virtual ~GameDraw();
     void setPosition(vector<Robot>, vector<Robot>, Ball);
 };
 

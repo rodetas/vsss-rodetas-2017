@@ -15,10 +15,11 @@ public:
 
 	int GUI();
 	void notify();
-
+	
 private:
+	ArduinoModel arduino_model;
 	Glib::Dispatcher m_dispatcher;
-	Glib::RefPtr<Gtk::Application> app;
+	
 	Gtk::Window* window = nullptr;
 	Gtk::Button* buttonUpload = nullptr;
 	Gtk::Button* buttonUpdate = nullptr;
@@ -26,16 +27,12 @@ private:
 	Gtk::ComboBoxText* comboFile = nullptr;
 	Gtk::ComboBoxText* comboPort = nullptr;
 	Gtk::ComboBoxText* comboBaudRate = nullptr;
-
-	std::thread m_thread;
-	ArduinoModel arduino_model;
-
-	void onNotify();
+	
 	void updateWidgets();
 	void onButtonUpload();
 	void onButtonUpdate();
 	//void onButtonMonitor();
-
+	
 	bool onKeyboard(GdkEventKey*);
 };
 

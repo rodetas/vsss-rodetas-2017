@@ -4,7 +4,6 @@
 #include "../../Header.h"
 #include "../../utils/Commons.h"
 #include <gtkmm.h>
-#include <mutex>
 
 class ArduinoView;
 class ArduinoModel {
@@ -13,16 +12,16 @@ public:
 	ArduinoModel();
 	~ArduinoModel();
 	
-	void init(ArduinoView*);
+	void init();
 	void upload(int, int, int);
-	void getFiles(ArduinoView*);
-	void getPorts(ArduinoView*);
-	void getBaudRates(ArduinoView*);
+	void getFiles();
+	void getPorts();
+	void getBaudRates();
 	void getData(vector<string>*, vector<string>*, vector<string>*) const;	
-	//void deleteCompiled();
+	void setCaller(ArduinoView* c);
 
 private:
-	mutable std::mutex mutex;
+	ArduinoView* caller;
 
 	vector<string> file_names;
 	vector<string> port_names;
