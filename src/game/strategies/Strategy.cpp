@@ -3,7 +3,7 @@
 Strategy* Strategy::instance = NULL;
 
 Strategy::Strategy(){
-    potency_factor = 1.2;
+    potency_factor = 0.6;
     curve_factor = 1.1;
 }
 
@@ -25,19 +25,20 @@ Strategy* Strategy::getInstance(){
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
      // fazer if em relacao a quantidade do vetor team
-    if(robots[1].distanceFrom(ball) < robots[0].distanceFrom(ball)){
+    /* if(robots[1].distanceFrom(ball) < robots[0].distanceFrom(ball)){
         team["attack"] = (robots[1]);
         team["defense"] = (robots[0]);
     } else {
         team["attack"] = (robots[0]);
         team["defense"] = (robots[1]);
-    }  
+    }   */
 
-    team["goal"] = robots[2];
-
+    team["attack"] = &robots[0];
+    team["defense"] = &robots[1];
+    team["goal"] = &robots[2];
 }
 
-void Strategy::apply(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){
+void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
     opponent.swap(_opponent);
     ball = _ball; 
 
@@ -50,7 +51,7 @@ void Strategy::apply(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){
 
     robots.clear();
     for(auto it=team.begin() ; it!=team.end() ; it++){
-        robots.push_back(it->second);
+        robots.push_back(*(it->second));
     }
 }
 
@@ -59,7 +60,7 @@ Ball& Strategy::getBall(){
 }
 
 Robot Strategy::getRobot(string func){
-    return team[func];
+    return *(team[func]);
 }
 
 vector<Robot>::iterator Strategy::getRobotsBegin(){
@@ -86,12 +87,12 @@ float Strategy::getCurveFactor(){
     return curve_factor;
 }
 
-vector<Point>::iterator Strategy::getTargets(){
+vector<Point> Strategy::getTargets(){
     vector<Point> targets;
 
     for(auto it=team.begin() ; it!=team.end() ; it++){
-        targets.push_back((it)->second.getTarget());
+        targets.push_back((it)->second->getTarget());
     }
 
-    return targets.begin();
+    return targets;
 }

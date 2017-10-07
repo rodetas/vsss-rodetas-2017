@@ -4,11 +4,28 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 
 }
 
-Command StrategyAttack::strategy(const Robot& robot, Command command){
+Command StrategyAttack::strategy(Robot& robot, Command command){
 
 	//	cornerStrategy();
+	Command c = command;
+	float maxDistance = robot.getRadius()*3;
+	float distanceTarget = robot.distanceFrom(robot.getTarget());
+	
+	/* // trocar pra imagesize
+	if(robot.getVelocity() > 1300*0.05){
+		maxDistance = robot.getRadius()*6;
+	}
 
-	return command;
+	if(distanceTarget < maxDistance){
+		c.pwm1 = command.pwm1*(distanceTarget/maxDistance);
+		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
+	}
+
+	if(distanceTarget < robot.getRadius()){
+		c = movimentation.stop();
+	} */
+
+	return c;
 }
 
 Point StrategyAttack::defineTarget(const Robot& robot){
@@ -17,9 +34,13 @@ Point StrategyAttack::defineTarget(const Robot& robot){
 /*	target.x = ballProjection.x;
 	target.y = ballProjection.y;
 */
-	target.x = data->getBall().x();
+ 	target.x = data->getBall().x();
 	target.y = data->getBall().y();
-/*
+
+	// 1130, 862
+/* 	target.x = 1130/2;
+	target.y = 862/2;
+ *//*
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
 		target.y = ball.y;

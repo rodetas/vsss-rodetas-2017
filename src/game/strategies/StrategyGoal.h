@@ -8,7 +8,7 @@ class StrategyGoal : public StrategyBase {
 public:
     StrategyGoal();
 
-    virtual Command strategy(const Robot&, Command);
+    virtual Command strategy(Robot&, Command);
     virtual Point defineTarget(const Robot&);
 
 };

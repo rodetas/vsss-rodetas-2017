@@ -4,7 +4,7 @@ StrategyDefense::StrategyDefense() : StrategyBase()	{
 
 }
 
-Command StrategyDefense::strategy(const Robot& robot, Command command){
+Command StrategyDefense::strategy(Robot& robot, Command command){
 
 	return command;
 }

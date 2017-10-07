@@ -24,6 +24,7 @@ void Robot::initialize(){
     position = Point(0,0);
     target = Point(0,0);
     command = Command(0,0,STOPPED_MOVE);
+    lastCommand = Command(2,2,STOPPED_MOVE);
 }
 
 // IMPLEMENTAR TESTE
@@ -69,7 +70,7 @@ int Robot::getRobotId(){
 
 void Robot::setPosition(Point _pos){
     position = _pos;
-    calculateSpeed();
+    velocity = calculateSpeed();
 }
 
 Point Robot::getPosition() const {
@@ -85,11 +86,16 @@ float Robot::getAngle() const{
 }
 
 void Robot::setCommand(Command _command){
+    lastCommand = command;
     command = _command;
 }
 
 Command Robot::getCommand(){
     return command;
+}
+
+Command Robot::getLastCommand(){
+    return lastCommand;
 }
 
 void Robot::setTarget(Point _target){
@@ -98,6 +104,14 @@ void Robot::setTarget(Point _target){
 
 Point Robot::getTarget() const {
     return target;
+}
+
+void Robot::setRadius(float r){
+    radius = r;
+}
+
+float Robot::getRadius(){
+    return radius;
 }
 
 void Robot::setLastPositions(vector<Point> _vec){
