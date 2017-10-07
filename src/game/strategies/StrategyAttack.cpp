@@ -21,6 +21,8 @@ Point StrategyAttack::defineTarget(const Robot& robot){
  	target.x = data->getBall().x();
 	target.y = data->getBall().y();
 
+	target = data->getBall().getBallProjection();
+
 	// 1130, 862
 /* 	target.x = 1130/2;
 	target.y = 862/2;

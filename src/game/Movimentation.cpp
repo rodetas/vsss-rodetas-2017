@@ -71,7 +71,7 @@ Command Movimentation::definePwm(const Robot& robot, char direction){
 	int standardPower = 160;
 
 	int basePower = standardPower * powerFactor;
-	int correctionPower = (standardPower/4) * robot.sinFrom(robot.getTarget()) * curveFactor;
+	int correctionPower = (standardPower/3) * robot.sinFrom(robot.getTarget()) * curveFactor;
 	int pwmMotor1 = (basePower - correctionPower);
 	int pwmMotor2 = (basePower + correctionPower);
 
