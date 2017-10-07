@@ -38,6 +38,7 @@ public:
      */
     virtual void cornerStrategy();
 
+    virtual Command stopStrategy(Command);
      /**
      * Apply the potencial field
      * \param target: 
@@ -46,9 +47,10 @@ public:
      * \return 
      */
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
+
     virtual Point applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const;
 
-    void setRobot(Robot&);
+    void setRobot(Robot);
 
     Robot getRobot();
 

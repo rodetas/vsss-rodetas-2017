@@ -29,32 +29,26 @@ Command Movimentation::movePlayers(const Robot& robot){
 			command = turnLeft(60, 60);
 	    }
 	}
-
+	
 	return command;
 }
 
 Command Movimentation::progressiveAcell(Robot& robot, Command atual){
-	
-	Command c;
+
+	Command c = atual;
 	Command last = robot.getLastCommand();
 
-	if(atual.pwm1 < last.pwm1 || atual.pwm2 < last.pwm2){
-		return atual;
-	}
-
-	if(robot.getVelocity() < 20){
+	if(robot.getVelocity() < 15){
 		last.pwm1 = last.pwm2 = 0;
 	}
 
 	c.direcao = atual.direcao;
-	c.pwm1 = (abs(atual.pwm1-last.pwm1)/255.0f)*atual.pwm1 + last.pwm1;
-	c.pwm2 = (abs(atual.pwm2-last.pwm2)/255.0f)*atual.pwm2 + last.pwm2;
+	c.pwm1 = last.pwm1 * 0.6 + atual.pwm1 * 0.4;
+	c.pwm2 = last.pwm2 * 0.6 + atual.pwm2 * 0.4;
 
 	c = checkPwm(c);
 
-//	cout << atual << "\t" << c << "\t" << last << endl;
-
-	return c;
+	return c; 
 }
 
 Command Movimentation::checkPwm(const Command& pwm){

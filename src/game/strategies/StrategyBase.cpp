@@ -12,6 +12,7 @@ StrategyBase::StrategyBase(){
 void StrategyBase::apply(Robot* robot){
     if(!robot->isNull()){
 
+        setRobot(*robot);
         // define target
         Point target = defineTarget(*robot);
         robot->setTarget(target);
@@ -50,6 +51,40 @@ void StrategyBase::apply(Robot* robot){
 	}
 }
 
+Command StrategyBase::stopStrategy(Command command){
+    Command c = command;
+    float maxDistance = robot.getRadius()*3;
+	float distanceTarget = robot.distanceFrom(robot.getTarget());
+	
+	 // trocar pra imagesize
+	if(robot.getVelocity() > 1300*0.05){
+		maxDistance = robot.getRadius()*6;
+	}
+
+	if(distanceTarget < maxDistance){
+		c.pwm1 = command.pwm1*(distanceTarget/maxDistance);
+		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
+	}
+
+	if(distanceTarget < robot.getRadius()){
+
+        if (robot.cosFrom(data->getBall().getPosition()) < -0.9) {
+            c = movimentation.stop();
+        } else if (robot.cosFrom(data->getBall().getPosition()) > 0.9){ 
+            c = movimentation.stop();
+    
+        } else {
+            if (robot.sinFrom(data->getBall().getPosition()) > 0) {
+                c = movimentation.turnRight(100, 100);
+            } else {
+                c = movimentation.turnLeft(100, 100);
+            }
+        }
+    }
+
+    return c;
+}
+
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO
 Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const {
     
@@ -72,8 +107,8 @@ Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepu
     return Point(repulsion.x, repulsion.y);
 } 
 
-void StrategyBase::setRobot(Robot& _robot){
-    //robot = _robot;
+void StrategyBase::setRobot(Robot _robot){
+    robot = _robot;
 }
 
 Robot StrategyBase::getRobot(){

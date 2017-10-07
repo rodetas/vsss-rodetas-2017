@@ -106,8 +106,6 @@ bool GameView::onKeyboard(GdkEventKey* event){
         game_model.manualRobotControl(STOPPED_MOVE, 0, 0);
     }
 
-    usleep(33000);
-
     return true;
 }
 

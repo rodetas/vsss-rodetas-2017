@@ -8,23 +8,7 @@ Command StrategyAttack::strategy(Robot& robot, Command command){
 
 	//	cornerStrategy();
 	Command c = command;
-	float maxDistance = robot.getRadius()*3;
-	float distanceTarget = robot.distanceFrom(robot.getTarget());
-	
-	/* // trocar pra imagesize
-	if(robot.getVelocity() > 1300*0.05){
-		maxDistance = robot.getRadius()*6;
-	}
-
-	if(distanceTarget < maxDistance){
-		c.pwm1 = command.pwm1*(distanceTarget/maxDistance);
-		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
-	}
-
-	if(distanceTarget < robot.getRadius()){
-		c = movimentation.stop();
-	} */
-
+	//c = stopStrategy(c);	
 	return c;
 }
 

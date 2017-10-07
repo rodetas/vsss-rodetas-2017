@@ -164,10 +164,12 @@ bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
         if (!ball.isNull()) {    
 
             Point r = { changeCoordinate(ball.getPosition()).x, changeCoordinate(ball.getPosition()).y };
+            Point p = { changeCoordinate(ball.getBallProjection()).x, changeCoordinate(ball.getBallProjection()).y };
 
             // ball
             c->save();
                 c->arc(r.x, r.y, ball_size, 0, 2*CV_PI);
+                c->arc(p.x, p.y, ball_size/2, 0, 2*CV_PI);
                 c->set_source_rgb(colors_rgb[BALL].r, colors_rgb[BALL].g, colors_rgb[BALL].b);
                 c->fill_preserve();
             c->restore();

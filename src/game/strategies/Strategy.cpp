@@ -3,7 +3,7 @@
 Strategy* Strategy::instance = NULL;
 
 Strategy::Strategy(){
-    potency_factor = 0.6;
+    potency_factor = 1.2;
     curve_factor = 1.1;
 }
 
@@ -96,3 +96,4 @@ vector<Point> Strategy::getTargets(){
 
     return targets;
 }
+
