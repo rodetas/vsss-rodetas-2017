@@ -2,6 +2,10 @@
 
 namespace rodetas{
 
+    Point imageSize = Point();
+    Point goalArea = Point();
+    Point goalSize = Point();
+    
     string executeCommand(string cmd){
 
         char buf[256];
