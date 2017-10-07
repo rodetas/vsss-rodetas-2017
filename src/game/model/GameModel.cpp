@@ -30,7 +30,7 @@ bool GameModel::control(){
             
     fps = timer.framesPerSecond();
 
-    caller->notify("updateScreen");
+    caller->updateScreen();
 
     return true;
 }

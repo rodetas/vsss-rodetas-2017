@@ -3,7 +3,7 @@
 
 #include "../../Header.h"
 #include "../model/GameModel.h"
-#include "DrawAreaControl.h"
+#include "GameDraw.h"
 #include <gtkmm.h>
 
 class GameView {
@@ -13,15 +13,11 @@ public:
     virtual ~GameView();
 
     int GUI();
-    void updateScreen();
-    void notify(string);    
+    void updateScreen(); 
 
 private:
     GameModel game_model;
 
-    sigc::connection control_connection;
-
-    Glib::RefPtr<Gtk::Application> app;    
     Gtk::Window *window = nullptr;
 	Gtk::ToggleButton *button_play = nullptr;
 	Gtk::ToggleButton *button_penalty = nullptr;
@@ -35,9 +31,8 @@ private:
 	Gtk::MenuItem *menu_arduino = nullptr;
 	Gtk::MenuItem *menu_quit = nullptr;
 	Gtk::SeparatorMenuItem *separator = nullptr;
-    Gtk::Box *box = nullptr;
-    DrawAreaControl draw_robot;
-    
+	Gtk::Box *box = nullptr;
+	    
     int program_state;
 
     void onMenuCalibration();
@@ -48,7 +43,13 @@ private:
 	void onPotencyChanged();
 	void onCurveChanged();
 	void onButtonTime();    
-    bool onKeyboard(GdkEventKey*);    
+	bool onKeyboard(GdkEventKey*);
+	bool deleteConnection(GdkEventAny*);
+
+	sigc::connection control_connection;
+
+	// criando sinal com parâmetros
+	sigc::signal<void, vector<Robot>, vector<Robot>, Ball> signal_draw_robot;
 };
 
 #endif

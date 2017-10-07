@@ -1,3 +1,7 @@
+ifndef VERBOSE
+.SILENT:
+endif
+
 COMPILER = g++ -std=c++11 -Wall -g
 EXEC_PROG = Rodetas
 BINARIES = $(EXEC_PROG)
@@ -10,7 +14,7 @@ OPENCVLIB = `pkg-config opencv --cflags --libs`
 GTKMMLIB = `pkg-config gtkmm-3.0 --cflags --libs`
 LIBS = $(SFMLLIB) $(OPENCVLIB) $(GTKMMLIB) -lpthread
 
-all: $(EXEC_PROG)
+all: message_compiling $(EXEC_PROG)
 	@echo Rodetas Build Completed
 
 %.o: %.cpp
@@ -27,3 +31,6 @@ run:
 .PHONY : clean 
 clean:
 	rm -rf $(EXEC_PROG) $(OBJECTS)
+
+message_compiling:
+	@echo Compiling Rodetas...

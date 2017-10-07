@@ -23,7 +23,6 @@ private:
     int last_time;
     bool transmittingStatus;
     bool openStatus;
-
     std::mutex mutex;
 
 public:

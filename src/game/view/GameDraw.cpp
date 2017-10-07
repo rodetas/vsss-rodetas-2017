@@ -1,12 +1,15 @@
-#include "DrawAreaControl.h"
+#include "GameDraw.h"
 
-DrawAreaControl::DrawAreaControl(){
+GameDraw::GameDraw(){
     colors_rgb = manipulation.getColorsRgbCairo();
     image_size = manipulation.getImageSize();
     goal_size  = manipulation.getGoal();
 }
 
-void DrawAreaControl::setPosition(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){
+GameDraw::~GameDraw(){
+}
+
+void GameDraw::setPosition(vector<Robot> _team, vector<Robot> _opponent, Ball _ball){    
     robot_team = _team;
     robot_opponent = _opponent;
     ball = _ball;
@@ -14,13 +17,9 @@ void DrawAreaControl::setPosition(vector<Robot> _team, vector<Robot> _opponent, 
     queue_draw();
 }
 
-void DrawAreaControl::setTargets(vector<Point> _targets){
-    targets = _targets;
-    queue_draw();
-}
+bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
-bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
-
+    try{
         Gtk::Allocation allocation = get_allocation();
             field_size.x = allocation.get_width();
             field_size.y = allocation.get_height();
@@ -175,19 +174,9 @@ bool DrawAreaControl::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             c->stroke ();
         }
 
-        for(int i=0 ; i<targets.size() ; i++){
-            Point r = { changeCoordinate(targets[i]).x, changeCoordinate(targets[i]).y };
-            
-            //if(r.x != 0 && r.y != 0){
-                // targets
-                c->save();
-                    c->arc(r.x, r.y, ball_size/3, 0, 2*CV_PI);
-                    c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
-                    c->fill_preserve();
-                c->restore();
-                c->stroke ();
-           // }
-        }
-        
-        return true;
+    } catch(const std::exception& ex) {
+        cout << "EXCEPTION: " << ex.what() << "in GameDraw:on_draw " << endl;
     }
+
+    return true;
+}

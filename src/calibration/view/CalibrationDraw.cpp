@@ -1,6 +1,6 @@
-#include "DrawAreaCalibration.h"
+#include "CalibrationDraw.h"
 
-DrawAreaCalibration::DrawAreaCalibration(){
+CalibrationDraw::CalibrationDraw(){
     add_events(Gdk::BUTTON_PRESS_MASK);
     add_events(Gdk::BUTTON_MOTION_MASK);
     add_events(Gdk::BUTTON_RELEASE_MASK);
@@ -15,7 +15,7 @@ DrawAreaCalibration::DrawAreaCalibration(){
     move_adjust_cut = false;
 }
 
-bool DrawAreaCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw){
+bool CalibrationDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_draw){
 
     try{
         Gtk::Allocation allocation = get_allocation();
@@ -47,11 +47,13 @@ bool DrawAreaCalibration::on_draw (const Cairo::RefPtr<Cairo::Context> &cairo_dr
         }
 
     } catch(const std::exception& ex) {
-        cout << "EXCEPTION: " << ex.what() << "in DrawAreaCalibration:on_draw " << endl;
+        cout << "EXCEPTION: " << ex.what() << "in CalibrationDraw:on_draw " << endl;
     }
+    
+    return true;
 }
 
-bool DrawAreaCalibration::on_button_press_event (GdkEventButton* event){
+bool CalibrationDraw::on_button_press_event (GdkEventButton* event){
     if(event->button == GDK_BUTTON_SECONDARY && cut_mode) {
         cut_point.first = {event->x, event->y};
         cut_point.second = {event->x, event->y};
@@ -63,7 +65,7 @@ bool DrawAreaCalibration::on_button_press_event (GdkEventButton* event){
     }
 }
 
-bool DrawAreaCalibration::on_button_release_event (GdkEventButton* event){
+bool CalibrationDraw::on_button_release_event (GdkEventButton* event){
     if(event->button == GDK_BUTTON_SECONDARY && cut_mode) {
         move_first_cut = false;
     }
@@ -73,7 +75,7 @@ bool DrawAreaCalibration::on_button_release_event (GdkEventButton* event){
     }
 }
 
-bool DrawAreaCalibration::on_motion_notify_event (GdkEventMotion* event){
+bool CalibrationDraw::on_motion_notify_event (GdkEventMotion* event){
     if(move_first_cut && cut_mode) {
         cut_point.second = {event->x , event->y};
         queue_draw();
@@ -99,24 +101,24 @@ bool DrawAreaCalibration::on_motion_notify_event (GdkEventMotion* event){
     }
 }
 
-void DrawAreaCalibration::setImage(cv::Mat image){
+void CalibrationDraw::setImage(cv::Mat image){
     opencv_image = image;
     queue_draw();
 }
 
-void DrawAreaCalibration::setCutMode(bool b){
+void CalibrationDraw::setCutMode(bool b){
     cut_mode = b;
 }
 
-void DrawAreaCalibration::setRectangleInvisible(){
+void CalibrationDraw::setRectangleInvisible(){
     cut_point.first  = {0,0};
     cut_point.second = {0,0};
 }
 
-Point DrawAreaCalibration::getCairoImageSize(){
+Point CalibrationDraw::getCairoImageSize(){
     return cairo_image_size;
 }
 
-PointCut DrawAreaCalibration::getCutPoint(){
+PointCut CalibrationDraw::getCutPoint(){
     return cut_point;
 }

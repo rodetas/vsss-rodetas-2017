@@ -28,7 +28,6 @@ void StrategyBase::apply(Robot* robot){
         /* cout << strategyCommand << "\t";
         cout << robot.getLastCommand() << endl; */
         
-        
         Command finalPwm = movimentation.progressiveAcell(*robot, strategyCommand);
         
         robot->setCommand(finalPwm);
@@ -37,7 +36,7 @@ void StrategyBase::apply(Robot* robot){
 
  void StrategyBase::cornerStrategy(){
 	
-	/* // movement along the corners
+	// movement along the corners
 	if (robot.isBoard()){
 		
 		if (robot.distanceFrom(data->getBall()) < 55){		
@@ -48,7 +47,7 @@ void StrategyBase::apply(Robot* robot){
 				movimentation.turnRight(120, 120);
 			}
 		}
-	} */
+	}
 }
 
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO

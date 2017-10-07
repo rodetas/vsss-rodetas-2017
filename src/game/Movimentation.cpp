@@ -78,8 +78,8 @@ Command Movimentation::definePwm(const Robot& robot, char direction){
 
 	int basePower = standardPower * powerFactor;
 	int correctionPower = (standardPower/4) * robot.sinFrom(robot.getTarget()) * curveFactor;
-	int pwmMotor1 = (basePower + correctionPower);
-	int pwmMotor2 = (basePower - correctionPower);
+	int pwmMotor1 = (basePower - correctionPower);
+	int pwmMotor2 = (basePower + correctionPower);
 
 	Command verifiedPwm = checkPwm(Command(pwmMotor1, pwmMotor2, direction));
 
