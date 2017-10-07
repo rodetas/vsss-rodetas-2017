@@ -21,9 +21,9 @@ enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOP
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};
 
-static Point imageSize = Point();
-static Point goalSize = Point();
-static Point goalArea = Point();
+extern Point imageSize;
+extern Point goalSize;
+extern Point goalArea;
 
 struct PointCut {
 	Point2i first;
