@@ -22,7 +22,7 @@ void StrategyBase::apply(Robot* robot){
         movimentation.setCurveFactor(data->getCurveFactor());
         
         // define pwm
-        Command movimentationCommand = movimentation.movePlayers(*robot);
+        Command movimentationCommand = movimentation.movePlayers(robot);
 
         // define strategy
         Command strategyCommand = strategy(robot, movimentationCommand);
@@ -30,7 +30,7 @@ void StrategyBase::apply(Robot* robot){
         /* cout << strategyCommand << "\t";
         cout << robot.getLastCommand() << endl; */
         
-        Command finalPwm = movimentation.progressiveAcell(*robot, strategyCommand);
+        Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
         
         robot->setCommand(finalPwm);
     }
