@@ -55,7 +55,7 @@ INSTALL () {
 CREATE_WORKSPACE () {
 	DIR=`pwd`
 	WORK_DIR=`mktemp -d -p ${DIR}`
-	cd ${WORD_DIR}
+	cd ${WORK_DIR}
 }
 
 EXIT () {

@@ -35,20 +35,24 @@ void StrategyBase::apply(Robot* robot){
     }
 } 
 
- void StrategyBase::cornerStrategy(){
+ Command StrategyBase::cornerStrategy(Command command){
 	
-	// movement along the corners
+    // movement along the corners
+   
 	if (robot.isBoard()){
+        command = movimentation.stop();
+        cout<<"Canto"<<endl;
 		
-		if (robot.distanceFrom(data->getBall()) < 55){		
+		/*if (robot.distanceFrom(data->getBall()) < 55){		
 
 			if (robot.y() > (rodetas::imageSize.y/2)){
 				movimentation.turnLeft(120, 120);	
 		    } else {
 				movimentation.turnRight(120, 120);
 			}
-		}
-	}
+		}*/
+    }
+    return command;
 }
 
 Command StrategyBase::stopStrategy(Command command){

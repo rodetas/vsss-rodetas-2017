@@ -39,6 +39,8 @@ float Robot::calculateSpeed(){
 }
 
 bool Robot::isBoard(){
+    cout<<getPosition()<<endl;
+    cout<<rodetas::imageSize<<endl;
 	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2)*1.2;
 	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2)*1.2;
 	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.90) || x() < (rodetas::imageSize.x*0.10)) && (y() > halfGoal1 || y() < halfGoal2)));
