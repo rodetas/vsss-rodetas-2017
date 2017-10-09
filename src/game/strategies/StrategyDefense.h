@@ -8,8 +8,8 @@ class StrategyDefense : public StrategyBase {
 public:
     StrategyDefense();
 
-    virtual Command strategy(Robot&, Command);
-    virtual Point defineTarget(const Robot&);
+    virtual Command strategy(Robot*, Command);
+    virtual Point defineTarget(Robot*);
 
 };
 
