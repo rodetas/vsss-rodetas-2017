@@ -26,12 +26,12 @@ public:
      /**
       * Pure virtual function to apply the strategy
       */
-    virtual Command strategy(Robot&, Command) = 0;
+    virtual Command strategy(Robot*, Command) = 0;
 
     /**
      * Pure virtual function to define where goes the robot
      */
-    virtual Point defineTarget(const Robot&) = 0;
+    virtual Point defineTarget(Robot*) = 0;
 
     /**
      * Apply the robot strategy when it's on the corner
@@ -39,6 +39,7 @@ public:
     virtual void cornerStrategy();
 
     virtual Command stopStrategy(Command);
+
      /**
      * Apply the potencial field
      * \param target: 
@@ -47,12 +48,11 @@ public:
      * \return 
      */
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
-
     virtual Point applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const;
 
-    void setRobot(Robot);
+    void setRobot(Robot*);
 
-    Robot getRobot();
+    Robot* getRobot();
 
     static int getNumStrategies();
 
@@ -65,7 +65,7 @@ protected:
 
     int robotState; ///< for represent the atual robot state (PARADO, DEFENDENDO, ATACANDO)
 
-    Robot robot;
+    Robot* robot;
 
     Movimentation movimentation;
 

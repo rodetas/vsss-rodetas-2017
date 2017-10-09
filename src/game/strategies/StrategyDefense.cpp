@@ -4,12 +4,12 @@ StrategyDefense::StrategyDefense() : StrategyBase()	{
 
 }
 
-Command StrategyDefense::strategy(Robot& robot, Command command){
+Command StrategyDefense::strategy(Robot* robot, Command command){
 
 	return command;
 }
 
-Point StrategyDefense::defineTarget(const Robot& robot){
+Point StrategyDefense::defineTarget(Robot* robot){
 
     Ball ball = data->getBall();
     Point defenseTarget = Point(0,0);
@@ -22,7 +22,7 @@ Point StrategyDefense::defineTarget(const Robot& robot){
 		defenseTarget.y = ball.y() + (rodetas::imageSize.y * 0.2); 
 	}
 
-	defenseTarget = applyPotencialField(defenseTarget, data->getRobot("attack").getPosition(), robot.getPosition());
+	defenseTarget = applyPotencialField(defenseTarget, data->getRobot("attack").getPosition(), robot->getPosition());
 
 	// verifies the destination limits
 	// esse if tem que estar cobrindo isso tudo mesmo?
@@ -44,7 +44,7 @@ Point StrategyDefense::defineTarget(const Robot& robot){
 		}
 	}
 
-	if (robot.x() < (imageSize.x*0.2) && (robot.y() > (imageSize.y/2-goalArea.y/2) && robot.y() < (imageSize.y/2+goalArea.y/2))) { 
+	if (robot->x() < (imageSize.x*0.2) && (robot->y() > (imageSize.y/2-goalArea.y/2) && robot->y() < (imageSize.y/2+goalArea.y/2))) { 
 		defenseTarget.x = goalArea.x * 2;
 		defenseTarget.y = ball.y();
 	}
