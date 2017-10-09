@@ -12,24 +12,25 @@ StrategyBase::StrategyBase(){
 void StrategyBase::apply(Robot* robot){
     if(!robot->isNull()){
 
-        setRobot(*robot);
+        setRobot(robot);
+
         // define target
-        Point target = defineTarget(*robot);
+        Point target = defineTarget(robot);
         robot->setTarget(target);
         
         movimentation.setPotencyFactor(data->getPotencyFactor());
         movimentation.setCurveFactor(data->getCurveFactor());
         
         // define pwm
-        Command movimentationCommand = movimentation.movePlayers(*robot);
+        Command movimentationCommand = movimentation.movePlayers(robot);
 
         // define strategy
-        Command strategyCommand = strategy(*robot, movimentationCommand);
+        Command strategyCommand = strategy(robot, movimentationCommand);
 
         /* cout << strategyCommand << "\t";
         cout << robot.getLastCommand() << endl; */
         
-        Command finalPwm = movimentation.progressiveAcell(*robot, strategyCommand);
+        Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
         
         robot->setCommand(finalPwm);
     }
@@ -39,30 +40,36 @@ void StrategyBase::apply(Robot* robot){
 	
     // movement along the corners
    
-	if (robot.isBoard()){
-        command = movimentation.stop();
-        cout<<"Canto"<<endl;
+	if (robot->isBoard()){
+        //command = movimentation.stop();
+        //cout<<"Canto"<<endl;
+        if(robot->isStopped()){
+            cout<<"Parado"<<endl; 
+        }
 		
-		/*if (robot.distanceFrom(data->getBall()) < 55){		
+		if (robot->distanceFrom(data->getBall()) < 55){	
+           // cout<<"Bola presa"<<endl;	
 
-			if (robot.y() > (rodetas::imageSize.y/2)){
-				movimentation.turnLeft(120, 120);	
+			if (robot->y() > (rodetas::imageSize.y/2)){
+                //cout<<"Vira esquerda"<<endl;
+				command = movimentation.turnLeft(120, 120);	
 		    } else {
-				movimentation.turnRight(120, 120);
+                //cout<<"Vira direita"<<endl;
+                command = movimentation.turnRight(120, 120);
 			}
-		}*/
+		}
     }
     return command;
 }
 
 Command StrategyBase::stopStrategy(Command command){
     Command c = command;
-    float maxDistance = robot.getRadius()*3;
-	float distanceTarget = robot.distanceFrom(robot.getTarget());
+    float maxDistance = robot->getRadius()*3;
+	float distanceTarget = robot->distanceFrom(robot->getTarget());
 	
 	 // trocar pra imagesize
-	if(robot.getVelocity() > 1300*0.05){
-		maxDistance = robot.getRadius()*6;
+	if(robot->getVelocity() > rodetas::imageSize.x*0.05){
+		maxDistance = robot->getRadius()*6;
 	}
 
 	if(distanceTarget < maxDistance){
@@ -70,15 +77,15 @@ Command StrategyBase::stopStrategy(Command command){
 		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
 	}
 
-	if(distanceTarget < robot.getRadius()){
+	if(distanceTarget < robot->getRadius()){
 
-        if (robot.cosFrom(data->getBall().getPosition()) < -0.9) {
+        if (robot->cosFrom(data->getBall().getPosition()) < -0.9) {
             c = movimentation.stop();
-        } else if (robot.cosFrom(data->getBall().getPosition()) > 0.9){ 
+        } else if (robot->cosFrom(data->getBall().getPosition()) > 0.9){ 
             c = movimentation.stop();
     
         } else {
-            if (robot.sinFrom(data->getBall().getPosition()) > 0) {
+            if (robot->sinFrom(data->getBall().getPosition()) > 0) {
                 c = movimentation.turnRight(100, 100);
             } else {
                 c = movimentation.turnLeft(100, 100);
@@ -111,12 +118,12 @@ Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepu
     return Point(repulsion.x, repulsion.y);
 } 
 
-void StrategyBase::setRobot(Robot _robot){
+void StrategyBase::setRobot(Robot* _robot){
     robot = _robot;
 }
 
-Robot StrategyBase::getRobot(){
-    //return robot;
+Robot* StrategyBase::getRobot(){
+    return robot;
 }
 
 int StrategyBase::getNumStrategies(){

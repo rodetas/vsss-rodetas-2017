@@ -268,8 +268,20 @@ INSTALL_XCTU () {
 }
 
 INSTALL_XBEE_H () {
-	git clone https://github.com/andrewrapp/xbee-arduino.git
-	mv xbee-arduino/ /usr/share/arduino/libraries/xbee
+	ok=1
+
+	if [ ${ASK_INSTALL} -eq 1 ]; then
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL XCTU ? (Y\n) ${NORMAL}"
+		read answer
+		if [ "${answer}" == "n" ]; then
+			ok=0
+		fi
+	fi
+	
+	if [ ${ok} -eq 1 ]; then
+		git clone https://github.com/andrewrapp/xbee-arduino.git
+		mv xbee-arduino/ /usr/share/arduino/libraries/xbee
+	fi
 }
 
 CREATE_WORKSPACE

@@ -7,12 +7,6 @@ Strategy::Strategy(){
     curve_factor = 1.1;
 }
 
-void Strategy::initializeStrategies(){
-    strategies["attack"] = new StrategyAttack();
-    strategies["defense"] = new StrategyDefense();
-    strategies["goal"] = new StrategyGoal(); 
-}
-
 Strategy* Strategy::getInstance(){
     
     if(instance == NULL){
@@ -21,6 +15,12 @@ Strategy* Strategy::getInstance(){
     }
 
     return instance;
+}
+
+void Strategy::initializeStrategies(){
+    strategies["attack"] = new StrategyAttack();
+    strategies["defense"] = new StrategyDefense();
+    strategies["goal"] = new StrategyGoal(); 
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
@@ -42,10 +42,13 @@ void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
     opponent.swap(_opponent);
     ball = _ball; 
 
+    // define as funcoes de cada robo
     defineFunctionsForEachRobot(_team);
 
+    // aplica a estrategia para cada robo
     for(auto it = strategies.begin() ; it != strategies.end() ; it++){
         string function = it->first;
+        // envia o robo especifico como parametro para a estrategia
         (it)->second->apply(team[function]);
     }
 
