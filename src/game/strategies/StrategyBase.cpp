@@ -58,7 +58,7 @@ Command StrategyBase::stopStrategy(Command command){
 	float distanceTarget = robot->distanceFrom(robot->getTarget());
 	
 	 // trocar pra imagesize
-	if(robot->getVelocity() > 1300*0.05){
+	if(robot->getVelocity() > rodetas::imageSize.x*0.05){
 		maxDistance = robot->getRadius()*6;
 	}
 
