@@ -10,20 +10,20 @@ Movimentation::Movimentation(){
 /*
  * calculates the basic movimentation
  */
-Command Movimentation::movePlayers(const Robot& robot){
+Command Movimentation::movePlayers(Robot* robot){
 
-	Point destination = robot.getTarget();
+	Point destination = robot->getTarget();
 	Command command;
 
 	/* movement along the field */
-	if (robot.cosFrom(destination) < -0.3) {
+	if (robot->cosFrom(destination) < -0.3) {
 		command = definePwm(robot, BACK_MOVE);
 	
-	} else if (robot.cosFrom(destination) > 0.3){ 
+	} else if (robot->cosFrom(destination) > 0.3){ 
 		command = definePwm(robot, FORWARD_MOVE);	
 
 	} else {
-		if (robot.sinFrom(destination) > 0) {
+		if (robot->sinFrom(destination) > 0) {
 			command = turnRight(60, 60);
 	    } else {
 			command = turnLeft(60, 60);
@@ -33,12 +33,12 @@ Command Movimentation::movePlayers(const Robot& robot){
 	return command;
 }
 
-Command Movimentation::progressiveAcell(Robot& robot, Command atual){
+Command Movimentation::progressiveAcell(Robot* robot, Command atual){
 
 	Command c = atual;
-	Command last = robot.getLastCommand();
+	Command last = robot->getLastCommand();
 
-	if(robot.getVelocity() < 15){
+	if(robot->getVelocity() < 15){
 		last.pwm1 = last.pwm2 = 0;
 	}
 
@@ -66,12 +66,12 @@ Command Movimentation::checkPwm(const Command& pwm){
 /*
  * Correct robot pwm to follow the destination
  */
-Command Movimentation::definePwm(const Robot& robot, char direction){
+Command Movimentation::definePwm(Robot* robot, char direction){
 
 	int standardPower = 160;
 
 	int basePower = standardPower * powerFactor;
-	int correctionPower = (standardPower/3) * robot.sinFrom(robot.getTarget()) * curveFactor;
+	int correctionPower = (standardPower/4) * robot->sinFrom(robot->getTarget()) * curveFactor;
 	int pwmMotor1 = (basePower - correctionPower);
 	int pwmMotor2 = (basePower + correctionPower);
 
