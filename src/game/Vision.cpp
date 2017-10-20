@@ -141,7 +141,7 @@ void Vision::setGameSide(){
     game_side = !game_side;
 }
 
-vector<Robot> Vision::getTeam(){
+vector<Robot> &Vision::getTeam(){
     return robot_team;
 }
 
