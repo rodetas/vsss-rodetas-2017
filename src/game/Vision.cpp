@@ -5,6 +5,7 @@
  */
 Vision::Vision(){
     n_robots = 3;
+    game_side = false;
 
     robot_team.resize(n_robots);
     robot_opponent.resize(n_robots);
@@ -46,6 +47,9 @@ void Vision::computerVision(){
 
     cv::Mat full_image_cut = rotateImage(opencv_image_BGR, angle_image);
             full_image_cut = cutImage(full_image_cut, point_cut);
+
+    if (game_side) 
+        full_image_cut = rotateImage(opencv_image_BGR, 180);
 
 //    cv::imwrite("./teste.jpg", full_image_cut);
     
@@ -133,7 +137,11 @@ void Vision::ballPosition(Position ball_position){
         ball.setPosition(Point(0,0));
 }
 
-vector<Robot>& Vision::getTeam(){
+void Vision::setGameSide(){
+    game_side = !game_side;
+}
+
+vector<Robot> Vision::getTeam(){
     return robot_team;
 }
 
