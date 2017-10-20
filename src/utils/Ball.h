@@ -54,7 +54,7 @@ public:
                 
             lastBallProjection = ballProjection;
         }
-    
+
         return ballProjection;
     }
 

@@ -38,7 +38,7 @@ public:
 	void setGameSide();
 
 	Ball getBall();
-	vector<Robot> getTeam();
+	vector<Robot>& getTeam();
 	vector<Robot> getOpponent();
 	
 };

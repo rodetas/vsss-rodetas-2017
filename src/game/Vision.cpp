@@ -64,11 +64,6 @@ void Vision::computerVision(){
 
 void Vision::teamPosition(Position team_position, cv::Mat image){
 
-    // OTIMIZAR
-    for(int i=0 ; i<n_robots ; i++){
-        robot_team[i].setPosition(Point(0,0));
-    }
-
     for (int i = 0; i < team_position.size(); i++){
         // set the cutpoint around the color team
         PointCut cutPoint(team_position.center[i], team_position.radius[i]);
@@ -83,6 +78,7 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
             if (find_position.size() > 0 && find_position.radius[0] > biggest_radius){
                 
                 robot.setRobotId(j);
+                robot.setRadius(team_position.radius[i]);
                 robot.setPosition(team_position.center[i]);
                 robot.setAngle( atan2 ( (find_position.center[0].y - team_position.center[i].y), (find_position.center[0].x - team_position.center[i].x)) * (180 / CV_PI) + 180 + 45 );
             
@@ -92,7 +88,11 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
 
         robot_team[robot.getRobotId()].setPosition(robot.getPosition());
         robot_team[robot.getRobotId()].setAngle(robot.getAngle());
+        robot_team[robot.getRobotId()].setRadius(robot.getRadius());
+
+//        robot_team[robot.getRobotId()].calculateSpeed();
     }
+        
 }
 
 void Vision::opponentPosition(Position opponent_position){

@@ -4,22 +4,29 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 
 }
 
-Command StrategyAttack::strategy(const Robot& robot, Command command){
+Command StrategyAttack::strategy(Robot* robot, Command command){
 
 	//	cornerStrategy();
-
-	return command;
+	Command c = command;
+	//c = stopStrategy(c);	
+	return c;
 }
 
-Point StrategyAttack::defineTarget(const Robot& robot){
+Point StrategyAttack::defineTarget(Robot* robot){
     Point target;
 	
 /*	target.x = ballProjection.x;
 	target.y = ballProjection.y;
 */
-	target.x = data->getBall().x();
+ 	target.x = data->getBall().x();
 	target.y = data->getBall().y();
-/*
+
+	target = data->getBall().getBallProjection();
+
+	// 1130, 862
+/* 	target.x = 1130/2;
+	target.y = 862/2;
+ *//*
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
 		target.y = ball.y;

@@ -174,6 +174,31 @@ bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
             c->stroke ();
         }
 
+    /*** PROJECTIONS ***/
+        if (!ball.isNull()) { 
+
+            Point p = { changeCoordinate(ball.getBallProjection()).x, changeCoordinate(ball.getBallProjection()).y };
+            c->save();
+                c->arc(p.x, p.y, ball_size/2, 0, 2*CV_PI);
+                c->set_source_rgb(colors_rgb[BALL].r, colors_rgb[BALL].g, colors_rgb[BALL].b);
+                c->fill_preserve();
+            c->restore();
+            c->stroke ();
+        }
+
+        for (int i = 0; i < robot_team.size(); i++) {
+
+            if (!robot_team[i].isNull()) {
+                Point t = { changeCoordinate(robot_team[i].getTarget()).x, changeCoordinate(robot_team[i].getTarget()).y };
+                c->save();
+                    c->arc(t.x, t.y, ball_size/2, 0, 2*CV_PI);
+                    c->set_source_rgb(colors_rgb[i].r, colors_rgb[i].g, colors_rgb[i].b);
+                    c->fill_preserve();
+                c->restore();
+                c->stroke ();
+            }
+        }
+
     } catch(const std::exception& ex) {
         cout << "EXCEPTION: " << ex.what() << "in GameDraw:on_draw " << endl;
     }
