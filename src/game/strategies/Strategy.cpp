@@ -33,8 +33,8 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
         team["defense"] = (robots[1]);
     }   */
 
-    team["attack"] = &robots[0];
-    team["defense"] = &robots[1];
+    team["attack"] = &robots[1];
+    team["defense"] = &robots[0];
     team["goal"] = &robots[2];
 }
 
