@@ -1,0 +1,6 @@
+[submodule "files/arduino/codigo-robo"]
+	path = files/arduino/codigo-robo
+	url = https://github.com/rodetas/codigo-robo
+[submodule "codigo-robo"]
+	path = codigo-robo
+	url = https://github.com/rodetas/codigo-robo.git
