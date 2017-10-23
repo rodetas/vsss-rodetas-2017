@@ -5,8 +5,10 @@ StrategyDefense::StrategyDefense() : StrategyBase()	{
 }
 
 Command StrategyDefense::strategy(Robot* robot, Command command){
+	Command c = command;
 
-	return command;
+	c = stopStrategy(c);
+	return c;
 }
 
 Point StrategyDefense::defineTarget(Robot* robot){
@@ -16,13 +18,14 @@ Point StrategyDefense::defineTarget(Robot* robot){
 	
 	defenseTarget.x = data->getBall().x() - (rodetas::imageSize.x * 0.2);
 
+	// definir margem no meio do campo
 	if (ball.y() > (rodetas::imageSize.y/2) ){
 		defenseTarget.y = ball.y() - (rodetas::imageSize.y * 0.2); 
 	} else {
 		defenseTarget.y = ball.y() + (rodetas::imageSize.y * 0.2); 
 	}
 
-	defenseTarget = applyPotencialField(defenseTarget, data->getRobot("attack").getPosition(), robot->getPosition());
+	//defenseTarget = applyPotencialField(defenseTarget, data->getRobot("attack").getPosition(), robot->getPosition());
 
 	// verifies the destination limits
 	// esse if tem que estar cobrindo isso tudo mesmo?
