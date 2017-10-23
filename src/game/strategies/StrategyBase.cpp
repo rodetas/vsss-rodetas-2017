@@ -46,8 +46,8 @@ void StrategyBase::apply(Robot* robot){
         if(robot->isStopped()){
             cout<<"Parado"<<endl; 
         }
-		
-		if (robot->distanceFrom(data->getBall()) < 55){	
+        
+        if (robot->distanceFrom(data->getBall()) < 55){	
            // cout<<"Bola presa"<<endl;	
 
 			if (robot->y() > (rodetas::imageSize.y/2)){

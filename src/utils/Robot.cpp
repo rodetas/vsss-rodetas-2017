@@ -42,9 +42,11 @@ bool Robot::isBoard(){
 }
 
 bool Robot::isStopped(){
-    float dis = distance((lastPositions.front()), (lastPositions[15]));
-    cout<<"dis: "<<dis<<endl;
-    if(dis<30){
+    float dis = distance((lastPositions.front()), (lastPositions[25]));
+    //cout<<"dis: "<<dis<<endl;
+    float vel = (getVelocity());
+    //cout<<"vel: "<<vel<<endl;
+    if(vel<5){
         return true;
     }else{
         return false;
