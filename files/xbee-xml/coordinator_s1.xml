@@ -4,10 +4,10 @@
   <profile>
     <description_file>xb24_15_4_10ec.xml</description_file>
     <settings>
-      <setting command="CH">14</setting>
+      <setting command="CH">F</setting>
       <setting command="ID">9E58</setting>
       <setting command="DH">0</setting>
-      <setting command="DL">0000000000000FFFF</setting>
+      <setting command="DL">0</setting>
       <setting command="MY">3</setting>
       <setting command="MM">0</setting>
       <setting command="RR">0</setting>
@@ -29,7 +29,7 @@
       <setting command="SP">0</setting>
       <setting command="DP">3E8</setting>
       <setting command="SO">0</setting>
-      <setting command="BD">3</setting>
+      <setting command="BD">4</setting>
       <setting command="NB">0</setting>
       <setting command="RO">3</setting>
       <setting command="AP">1</setting>

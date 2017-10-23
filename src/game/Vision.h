@@ -25,7 +25,8 @@ private:
 	int n_robots;
 	int angle_image;
 	bool camera_on;
-
+	bool game_side;
+	
 	void teamPosition(Position, cv::Mat);
     void ballPosition(Position);
     void opponentPosition(Position);
@@ -34,6 +35,7 @@ public:
 	Vision();
 	void initialize();
 	void computerVision();
+	void setGameSide();
 
 	Ball getBall();
 	vector<Robot>& getTeam();

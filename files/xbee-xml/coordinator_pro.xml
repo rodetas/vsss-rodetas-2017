@@ -2,9 +2,9 @@
 
 <data>
   <profile>
-    <description_file>xb24_15_4_10ec.xml</description_file>
+    <description_file>xbp24_15_4_10ec.xml</description_file>
     <settings>
-      <setting command="CH">14</setting>
+      <setting command="CH">F</setting>
       <setting command="ID">9E58</setting>
       <setting command="DH">0</setting>
       <setting command="DL">0</setting>
@@ -21,7 +21,7 @@
       <setting command="A2">0</setting>
       <setting command="EE">0</setting>
       <setting command="KY"></setting>
-      <setting command="NI">0x20</setting>
+      <setting command="NI">0x20CHEFÃO</setting>
       <setting command="PL">4</setting>
       <setting command="CA">2C</setting>
       <setting command="SM">0</setting>
