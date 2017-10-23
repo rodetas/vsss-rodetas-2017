@@ -46,6 +46,8 @@ public:
     
     bool isNull();
 
+    bool isStopped();
+
     float getVelocity();
 
     void setRobotId(int);
