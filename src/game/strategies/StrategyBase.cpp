@@ -44,7 +44,7 @@ void StrategyBase::apply(Robot* robot){
         //command = movimentation.stop();
         //cout<<"Canto"<<endl;
         if(robot->isStopped()){
-            cout<<"Parado"<<endl; 
+           // cout<<"Parado"<<endl; 
         }
         
         if (robot->distanceFrom(data->getBall()) < 55){	
