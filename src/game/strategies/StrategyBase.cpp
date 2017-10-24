@@ -26,9 +26,6 @@ void StrategyBase::apply(Robot* robot){
 
         // define strategy
         Command strategyCommand = strategy(robot, movimentationCommand);
-
-        /* cout << strategyCommand << "\t";
-        cout << robot.getLastCommand() << endl; */
         
         Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
         
@@ -53,6 +50,8 @@ void StrategyBase::apply(Robot* robot){
 }
 
 Command StrategyBase::stopStrategy(Command command){
+    // Para o robo quando atinge o target, alem disso, rotaciona de forma que esteja sempre virado para a bola
+
     Command c = command;
     float maxDistance = robot->getRadius()*3;
 	float distanceTarget = robot->distanceFrom(robot->getTarget());

@@ -8,7 +8,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 
 	//	cornerStrategy();
 	Command c = command;
-	//c = stopStrategy(c);	
+	c = stopStrategy(c);
 	return c;
 }
 
@@ -23,10 +23,9 @@ Point StrategyAttack::defineTarget(Robot* robot){
 
 	target = data->getBall().getBallProjection();
 
-	// 1130, 862
-/* 	target.x = 1130/2;
-	target.y = 862/2;
- *//*
+	/* target.x = imageSize.x/2;
+	target.y = imageSize.y/2; */
+/*
 	if (isBoard(ball) && robot.x - 100 < ball.x){
 		target.x = ball.x;
 		target.y = ball.y;
