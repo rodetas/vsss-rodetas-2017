@@ -6,7 +6,6 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 
 Command StrategyAttack::strategy(Robot* robot, Command command){
 
-	//	cornerStrategy();
 	Command c = command;
 	c = stopStrategy(c);
 	return c;

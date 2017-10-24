@@ -29,19 +29,28 @@ void Robot::initialize(){
 
 // IMPLEMENTAR TESTE
 float Robot::calculateSpeed(){
-    lastPositions.insert(lastPositions.begin(), position);
-
-    if(lastPositions.size() >= velocityPrecision){
-        lastPositions.pop_back();
-    }
-
-	return distance((lastPositions.front()), (lastPositions.back()));
+   
+	return distance((lastPositions.front()), (lastPositions[9]));
 }
 
 bool Robot::isBoard(){
+   // cout<<getPosition()<<endl;
+   // cout<<rodetas::imageSize<<endl;
 	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2)*1.2;
 	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2)*1.2;
 	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.90) || x() < (rodetas::imageSize.x*0.10)) && (y() > halfGoal1 || y() < halfGoal2)));
+}
+
+bool Robot::isStopped(){
+    float dis = distance((lastPositions.front()), (lastPositions[25]));
+    //cout<<"dis: "<<dis<<endl;
+    float vel = (getVelocity());
+    //cout<<"vel: "<<vel<<endl;
+    if(vel<5){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 int Robot::y() const{
@@ -70,6 +79,11 @@ int Robot::getRobotId(){
 
 void Robot::setPosition(Point _pos){
     position = _pos;
+    lastPositions.insert(lastPositions.begin(), position);
+    if(lastPositions.size() >= 60){
+        lastPositions.pop_back();
+    }
+
     velocity = calculateSpeed();
 }
 

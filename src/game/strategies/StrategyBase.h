@@ -36,7 +36,7 @@ public:
     /**
      * Apply the robot strategy when it's on the corner
      */
-    virtual void cornerStrategy();
+    virtual Command cornerStrategy(Command);
 
     virtual Command stopStrategy(Command);
 
