@@ -25,6 +25,9 @@ void Robot::initialize(){
     target = Point(0,0);
     command = Command(0,0,STOPPED_MOVE);
     lastCommand = Command(0,0,STOPPED_MOVE);
+
+    potencyFactor = 1.0f;
+    curveFactor = 0.8f;
 }
 
 // IMPLEMENTAR TESTE
@@ -85,7 +88,7 @@ float Robot::getPotencyFactor(){
     return potencyFactor;
 }
 
-void Robot::setCurveFactpr(float _c){
+void Robot::setCurveFactor(float _c){
     curveFactor = _c;
 }
 

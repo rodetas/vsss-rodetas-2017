@@ -64,12 +64,12 @@ void GameModel::setCaller(GameView* c){
     caller = c;
 }
 
-void GameModel::setPotencyFactor(float potency){
-    strategy->setPotencyFactor(potency);
+void GameModel::setPotencyFactor(float potency, int id){
+    robots[id]->setPotencyFactor(potency);
 }
 
-void GameModel::setCurveFactor(float curve){
-    strategy->setCurveFactor(curve);
+void GameModel::setCurveFactor(float curve, int id){
+    robots[id]->setCurveFactor(curve);
 }
 
 vector<Point> GameModel::getTargets(){

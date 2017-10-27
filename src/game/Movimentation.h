@@ -11,12 +11,9 @@ class Movimentation {
 
 private:
 
-    Point image;
     Command movements;
 
 	float maxPwm;
-	float powerFactor;
-    float curveFactor;
 
 public:
 

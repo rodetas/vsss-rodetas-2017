@@ -143,25 +143,27 @@ bool GameView::deleteConnection(GdkEventAny* event){
 }
 
 void GameView::onPotencyChangedRobot0(){
-	game_model.setPotencyFactor(spin_potency_robot0->get_value());
+	game_model.setPotencyFactor(spin_potency_robot0->get_value(), 0);
 }
 
 void GameView::onPotencyChangedRobot1(){
-	
+	game_model.setPotencyFactor(spin_potency_robot1->get_value(), 1);
 }
 
 void GameView::onPotencyChangedRobot2(){
-	
+	game_model.setPotencyFactor(spin_potency_robot2->get_value(), 2);
 }
 
 void GameView::onCurveChangedRobot0(){
-	game_model.setCurveFactor(spin_curve_robot0->get_value());
+	game_model.setCurveFactor(spin_curve_robot0->get_value(), 0);
 }
 
 void GameView::onCurveChangedRobot1(){
+    game_model.setCurveFactor(spin_curve_robot1->get_value(), 1);
 }
 
 void GameView::onCurveChangedRobot2(){
+    game_model.setCurveFactor(spin_curve_robot2->get_value(), 2);
 }
 
 void GameView::onButtonPlay(){

@@ -21,21 +21,6 @@ public:
 
     void apply(vector<Robot*> team, vector<Robot*> opponent, Ball* ball); // analisar a necessidade de retornar vector de command
 
-     /**
-     * Sets the potency factor value
-     * \param f: the potency
-     */
-     void setPotencyFactor(float);
-     
-    /**
-    * Sets the curve factor
-    * \param f: the curve factor
-    */
-    void setCurveFactor(float);
-
-    float getPotencyFactor();
-    float getCurveFactor();
-
     Ball* getBall();
 
     Robot getRobot(string);
