@@ -53,6 +53,12 @@ public:
     void setRobotId(int);
     int getRobotId();
 
+    void setPotencyFactor(float);
+    float getPotencyFactor();
+
+    void setCurveFactpr(float);
+    float getCurveFactor();
+
     void setPosition(Point);
     Point getPosition() const;
 
@@ -83,7 +89,9 @@ public:
     float sinFrom(Point) const;
 
     float distanceFrom(Robot) const;
+    float distanceFrom(Robot*) const;
     float distanceFrom(Ball) const;
+    float distanceFrom(Ball*) const;
     float distanceFrom(Object) const;
     float distanceFrom(Point) const;
 
@@ -96,6 +104,9 @@ private:
     float velocity;
     float angle;
     float radius;
+
+    float potencyFactor;
+    float curveFactor;
 
     Point position;
     Point target;

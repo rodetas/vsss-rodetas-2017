@@ -78,13 +78,13 @@ Command StrategyBase::stopStrategy(Command command){
 
 	if(distanceTarget < robot->getRadius()){
 
-        if (robot->cosFrom(data->getBall().getPosition()) < -0.9) {
+        if (robot->cosFrom(data->getBall()->getPosition()) < -0.9) {
             c = movimentation.stop();
-        } else if (robot->cosFrom(data->getBall().getPosition()) > 0.9){ 
+        } else if (robot->cosFrom(data->getBall()->getPosition()) > 0.9){ 
             c = movimentation.stop();
     
         } else {
-            if (robot->sinFrom(data->getBall().getPosition()) > 0) {
+            if (robot->sinFrom(data->getBall()->getPosition()) > 0) {
                 c = movimentation.turnRight(100, 100);
             } else {
                 c = movimentation.turnLeft(100, 100);

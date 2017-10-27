@@ -17,10 +17,10 @@ Point StrategyAttack::defineTarget(Robot* robot){
 /*	target.x = ballProjection.x;
 	target.y = ballProjection.y;
 */
- 	target.x = data->getBall().x();
-	target.y = data->getBall().y();
+ 	target.x = data->getBall()->x();
+	target.y = data->getBall()->y();
 
-	target = data->getBall().getBallProjection();
+	target = data->getBall()->getBallProjection();
 
 	/* target.x = imageSize.x/2;
 	target.y = imageSize.y/2; */

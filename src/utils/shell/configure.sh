@@ -271,7 +271,7 @@ INSTALL_XBEE_H () {
 	ok=1
 
 	if [ ${ASK_INSTALL} -eq 1 ]; then
-		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL XCTU ? (Y\n) ${NORMAL}"
+		echo "${WHITE}${BOLD}DO YOU WANT TO INSTALL XBEE_H_ ? (Y\n) ${NORMAL}"
 		read answer
 		if [ "${answer}" == "n" ]; then
 			ok=0

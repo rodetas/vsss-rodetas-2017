@@ -24,7 +24,7 @@ void Robot::initialize(){
     position = Point(0,0);
     target = Point(0,0);
     command = Command(0,0,STOPPED_MOVE);
-    lastCommand = Command(2,2,STOPPED_MOVE);
+    lastCommand = Command(0,0,STOPPED_MOVE);
 }
 
 // IMPLEMENTAR TESTE
@@ -75,6 +75,22 @@ void Robot::setRobotId(int _id){
 
 int Robot::getRobotId(){
     return id;
+}
+
+void Robot::setPotencyFactor(float _p){
+    potencyFactor = _p;
+}
+
+float Robot::getPotencyFactor(){
+    return potencyFactor;
+}
+
+void Robot::setCurveFactpr(float _c){
+    curveFactor = _c;
+}
+
+float Robot::getCurveFactor(){
+    return curveFactor;
 }
 
 void Robot::setPosition(Point _pos){
@@ -168,8 +184,16 @@ float Robot::distanceFrom(Robot _r) const{
     return distance(position, _r.getPosition());
 }
 
+float Robot::distanceFrom(Robot* _r) const{
+    return distance(position, _r->getPosition());
+}
+
 float Robot::distanceFrom(Ball _b) const{
     return distance(position, _b.getPosition());
+}
+
+float Robot::distanceFrom(Ball* _b) const{
+    return distance(position, _b->getPosition());
 }
 
 float Robot::distanceFrom(Object _o) const{
