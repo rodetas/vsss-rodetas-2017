@@ -3,8 +3,7 @@
 Strategy* Strategy::instance = NULL;
 
 Strategy::Strategy(){
-    potency_factor = 1.2;
-    curve_factor = 1.1;
+
 }
 
 Strategy* Strategy::getInstance(){
@@ -60,21 +59,5 @@ Ball* Strategy::getBall(){
 
 Robot Strategy::getRobot(string func){
     return *(team[func]);
-}
-
-void Strategy::setPotencyFactor(float pFactor){
-    potency_factor = pFactor;
-}
-     
-void Strategy::setCurveFactor(float cFactor){
-    curve_factor = cFactor;
-}
-
-float Strategy::getPotencyFactor(){
-    return potency_factor;
-}
-    
-float Strategy::getCurveFactor(){
-    return curve_factor;
 }
 

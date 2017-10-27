@@ -2,9 +2,6 @@
 
 Movimentation::Movimentation(){
 	maxPwm = 0;
-	// inicializacoes estao no data
-//	powerFactor = 1.0f;
-//	curveFactor = 1.2f;
 }
 
 /*
@@ -70,8 +67,8 @@ Command Movimentation::definePwm(Robot* robot, char direction){
 
 	int standardPower = 160;
 
-	int basePower = standardPower * powerFactor;
-	int correctionPower = (standardPower/4) * robot->sinFrom(robot->getTarget()) * curveFactor;
+	int basePower = standardPower * robot->getPotencyFactor();
+	int correctionPower = (standardPower/4) * robot->sinFrom(robot->getTarget()) * robot->getCurveFactor();
 	int pwmMotor1 = (basePower + correctionPower);
 	int pwmMotor2 = (basePower - correctionPower);
 
@@ -97,12 +94,4 @@ Command Movimentation::stop(){
 
 Command Movimentation::getMovement(){
 	return movements;
-}
-
-void Movimentation::setPotencyFactor(float power){
-	this->powerFactor = power;
-}
-
-void Movimentation::setCurveFactor(float curve){
-	this->curveFactor = curve;
 }

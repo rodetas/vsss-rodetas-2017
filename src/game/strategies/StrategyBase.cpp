@@ -18,9 +18,6 @@ void StrategyBase::apply(Robot* robot){
         Point target = defineTarget(robot);
         robot->setTarget(target);
         
-        movimentation.setPotencyFactor(data->getPotencyFactor());
-        movimentation.setCurveFactor(data->getCurveFactor());
-        
         // define pwm
         Command movimentationCommand = movimentation.movePlayers(robot);
 

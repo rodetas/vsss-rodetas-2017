@@ -56,7 +56,7 @@ public:
     void setPotencyFactor(float);
     float getPotencyFactor();
 
-    void setCurveFactpr(float);
+    void setCurveFactor(float);
     float getCurveFactor();
 
     void setPosition(Point);

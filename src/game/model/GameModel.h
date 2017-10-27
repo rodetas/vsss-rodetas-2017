@@ -23,8 +23,8 @@ public:
     void setPlay(bool);
     void setSide(bool);
 
-    void setPotencyFactor(float);
-    void setCurveFactor(float);
+    void setPotencyFactor(float, int);
+    void setCurveFactor(float, int);
 
     int getFps();
     bool getConnectionStatus();
@@ -33,7 +33,7 @@ public:
     
     Ball getBall();
 	vector<Robot> getTeam();
-	vector<Robot> getOpponent();
+    vector<Robot> getOpponent();
 
 private:
     GameView* caller;
