@@ -23,7 +23,7 @@ void Strategy::initializeStrategies(){
     strategies["goal"] = new StrategyGoal(); 
 }
 
-void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
+void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
      // fazer if em relacao a quantidade do vetor team
     /* if(robots[1].distanceFrom(ball) < robots[0].distanceFrom(ball)){
         team["attack"] = (robots[1]);
@@ -33,13 +33,13 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot>& robots){
         team["defense"] = (robots[1]);
     }   */
 
-    team["attack"] = &robots[1];
-    team["defense"] = &robots[0];
-    team["goal"] = &robots[2];
+    team["attack"] = _robots[1];
+    team["defense"] = _robots[0];
+    team["goal"] = _robots[2];
 }
 
-void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
-    opponent.swap(_opponent);
+void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball){
+    opponent = (_opponent);
     ball = _ball; 
 
     // define as funcoes de cada robo
@@ -52,26 +52,14 @@ void Strategy::apply(vector<Robot>& _team, vector<Robot> _opponent, Ball _ball){
         (it)->second->apply(team[function]);
     }
 
-    robots.clear();
-    for(auto it=team.begin() ; it!=team.end() ; it++){
-        robots.push_back(*(it->second));
-    }
 }
 
-Ball& Strategy::getBall(){
+Ball* Strategy::getBall(){
     return ball;
 }
 
 Robot Strategy::getRobot(string func){
     return *(team[func]);
-}
-
-vector<Robot>::iterator Strategy::getRobotsBegin(){
-    return robots.begin();
-}
-
-vector<Robot>::iterator Strategy::getRobotsEnd(){
-    return robots.end();
 }
 
 void Strategy::setPotencyFactor(float pFactor){
@@ -88,15 +76,5 @@ float Strategy::getPotencyFactor(){
     
 float Strategy::getCurveFactor(){
     return curve_factor;
-}
-
-vector<Point> Strategy::getTargets(){
-    vector<Point> targets;
-
-    for(auto it=team.begin() ; it!=team.end() ; it++){
-        targets.push_back((it)->second->getTarget());
-    }
-
-    return targets;
 }
 

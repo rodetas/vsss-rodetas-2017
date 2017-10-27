@@ -14,13 +14,13 @@ private:
 	Manipulation manipulation;
 	CameraConfiguration camera_config;	
 	
-	Ball ball;
+	Ball* ball;
 	PointCut point_cut;
 	cv::Mat opencv_image_BGR;
 
 	vector<Hsv> colorsHSV;
-	vector<Robot> robot_team;
-	vector<Robot> robot_opponent;
+	vector<Robot*> robot_team;
+	vector<Robot*> robot_opponent;
 	
 	int n_robots;
 	int angle_image;
@@ -33,13 +33,9 @@ private:
 
 public:
 	Vision();
-	void initialize();
+	void initialize(vector<Robot*>, vector<Robot*>, Ball*);
 	void computerVision();
 	void setGameSide();
-
-	Ball getBall();
-	vector<Robot>& getTeam();
-	vector<Robot> getOpponent();
 	
 };
 #endif

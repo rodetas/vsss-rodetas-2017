@@ -19,7 +19,7 @@ public:
 
     void initializeStrategies();
 
-    void apply(vector<Robot>& team, vector<Robot> opponent, Ball ball); // analisar a necessidade de retornar vector de command
+    void apply(vector<Robot*> team, vector<Robot*> opponent, Ball* ball); // analisar a necessidade de retornar vector de command
 
      /**
      * Sets the potency factor value
@@ -36,29 +36,23 @@ public:
     float getPotencyFactor();
     float getCurveFactor();
 
-    Ball& getBall();
+    Ball* getBall();
 
     Robot getRobot(string);
-
-    vector<Robot>::iterator getRobotsBegin();
-    vector<Robot>::iterator getRobotsEnd();
-
-    vector<Point> getTargets();
 
 private:
 
     Strategy(); ///< private constructor for singleton
     
-    void defineFunctionsForEachRobot(vector<Robot>&);
+    void defineFunctionsForEachRobot(vector<Robot*>);
 
     static Strategy* instance; ///< holds the class instance
 
     map<string, StrategyBase*> strategies;
 
-    Ball ball; ///< contain the ball coordinates
+    Ball* ball; ///< contain the ball coordinates
     map<string, Robot*> team; ///< vector containing the team's positions
-    vector<Robot> robots;
-    vector<Robot> opponent;
+    vector<Robot*> opponent;
 
     float curve_factor;
     float potency_factor;

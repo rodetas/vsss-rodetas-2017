@@ -43,6 +43,10 @@ private:
     Vision vision;
     Transmission transmission;
 
+    vector<Robot*> robots;
+    vector<Robot*> opponent;
+    Ball* ball;
+
     int fps;
     bool play;
     bool side;

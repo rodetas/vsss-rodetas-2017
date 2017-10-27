@@ -6,21 +6,13 @@
 Vision::Vision(){
     n_robots = 3;
     game_side = false;
-
-    robot_team.resize(n_robots);
-    robot_opponent.resize(n_robots);
-
-    for (int i = 0; i < n_robots; i++){
-        robot_team[i].setRobotId(i);
-        robot_opponent[i].setRobotId(i);
-    }
 }
 
 /*
  * Method that initialize the instance
  */
-void Vision::initialize(){
-    manipulation.loadCalibration();  
+void Vision::initialize(vector<Robot*> _robots, vector<Robot*> _opponent, Ball* _ball){
+    manipulation.loadCalibration();
     colorsHSV           = manipulation.getColorsHsv();
     camera_on           = manipulation.getCameraOn();
     point_cut.first     = manipulation.getPointField1();
@@ -28,7 +20,11 @@ void Vision::initialize(){
     angle_image         = manipulation.getAngleImage();
     camera_config       = manipulation.loadCameraConfig();
     
-    camera.setCameraValuesScript(camera_config);    
+    camera.setCameraValuesScript(camera_config);
+
+    robot_team = _robots;
+    robot_opponent = _opponent;
+    ball = _ball;
 
     if (camera_on) {
         opencv_image_BGR = cameraInitialize();
@@ -86,9 +82,9 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
             }
         }
 
-        robot_team[robot.getRobotId()].setPosition(robot.getPosition());
-        robot_team[robot.getRobotId()].setAngle(robot.getAngle());
-        robot_team[robot.getRobotId()].setRadius(robot.getRadius());
+        robot_team[robot.getRobotId()]->setPosition(robot.getPosition());
+        robot_team[robot.getRobotId()]->setAngle(robot.getAngle());
+        robot_team[robot.getRobotId()]->setRadius(robot.getRadius());
 
 //        robot_team[robot.getRobotId()].calculateSpeed();
     }
@@ -97,10 +93,10 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
 
 void Vision::opponentPosition(Position opponent_position){
     for(int i=0 ; i<n_robots ; i++){
-        robot_opponent[i].setPosition(Point(0,0));
+        robot_opponent[i]->setPosition(Point(0,0));
     }
     for (int i = 0; i < opponent_position.size(); i++){
-        robot_opponent[i].setPosition(opponent_position.center[i]);
+        robot_opponent[i]->setPosition(opponent_position.center[i]);
     }
 /*  REFAZER ESTA PARTE COM A CLASSE ROBOT
     Position opponent_position_aux;
@@ -132,23 +128,11 @@ void Vision::opponentPosition(Position opponent_position){
 
 void Vision::ballPosition(Position ball_position){
     if(ball_position.size() > 0)
-        ball.setPosition(ball_position.center[0]);
+        ball->setPosition(ball_position.center[0]);
     else
-        ball.setPosition(Point(0,0));
+        ball->setPosition(Point(0,0));
 }
 
 void Vision::setGameSide(){
     game_side = !game_side;
-}
-
-vector<Robot> &Vision::getTeam(){
-    return robot_team;
-}
-
-vector<Robot> Vision::getOpponent(){
-    return robot_opponent;
-}
-
-Ball Vision::getBall(){
-    return ball;
 }
