@@ -35,7 +35,7 @@ public:
 	Vision();
 	void initialize(vector<Robot*>, vector<Robot*>, Ball*);
 	void computerVision();
-	void setGameSide();
+	void changeGameSide();
 	
 };
 #endif

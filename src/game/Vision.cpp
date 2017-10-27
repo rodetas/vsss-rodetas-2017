@@ -45,9 +45,9 @@ void Vision::computerVision(){
             full_image_cut = cutImage(full_image_cut, point_cut);
 
     if (game_side) 
-        full_image_cut = rotateImage(opencv_image_BGR, 180);
+        full_image_cut = rotateImage(opencv_image_BGR, angle_image + 180);
 
-//    cv::imwrite("./teste.jpg", full_image_cut);
+//cv::imwrite("./teste.jpg", full_image_cut);
     
     Position color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
     Position color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);
@@ -133,6 +133,6 @@ void Vision::ballPosition(Position ball_position){
         ball->setPosition(Point(0,0));
 }
 
-void Vision::setGameSide(){
+void Vision::changeGameSide(){
     game_side = !game_side;
 }
