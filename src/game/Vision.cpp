@@ -55,11 +55,11 @@ void Vision::computerVision(){
     
     Position color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
     Position color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);
-    Position color_opponent_position = position(full_image_cut, colorsHSV[OPPONENT], 3);
+    //Position color_opponent_position = position(full_image_cut, colorsHSV[OPPONENT], 3);
 
     teamPosition(color_team_position, full_image_cut);
     ballPosition(color_ball_position);
-    opponentPosition(color_opponent_position);
+    //opponentPosition(color_opponent_position);
 }
 
 void Vision::teamPosition(Position team_position, cv::Mat image){
