@@ -21,6 +21,21 @@ bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
     try{
         Gtk::Allocation allocation = get_allocation();
+
+        /*    
+        field_size = image_size;
+
+            bool correct_size = true;
+            while (correct_size){
+                if (field_size.x < allocation.get_width() && field_size.y < allocation.get_height()){
+                    correct_size = false;
+                } else {
+                    field_size.x -= 10;
+                    field_size.y -= 10;
+                }
+            }
+        */
+        
             field_size.x = allocation.get_width();
             field_size.y = allocation.get_height();
 

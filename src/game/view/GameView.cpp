@@ -22,21 +22,49 @@ int GameView::GUI() {
     builder->get_widget("Button Paused", button_play); 
     button_play->signal_clicked().connect(sigc::mem_fun(this, &GameView::onButtonPlay));
     
-    builder->get_widget("Button Penalty", button_penalty); 
-    //button_penalty->signal_clicked().connect(sigc::mem_fun(this, &GameView::));
-    
     builder->get_widget("Button Time", button_side);
     button_side->signal_clicked().connect(sigc::mem_fun(this, &GameView::onButtonTime));
     
-    builder->get_widget("Selector Potency", spin_potency);
-    spin_potency->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChanged));
+    builder->get_widget("Robot 0 Potency", spin_potency_robot0);
+    spin_potency_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot0));
+
+    builder->get_widget("Robot 1 Potency", spin_potency_robot1);
+    spin_potency_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot1));
+
+    builder->get_widget("Robot 2 Potency", spin_potency_robot2);
+    spin_potency_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot2));
     
-    builder->get_widget("Selector Curve", spin_curve);
-    spin_curve->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChanged));
+    builder->get_widget("Robot 0 Curve", spin_curve_robot0);
+    spin_curve_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot0));
+
+    builder->get_widget("Robot 1 Curve", spin_curve_robot1);
+    spin_curve_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot1));
+
+    builder->get_widget("Robot 2 Curve", spin_curve_robot2);
+    spin_curve_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot2));
     
-    builder->get_widget("Label FPS", label_fps);
+    builder->get_widget("Popover Information", popover_information);
+    builder->get_widget("Model Button Information", button_information);
+    button_information->signal_clicked().connect( sigc::mem_fun(this, &GameView::onButtonInformation) );
+        
+    builder->get_widget("Radio Button Robot 0", radio_button_robot_0);
+    radio_button_robot_0->signal_pressed().connect(sigc::mem_fun(this, &GameView::onRadioButton0));
     
-    builder->get_widget("Transmission Erro", label_transmission);
+    builder->get_widget("Radio Button Robot 1", radio_button_robot_1);
+    radio_button_robot_1->signal_pressed().connect(sigc::mem_fun(this, &GameView::onRadioButton1));
+    
+    builder->get_widget("Radio Button Robot 2", radio_button_robot_2);
+    radio_button_robot_1->signal_pressed().connect(sigc::mem_fun(this, &GameView::onRadioButton2));    
+    
+    builder->get_widget("Switch Robot", switch_robot);
+    switch_robot->property_active().signal_changed().connect(sigc::mem_fun(this, &GameView::onSwitchRobot));
+    onSwitchRobot();
+
+    builder->get_widget("Label FPS", label_fps);    
+    builder->get_widget("Label Transmission Erro", label_transmission);
+    builder->get_widget("Label Robot 0", label_robot_0);
+    builder->get_widget("Label Robot 1", label_robot_1);
+    builder->get_widget("Label Robot 2", label_robot_2);
     
     builder->get_widget("Menu Calibrate", menu_calibration);
     menu_calibration->signal_activate().connect(sigc::mem_fun(this, &GameView::onMenuCalibration));
@@ -59,7 +87,7 @@ int GameView::GUI() {
     window->show_all();
     
     sigc::slot<bool> control_slot = sigc::mem_fun(game_model, &GameModel::control);
-    control_connection = Glib::signal_timeout().connect(control_slot, 33, Glib::PRIORITY_DEFAULT_IDLE);     
+    control_connection = Glib::signal_timeout().connect(control_slot, 32, Glib::PRIORITY_DEFAULT_IDLE);     
 
     app->run(*window);
 
@@ -114,12 +142,26 @@ bool GameView::deleteConnection(GdkEventAny* event){
     return false;
 }
 
-void GameView::onPotencyChanged(){
-	game_model.setPotencyFactor(spin_potency->get_value());
+void GameView::onPotencyChangedRobot0(){
+	game_model.setPotencyFactor(spin_potency_robot0->get_value());
 }
 
-void GameView::onCurveChanged(){
-	game_model.setCurveFactor(spin_curve->get_value());
+void GameView::onPotencyChangedRobot1(){
+	
+}
+
+void GameView::onPotencyChangedRobot2(){
+	
+}
+
+void GameView::onCurveChangedRobot0(){
+	game_model.setCurveFactor(spin_curve_robot0->get_value());
+}
+
+void GameView::onCurveChangedRobot1(){
+}
+
+void GameView::onCurveChangedRobot2(){
 }
 
 void GameView::onButtonPlay(){
@@ -141,6 +183,35 @@ void GameView::onButtonTime(){
 	}
 
     game_model.setSide(button_side->get_active());
+}
+
+void GameView::onButtonInformation() {
+    popover_information->show_all();
+    popover_information->set_visible(button_information->get_focus_on_click());
+}
+
+void GameView::onSwitchRobot() {
+    if (!switch_robot->get_active()){
+        radio_button_robot_0->set_state(Gtk::StateType::STATE_INSENSITIVE);
+        radio_button_robot_1->set_state(Gtk::StateType::STATE_INSENSITIVE);
+        radio_button_robot_2->set_state(Gtk::StateType::STATE_INSENSITIVE);
+    } else {
+        radio_button_robot_0->set_state(Gtk::StateType::STATE_NORMAL);
+        radio_button_robot_1->set_state(Gtk::StateType::STATE_NORMAL);
+        radio_button_robot_2->set_state(Gtk::StateType::STATE_NORMAL);
+    }
+}
+
+void GameView::onRadioButton0() {
+    
+}
+
+void GameView::onRadioButton1() {
+    
+}
+
+void GameView::onRadioButton2() {
+    
 }
 
 void GameView::onMenuCalibration(){
