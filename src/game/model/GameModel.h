@@ -21,7 +21,7 @@ public:
     
     void setCaller(GameView*);
     void setPlay(bool);
-    void setSide(bool);
+    void changeGameSide();
 
     void setPotencyFactor(float, int);
     void setCurveFactor(float, int);
@@ -49,7 +49,6 @@ private:
 
     int fps;
     bool play;
-    bool side;
     
 
 };

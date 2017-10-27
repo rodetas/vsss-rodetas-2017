@@ -2,7 +2,6 @@
 
 GameModel::GameModel(){
     play = false;
-    side = false;
 
     for(int i=0 ; i<3 ; i++){
         robots.push_back(new Robot(i));
@@ -56,8 +55,8 @@ void GameModel::setPlay(bool b){
     play = b;
 }
 
-void GameModel::setSide(bool b){
-    side = b;
+void GameModel::changeGameSide(){
+    vision.changeGameSide();
 }
 
 void GameModel::setCaller(GameView* c){

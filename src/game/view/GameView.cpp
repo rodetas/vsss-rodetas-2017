@@ -183,8 +183,7 @@ void GameView::onButtonTime(){
     } else {
 		button_side->set_label("1º time");
 	}
-
-    game_model.setSide(button_side->get_active());
+    game_model.changeGameSide();
 }
 
 void GameView::onButtonInformation() {
