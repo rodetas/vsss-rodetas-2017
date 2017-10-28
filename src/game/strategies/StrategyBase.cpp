@@ -37,6 +37,7 @@ void StrategyBase::move(Robot* robot){
 
     // define strategy
     Command strategyCommand = strategy(robot, movimentationCommand);
+    strategyCommand = stopStrategy(strategyCommand);
 
     Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
 
@@ -49,6 +50,7 @@ void StrategyBase::move(Robot* robot){
 
 	if (robot->isBoard() && robot->isStopped()){
 
+        // girar caso robo esteja preso de frente pra parede
         if (robot->cosFrom(data->getBall()->getPosition()) > -0.9 && robot->cosFrom(data->getBall()->getPosition()) < 0.9) {
             if (robot->sinFrom(data->getBall()->getPosition()) > 0) {
                 c = movimentation.turnRight(130, 130);
@@ -57,6 +59,7 @@ void StrategyBase::move(Robot* robot){
             }
         } 
         
+        // girar caso robo prenda a bola na parede
         if ((robot->cosFrom(data->getBall()->getPosition()) < -0.8 || robot->cosFrom(data->getBall()->getPosition()) > 0.8) &&
                     robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
 
@@ -78,7 +81,6 @@ Command StrategyBase::stopStrategy(Command command){
     float maxDistance = robot->getRadius()*3;
 	float distanceTarget = robot->distanceFrom(robot->getTarget());
 	
-	 // trocar pra imagesize
 	if(robot->getVelocity() > rodetas::imageSize.x*0.05){
 		maxDistance = robot->getRadius()*6;
 	}
@@ -101,6 +103,20 @@ Command StrategyBase::stopStrategy(Command command){
             } else {
                 c = movimentation.turnLeft(100, 100);
             }
+        }
+    }
+
+    return c;
+}
+
+Command StrategyBase::blockedStrategy(Command _command){
+    Command c = _command;
+
+    if(robot->isStoppedLongTime() && robot->distanceFrom(robot->getTarget()) > robot->getRadius()*4){
+        if (c.direcao == FORWARD_MOVE) {
+            c = Command(255,255,BACK_MOVE);
+        } else if(c.direcao == BACK_MOVE){
+            c = Command(255,255,FORWARD_MOVE);
         }
     }
 

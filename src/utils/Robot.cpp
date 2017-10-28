@@ -20,6 +20,7 @@ Robot::Robot(int _id, int _x, int _y){
 void Robot::initialize(){
     velocity = 0;
     angle = 0;
+    stoppedTime = 0;
 
     position = Point(0,0);
     target = Point(0,0);
@@ -32,7 +33,6 @@ void Robot::initialize(){
 
 // IMPLEMENTAR TESTE
 float Robot::calculateSpeed(){
-   
 	return distance((lastPositions.front()), (lastPositions[9]));
 }
 
@@ -42,9 +42,23 @@ bool Robot::isBoard(){
 	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.85) || x() < (rodetas::imageSize.x*0.15))));
 }
 
+bool Robot::calculateStopped(){
+    if(velocity < 5.0){
+        stoppedTime++;
+        return true;
+    }
+
+    stoppedTime = 0;
+
+    return false;
+}
+
 bool Robot::isStopped(){
-    
-    if(velocity<5){
+    return stopped;
+}
+
+bool Robot::isStoppedLongTime(){
+    if(stoppedTime >= 90){
         return true;
     }
 
@@ -99,6 +113,7 @@ void Robot::setPosition(Point _pos){
     }
 
     velocity = calculateSpeed();
+    stopped = calculateStopped();
 }
 
 Point Robot::getPosition() const {

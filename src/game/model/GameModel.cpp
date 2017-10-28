@@ -13,6 +13,7 @@ GameModel::GameModel(){
 
     vision.initialize(robots, opponent,ball);
     strategy = Strategy::getInstance(); // init singleton
+    strategy->initializeRobots(robots);
 }
 
 GameModel::~GameModel(){

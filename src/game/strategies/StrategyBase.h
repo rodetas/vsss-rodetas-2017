@@ -42,6 +42,8 @@ public:
 
     virtual Command stopStrategy(Command);
 
+    virtual Command blockedStrategy(Command);
+
      /**
      * Apply the potencial field
      * \param target: 

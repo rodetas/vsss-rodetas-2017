@@ -9,6 +9,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
+	c = blockedStrategy(c);
 
 	return c;
 }
@@ -16,13 +17,10 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 Point StrategyAttack::defineTarget(Robot* robot){
     Point target;
 	
-/*	target.x = ballProjection.x;
-	target.y = ballProjection.y;
-*/
  	target.x = data->getBall()->x();
 	target.y = data->getBall()->y();
 
-//	target = data->getBall()->getBallProjection();
+	target = data->getBall()->getBallProjection();
 
 	/* target.x = imageSize.x/2;
 	target.y = imageSize.y/2; */

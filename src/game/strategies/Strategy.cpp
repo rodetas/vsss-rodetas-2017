@@ -19,22 +19,17 @@ Strategy* Strategy::getInstance(){
 void Strategy::initializeStrategies(){
     strategies["attack"] = new StrategyAttack();
     strategies["defense"] = new StrategyDefense();
-    strategies["goal"] = new StrategyGoal(); 
+    strategies["goal"] = new StrategyGoal();
+}
+
+void Strategy::initializeRobots(vector<Robot*> _robots){
+    team["attack"] = _robots[2];
+    team["defense"] = _robots[0];
+    team["goal"] = _robots[1];
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
-     // fazer if em relacao a quantidade do vetor team
-    /* if(robots[1].distanceFrom(ball) < robots[0].distanceFrom(ball)){
-        team["attack"] = (robots[1]);
-        team["defense"] = (robots[0]);
-    } else {
-        team["attack"] = (robots[0]);
-        team["defense"] = (robots[1]);
-    }   */
 
-    team["attack"] = _robots[0];
-    team["defense"] = _robots[1];
-    team["goal"] = _robots[2];
 }
 
 void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball, bool targetFromScreen){

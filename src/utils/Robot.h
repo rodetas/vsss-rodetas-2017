@@ -46,7 +46,9 @@ public:
     
     bool isNull();
 
+    bool calculateStopped();
     bool isStopped();
+    bool isStoppedLongTime();
 
     float getVelocity();
 
@@ -100,6 +102,7 @@ private:
     const int velocityPrecision = 10;
 
     int id;
+    int stoppedTime;
 
     float velocity;
     float angle;
@@ -107,6 +110,8 @@ private:
 
     float potencyFactor;
     float curveFactor;
+
+    bool stopped;
 
     Point position;
     Point target;
