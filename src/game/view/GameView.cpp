@@ -65,6 +65,7 @@ int GameView::GUI() {
     builder->get_widget("Label Robot 0", label_robot_0);
     builder->get_widget("Label Robot 1", label_robot_1);
     builder->get_widget("Label Robot 2", label_robot_2);
+    builder->get_widget("Label Ball", label_ball);
     
     builder->get_widget("Menu Calibrate", menu_calibration);
     menu_calibration->signal_activate().connect(sigc::mem_fun(this, &GameView::onMenuCalibration));
@@ -109,7 +110,7 @@ void GameView::updateScreen(){
     label_robot_0->set_label("Robot 0: " + to_string(game_model.getRobot(0)->getPosition().x) + " x " + to_string(game_model.getRobot(0)->getPosition().y));
     label_robot_1->set_label("Robot 1: " + to_string(game_model.getRobot(1)->getPosition().x) + " x " + to_string(game_model.getRobot(1)->getPosition().y));
     label_robot_2->set_label("Robot 2: " + to_string(game_model.getRobot(2)->getPosition().x) + " x " + to_string(game_model.getRobot(2)->getPosition().y));
-    //label_ball->set_label("Ball: " + to_string(game_model.getBall().getPosition().x) + " x " + to_string(game_model.getBall().getPosition().y));
+    label_ball->set_label("Ball: " + to_string(game_model.getBall().getPosition().x) + " x " + to_string(game_model.getBall().getPosition().y));
 }
 
 bool GameView::onKeyboard(GdkEventKey* event){
