@@ -33,7 +33,6 @@ bool GameModel::control(){
     strategy->apply(robots, opponent, ball);
    
     if(play){
-
         for(int i=0 ; i<robots.size() ; i++){
             transmission.send(robots[i]->getRobotId(), robots[i]->getCommand());
         }
@@ -87,6 +86,10 @@ int GameModel::getFps(){
 
 bool GameModel::getConnectionStatus(){
     return transmission.getConnectionStatus();
+}
+
+Robot* GameModel::getRobot(int id){
+    return robots[id];
 }
 
 vector<Robot> GameModel::getTeam(){

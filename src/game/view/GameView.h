@@ -41,6 +41,7 @@ private:
 	Gtk::Label *label_robot_0 = nullptr;
 	Gtk::Label *label_robot_1 = nullptr;
 	Gtk::Label *label_robot_2 = nullptr;
+	Gtk::Label *label_ball = nullptr;
 	Gtk::Label *label_transmission = nullptr;
 	
 	Gtk::MenuItem *menu_calibration = nullptr;
