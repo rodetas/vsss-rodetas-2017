@@ -20,6 +20,7 @@ Robot::Robot(int _id, int _x, int _y){
 void Robot::initialize(){
     velocity = 0;
     angle = 0;
+    stoppedTime = 0;
 
     position = Point(0,0);
     target = Point(0,0);
@@ -27,33 +28,41 @@ void Robot::initialize(){
     lastCommand = Command(0,0,STOPPED_MOVE);
 
     potencyFactor = 1.0f;
-    curveFactor = 0.8f;
+    curveFactor = 0.4f;
 }
 
 // IMPLEMENTAR TESTE
 float Robot::calculateSpeed(){
-   
 	return distance((lastPositions.front()), (lastPositions[9]));
 }
 
 bool Robot::isBoard(){
-   // cout<<getPosition()<<endl;
-   // cout<<rodetas::imageSize<<endl;
 	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2)*1.2;
 	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2)*1.2;
-	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.90) || x() < (rodetas::imageSize.x*0.10)) && (y() > halfGoal1 || y() < halfGoal2)));
+	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.85) || x() < (rodetas::imageSize.x*0.15))));
+}
+
+bool Robot::calculateStopped(){
+    if(velocity < 5.0){
+        stoppedTime++;
+        return true;
+    }
+
+    stoppedTime = 0;
+
+    return false;
 }
 
 bool Robot::isStopped(){
-    float dis = distance((lastPositions.front()), (lastPositions[25]));
-    //cout<<"dis: "<<dis<<endl;
-    float vel = (getVelocity());
-    //cout<<"vel: "<<vel<<endl;
-    if(vel<5){
+    return stopped;
+}
+
+bool Robot::isStoppedLongTime(){
+    if(stoppedTime >= 90){
         return true;
-    }else{
-        return false;
     }
+
+    return false;
 }
 
 int Robot::y() const{
@@ -104,6 +113,7 @@ void Robot::setPosition(Point _pos){
     }
 
     velocity = calculateSpeed();
+    stopped = calculateStopped();
 }
 
 Point Robot::getPosition() const {

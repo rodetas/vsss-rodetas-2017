@@ -5,8 +5,11 @@ StrategyGoal::StrategyGoal() : StrategyBase() {
 }
 
 Command StrategyGoal::strategy(Robot* robot, Command command){
+	Command c = command;
 
-	return command;
+	c = stopStrategy(c);
+
+	return c;
 }
 
 Point StrategyGoal::defineTarget(Robot* robot){
@@ -14,20 +17,36 @@ Point StrategyGoal::defineTarget(Robot* robot){
     Point goalTarget = Point(0,0);
 	Point ballProjection = data->getBall()->getBallProjection();
 
-	goalTarget.x = rodetas::imageSize.x*0.10;
+	goalTarget.x = rodetas::imageSize.x*0.15;
 	goalTarget.y = rodetas::imageSize.y/2 - (rodetas::imageSize.y/2-ballProjection.y)/2;
-	
-	if (robot->x() < goalSize.x*1.2 && robot->distanceFrom(*data->getBall()) > 300) {
-		goalTarget.x = goalSize.x+250;
-		goalTarget.y = imageSize.y/2;
-	} else if (goalTarget.y > (imageSize.y/2-goalArea.y/2) && goalTarget.y < (imageSize.y/2+goalArea.y/2) && ballProjection.x < imageSize.x*0.25 && robot->x() < data->getBall()->x()) {
-		goalTarget.x = ballProjection.x; //ou manda direto na bola?
-		goalTarget.y = ballProjection.y; //ou manda direto na bola?
-	} else if (goalTarget.y < (imageSize.y/2-goalArea.y/2)) {
-		goalTarget.y = (imageSize.y/2-goalArea.y/2);
-	} else if (goalTarget.y > (imageSize.y/2+goalArea.y/2)) {
-		goalTarget.y = (imageSize.y/2+goalArea.y/2);
-	}
 
 	return goalTarget;
+}
+
+Command StrategyGoal::stopStrategy(Command command){
+    // Para o robo quando atinge o target, alem disso, rotaciona de forma que esteja sempre virado para a bola
+
+    Command c = command;
+    float maxDistance = robot->getRadius()*3;
+	float distanceTarget = robot->distanceFrom(robot->getTarget());
+	
+	if(robot->getVelocity() > rodetas::imageSize.x*0.05){
+		maxDistance = robot->getRadius()*6;
+	}
+
+	if(distanceTarget < maxDistance){
+		c.pwm1 = command.pwm1*(distanceTarget/maxDistance);
+		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
+	}
+
+	if(distanceTarget < robot->getRadius()){
+
+        if ((robot->getAngle() > 80 && robot->getAngle() < 120) || (robot->getAngle() > 260 && robot->getAngle() < 300)) {
+            c = movimentation.stop();
+        } else {
+			c = movimentation.turnRight(100, 100);
+        }
+    }
+
+    return c;
 }

@@ -80,7 +80,10 @@ int GameView::GUI() {
     menu_quit->signal_activate().connect(sigc::mem_fun(this, &GameView::onMenuQuit));
     
     GameDraw draw_robot;
+    draw_robot.signal_button_press_event().connect(sigc::mem_fun(this, &GameView::onMouseClick));
     signal_draw_robot.connect(sigc::mem_fun(draw_robot, &GameDraw::setPosition));
+    signal_press_event.connect(sigc::mem_fun(draw_robot, &GameDraw::onPressEvent));
+    signal_draw_get_click.connect(sigc::mem_fun(draw_robot, &GameDraw::getButtonClick));
 
     builder->get_widget("Box", box);
     box->pack_start(draw_robot);
@@ -136,10 +139,40 @@ bool GameView::onKeyboard(GdkEventKey* event){
     } else if(event->keyval == GDK_KEY_Escape){
         onMenuQuit();
     
+    } else if(event->keyval == GDK_KEY_q){
+        radio_button_robot_0->set_active(true);
+
+    } else if(event->keyval == GDK_KEY_w){
+        radio_button_robot_1->set_active(true);
+
+    } else if(event->keyval == GDK_KEY_e){
+        radio_button_robot_2->set_active(true);
+        
     } else {
         game_model.manualRobotControl(STOPPED_MOVE, 0, 0);
     }
 
+    return true;
+}
+
+bool GameView::onMouseClick(GdkEventButton* event){
+    
+    signal_press_event.emit(event);
+
+    if(event->button == GDK_BUTTON_PRIMARY){
+        if(switch_robot->get_active()){
+            if(radio_button_robot_0->get_active()){
+                game_model.setTargetOf(signal_draw_get_click.emit(), 0);
+
+            } else if(radio_button_robot_1->get_active()){
+                game_model.setTargetOf(signal_draw_get_click.emit(), 1);                
+
+            } else if(radio_button_robot_2->get_active()){
+                game_model.setTargetOf(signal_draw_get_click.emit(), 2);
+                
+            }
+        }
+    }
     return true;
 }
 
@@ -202,10 +235,12 @@ void GameView::onSwitchRobot() {
         radio_button_robot_0->set_state(Gtk::StateType::STATE_INSENSITIVE);
         radio_button_robot_1->set_state(Gtk::StateType::STATE_INSENSITIVE);
         radio_button_robot_2->set_state(Gtk::StateType::STATE_INSENSITIVE);
+        game_model.setTargetFromScreen(false);
     } else {
         radio_button_robot_0->set_state(Gtk::StateType::STATE_NORMAL);
         radio_button_robot_1->set_state(Gtk::StateType::STATE_NORMAL);
         radio_button_robot_2->set_state(Gtk::StateType::STATE_NORMAL);
+        game_model.setTargetFromScreen(true);
     }
 }
 

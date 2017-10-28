@@ -21,6 +21,8 @@ public:
     
     void setCaller(GameView*);
     void setPlay(bool);
+    void setTargetFromScreen(bool);
+    void setTargetOf(Point, int);
     void changeGameSide();
 
     void setPotencyFactor(float, int);
@@ -51,6 +53,7 @@ private:
 
     int fps;
     bool play;
+    bool targetFromScreen;
     
 
 };

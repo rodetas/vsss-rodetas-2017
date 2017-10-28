@@ -21,6 +21,8 @@ void Vision::initialize(vector<Robot*> _robots, vector<Robot*> _opponent, Ball* 
     camera_config       = manipulation.loadCameraConfig();
     
     camera.setCameraValuesScript(camera_config);
+    usleep(100000);
+    camera.setCameraValuesScript(camera_config);
 
     robot_team = _robots;
     robot_opponent = _opponent;
@@ -47,7 +49,7 @@ void Vision::computerVision(){
     if (game_side) 
         full_image_cut = rotateImage(opencv_image_BGR, angle_image + 180);
 
-//cv::imwrite("./teste.jpg", full_image_cut);
+//    cv::imwrite("./teste.jpg", full_image_cut);
     
     Position color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
     Position color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);
@@ -129,8 +131,6 @@ void Vision::opponentPosition(Position opponent_position){
 void Vision::ballPosition(Position ball_position){
     if(ball_position.size() > 0)
         ball->setPosition(ball_position.center[0]);
-    else
-        ball->setPosition(Point(0,0));
 }
 
 void Vision::changeGameSide(){

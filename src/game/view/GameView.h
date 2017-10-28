@@ -49,6 +49,9 @@ private:
 	Gtk::MenuItem *menu_arduino = nullptr;
 	Gtk::MenuItem *menu_quit = nullptr;
 	Gtk::Box *box = nullptr;
+
+	sigc::signal <Point> signal_draw_get_click;
+	sigc::signal <void, GdkEventButton*> signal_press_event;
 	    
     int program_state;
 
@@ -69,6 +72,7 @@ private:
 	void onRadioButton1();
 	void onRadioButton2();
 	void onButtonInformation();   
+	bool onMouseClick(GdkEventButton*);
 	bool onKeyboard(GdkEventKey*);
 	bool deleteConnection(GdkEventAny*);
 

@@ -19,10 +19,12 @@ public:
     /**
      * Default constructor
      */
-     StrategyBase();
+    StrategyBase();
 
-     virtual void apply(Robot*);
+    virtual void apply(Robot*);
      
+    virtual void move(Robot*);
+
      /**
       * Pure virtual function to apply the strategy
       */
@@ -39,6 +41,8 @@ public:
     virtual Command cornerStrategy(Command);
 
     virtual Command stopStrategy(Command);
+
+    virtual Command blockedStrategy(Command);
 
      /**
      * Apply the potencial field

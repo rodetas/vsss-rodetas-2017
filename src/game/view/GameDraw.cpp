@@ -1,9 +1,15 @@
+// MEXER NO TEMPLATE 
+// VERIFICAR O EVENTO DE CLIQUE DO MOUSE
+
+
 #include "GameDraw.h"
 
 GameDraw::GameDraw(){
     colors_rgb = manipulation.getColorsRgbCairo();
     image_size = manipulation.getImageSize();
     goal_size  = manipulation.getGoal();
+
+    add_events(Gdk::BUTTON_PRESS_MASK);
 }
 
 GameDraw::~GameDraw(){
@@ -21,20 +27,6 @@ bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
 
     try{
         Gtk::Allocation allocation = get_allocation();
-
-        /*    
-        field_size = image_size;
-
-            bool correct_size = true;
-            while (correct_size){
-                if (field_size.x < allocation.get_width() && field_size.y < allocation.get_height()){
-                    correct_size = false;
-                } else {
-                    field_size.x -= 10;
-                    field_size.y -= 10;
-                }
-            }
-        */
         
             field_size.x = allocation.get_width();
             field_size.y = allocation.get_height();
@@ -219,4 +211,16 @@ bool GameDraw::on_draw (const Cairo::RefPtr<Cairo::Context> &c){
     }
 
     return true;
+}
+
+
+void GameDraw::onPressEvent(GdkEventButton* event){
+    if(event->button == GDK_BUTTON_PRIMARY){
+        changed = changeCoordinate_AUX(Point{event->x, event->y});
+    }
+}
+
+
+Point GameDraw::getButtonClick(){
+    return changed;
 }
