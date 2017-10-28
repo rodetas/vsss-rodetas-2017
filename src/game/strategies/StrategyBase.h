@@ -19,10 +19,12 @@ public:
     /**
      * Default constructor
      */
-     StrategyBase();
+    StrategyBase();
 
-     virtual void apply(Robot*);
+    virtual void apply(Robot*);
      
+    virtual void move(Robot*);
+
      /**
       * Pure virtual function to apply the strategy
       */

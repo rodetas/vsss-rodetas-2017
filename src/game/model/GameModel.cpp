@@ -2,7 +2,8 @@
 
 GameModel::GameModel(){
     play = false;
-
+    targetFromScreen = false;
+    
     for(int i=0 ; i<3 ; i++){
         robots.push_back(new Robot(i));
         opponent.push_back(new Robot(i));
@@ -29,7 +30,7 @@ bool GameModel::control(){
 
     vision.computerVision();
 
-    strategy->apply(robots, opponent, ball);
+    strategy->apply(robots, opponent, ball, targetFromScreen);
    
     if(play){
         for(int i=0 ; i<robots.size() ; i++){
@@ -54,6 +55,10 @@ void GameModel::setPlay(bool b){
     play = b;
 }
 
+void GameModel::setTargetFromScreen(bool t){
+    targetFromScreen = t;
+}
+
 void GameModel::changeGameSide(){
     vision.changeGameSide();
 }
@@ -68,6 +73,10 @@ void GameModel::setPotencyFactor(float potency, int id){
 
 void GameModel::setCurveFactor(float curve, int id){
     robots[id]->setCurveFactor(curve);
+}
+
+void GameModel::setTargetOf(Point target, int id){
+    robots[id]->setTarget(target);
 }
 
 vector<Point> GameModel::getTargets(){

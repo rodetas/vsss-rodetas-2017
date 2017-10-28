@@ -30,30 +30,45 @@ void StrategyBase::apply(Robot* robot){
     }
 } 
 
- Command StrategyBase::cornerStrategy(Command command){
-	
-    // movement along the corners
-   
-	if (robot->isBoard()){
-        //command = movimentation.stop();
-        //cout<<"Canto"<<endl;
-        if(robot->isStopped()){
-           // cout<<"Parado"<<endl; 
-        }
-        
-        if (robot->distanceFrom(data->getBall()) < 55){	
-           // cout<<"Bola presa"<<endl;	
+void StrategyBase::move(Robot* robot){
+    setRobot(robot);
+    // define pwm
+    Command movimentationCommand = movimentation.movePlayers(robot);
 
-			if (robot->y() > (rodetas::imageSize.y/2)){
-                //cout<<"Vira esquerda"<<endl;
-				command = movimentation.turnLeft(120, 120);	
-		    } else {
-                //cout<<"Vira direita"<<endl;
-                command = movimentation.turnRight(120, 120);
-			}
-		}
+    // define strategy
+    Command strategyCommand = strategy(robot, movimentationCommand);
+
+    Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
+
+    robot->setCommand(strategyCommand);
+}
+
+ Command StrategyBase::cornerStrategy(Command command){
+    // movement along the corners
+    Command c = command;
+
+	if (robot->isBoard() && robot->isStopped()){
+
+        if (robot->cosFrom(data->getBall()->getPosition()) > -0.9 && robot->cosFrom(data->getBall()->getPosition()) < 0.9) {
+            if (robot->sinFrom(data->getBall()->getPosition()) > 0) {
+                c = movimentation.turnRight(130, 130);
+            } else {
+                c = movimentation.turnLeft(130, 130);
+            }
+        } 
+        
+        if ((robot->cosFrom(data->getBall()->getPosition()) < -0.8 || robot->cosFrom(data->getBall()->getPosition()) > 0.8) &&
+                    robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
+
+            if (robot->y() > (rodetas::imageSize.y/2)){
+                c = movimentation.turnLeft(255, 255);	
+            } else {
+                c = movimentation.turnRight(255, 255);
+            }
+        }
     }
-    return command;
+
+    return c;
 }
 
 Command StrategyBase::stopStrategy(Command command){

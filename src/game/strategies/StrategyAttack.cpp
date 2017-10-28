@@ -8,6 +8,8 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 
 	Command c = command;
 //	c = stopStrategy(c);
+	c = cornerStrategy(c);
+
 	return c;
 }
 
@@ -19,22 +21,6 @@ Point StrategyAttack::defineTarget(Robot* robot){
 */
  	target.x = data->getBall()->x();
 	target.y = data->getBall()->y();
-
-	float m = (target.y-robot->y())/(target.x-robot->x());
-
-	Point parcial;
-
-	if(target.x > robot->x()){
-		parcial.x = robot->x()+70;
-		parcial.y = m*(parcial.x-robot->x()) + robot->y();
-	} else {
-		parcial.x = robot->x()-70;
-		parcial.y = m*(parcial.x-robot->x()) + robot->y();
-	}
-
-//	cout << parcial << " " << m << endl;
-
-	target = parcial;
 
 //	target = data->getBall()->getBallProjection();
 

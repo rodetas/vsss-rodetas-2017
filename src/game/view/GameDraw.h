@@ -28,7 +28,8 @@ private:
     Point field_size;
     Point image_size;
     Point goal_size;
-    
+    Point changed;
+
     template <typename typePoint>
     typePoint changeCoordinate(typePoint point){
         point.x = float(point.x) * float(field_size.x) / float(image_size.x);
@@ -37,14 +38,27 @@ private:
         return point;
     }
 
+    // ALTERAR
+    template <typename typePoint>
+    typePoint changeCoordinate_AUX(typePoint point){
+        point.x = float(point.x) * float(image_size.x) / float(field_size.x);
+        point.y = float(point.y) * float(image_size.y) / float(field_size.y);
+
+        return point;
+    }
+
 protected:
 
-    bool on_draw (const Cairo::RefPtr<Cairo::Context> &c) override;
+    virtual bool on_draw (const Cairo::RefPtr<Cairo::Context> &c);
 
 public:
 
     GameDraw();
     virtual ~GameDraw();
+
+    Point getButtonClick();
+
+    void onPressEvent(GdkEventButton* event);
     void setPosition(vector<Robot>, vector<Robot>, Ball);
     void setTargets(vector<Point>);
 };

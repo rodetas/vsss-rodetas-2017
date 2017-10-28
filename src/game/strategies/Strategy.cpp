@@ -32,23 +32,34 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
         team["defense"] = (robots[1]);
     }   */
 
-    team["attack"] = _robots[1];
-    team["defense"] = _robots[0];
+    team["attack"] = _robots[0];
+    team["defense"] = _robots[1];
     team["goal"] = _robots[2];
 }
 
-void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball){
+void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball, bool targetFromScreen){
     opponent = (_opponent);
     ball = _ball; 
 
-    // define as funcoes de cada robo
-    defineFunctionsForEachRobot(_team);
+    if(!targetFromScreen){
 
-    // aplica a estrategia para cada robo
-    for(auto it = strategies.begin() ; it != strategies.end() ; it++){
-        string function = it->first;
-        // envia o robo especifico como parametro para a estrategia
-        (it)->second->apply(team[function]);
+        // define as funcoes de cada robo
+        defineFunctionsForEachRobot(_team);
+
+        // aplica a estrategia para cada robo
+        for(auto it = strategies.begin() ; it != strategies.end() ; it++){
+            string function = it->first;
+            // envia o robo especifico como parametro para a estrategia
+            (it)->second->apply(team[function]);
+        }
+
+    } else {
+
+        for(auto it = strategies.begin() ; it!=strategies.end() ; it++){
+            string function = it->first;
+            // envia o robo especifico como parametro para a estrategia
+            (it)->second->move(team[function]);
+        }
     }
 
 }
