@@ -26,6 +26,8 @@ public:
     void setPotencyFactor(float, int);
     void setCurveFactor(float, int);
 
+    Robot* getRobot(int);
+
     int getFps();
     bool getConnectionStatus();
 

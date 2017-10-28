@@ -13,10 +13,10 @@ Command Movimentation::movePlayers(Robot* robot){
 	Command command;
 
 	/* movement along the field */
-	if (robot->cosFrom(destination) < -0.3) {
+	if (robot->cosFrom(destination) < -0.4) {
 		command = definePwm(robot, BACK_MOVE);
 	
-	} else if (robot->cosFrom(destination) > 0.3){ 
+	} else if (robot->cosFrom(destination) > 0.4){ 
 		command = definePwm(robot, FORWARD_MOVE);	
 
 	} else {
@@ -68,7 +68,7 @@ Command Movimentation::definePwm(Robot* robot, char direction){
 	int standardPower = 160;
 
 	int basePower = standardPower * robot->getPotencyFactor();
-	int correctionPower = (standardPower/4) * robot->sinFrom(robot->getTarget()) * robot->getCurveFactor();
+	int correctionPower = (standardPower) * robot->sinFrom(robot->getTarget()) * robot->getCurveFactor();
 	int pwmMotor1 = (basePower + correctionPower);
 	int pwmMotor2 = (basePower - correctionPower);
 

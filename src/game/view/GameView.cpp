@@ -29,19 +29,19 @@ int GameView::GUI() {
     spin_potency_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot0));
 
     builder->get_widget("Robot 1 Potency", spin_potency_robot1);
-    spin_potency_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot1));
+    spin_potency_robot1->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot1));
 
     builder->get_widget("Robot 2 Potency", spin_potency_robot2);
-    spin_potency_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot2));
+    spin_potency_robot2->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onPotencyChangedRobot2));
     
     builder->get_widget("Robot 0 Curve", spin_curve_robot0);
     spin_curve_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot0));
 
     builder->get_widget("Robot 1 Curve", spin_curve_robot1);
-    spin_curve_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot1));
+    spin_curve_robot1->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot1));
 
     builder->get_widget("Robot 2 Curve", spin_curve_robot2);
-    spin_curve_robot0->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot2));
+    spin_curve_robot2->signal_value_changed().connect(sigc::mem_fun(this, &GameView::onCurveChangedRobot2));
     
     builder->get_widget("Popover Information", popover_information);
     builder->get_widget("Model Button Information", button_information);
@@ -104,7 +104,12 @@ void GameView::updateScreen(){
 		label_transmission->set_visible(false);
 	}
 	
-	label_fps->set_label("Fps: " + to_string(game_model.getFps()));
+    label_fps->set_label("Fps: " + to_string(game_model.getFps()));
+
+    label_robot_0->set_label("Robot 0: " + to_string(game_model.getRobot(0)->getPosition().x) + " x " + to_string(game_model.getRobot(0)->getPosition().y));
+    label_robot_1->set_label("Robot 1: " + to_string(game_model.getRobot(1)->getPosition().x) + " x " + to_string(game_model.getRobot(1)->getPosition().y));
+    label_robot_2->set_label("Robot 2: " + to_string(game_model.getRobot(2)->getPosition().x) + " x " + to_string(game_model.getRobot(2)->getPosition().y));
+    //label_ball->set_label("Ball: " + to_string(game_model.getBall().getPosition().x) + " x " + to_string(game_model.getBall().getPosition().y));
 }
 
 bool GameView::onKeyboard(GdkEventKey* event){
