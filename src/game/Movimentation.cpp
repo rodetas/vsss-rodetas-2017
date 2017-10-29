@@ -77,6 +77,20 @@ Command Movimentation::definePwm(Robot* robot, char direction){
 	return verifiedPwm;
 }
 
+Command Movimentation::turn(Robot* robot, Point point, char direction){
+
+	int standardPower = 100;
+	
+	int basePower = standardPower * robot->getPotencyFactor();
+	int correctionPower = (standardPower) * abs(robot->sinFrom(point)) * robot->getCurveFactor();
+	int pwmMotor1 = (basePower - correctionPower);
+	int pwmMotor2 = (basePower - correctionPower);
+
+	Command verifiedPwm = checkPwm(Command(pwmMotor1, pwmMotor2, direction));
+
+	return verifiedPwm;
+}
+
 Command Movimentation::turnLeft(int pwm1, int pwm2){
 	Command command(pwm1, pwm2, LEFT_MOVE);
 	return command;

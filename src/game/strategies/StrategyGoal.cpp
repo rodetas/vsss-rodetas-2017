@@ -44,7 +44,7 @@ Command StrategyGoal::stopStrategy(Command command){
         if ((robot->getAngle() > 80 && robot->getAngle() < 120) || (robot->getAngle() > 260 && robot->getAngle() < 300)) {
             c = movimentation.stop();
         } else {
-			c = movimentation.turnRight(100, 100);
+			c = movimentation.turn(robot, Point(robot->getTarget().x, 0), RIGHT_MOVE);
         }
     }
 

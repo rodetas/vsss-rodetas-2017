@@ -516,10 +516,8 @@
               <object class="GtkLabel" id="Label Transmission Erro">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">TRANSMISSION ERROR</property>
-                <attributes>
-                  <attribute name="foreground" value="#cccc00000000"/>
-                </attributes>
+                <property name="label" translatable="yes">&lt;span color='red'&gt;&lt;b&gt;TRANSMISSION ERROR&lt;/b&gt;&lt;/span&gt;</property>
+                <property name="use_markup">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>

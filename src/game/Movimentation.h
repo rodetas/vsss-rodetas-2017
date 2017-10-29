@@ -27,6 +27,9 @@ public:
 	 */
 	Command movePlayers(Robot*);
 
+
+	Command turn(Robot*, Point, char);
+
 	/**
 	 *
 	 */
