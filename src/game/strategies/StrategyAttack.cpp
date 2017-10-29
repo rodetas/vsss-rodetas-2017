@@ -9,7 +9,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
-	c = blockedStrategy(c);
+//	c = blockedStrategy(c);
 
 	return c;
 }

@@ -107,8 +107,15 @@ void GameView::updateScreen(){
 	} else {
 		label_transmission->set_visible(false);
 	}
-	
-    label_fps->set_label("Fps: " + to_string(game_model.getFps()));
+    
+    if(game_model.getFps() > 24){
+        label_fps->set_label("Fps: " + to_string(game_model.getFps()));
+        label_fps->override_color(Gdk::RGBA("black"), Gtk::STATE_FLAG_NORMAL);
+    } else {
+        label_fps->set_markup("<b>Fps: " + to_string(game_model.getFps()) + "</b>");
+        label_fps->override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
+
+    }
 
     label_robot_0->set_label("Robot 0: " + to_string(game_model.getRobot(0)->getPosition().x) + " x " + to_string(game_model.getRobot(0)->getPosition().y));
     label_robot_1->set_label("Robot 1: " + to_string(game_model.getRobot(1)->getPosition().x) + " x " + to_string(game_model.getRobot(1)->getPosition().y));

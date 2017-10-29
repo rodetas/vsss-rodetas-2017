@@ -49,20 +49,19 @@ void StrategyBase::move(Robot* robot){
     Command c = command;
 
 	if (robot->isBoard() && robot->isStopped()){
-
         // girar caso robo esteja preso de frente pra parede
         if (robot->cosFrom(data->getBall()->getPosition()) > -0.9 && robot->cosFrom(data->getBall()->getPosition()) < 0.9) {
             if (robot->sinFrom(data->getBall()->getPosition()) > 0) {
-                c = movimentation.turnRight(130, 130);
+                c = movimentation.turn(robot, data->getBall()->getPosition(), RIGHT_MOVE);
             } else {
-                c = movimentation.turnLeft(130, 130);
+                c = movimentation.turn(robot, data->getBall()->getPosition(), LEFT_MOVE);
             }
         } 
         
         // girar caso robo prenda a bola na parede
-        if ((robot->cosFrom(data->getBall()->getPosition()) < -0.8 || robot->cosFrom(data->getBall()->getPosition()) > 0.8) &&
-                    robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
+        if (robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
 
+            cout << "BOLSA PRESA" << endl;
             if (robot->y() > (rodetas::imageSize.y/2)){
                 c = movimentation.turnLeft(255, 255);	
             } else {
@@ -92,16 +91,17 @@ Command StrategyBase::stopStrategy(Command command){
 
 	if(distanceTarget < robot->getRadius()){
 
-        if (robot->cosFrom(data->getBall()->getPosition()) < -0.9) {
+        if (robot->cosFrom(data->getBall()->getPosition()) < -0.8 || robot->cosFrom(data->getBall()->getPosition()) > 0.8) {
             c = movimentation.stop();
-        } else if (robot->cosFrom(data->getBall()->getPosition()) > 0.9){ 
-            c = movimentation.stop();
-    
+ 
         } else {
+
             if (robot->sinFrom(data->getBall()->getPosition()) > 0) {
-                c = movimentation.turnRight(100, 100);
+                //c = movimentation.turnRight(pwm, pwm);
+                c = movimentation.turn(robot, data->getBall()->getPosition(), RIGHT_MOVE);
             } else {
-                c = movimentation.turnLeft(100, 100);
+                //c = movimentation.turnLeft(pwm, pwm);
+                c = movimentation.turn(robot, data->getBall()->getPosition(), LEFT_MOVE);
             }
         }
     }
