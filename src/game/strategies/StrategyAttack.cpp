@@ -9,27 +9,39 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
-//	c = blockedStrategy(c);
+	c = blockedStrategy(c);
 
 	return c;
 }
 
 Point StrategyAttack::defineTarget(Robot* robot){
-    Point target;
-	
- 	target.x = data->getBall()->x();
-	target.y = data->getBall()->y();
+    Point target;// = data->getBall()->getPosition();
+	Ball* ball = data->getBall();
 
-	target = data->getBall()->getBallProjection();
+	target = ball->getBallProjection();
 
-	/* target.x = imageSize.x/2;
-	target.y = imageSize.y/2; */
+	Point centerGoal = Point(imageSize.x-10, imageSize.y/2);
+
+	cout << robot->getId() << " " << robot->cosFrom(centerGoal) << " " << robot->sinFrom(centerGoal) << endl;
+
+	// robo esta atras da bola, nao pode acerta-la pois podera fazer gol contra
+	if(robot->x() > ball->x()){
+		if(ball->getBallProjection().y > imageSize.y/2){
+			target.y -= robot->getRadius()*3;
+		} else {
+			target.y += robot->getRadius()*3;
+		}
+	}
+
+	if((robot->cosFrom(ball->getPosition()) < -0.9 || robot->cosFrom(ball->getPosition()) > 0.9) && robot->distanceFrom(ball) < robot->getRadius()*3.5 &&
+		robot->x() < ball->x() && (robot->cosFrom(centerGoal) < -0.8 || robot->cosFrom(centerGoal) > 0.8) && robot->x() < imageSize.x*0.7){
+
+		target = ball->getBallProjection();
+		cout << "ERROW" << endl;
+	}
+
 /*
-	if (isBoard(ball) && robot.x - 100 < ball.x){
-		target.x = ball.x;
-		target.y = ball.y;
-
-	} else if(((cos_robot_ball < -0.8) || cos_robot_ball > 0.8) && distance(ball, robot) < imageSize.x * 0.08){
+	if(((cos_robot_ball < -0.8) || cos_robot_ball > 0.8) && distance(ball, robot) < imageSize.x * 0.08){
 		target = { imageSize.x, imageSize.y/2};
 
 	} else if(robot.x > (ball.x - (abs(robot.y-ball.y))) && robotState == DEFENDENDO) {
@@ -58,8 +70,6 @@ Point StrategyAttack::defineTarget(Robot* robot){
 	if (target.y < 0) target.y = 0;
 	if (target.y > imageSize.y) target.y = imageSize.y;
 */
-
-//	data->setTargetOf(robot.id, target);
 
 	return target;
 }

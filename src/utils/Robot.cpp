@@ -85,7 +85,7 @@ void Robot::setRobotId(int _id){
     id = _id;
 }
 
-int Robot::getRobotId(){
+int Robot::getId(){
     return id;
 }
 

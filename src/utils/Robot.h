@@ -53,7 +53,7 @@ public:
     float getVelocity();
 
     void setRobotId(int);
-    int getRobotId();
+    int getId();
 
     void setPotencyFactor(float);
     float getPotencyFactor();

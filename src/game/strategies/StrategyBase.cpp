@@ -61,7 +61,6 @@ void StrategyBase::move(Robot* robot){
         // girar caso robo prenda a bola na parede
         if (robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
 
-            cout << "BOLSA PRESA" << endl;
             if (robot->y() > (rodetas::imageSize.y/2)){
                 c = movimentation.turnLeft(255, 255);	
             } else {
@@ -73,10 +72,10 @@ void StrategyBase::move(Robot* robot){
     return c;
 }
 
-Command StrategyBase::stopStrategy(Command command){
+Command StrategyBase::stopStrategy(Command _command){
     // Para o robo quando atinge o target, alem disso, rotaciona de forma que esteja sempre virado para a bola
 
-    Command c = command;
+    Command c = _command;
     float maxDistance = robot->getRadius()*3;
 	float distanceTarget = robot->distanceFrom(robot->getTarget());
 	
@@ -85,8 +84,8 @@ Command StrategyBase::stopStrategy(Command command){
 	}
 
 	if(distanceTarget < maxDistance){
-		c.pwm1 = command.pwm1*(distanceTarget/maxDistance);
-		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
+		c.pwm1 = c.pwm1*(distanceTarget/maxDistance);
+		c.pwm2 = c.pwm2*(distanceTarget/maxDistance);
 	}
 
 	if(distanceTarget < robot->getRadius()){

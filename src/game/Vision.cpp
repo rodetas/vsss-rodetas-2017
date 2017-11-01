@@ -84,11 +84,11 @@ void Vision::teamPosition(Position team_position, cv::Mat image){
             }
         }
 
-        robot_team[robot.getRobotId()]->setPosition(robot.getPosition());
-        robot_team[robot.getRobotId()]->setAngle(robot.getAngle());
-        robot_team[robot.getRobotId()]->setRadius(robot.getRadius());
+        robot_team[robot.getId()]->setPosition(robot.getPosition());
+        robot_team[robot.getId()]->setAngle(robot.getAngle());
+        robot_team[robot.getId()]->setRadius(robot.getRadius());
 
-//        robot_team[robot.getRobotId()].calculateSpeed();
+//        robot_team[robot.getId()].calculateSpeed();
     }
         
 }

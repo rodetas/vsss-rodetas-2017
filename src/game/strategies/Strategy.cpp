@@ -23,8 +23,8 @@ void Strategy::initializeStrategies(){
 }
 
 void Strategy::initializeRobots(vector<Robot*> _robots){
-    team["attack"] = _robots[2];
-    team["defense"] = _robots[0];
+    team["attack"] = _robots[0];
+    team["defense"] = _robots[2];
     team["goal"] = _robots[1];
 }
 

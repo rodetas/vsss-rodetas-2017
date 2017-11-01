@@ -35,7 +35,7 @@ bool GameModel::control(){
    
     if(play){
         for(int i=0 ; i<robots.size() ; i++){
-            transmission.send(robots[i]->getRobotId(), robots[i]->getCommand());
+            transmission.send(robots[i]->getId(), robots[i]->getCommand());
         }
     }
 
