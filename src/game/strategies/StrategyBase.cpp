@@ -37,11 +37,12 @@ void StrategyBase::move(Robot* robot){
 
     // define strategy
     Command strategyCommand = strategy(robot, movimentationCommand);
+
     strategyCommand = stopStrategy(strategyCommand);
 
     Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
 
-    robot->setCommand(strategyCommand);
+    robot->setCommand(finalPwm);
 }
 
  Command StrategyBase::cornerStrategy(Command command){
@@ -90,7 +91,7 @@ Command StrategyBase::stopStrategy(Command _command){
 
 	if(distanceTarget < robot->getRadius()){
 
-        if (robot->cosFrom(data->getBall()->getPosition()) < -0.8 || robot->cosFrom(data->getBall()->getPosition()) > 0.8) {
+        if (robot->cosFrom(data->getBall()->getPosition()) < -0.7 || robot->cosFrom(data->getBall()->getPosition()) > 0.7) {
             c = movimentation.stop();
  
         } else {

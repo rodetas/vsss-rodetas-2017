@@ -9,7 +9,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
-	c = blockedStrategy(c);
+// c = blockedStrategy(c);
 
 	return c;
 }
@@ -20,23 +20,23 @@ Point StrategyAttack::defineTarget(Robot* robot){
 
 	target = ball->getBallProjection();
 
-	Point centerGoal = Point(imageSize.x-10, imageSize.y/2);
+	Point centerGoal = Point(imageSize.x, imageSize.y/2);
 
-	cout << robot->getId() << " " << robot->cosFrom(centerGoal) << " " << robot->sinFrom(centerGoal) << endl;
+	//cout << robot->getId() << " " << robot->cosFrom(centerGoal) << " " << robot->sinFrom(centerGoal) << endl;
 
 	// robo esta atras da bola, nao pode acerta-la pois podera fazer gol contra
-	if(robot->x() > ball->x()){
+	/* if(robot->x() > ball->x()){
 		if(ball->getBallProjection().y > imageSize.y/2){
 			target.y -= robot->getRadius()*3;
 		} else {
 			target.y += robot->getRadius()*3;
 		}
-	}
+	} */
 
-	if((robot->cosFrom(ball->getPosition()) < -0.9 || robot->cosFrom(ball->getPosition()) > 0.9) && robot->distanceFrom(ball) < robot->getRadius()*3.5 &&
-		robot->x() < ball->x() && (robot->cosFrom(centerGoal) < -0.8 || robot->cosFrom(centerGoal) > 0.8) && robot->x() < imageSize.x*0.7){
+	if( (robot->cosFrom(ball->getPosition()) < -0.9 || robot->cosFrom(ball->getPosition()) > 0.9) && robot->distanceFrom(ball) < robot->getRadius()*3.5 &&
+		(robot->cosFrom(centerGoal) < -0.8 || robot->cosFrom(centerGoal) > 0.8)){
 
-		target = ball->getBallProjection();
+		target = Point(imageSize.x, imageSize.y/2);
 		cout << "ERROW" << endl;
 	}
 
