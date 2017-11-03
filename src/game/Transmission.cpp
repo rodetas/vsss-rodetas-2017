@@ -6,7 +6,7 @@ Transmission::Transmission() {
     transmittingStatus = false;
     openStatus = false;
 
-    port = "/dev/ttyUSB1";
+    port = "/dev/ttyUSB0";
 
     openConection();
 }

@@ -23,9 +23,9 @@ void Strategy::initializeStrategies(){
 }
 
 void Strategy::initializeRobots(vector<Robot*> _robots){
-    team["attack"] = _robots[0];
+    team["attack"] = _robots[1];
     team["defense"] = _robots[2];
-    team["goal"] = _robots[1];
+    team["goal"] = _robots[0];
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
