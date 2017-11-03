@@ -6,6 +6,8 @@ Transmission::Transmission() {
     transmittingStatus = false;
     openStatus = false;
 
+    port = "/dev/ttyUSB0";
+
     openConection();
 }
 
@@ -20,7 +22,7 @@ void Transmission::closeConnection(){
 
 bool Transmission::openConection(){   
 
-    usb = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
+    usb = open(port.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
 
     if (usb == -1 ){
         openStatus = false;
@@ -128,7 +130,7 @@ void Transmission::serialTransmit(string comand){
     unsigned char send_bytes[size/2];
 
     if(timer.getTime() - last_time > 2000){
-        string out = executeCommand("ls /dev/ttyUSB0 2> /dev/null");
+        string out = executeCommand("ls " + port + " 2> /dev/null");
 
         if(out.compare("") == 0) transmittingStatus = false;
         else transmittingStatus = true;
@@ -159,6 +161,5 @@ void Transmission::stopAllRobots(int n){
 }
 
 bool Transmission::getConnectionStatus(){
-    std::lock_guard<std::mutex> lock(mutex);
     return transmittingStatus && openStatus;
 }

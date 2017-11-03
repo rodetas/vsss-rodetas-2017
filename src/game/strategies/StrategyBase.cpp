@@ -37,11 +37,12 @@ void StrategyBase::move(Robot* robot){
 
     // define strategy
     Command strategyCommand = strategy(robot, movimentationCommand);
+
     strategyCommand = stopStrategy(strategyCommand);
 
     Command finalPwm = movimentation.progressiveAcell(robot, strategyCommand);
 
-    robot->setCommand(strategyCommand);
+    robot->setCommand(finalPwm);
 }
 
  Command StrategyBase::cornerStrategy(Command command){
@@ -61,7 +62,6 @@ void StrategyBase::move(Robot* robot){
         // girar caso robo prenda a bola na parede
         if (robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
 
-            cout << "BOLSA PRESA" << endl;
             if (robot->y() > (rodetas::imageSize.y/2)){
                 c = movimentation.turnLeft(255, 255);	
             } else {
@@ -73,10 +73,10 @@ void StrategyBase::move(Robot* robot){
     return c;
 }
 
-Command StrategyBase::stopStrategy(Command command){
+Command StrategyBase::stopStrategy(Command _command){
     // Para o robo quando atinge o target, alem disso, rotaciona de forma que esteja sempre virado para a bola
 
-    Command c = command;
+    Command c = _command;
     float maxDistance = robot->getRadius()*3;
 	float distanceTarget = robot->distanceFrom(robot->getTarget());
 	
@@ -85,13 +85,13 @@ Command StrategyBase::stopStrategy(Command command){
 	}
 
 	if(distanceTarget < maxDistance){
-		c.pwm1 = command.pwm1*(distanceTarget/maxDistance);
-		c.pwm2 = command.pwm2*(distanceTarget/maxDistance);
+		c.pwm1 = c.pwm1*(distanceTarget/maxDistance);
+		c.pwm2 = c.pwm2*(distanceTarget/maxDistance);
 	}
 
 	if(distanceTarget < robot->getRadius()){
 
-        if (robot->cosFrom(data->getBall()->getPosition()) < -0.8 || robot->cosFrom(data->getBall()->getPosition()) > 0.8) {
+        if (robot->cosFrom(data->getBall()->getPosition()) < -0.7 || robot->cosFrom(data->getBall()->getPosition()) > 0.7) {
             c = movimentation.stop();
  
         } else {

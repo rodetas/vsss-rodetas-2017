@@ -9,27 +9,55 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
+<<<<<<< HEAD
 //	c = blockedStrategy(c);
+
+	Ball* ball = data->getBall();
+
+//	cout << robot
+
+	if(robot->cosFrom(ball->getPosition()) > 0.9){
+
+	}
+=======
+// c = blockedStrategy(c);
+>>>>>>> 2eec44012fd4cc4a45f6afa67040dd2e7cb9c930
 
 	return c;
 }
 
 Point StrategyAttack::defineTarget(Robot* robot){
-    Point target;
-	
- 	target.x = data->getBall()->x();
-	target.y = data->getBall()->y();
+    Point target;// = data->getBall()->getPosition();
+	Ball* ball = data->getBall();
 
-	target = data->getBall()->getBallProjection();
+	//target = ball->getBallProjection();
+	target = ball->getPosition();
 
-	/* target.x = imageSize.x/2;
-	target.y = imageSize.y/2; */
+	Point centerGoal = Point(imageSize.x, imageSize.y/2);
+
+	float angle = calcAngle(ball->getPosition(), centerGoal)/180.0;
+
+	if(angle < 0){
+		target.y -= 100.0*(1+(angle));
+		target.x -= 50;
+	} else {
+		target.y += 100.0*(1-(angle));
+		target.x -= 50;
+	}
+
+
+//	cout << robot->getId() << " " << robot->cosFrom(centerGoal) << " " << robot->sinFrom(centerGoal) <<  endl;
+
+	float diff = robot->cosFrom(ball->getPosition()) - robot->cosFrom(centerGoal);
+	cout << angle << endl;
+	if(diff < 0.3 && diff > -0.3 && robot->distanceFrom(ball) < robot->getRadius()*3.0){
+
+		target = centerGoal;
+		cout << "ERROW" << endl;
+	}
+
 /*
-	if (isBoard(ball) && robot.x - 100 < ball.x){
-		target.x = ball.x;
-		target.y = ball.y;
-
-	} else if(((cos_robot_ball < -0.8) || cos_robot_ball > 0.8) && distance(ball, robot) < imageSize.x * 0.08){
+	if(((cos_robot_ball < -0.8) || cos_robot_ball > 0.8) && distance(ball, robot) < imageSize.x * 0.08){
 		target = { imageSize.x, imageSize.y/2};
 
 	} else if(robot.x > (ball.x - (abs(robot.y-ball.y))) && robotState == DEFENDENDO) {
@@ -58,8 +86,6 @@ Point StrategyAttack::defineTarget(Robot* robot){
 	if (target.y < 0) target.y = 0;
 	if (target.y > imageSize.y) target.y = imageSize.y;
 */
-
-//	data->setTargetOf(robot.id, target);
 
 	return target;
 }
