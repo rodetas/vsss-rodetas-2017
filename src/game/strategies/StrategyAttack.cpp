@@ -9,6 +9,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
+<<<<<<< HEAD
 //	c = blockedStrategy(c);
 
 	Ball* ball = data->getBall();
@@ -18,6 +19,9 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	if(robot->cosFrom(ball->getPosition()) > 0.9){
 
 	}
+=======
+// c = blockedStrategy(c);
+>>>>>>> 2eec44012fd4cc4a45f6afa67040dd2e7cb9c930
 
 	return c;
 }
@@ -29,7 +33,7 @@ Point StrategyAttack::defineTarget(Robot* robot){
 	//target = ball->getBallProjection();
 	target = ball->getPosition();
 
-	Point centerGoal = Point(imageSize.x-10, imageSize.y/2);
+	Point centerGoal = Point(imageSize.x, imageSize.y/2);
 
 	float angle = calcAngle(ball->getPosition(), centerGoal)/180.0;
 

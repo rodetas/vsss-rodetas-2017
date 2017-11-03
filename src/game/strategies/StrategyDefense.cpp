@@ -14,7 +14,7 @@ Command StrategyDefense::strategy(Robot* robot, Command command){
 
 Point StrategyDefense::defineTarget(Robot* robot){
 
-	Point defenseTarget = Point(700, (imageSize.y/2)+200);
+	Point defenseTarget = Point(imageSize.x/4, imageSize.y/2);
 
 
 	return defenseTarget;
