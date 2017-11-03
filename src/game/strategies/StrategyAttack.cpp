@@ -9,7 +9,6 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	Command c = command;
 //	c = stopStrategy(c);
 	c = cornerStrategy(c);
-<<<<<<< HEAD
 //	c = blockedStrategy(c);
 
 	Ball* ball = data->getBall();
@@ -19,9 +18,6 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	if(robot->cosFrom(ball->getPosition()) > 0.9){
 
 	}
-=======
-// c = blockedStrategy(c);
->>>>>>> 2eec44012fd4cc4a45f6afa67040dd2e7cb9c930
 
 	return c;
 }

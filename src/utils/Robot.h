@@ -82,6 +82,9 @@ public:
     vector<Point>::iterator getLastPositionsBegin();
     vector<Point>::iterator getLastPositionsEnd();
 
+    Point getRobotProjection();
+    Point calculateRobotProjection();
+
     float cosFrom(Robot) const;
     float cosFrom(Object) const;
     float cosFrom(Point) const;
@@ -120,6 +123,9 @@ private:
     Command lastCommand;
 
     vector<Point> lastPositions;
+
+    Point robotProjection;
+    Point lastRobotProjection;
 
 };
 

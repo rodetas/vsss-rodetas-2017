@@ -169,7 +169,30 @@ vector<Point>::iterator Robot::getLastPositionsEnd(){
     return lastPositions.end();
 }
 
- float Robot::cosFrom(Robot _r) const{
+Point Robot::getRobotProjection(){
+    return robotProjection;
+}
+
+Point Robot::calculateRobotProjection(){
+    if(lastPositions.size() < 9){
+        lastPositions.push_back(position);
+    } else {
+        lastPositions.pop_back();
+        lastPositions.insert(lastPositions.begin(), position);
+        robotProjection.x = position.x + (lastPositions[0].x - lastPositions[8].x);
+        robotProjection.y = position.y + (lastPositions[0].y - lastPositions[8].y);
+
+        if(robotProjection.x > imageSize.x || robotProjection.x < 0 || robotProjection.y > imageSize.y || robotProjection.y < 0){
+            robotProjection = lastRobotProjection;
+        }
+            
+        lastRobotProjection = robotProjection;
+    }
+
+    return robotProjection;
+}
+
+float Robot::cosFrom(Robot _r) const{
     return cos((calcAngle(position, _r.getPosition()) - angle)/RADIAN_TO_DEGREE);
 }
 
