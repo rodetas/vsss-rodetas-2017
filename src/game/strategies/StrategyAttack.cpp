@@ -33,12 +33,12 @@ Point StrategyAttack::defineTarget(Robot* robot){
 		}
 	} */
 
-	if( (robot->cosFrom(ball->getPosition()) < -0.9 || robot->cosFrom(ball->getPosition()) > 0.9) && robot->distanceFrom(ball) < robot->getRadius()*3.5 &&
+	/* if( (robot->cosFrom(ball->getPosition()) < -0.9 || robot->cosFrom(ball->getPosition()) > 0.9) && robot->distanceFrom(ball) < robot->getRadius()*3.5 &&
 		(robot->cosFrom(centerGoal) < -0.8 || robot->cosFrom(centerGoal) > 0.8)){
 
 		target = Point(imageSize.x, imageSize.y/2);
 		cout << "ERROW" << endl;
-	}
+	} */
 
 /*
 	if(((cos_robot_ball < -0.8) || cos_robot_ball > 0.8) && distance(ball, robot) < imageSize.x * 0.08){
