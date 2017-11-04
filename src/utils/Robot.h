@@ -43,6 +43,7 @@ public:
      * \return true if is near
      */
     bool isBoard();
+    bool isParallelGoal();
     
     bool isNull();
 
@@ -82,6 +83,9 @@ public:
     vector<Point>::iterator getLastPositionsBegin();
     vector<Point>::iterator getLastPositionsEnd();
 
+    Point getProjection();
+    Point calculateRobotProjection();
+
     float cosFrom(Robot) const;
     float cosFrom(Object) const;
     float cosFrom(Point) const;
@@ -120,6 +124,9 @@ private:
     Command lastCommand;
 
     vector<Point> lastPositions;
+
+    Point projection;
+    Point lastRobotProjection;
 
 };
 

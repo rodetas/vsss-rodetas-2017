@@ -24,18 +24,17 @@ void Strategy::initializeStrategies(){
 
 void Strategy::initializeRobots(vector<Robot*> _robots){
     team["attack"] = _robots[1];
-    team["defense"] = _robots[2];
-    team["goal"] = _robots[0];
+    team["defense"] = _robots[0];
+    team["goal"] = _robots[2];
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
-    /*
-    if (team["attack"]->x() > ball->x() * 1.05 && !(team["attack"]->x() > ball->x() && team["defense"]->x() > ball->x()) ){
+    
+    if (team["attack"]->x() > ball->x() * 1.1 && !(team["attack"]->x() > ball->x() && team["defense"]->x() > ball->x()) ){
         Robot *aux = team["attack"];
         team["attack"] = team["defense"];
         team["defense"] = aux;
     }
-    */
 
 }
 
