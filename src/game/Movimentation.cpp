@@ -79,7 +79,7 @@ Command Movimentation::definePwm(Robot* robot, char direction){
 
 Command Movimentation::turn(Robot* robot, Point point, char direction){
 
-	int standardPower = 100;
+	int standardPower = 180;
 	
 	int basePower = standardPower * robot->getPotencyFactor();
 	int correctionPower = (standardPower) * abs(robot->sinFrom(point)) * robot->getCurveFactor();

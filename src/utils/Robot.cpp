@@ -37,9 +37,11 @@ float Robot::calculateSpeed(){
 }
 
 bool Robot::isBoard(){
-	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2)*1.2;
-	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2)*1.2;
 	return (y() > (rodetas::imageSize.y*0.9) || y() < (rodetas::imageSize.y*0.10) || ((x() > (rodetas::imageSize.x*0.85) || x() < (rodetas::imageSize.x*0.15))));
+}
+
+bool Robot::isParallelGoal(){
+    return (cosFrom(Point(imageSize.x, y())) > -0.3 && cosFrom(Point(imageSize.x, y())) < 0.3);
 }
 
 bool Robot::calculateStopped(){
@@ -107,6 +109,7 @@ float Robot::getCurveFactor(){
 
 void Robot::setPosition(Point _pos){
     position = _pos;
+
     lastPositions.insert(lastPositions.begin(), position);
     if(lastPositions.size() >= 60){
         lastPositions.pop_back();
@@ -114,6 +117,7 @@ void Robot::setPosition(Point _pos){
 
     velocity = calculateSpeed();
     stopped = calculateStopped();
+    projection = calculateRobotProjection();
 }
 
 Point Robot::getPosition() const {
@@ -169,7 +173,26 @@ vector<Point>::iterator Robot::getLastPositionsEnd(){
     return lastPositions.end();
 }
 
- float Robot::cosFrom(Robot _r) const{
+Point Robot::getProjection(){
+    return projection;
+}
+
+Point Robot::calculateRobotProjection(){
+    Point aux = Point(position.x+radius/2, position.y+radius/2);
+    
+    projection.x = aux.x + (lastPositions[0].x - lastPositions[10].x);
+    projection.y = aux.y + (lastPositions[0].y - lastPositions[10].y);
+
+    if(projection.x > imageSize.x || projection.x < 0 || projection.y > imageSize.y || projection.y < 0){
+        projection = lastRobotProjection;
+    }
+        
+    lastRobotProjection = projection;
+
+    return projection;
+}
+
+float Robot::cosFrom(Robot _r) const{
     return cos((calcAngle(position, _r.getPosition()) - angle)/RADIAN_TO_DEGREE);
 }
 

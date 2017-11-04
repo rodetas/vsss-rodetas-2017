@@ -44,6 +44,10 @@ public:
 
     virtual Command blockedStrategy(Command);
 
+    virtual Command testStrategy(Command);
+
+    virtual Command collisionStrategy(Command);
+
      /**
      * Apply the potencial field
      * \param target: 
