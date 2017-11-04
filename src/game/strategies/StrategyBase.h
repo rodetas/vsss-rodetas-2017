@@ -44,7 +44,7 @@ public:
 
     virtual Command blockedStrategy(Command);
 
-    virtual Command testStrategy(Command);
+    virtual Command kickStrategy(Command);
 
     virtual Command collisionStrategy(Command);
 

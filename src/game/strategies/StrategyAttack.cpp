@@ -8,7 +8,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 
 	Command c = command;
 //	c = stopStrategy(c);
-	c = testStrategy(c);
+	c = kickStrategy(c);
 	c = cornerStrategy(c);
 // 	c = blockedStrategy(c);
 
@@ -32,7 +32,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 	return c;
 }
 
-Command StrategyAttack::testStrategy(Command _command){
+Command StrategyAttack::kickStrategy(Command _command){
 	Command c = _command;
 
 	Point centerGoal = Point(imageSize.x, imageSize.y/2);

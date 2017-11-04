@@ -77,7 +77,7 @@ void StrategyBase::move(Robot* robot){
 Command StrategyBase::collisionStrategy(Command _command){   
 }
 
-Command StrategyBase::testStrategy(Command _command){
+Command StrategyBase::kickStrategy(Command _command){
 
 }
 
