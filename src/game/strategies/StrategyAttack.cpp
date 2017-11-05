@@ -7,19 +7,21 @@ StrategyAttack::StrategyAttack() : StrategyBase(){
 Command StrategyAttack::strategy(Robot* robot, Command command){
 
 	Command c = command;
-//	c = stopStrategy(c);
+
 	c = kickStrategy(c);
 	c = cornerStrategy(c);
-// 	c = blockedStrategy(c);
-
+	//c = stopStrategy(c);
+	//c = collisionStrategy(c);
+	//c = blockedStrategy(c);
+	
 	if (robot->isParallelGoal()){
-
+		
 		int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2);
 		int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2);
-
-		if ( robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius() * 1.2 && 
-		    !(robot->x() > imageSize.x * 0.9 && robot->y() > halfGoal1) &&
-		    !(robot->x() > imageSize.x * 0.9 && robot->y() < halfGoal2) ){
+		
+		if ( robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius() * 1.5 && 
+		!(robot->x() > imageSize.x * 0.9 && robot->y() > halfGoal1) &&
+		!(robot->x() > imageSize.x * 0.9 && robot->y() < halfGoal2) ){
 			
 			if (robot->y() > data->getBall()->getPosition().y) {
 				c = movimentation.turnRight(255, 255);
@@ -28,7 +30,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 			}
 		}
 	}
-
+		
 	return c;
 }
 
@@ -49,6 +51,34 @@ Command StrategyAttack::kickStrategy(Command _command){
 	return c;
 }
 
+Command StrategyAttack::collisionStrategy(Command _command){  
+	Command c = _command;
+
+	int angle_ball = calcAngle(robot->getPosition(), data->getBall()->getPosition());
+	int angle_defense = calcAngle(data->getRobot("defense").getPosition(), data->getBall()->getPosition());
+
+	angle_ball = (angle_ball + 360) % 360; // converter para 0 - 360
+	angle_defense = (angle_defense + 360) % 360;
+
+	float sin_angle = sin(angle_ball - angle_defense);
+
+	if ( distance(robot->getProjection(), data->getRobot("defense").getProjection() ) < robot->getRadius() * 8){
+
+		char robotWay = c.direcao;
+		char defenseWay = data->getRobot("defense").getCommand().direcao;
+		if(robotWay == defenseWay){
+			// os dois de frente ou de costas
+			c.pwm2 = c.pwm2 * abs(sin_angle) + 0.3;
+
+		} else if(robotWay != defenseWay){
+			// os robos estao em sentidos opostos
+			c.pwm1 = c.pwm1 * abs(sin_angle) + 0.3;
+		}
+	}
+
+	return c;
+}
+
 Point StrategyAttack::defineTarget(Robot* robot){
     Point target;// = data->getBall()->getPosition();
 	Ball* ball = data->getBall();
@@ -56,8 +86,6 @@ Point StrategyAttack::defineTarget(Robot* robot){
 	target = ball->getBallProjection();
 
 	//target = ball->getPosition();
-
-
 
 	Point centerGoal = Point(imageSize.x, imageSize.y/2);
 	float angle_robot_goal = calcAngle(centerGoal, robot->getPosition());
@@ -69,9 +97,8 @@ Point StrategyAttack::defineTarget(Robot* robot){
 		target = centerGoal;
 	} 
 
-
+	if(target.x < imageSize.x*0.2) target.x = imageSize.x*0.3;
 	
-
 //	cout << calcAngle(centerGoal, robot->getPosition()) << endl; 
 
 	/* float angle = calcAngle(ball->getPosition(), centerGoal)/180.0;

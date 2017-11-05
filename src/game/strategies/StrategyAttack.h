@@ -13,6 +13,7 @@ public:
     virtual Command strategy(Robot*, Command);
     virtual Point defineTarget(Robot*);
     virtual Command kickStrategy(Command);
+    virtual Command collisionStrategy(Command);
     
 };
 

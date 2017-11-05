@@ -33,6 +33,7 @@ void Robot::initialize(){
 
 // IMPLEMENTAR TESTE
 float Robot::calculateSpeed(){
+    //cout << id << " " << lastPositions[9] << endl;
 	return distance((lastPositions.front()), (lastPositions[9]));
 }
 

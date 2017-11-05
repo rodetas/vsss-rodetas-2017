@@ -6,7 +6,7 @@ StrategyBase::StrategyBase(){
     robotState = PARADO;
 	nStrategies++;
 
-	data = Strategy::getInstance();
+    data = Strategy::getInstance();
 }
 
 void StrategyBase::apply(Robot* robot){
@@ -78,7 +78,6 @@ Command StrategyBase::collisionStrategy(Command _command){
 }
 
 Command StrategyBase::kickStrategy(Command _command){
-
 }
 
 Command StrategyBase::stopStrategy(Command _command){
@@ -119,8 +118,8 @@ Command StrategyBase::stopStrategy(Command _command){
 
 Command StrategyBase::blockedStrategy(Command _command){
     Command c = _command;
-
-    if(robot->isStoppedLongTime() && robot->distanceFrom(robot->getTarget()) > robot->getRadius()*4){
+    
+    if(robot->isStoppedLongTime() && robot->distanceFrom(robot->getTarget()) > robot->getRadius()*6){
         if (c.direcao == FORWARD_MOVE) {
             c = Command(255,255,BACK_MOVE);
         } else if(c.direcao == BACK_MOVE){
@@ -132,25 +131,18 @@ Command StrategyBase::blockedStrategy(Command _command){
 }
 
 // FICA CONFUSO QUANDO ESTA EXTAMENTE NO MEIO
-Point StrategyBase::applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const {
+Point StrategyBase::applyPotencialField(Point _target, Point repulsionPoint) {
+    Point t = _target;
+    float s = sin((calcAngle(robot->getPosition(), repulsionPoint))/RADIAN_TO_DEGREE);
     
-    Point2i repulsion;
-    Point2i factorRepulsion = Point2i(5000,20000);//{ 5000, 20000 };
 
-    float sin_repulsion_destination = sin((calcAngle(toDestination, toRepulsion))/RADIAN_TO_DEGREE);
-    float cos_repulsion_destination = cos((calcAngle(toDestination, toRepulsion))/RADIAN_TO_DEGREE);
-    float distance_repulsion_destination = distance(toRepulsion, toDestination);
-
-    if(sin_repulsion_destination > 0){
-        sin_repulsion_destination = 1 - sin_repulsion_destination;
-    } else {
-        sin_repulsion_destination = abs(sin_repulsion_destination) - 1;
+    if (distance(robot->getProjection(), repulsionPoint) < robot->getRadius() * 6 && 
+        s < 0.3 && s > -0.3) {
+        t.x = repulsionPoint.x ;
+        t.y = repulsionPoint.y + robot->getRadius() * 6;
     }
 
-    repulsion.x = (cos_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.x;
-    repulsion.y = (sin_repulsion_destination / (distance_repulsion_destination * 0.6)) * factorRepulsion.y;
-
-    return Point(repulsion.x, repulsion.y);
+    return t;
 } 
 
 void StrategyBase::setRobot(Robot* _robot){

@@ -1,7 +1,8 @@
 #include "Camera.h"
 
 Camera::Camera(){
-    camera_number = getNumberCameraScript();
+//    camera_number = getNumberCameraScript();
+    camera_number = 0;
     camera_comand = getComandCameraScript();
 }
 
