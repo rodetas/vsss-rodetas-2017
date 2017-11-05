@@ -46,10 +46,9 @@ void Vision::computerVision(){
     cv::Mat full_image_cut = rotateImage(opencv_image_BGR, angle_image);
             full_image_cut = cutImage(full_image_cut, point_cut);
 
-    if (game_side) 
-        full_image_cut = rotateImage(opencv_image_BGR, angle_image + 180);
-
-//    cv::imwrite("./teste.jpg", full_image_cut);
+    if (game_side) {    
+        full_image_cut = rotateImage(full_image_cut, angle_image + 360);
+    }
     
     Position color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
     Position color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);

@@ -110,6 +110,9 @@ Command StrategyBase::stopStrategy(Command _command){
                 //c = movimentation.turnLeft(pwm, pwm);
                 c = movimentation.turn(robot, data->getBall()->getBallProjection(), LEFT_MOVE);
             }
+
+            c.pwm1 *= 0.8;
+            c.pwm2 *= 0.8;
         }
     }
 

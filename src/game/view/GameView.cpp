@@ -162,7 +162,11 @@ bool GameView::onKeyboard(GdkEventKey* event){
     } else if(event->keyval == GDK_KEY_e){
         radio_button_robot_2->set_active(true);
         
-    } else {
+    } else if(event->keyval == GDK_KEY_t){
+        button_side->set_active(!button_side->get_active());
+    }
+    
+    else {
         game_model.manualRobotControl(STOPPED_MOVE, 0, 0);
     }
 

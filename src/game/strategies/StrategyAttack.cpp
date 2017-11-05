@@ -97,7 +97,23 @@ Point StrategyAttack::defineTarget(Robot* robot){
 		target = centerGoal;
 	} 
 
-	if(target.x < imageSize.x*0.2) target.x = imageSize.x*0.3;
+	Point ballProjection = ball->getBallProjection();
+
+	if(ballProjection.x < imageSize.x/2 && ballProjection.x < robot->x()){
+		if(ballProjection.y > imageSize.y/2){
+			target.y = ballProjection.y-robot->getRadius()*1.5;
+			target.x = ballProjection.x-robot->getRadius()*1.5;
+		} else {
+			target.y = ballProjection.y+robot->getRadius()*1.5;
+			target.x = ballProjection.x-robot->getRadius()*1.5;
+		}
+	}
+
+	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y)*0.7;
+	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y)*0.7;
+	if(((ballProjection.y < halfGoal1 && ballProjection.y > halfGoal2 && ballProjection.x < imageSize.x*0.20))){
+		target = Point(imageSize.x/2, imageSize.y/2);
+	}
 	
 //	cout << calcAngle(centerGoal, robot->getPosition()) << endl; 
 
