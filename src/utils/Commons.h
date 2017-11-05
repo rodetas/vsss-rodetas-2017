@@ -17,6 +17,7 @@ enum{MIN, MAX, MID};
 enum{H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN};
 enum{PLAYER0, PLAYER1, PLAYER2, TEAM, OPPONENT, BALL};
 enum{GRAPHICPLAYER0, GRAPHICPLAYER1, GRAPHICPLAYER2, GRAPHICOPPONENT1, GRAPHICOPPONENT2, GRAPHICOPPONENT3, GRAPHICBALL};
+enum{FRONT,BACK,BOTH};
 
 enum{fieldLine, midleLine, goal1Line, goal2Line};
 enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusInformation};

@@ -114,8 +114,15 @@ void GameView::updateScreen(){
     } else {
         label_fps->set_markup("<b>Fps: " + to_string(game_model.getFps()) + "</b>");
         label_fps->override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
-
     }
+
+    onCurveChangedRobot0();
+    onCurveChangedRobot1();
+    onCurveChangedRobot2();
+
+    onPotencyChangedRobot0();
+    onPotencyChangedRobot1();
+    onPotencyChangedRobot2();
 
     label_robot_0->set_label("Robot 0: " + to_string(game_model.getRobot(0)->getPosition().x) + " x " + to_string(game_model.getRobot(0)->getPosition().y));
     label_robot_1->set_label("Robot 1: " + to_string(game_model.getRobot(1)->getPosition().x) + " x " + to_string(game_model.getRobot(1)->getPosition().y));

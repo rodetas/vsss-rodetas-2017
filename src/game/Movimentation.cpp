@@ -7,26 +7,31 @@ Movimentation::Movimentation(){
 /*
  * calculates the basic movimentation
  */
-Command Movimentation::movePlayers(Robot* robot){
+Command Movimentation::movePlayers(Robot* robot, char direction){
 
 	Point destination = robot->getTarget();
 	Command command;
 
-	/* movement along the field */
-	if (robot->cosFrom(destination) < -0.4) {
-		command = definePwm(robot, BACK_MOVE);
-	
-	} else if (robot->cosFrom(destination) > 0.4){ 
-		command = definePwm(robot, FORWARD_MOVE);	
+	if(direction == ' ') {
 
+		/* movement along the field */
+		if (robot->cosFrom(destination) < -0.4) {
+			command = definePwm(robot, BACK_MOVE);
+		
+		} else if (robot->cosFrom(destination) > 0.4){ 
+			command = definePwm(robot, FORWARD_MOVE);	
+
+		} else {
+			if (robot->sinFrom(destination) > 0) {
+				command = turnRight(60, 60);
+			} else {
+				command = turnLeft(60, 60);
+			}
+		}
 	} else {
-		if (robot->sinFrom(destination) > 0) {
-			command = turnRight(60, 60);
-	    } else {
-			command = turnLeft(60, 60);
-	    }
+		command = definePwm(robot, direction);
 	}
-	
+
 	return command;
 }
 
@@ -40,8 +45,8 @@ Command Movimentation::progressiveAcell(Robot* robot, Command atual){
 	}
 
 	c.direcao = atual.direcao;
-	c.pwm1 = last.pwm1 * 0.6 + atual.pwm1 * 0.4;
-	c.pwm2 = last.pwm2 * 0.6 + atual.pwm2 * 0.4;
+	c.pwm1 = last.pwm1 * 0.4 + atual.pwm1 * 0.6;
+	c.pwm2 = last.pwm2 * 0.4 + atual.pwm2 * 0.6;
 
 	c = checkPwm(c);
 
@@ -79,7 +84,7 @@ Command Movimentation::definePwm(Robot* robot, char direction){
 
 Command Movimentation::turn(Robot* robot, Point point, char direction){
 
-	int standardPower = 180;
+	int standardPower = 200;
 	
 	int basePower = standardPower * robot->getPotencyFactor();
 	int correctionPower = (standardPower) * abs(robot->sinFrom(point)) * robot->getCurveFactor();

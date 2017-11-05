@@ -56,8 +56,7 @@ public:
      * \return 
      */
      // @TODO: ADICIONAR A DOCUMENTACAO DESTE METODO
-    virtual Point applyPotencialField(const Point& target, const Point& toRepulsion, const Point& toDestination) const;
-
+    virtual Point applyPotencialField(Point, Point);
     void setRobot(Robot*);
 
     Robot* getRobot();
