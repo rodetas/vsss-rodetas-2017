@@ -2,7 +2,7 @@
 
 Camera::Camera(){
 //    camera_number = getNumberCameraScript();
-    camera_number = 1;
+    camera_number = 0;
     camera_comand = getComandCameraScript();
 }
 

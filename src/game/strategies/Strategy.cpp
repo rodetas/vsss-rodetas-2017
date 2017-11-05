@@ -3,7 +3,7 @@
 Strategy* Strategy::instance = NULL;
 
 Strategy::Strategy(){
-
+    timeLastChange = -1;
 }
 
 Strategy* Strategy::getInstance(){
@@ -24,17 +24,29 @@ void Strategy::initializeStrategies(){
 
 void Strategy::initializeRobots(vector<Robot*> _robots){
     team["attack"] = _robots[0];
-    team["defense"] = _robots[1];
-    team["goal"] = _robots[2];
+    team["defense"] = _robots[2];
+    team["goal"] = _robots[1];
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
     
-    /* if (team["attack"]->x() > ball->x() * 1.1 && !(team["attack"]->x() > ball->x() && team["defense"]->x() > ball->x()) ){
-        Robot *aux = team["attack"];
-        team["attack"] = team["defense"];
-        team["defense"] = aux;
-    } */
+    if(timeLastChange == -1){
+
+        /*if(ball->x() < imageSize.x*0.2){
+            Robot *aux = team["goal"];
+            team["goal"] = team["attack"];
+            team["attack"] = aux;
+        } else*/ if (team["attack"]->x() > ball->x() * 1.1 && !(team["attack"]->x() > ball->x() && team["defense"]->x() > ball->x()) ){
+            Robot *aux = team["attack"];
+            team["attack"] = team["defense"];
+            team["defense"] = aux;
+        }
+
+        timeLastChange = 60;
+    } 
+
+    if(timeLastChange >= 0) timeLastChange--;
+    
 
 }
 

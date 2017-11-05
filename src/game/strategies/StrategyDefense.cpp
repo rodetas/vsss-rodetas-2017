@@ -14,10 +14,22 @@ Command StrategyDefense::strategy(Robot* robot, Command command){
 }
 
 Point StrategyDefense::defineTarget(Robot* robot){
+	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2)*2;
+	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2)*2;
 
-	Point defenseTarget = Point(imageSize.x/2, data->getBall()->getBallProjection().y);
-
-	return defenseTarget;
+	Point target;
+	Point ball = data->getBall()->getBallProjection();
+	if(robot->x() > imageSize.x*0.6){
+		target = Point(imageSize.x*0.4, robot->y());
+	}else{
+		target = Point(imageSize.x/2, imageSize.y/2);
+	}
+	return target;
+	/*if(ball.x < imageSize.x/2 && (!(ball.y < halfGoal1 && ball.y > halfGoal2 && ball.x < imageSize.x*0.20))){
+		return data->getBall()->getPosition();
+	} else {
+		return Point(imageSize.x/1.7, ball.y);
+	}*/
 }
 
 Command StrategyDefense::collisionStrategy(Command _command){  

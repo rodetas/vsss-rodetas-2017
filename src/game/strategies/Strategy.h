@@ -41,6 +41,8 @@ private:
     map<string, Robot*> team; ///< vector containing the team's positions
     vector<Robot*> opponent;
 
+    int timeLastChange;
+
     float curve_factor;
     float potency_factor;
 };

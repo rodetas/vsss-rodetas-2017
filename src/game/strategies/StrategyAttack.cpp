@@ -97,6 +97,7 @@ Point StrategyAttack::defineTarget(Robot* robot){
 		target = centerGoal;
 	} 
 
+	if(target.x < imageSize.x*0.2) target.x = imageSize.x*0.3;
 	
 //	cout << calcAngle(centerGoal, robot->getPosition()) << endl; 
 
