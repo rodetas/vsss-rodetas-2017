@@ -8,7 +8,8 @@ Command StrategyDefense::strategy(Robot* robot, Command command){
 	Command c = command;
 
 	c = stopStrategy(c);
-	c = collisionStrategy(c);
+	//c = collisionStrategy(c);
+	//c = blockedStrategy(c);
 
 	return c;
 }
