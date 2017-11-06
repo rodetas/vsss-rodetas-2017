@@ -60,10 +60,19 @@ bool Robot::isStopped(){
     return stopped;
 }
 
-bool Robot::isStoppedLongTime(){
-    if(stoppedTime >= 90){
+bool Robot::isStoppedFor(int time){
+    if(stoppedTime >= time){
         return true;
     }
+
+    return false;
+}
+
+bool Robot::isBlocked(){
+    // se a distancia pro target e alta e o robo esta parado por muito tempo, entao é considerado travado
+    if(distanceFrom(target) > radius*6 && isStoppedFor(90)){
+        return true;
+    } 
 
     return false;
 }

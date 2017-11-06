@@ -49,7 +49,10 @@ void Vision::computerVision(){
     if (game_side) {    
         full_image_cut = rotateImage(full_image_cut, angle_image + 360);
     }
-    
+  
+    /* imwrite("./teste.jpg", full_image_cut);
+    usleep(1000000); */
+
     Position color_team_position = position(full_image_cut, colorsHSV[TEAM], 3);
     Position color_ball_position = position(full_image_cut, colorsHSV[BALL], 1);
     //Position color_opponent_position = position(full_image_cut, colorsHSV[OPPONENT], 3);

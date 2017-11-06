@@ -23,9 +23,9 @@ void Strategy::initializeStrategies(){
 }
 
 void Strategy::initializeRobots(vector<Robot*> _robots){
-    team["attack"] = _robots[2];
+    team["attack"] = _robots[0];
     team["defense"] = _robots[1];
-    team["goal"] = _robots[0];
+    team["goal"] = _robots[2];
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
@@ -36,34 +36,45 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
         float distanceAttackBall = distance(team["attack"]->getPosition(), ball->getPosition());
         Point ballProjection = ball->getBallProjection();
 
-        /* if (team["attack"]->x() > ball->x() * 1.1 && !(team["attack"]->x() > ball->x() && team["defense"]->x() > ball->x()) ){
+        if (team["attack"]->x() > ball->x() * 1.05 && !(team["attack"]->x() > ball->x() && team["defense"]->x() > ball->x()) && 
+            !team["attack"]->isBlocked() && !team["defense"]->isBlocked()){
+
             Robot *aux = team["attack"];
             team["attack"] = team["defense"];
             team["defense"] = aux;
         }
 
-        if(distanceDefenseBall < distanceAttackBall && ball->x() < imageSize.x/2){
+        // na defesa, o mais perto é o atacante
+        if(distanceDefenseBall < distanceAttackBall && ball->x() < imageSize.x/2 && 
+            !team["attack"]->isBlocked() && !team["defense"]->isBlocked()){
             Robot *aux = team["attack"];
             team["attack"] = team["defense"];
             team["defense"] = aux;
-        } */
+        }
 
-        int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y)*0.4;
-        int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y)*0.4;
-        if((ballProjection.y > halfGoal1 || ballProjection.y < halfGoal2) && ballProjection.x < imageSize.x*0.20
-            ){
-                Robot *aux = team["attack"];
-                team["attack"] = team["defense"];
-                team["defense"] = team["goal"];
-                team["goal"] = aux;
+        if(team["attack"]->isBlocked()){
+            Robot *aux = team["attack"];
+            team["attack"] = team["defense"];
+            team["defense"] = aux;
         }
 
         timeLastChange = 60;
+
+        int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y)*0.4;
+        int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y)*0.4;
+        /* if((ballProjection.y > halfGoal1 || ballProjection.y < halfGoal2) && ballProjection.x < imageSize.x*0.20 &&
+            distance(team["attack"]->getPosition(), ball->getPosition()) > 200){
+                Robot *aux = team["attack"];
+                team["attack"] = team["goal"];
+                team["goal"] = team["defense"];
+                team["defense"] = aux;
+                
+                timeLastChange = 300;
+        } */
+
     } 
 
     if(timeLastChange >= 0) timeLastChange--;
-    
-
 }
 
 void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball, bool targetFromScreen){

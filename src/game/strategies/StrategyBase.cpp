@@ -122,7 +122,7 @@ Command StrategyBase::stopStrategy(Command _command){
 Command StrategyBase::blockedStrategy(Command _command){
     Command c = _command;
     
-    if(robot->isStoppedLongTime() && robot->distanceFrom(robot->getTarget()) > robot->getRadius()*6){
+    if(robot->isStoppedFor(90) && robot->distanceFrom(robot->getTarget()) > robot->getRadius()*6){
         if (c.direcao == FORWARD_MOVE) {
             c = Command(255,255,BACK_MOVE);
         } else if(c.direcao == BACK_MOVE){

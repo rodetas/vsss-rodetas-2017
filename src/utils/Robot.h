@@ -49,7 +49,9 @@ public:
 
     bool calculateStopped();
     bool isStopped();
-    bool isStoppedLongTime();
+    bool isStoppedFor(int);
+    
+    bool isBlocked();
 
     float getVelocity();
 

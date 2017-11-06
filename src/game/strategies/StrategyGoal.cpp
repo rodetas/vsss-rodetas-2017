@@ -40,6 +40,9 @@ Point StrategyGoal::defineTarget(Robot* robot){
     Point goalTarget = Point(0,0);
 	Point ballProjection = data->getBall()->getBallProjection();
 
+	int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y)*0.7;
+	int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y)*0.7;
+
 	goalTarget.x = rodetas::imageSize.x*0.10;
 	//goalTarget.y = rodetas::imageSize.y/2 - (rodetas::imageSize.y/2-ballProjection.y)/2;
 	goalTarget.y = data->getBall()->getBallProjection().y;
@@ -49,6 +52,17 @@ Point StrategyGoal::defineTarget(Robot* robot){
 	} else if(goalTarget.y < imageSize.y/2-goalSize.y/3){
 		goalTarget.y = imageSize.y/2-goalSize.y/3;
 	}
+
+	// manda ir na bola quando ela está dentro da area
+	if(((ballProjection.y < halfGoal1 && ballProjection.y > halfGoal2 && ballProjection.x < imageSize.x*0.20))){
+		goalTarget = ballProjection;
+	}
+
+	// quando esta agarrado manda ir para o centro do gol na tentativa de soltar
+	if(robot->isStoppedFor(90) && robot->distanceFrom(goalTarget) > robot->getRadius()*1.5){
+		goalTarget.x = imageSize.x*0.1;
+		goalTarget.y = imageSize.y*0.5;
+    }
 
 	return goalTarget;
 }
