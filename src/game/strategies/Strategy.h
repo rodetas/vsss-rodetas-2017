@@ -21,7 +21,7 @@ public:
 
     void initializeRobots(vector<Robot*>);
 
-    void apply(vector<Robot*> team, vector<Robot*> opponent, Ball* ball, bool); // analisar a necessidade de retornar vector de command
+    void apply(vector<Robot*> team, vector<Robot*> opponent, Ball* ball, bool targetFromScreen = false, bool enableChangePosition = true);
 
     Ball* getBall();
 
