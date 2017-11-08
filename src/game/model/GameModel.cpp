@@ -3,6 +3,7 @@
 GameModel::GameModel(){
     play = false;
     targetFromScreen = false;
+    enableChangePosition = true;
     
     for(int i=0 ; i<3 ; i++){
         robots.push_back(new Robot(i));
@@ -31,7 +32,7 @@ bool GameModel::control(){
 
     vision.computerVision();
 
-    strategy->apply(robots, opponent, ball, targetFromScreen);
+    strategy->apply(robots, opponent, ball, targetFromScreen, enableChangePosition);
    
     if(play){
         for(int i=0 ; i<robots.size() ; i++){
@@ -50,6 +51,10 @@ void GameModel::manualRobotControl(char direction, int pwm1, int pwm2){
     for(int i = 0 ; i < 3 ; i++) {
         transmission.send(i, Command(pwm1, pwm2, direction));
     }
+}
+
+void GameModel::changePositionClick(){
+    enableChangePosition = !enableChangePosition;
 }
 
 void GameModel::setPlay(bool b){

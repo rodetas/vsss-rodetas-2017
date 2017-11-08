@@ -24,6 +24,7 @@ public:
     void setTargetFromScreen(bool);
     void setTargetOf(Point, int);
     void changeGameSide();
+    void changePositionClick();
 
     void setPotencyFactor(float, int);
     void setCurveFactor(float, int);
@@ -54,6 +55,7 @@ private:
     int fps;
     bool play;
     bool targetFromScreen;
+    bool enableChangePosition;
     
 
 };

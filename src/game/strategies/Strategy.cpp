@@ -29,7 +29,7 @@ void Strategy::initializeRobots(vector<Robot*> _robots){
 }
 
 void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
-    
+
     if(timeLastChange == -1){
 
         float distanceDefenseBall = distance(team["defense"]->getPosition(), ball->getPosition());
@@ -77,14 +77,15 @@ void Strategy::defineFunctionsForEachRobot(vector<Robot*> _robots){
     if(timeLastChange >= 0) timeLastChange--;
 }
 
-void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball, bool targetFromScreen){
+void Strategy::apply(vector<Robot*> _team, vector<Robot*> _opponent, Ball* _ball, bool targetFromScreen, bool enableChangePosition){
     opponent = (_opponent);
     ball = _ball; 
 
     if(!targetFromScreen){
 
         // define as funcoes de cada robo
-        defineFunctionsForEachRobot(_team);
+        if(enableChangePosition)
+            defineFunctionsForEachRobot(_team);
 
         // aplica a estrategia para cada robo
         for(auto it = strategies.begin() ; it != strategies.end() ; it++){
