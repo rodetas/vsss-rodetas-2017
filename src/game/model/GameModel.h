@@ -25,6 +25,7 @@ public:
     void setTargetOf(Point, int);
     void changeGameSide();
     void changePositionClick();
+    void changeAttack();
 
     void setPotencyFactor(float, int);
     void setCurveFactor(float, int);

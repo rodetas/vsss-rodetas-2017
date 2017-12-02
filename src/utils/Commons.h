@@ -25,6 +25,7 @@ enum{titleInformation, fpsInformation, gameStatusInformation, connectionStatusIn
 extern Point imageSize;
 extern Point goalSize;
 extern Point goalArea;
+extern bool isPlaying;
 
 struct PointCut {
 	Point2i first;

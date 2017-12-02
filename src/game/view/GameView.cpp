@@ -149,6 +149,7 @@ bool GameView::onKeyboard(GdkEventKey* event){
 
     } else if(event->keyval == GDK_KEY_space) {
         button_play->set_active(!button_play->get_active());
+        rodetas::isPlaying = button_play->get_active();
         
     } else if(event->keyval == GDK_KEY_Escape){
         onMenuQuit();
@@ -167,6 +168,9 @@ bool GameView::onKeyboard(GdkEventKey* event){
 
     } else if(event->keyval == GDK_KEY_c){
         game_model.changePositionClick();
+
+    } else if(event->keyval == GDK_KEY_v){
+        game_model.changeAttack();
 
     } else {
         game_model.manualRobotControl(STOPPED_MOVE, 0, 0);

@@ -5,6 +5,7 @@ namespace rodetas{
     Point imageSize = Point();
     Point goalArea = Point();
     Point goalSize = Point();
+    bool isPlaying = false;
     
     string executeCommand(string cmd){
 

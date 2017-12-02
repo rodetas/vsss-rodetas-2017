@@ -27,6 +27,8 @@ public:
 
     Robot getRobot(string);
 
+    void changeAttack();
+
 private:
 
     Strategy(); ///< private constructor for singleton

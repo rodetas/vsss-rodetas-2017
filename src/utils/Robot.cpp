@@ -42,11 +42,11 @@ bool Robot::isBoard(){
 }
 
 bool Robot::isParallelGoal(){
-    return (cosFrom(Point(imageSize.x, y())) > -0.3 && cosFrom(Point(imageSize.x, y())) < 0.3);
+    return (cosFrom(Point(imageSize.x, y())) > -0.4 && cosFrom(Point(imageSize.x, y())) < 0.4);
 }
 
 bool Robot::calculateStopped(){
-    if(velocity < 5.0){
+    if(velocity < 13.0 && rodetas::isPlaying){
         stoppedTime++;
         return true;
     }

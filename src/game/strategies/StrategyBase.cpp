@@ -61,8 +61,8 @@ void StrategyBase::move(Robot* robot){
         } 
         
         // girar caso robo prenda a bola na parede
-        if (robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.5) {
-
+        if (robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius()*1.8) {
+    
             if (robot->y() > (rodetas::imageSize.y/2)){
                 c = movimentation.turnLeft(255, 255);	
             } else {

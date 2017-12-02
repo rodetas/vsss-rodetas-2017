@@ -16,7 +16,7 @@ public:
     void updateScreen(); 
 
 private:
-    GameModel game_model;
+	GameModel game_model;
 
 	Gtk::Window *window = nullptr;
 	

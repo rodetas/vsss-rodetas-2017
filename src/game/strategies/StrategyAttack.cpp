@@ -19,7 +19,7 @@ Command StrategyAttack::strategy(Robot* robot, Command command){
 		int halfGoal1 = rodetas::imageSize.y/2 + (rodetas::goalSize.y/2);
 		int halfGoal2 = rodetas::imageSize.y/2 - (rodetas::goalSize.y/2);
 		
-		if ( robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius() * 1.4 && 
+		if ( robot->distanceFrom(data->getBall()->getPosition()) < robot->getRadius() * 1.3 && 
 		!(robot->x() > imageSize.x * 0.9 && robot->y() > halfGoal1) &&
 		!(robot->x() > imageSize.x * 0.9 && robot->y() < halfGoal2) ){
 			
@@ -97,7 +97,7 @@ Point StrategyAttack::defineTarget(Robot* robot){
 
 	Point ballProjection = ball->getBallProjection();
 
-	if(ballProjection.x < imageSize.x/2 && ballProjection.x < robot->x()){
+	if(ballProjection.x < imageSize.x*0.7 && ballProjection.x < robot->x()){
 		if(ballProjection.y > imageSize.y/2){
 			target.y = ballProjection.y-robot->getRadius()*2;
 			target.x = ballProjection.x-robot->getRadius()*1.5;
